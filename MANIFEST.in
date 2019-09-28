@@ -1,0 +1,10 @@
+global-include *.py
+global-exclude *.py[cod]$
+
+prune .venv
+prune __pycache__
+
+include README.md
+include LICENSE
+
+# exclude test.py

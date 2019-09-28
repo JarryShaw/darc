@@ -1,0 +1,13 @@
+# docker-compose version
+version: "3"
+
+# darc
+services:
+  darc:
+    build: .
+    container_name: darc
+    environment:
+      ## [PYTHON] force the stdout and stderr streams to be unbuffered
+      PYTHONUNBUFFERED: 1
+    image: darc
+    restart: "on-failure"

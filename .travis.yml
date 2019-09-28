@@ -1,0 +1,21 @@
+# base configurations
+dist: xenial
+language: python
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8-dev"
+
+# command to install dependencies
+install:
+  - pip install pipenv
+  - pipenv install --dev
+
+# command to run tests
+script:
+  - coverage run src/test_darc.py
+
+# coverage
+after_success:
+  - codecov
