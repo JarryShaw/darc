@@ -16,10 +16,7 @@ attrs = dict(
     maintainer_email='jarryshaw@icloud.com',
     url='https://github.com/JarryShaw/darc',
     download_url='https://github.com/JarryShaw/darc/archive/v%s.tar.gz' % __version__,
-    packages=[
-        'darc',
-    ],
-    # py_modules
+    py_modules=['darc'],
     # scripts
     # ext_modules
     classifiers=[
@@ -52,9 +49,7 @@ attrs = dict(
     ],
     # cmdclass
     # data_files
-    package_dir={
-        '': 'src',
-    },
+    # package_dir
     # obsoletes
     # provides
     requires = [

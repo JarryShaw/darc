@@ -1,7 +1,12 @@
 {
     "cSpell.words": [
+        "LINKDB",
+        "certifi",
         "cmdclass",
         "darc",
+        "idna",
+        "pysocks",
         "xenial"
-    ]
+    ],
+    "python.pythonPath": ".venv/bin/python"
 }

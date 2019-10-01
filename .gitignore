@@ -2,6 +2,8 @@
 .env
 .venv
 
+data
+
 # Created by https://www.gitignore.io/api/python,macos,linux,visualstudiocode,pycharm,windows
 # Edit at https://www.gitignore.io/?templates=python,macos,linux,visualstudiocode,pycharm,windows
 

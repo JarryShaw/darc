@@ -6,8 +6,12 @@ services:
   darc:
     build: .
     container_name: darc
+    command: [ "--file", "/data/top-20k.txt" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
     image: darc
     restart: "on-failure"
+    volumes:
+      - ./data:/darc/data
+      - ./:/data
