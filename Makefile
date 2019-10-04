@@ -20,7 +20,13 @@ coverage:
 
 docker-test: clean-misc
 	docker build --tag darc --rm .
+	clear
 	docker run -it -v ${PATH_ROOT}/data:/darc/db darc 'https://www.sjtu.edu.cn'
+
+compose-test: clean-misc clean-docker
+	docker-compose --file docker-compose.debug.yml build
+	clear
+	docker-compose --file docker-compose.debug.yml up
 
 update:
 	pipenv run pip install -U pip setuptools wheel
@@ -44,6 +50,9 @@ clean-pyc:
 
 clean-misc: clean-pyc
 	rm -rf ${PATH_DATA}
+
+clean-docker:
+	docker system prune --volumes -f
 
 clean-pipenv:
 	pipenv --rm

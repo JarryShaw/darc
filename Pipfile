@@ -24,7 +24,7 @@ codecov = "*"
 [packages]
 requests = {extras = ["socks"],version = "*"}
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}
-selenium = "*"
+stem = "*"
 
 [requires]
 python_version = "3.7"

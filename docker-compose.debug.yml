@@ -3,10 +3,12 @@ version: '2.1'
 services:
   darc:
     image: darc
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - 9065:9065
-    command: [ "--file", "/app/top-20k.txt" ]
+    command: [ "--file", "top-20k.txt", "https://www.sjtu.edu.cn" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -21,7 +23,7 @@ services:
       TOR_RESET: 60
       # time delta in seconds
       TIME_DELTA: 60
-    restart: "always"
+    restart: "on-failure"
     volumes:
       - ./cache:/app/cache
-      - /data/darc:/app/data
+      - ./data:/app/data

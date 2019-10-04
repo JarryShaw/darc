@@ -1,18 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import contextlib
+import datetime
+import getpass
+import glob
 import hashlib
 import multiprocessing
 import os
 import queue
 import re
 import sys
+import time
 import traceback
 import typing
 import urllib.parse
 
 import bs4
 import requests
+import stem
+from stem.control import Controller
+from stem.process import launch_tor_with_config
 
 ###############################################################################
 # typings
@@ -22,6 +30,9 @@ ArgumentParser = typing.NewType('ArgumentParser', argparse.ArgumentParser)
 
 # requests.Response
 Response = typing.NewType('Response', requests.Response)
+
+# requests.Session
+Session = typing.NewType('Session', requests.Session)
 
 ###############################################################################
 # const
@@ -33,8 +44,20 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 PATH_DB = os.path.abspath(os.getenv('PATH_DATA', 'data'))
 os.makedirs(PATH_DB, exist_ok=True)
 
-# Socks5 port
-SOCKS_PORT = 9050
+# Socks5 proxy & control port
+SOCKS_PORT = os.getenv('SOCKS_PORT', '9050')
+SOCKS_CTRL = os.getenv('SOCKS_CTRL', '9051')
+
+# Tor authentication
+TOR_PASS = os.getenv('TOR_PASS')
+if TOR_PASS is None:
+    TOR_PASS = getpass.getpass('Tor authentication: ')
+
+# Tor reset timeout
+TOR_RESET = float(os.getenv('TOR_RESET', '60'))
+
+# time delta in seconds
+TIME_DELTA = datetime.timedelta(seconds=int(os.getenv('TIME_DELTA', '60')))
 
 # link queue
 QUEUE = multiprocessing.Queue()
@@ -54,26 +77,104 @@ class UnsupportedLink(Exception):
 
 
 ###############################################################################
+# session
+
+_SESSION_NORM = None
+_SESSION_TOR = None
+_CTRL_TOR = None
+_PROC_TOR = None
+_RST_TOR = None
+
+
+def renew_tor_session():
+    """Renew Tor session."""
+    global _CTRL_TOR
+    if _CTRL_TOR is None:
+        _CTRL_TOR = Controller.from_port(port=int(SOCKS_CTRL))
+        _CTRL_TOR.authenticate(TOR_PASS)
+
+    while True:
+        time.sleep(TOR_RESET)
+        _CTRL_TOR.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
+        time.sleep(_CTRL_TOR.get_newnym_wait())
+
+
+def tor_session() -> Session:
+    """Tor (.onion) session."""
+    global _PROC_TOR
+    if _PROC_TOR is None:
+        _PROC_TOR = launch_tor_with_config(
+            config={
+                'SocksPort': SOCKS_PORT,
+                'ControlPort': SOCKS_CTRL,
+            },
+            take_ownership=True
+        )
+
+    global _RST_TOR
+    if _RST_TOR is None:
+        _RST_TOR = multiprocessing.Process(target=renew_tor_session)
+        _RST_TOR.start()
+
+    global _SESSION_TOR
+    if _SESSION_TOR is None:
+        _SESSION_TOR = requests.Session()
+        _SESSION_TOR.proxies.update({'http':  f'socks5://localhost:{SOCKS_PORT}',
+                                     'https': f'socks5://localhost:{SOCKS_PORT}'})
+    return _SESSION_TOR
+
+
+def norm_session() -> Session:
+    """Normal session"""
+    global _SESSION_NORM
+    if _SESSION_NORM is None:
+        _SESSION_NORM = requests.Session()
+    return _SESSION_NORM
+
+
+###############################################################################
 # save
+
+
+def check(link: str) -> str:
+    """Check if we need to re-craw the link."""
+    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+
+    # <scheme>/<identifier>/<timestamp>-<hash>.html
+    base = os.path.join(PATH_DB, parse.scheme, host)
+    name = hashlib.sha256(link.encode()).hexdigest()
+    path = os.path.join(base, name)
+    time = datetime.datetime.now()  # pylint: disable=redefined-outer-name
+
+    glob_list = glob.glob(f'{path}_*.html')
+    if not glob_list:
+        return 'nil'
+
+    item = sorted(glob_list, reverse=True)[0]
+    date = datetime.datetime.fromisoformat(item[len(path)+1:-5])
+    if time - date > TIME_DELTA:
+        return item
+    return 'nil'
 
 
 def sanitise(link: str, makedirs: bool = True) -> str:
     """Sanitise link to path."""
     # return urllib.parse.quote(link, safe='')
-    link_unquote = urllib.parse.unquote(link)
 
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link_unquote)
+    parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
-    ident = '.'.join(reversed(host.split('.')))
 
-    # <scheme>/<identifier>/<path>/<hash>
-    base = os.path.normpath(os.path.sep.join((parse.scheme, ident, parse.path)))
+    # <scheme>/<identifier>/<timestamp>-<hash>.html
+    base = os.path.join(PATH_DB, parse.scheme, host)
     name = hashlib.sha256(link.encode()).hexdigest()
+    time = datetime.datetime.now().isoformat()  # pylint: disable=redefined-outer-name
 
     if makedirs:
-        os.makedirs(os.path.join(PATH_DB, base), exist_ok=True)
-    return f'{os.path.join(PATH_DB, base, name)}.html'
+        os.makedirs(base, exist_ok=True)
+    return f'{os.path.join(base, name)}_{time}.html'
 
 
 def save(link: str, html: bytes):
@@ -81,8 +182,11 @@ def save(link: str, html: bytes):
     path = sanitise(link)
     with open(path, 'wb') as file:
         file.write(html)
+
+    safe_link = link.replace('"', '\\"')
+    safe_path = path.replace('"', '\\"')
     with open(PATH_MAP, 'a') as file:
-        print(f'{link!r},{path!r}', file=file)
+        print(f'"{safe_link}","{safe_path}"', file=file)
 
 
 ###############################################################################
@@ -104,64 +208,57 @@ def extract_links(link: str, html: bytes) -> typing.Iterator[str]:
 
 
 ###############################################################################
-# request
-
-
-def default(link: str) -> Response:
-    """Request a common link."""
-    return requests.get(link)
-
-
-def tor(link: str) -> Response:
-    """Request a Tor (.onion) link."""
-    return requests.get(link, proxies={'http':  f'socks5://127.0.0.1:{SOCKS_PORT}',
-                                       'https': f'socks5://127.0.0.1:{SOCKS_PORT}'})
-
-
-###############################################################################
 # process
 
 # link regex mapping
 LINK_MAP = [
-    (r'.*?\.onion', tor),
-    (r'.*', default),
+    (r'.*?\.onion', tor_session),
+    (r'.*', norm_session),
 ]
 
 
-def request_func(link: str) -> typing.Callable[[str], Response]:
-    """Request a link."""
-    netloc = urllib.parse.urlparse(link).netloc
-    for regex, func in LINK_MAP:
-        if re.match(regex, netloc):
-            return func
+def request_session(link: str) -> Session:
+    """Get session."""
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+    for regex, session in LINK_MAP:
+        if re.match(regex, host):
+            return session()
     raise UnsupportedLink(link)
 
 
 def crawler(link: str):
     """Single crawler for a entry link."""
-    path = sanitise(link, makedirs=False)
+    path = check(link)
     if os.path.isfile(path):
-        return
 
-    print(f'Requesting {link}')
-    request = request_func(link)
-    try:
-        response = request(link)
-    except requests.exceptions.InvalidSchema:
-        return
-    except requests.RequestException:
-        print(f'Failed on {link}')
-        QUEUE.put(link)
-        return
-    print(f'Requested {link}')
+        print(f'Cached {link}')
+        with open(path, 'rb') as file:
+            html = file.read()
 
-    ct_type = response.headers.get('Content-Type')
-    if 'html' not in ct_type:
-        return
-    html = response.content
+    else:
 
-    # save HTML
-    save(link, html)
+        print(f'Requesting {link}')
+
+        session = request_session(link)
+        try:
+            response = session.get(link)
+        except requests.exceptions.InvalidSchema:
+            return
+        except requests.RequestException as error:
+            print(f'Failed on {link} ({error})')
+            QUEUE.put(link)
+            return
+
+        print(f'Requested {link}')
+
+        ct_type = response.headers.get('Content-Type', 'undefined')
+        if 'html' not in ct_type:
+            return
+        html = response.content
+
+        # save HTML
+        save(link, html)
 
     # add link to queue
     [QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
@@ -191,6 +288,29 @@ def process():
 # __main__
 
 
+def _exit():
+    """Gracefully exit."""
+    with contextlib.suppress():
+        QUEUE.close()
+
+    with contextlib.suppress():
+        if _SESSION_NORM is not None:
+            _SESSION_NORM.close()
+    with contextlib.suppress():
+        if _SESSION_TOR is not None:
+            _SESSION_TOR.close()
+
+    with contextlib.suppress():
+        if _CTRL_TOR is not None:
+            _CTRL_TOR.close()
+    with contextlib.suppress():
+        if _PROC_TOR is not None:
+            _PROC_TOR.terminate()
+    with contextlib.suppress():
+        if _RST_TOR is not None:
+            _RST_TOR.close()
+
+
 def get_parser() -> ArgumentParser:
     """Argument parser."""
     parser = argparse.ArgumentParser('darc')
@@ -208,6 +328,7 @@ def main():
 
     for link in args.link:
         QUEUE.put(link)
+
     if args.file is not None:
         with open(args.file) as file:
             for line in file:
@@ -217,7 +338,7 @@ def main():
         process()
     except BaseException:
         traceback.print_exc()
-    QUEUE.close()
+    _exit()
 
 
 if __name__ == "__main__":

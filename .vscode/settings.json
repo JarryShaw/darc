@@ -1,11 +1,19 @@
 {
     "cSpell.words": [
         "LINKDB",
+        "NEWNYM",
         "certifi",
         "cmdclass",
+        "conda",
+        "continuumio",
         "darc",
+        "emojize",
         "idna",
+        "inited",
+        "miniconda",
+        "myenv",
         "pysocks",
+        "torrc",
         "xenial"
     ],
     "python.pythonPath": ".venv/bin/python"

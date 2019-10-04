@@ -52,12 +52,7 @@ attrs = dict(
     # package_dir
     # obsoletes
     # provides
-    requires = [
-        'requests',
-        'PySocks',
-        'bs4',
-        'html5lib',
-    ],
+    # requires
     # command_packages
     # command_options
     package_data={
@@ -75,7 +70,12 @@ attrs = dict(
     # fullname
     # long_description_content_type
     # python_requires
-    # zip_safe
+    # zip_safe,
+    install_requires=[
+        'requests[socks]',
+        'beautifulsoup4[html5lib]',
+        'stem',
+    ]
 )
 
 try:
