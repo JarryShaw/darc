@@ -155,8 +155,8 @@ def check(link: str) -> str:
     item = sorted(glob_list, reverse=True)[0]
     date = datetime.datetime.fromisoformat(item[len(path)+1:-5])
     if time - date > TIME_DELTA:
-        return item
-    return 'nil'
+        return 'nil'
+    return item
 
 
 def sanitise(link: str, makedirs: bool = True) -> str:
