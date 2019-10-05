@@ -3,6 +3,8 @@
         "LINKDB",
         "NEWNYM",
         "certifi",
+        "cgroup",
+        "cgroups",
         "cmdclass",
         "conda",
         "continuumio",
@@ -13,7 +15,9 @@
         "miniconda",
         "myenv",
         "pysocks",
+        "tmpfs",
         "torrc",
+        "tsinghua",
         "xenial"
     ],
     "python.pythonPath": ".venv/bin/python"

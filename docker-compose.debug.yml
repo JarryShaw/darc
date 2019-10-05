@@ -7,8 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 9065:9065
-    command: [ "https://0day.today", "https://www.sjtu.edu.cn" ]
+      - 9065:1086
+    command: [ "https://www.facebookcorewwwi.onion", "https://www.sjtu.edu.cn" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1

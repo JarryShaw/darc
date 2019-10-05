@@ -21,6 +21,7 @@ import requests
 import stem
 from stem.control import Controller
 from stem.process import launch_tor_with_config
+from stem.util import term
 
 ###############################################################################
 # typings
@@ -99,6 +100,11 @@ def renew_tor_session():
         time.sleep(_CTRL_TOR.get_newnym_wait())
 
 
+def print_bootstrap_lines(line: str):
+    if "Bootstrapped " in line:
+        print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
+
+
 def tor_session() -> Session:
     """Tor (.onion) session."""
     global _PROC_TOR
@@ -108,7 +114,8 @@ def tor_session() -> Session:
                 'SocksPort': SOCKS_PORT,
                 'ControlPort': SOCKS_CTRL,
             },
-            take_ownership=True
+            take_ownership=True,
+            init_msg_handler=print_bootstrap_lines,
         )
 
     global _RST_TOR
@@ -232,13 +239,13 @@ def crawler(link: str):
     path = check(link)
     if os.path.isfile(path):
 
-        print(f'Cached {link}')
+        print(term.format(f'Cached {link}', term.Color.YELLOW))  # pylint: disable=no-member
         with open(path, 'rb') as file:
             html = file.read()
 
     else:
 
-        print(f'Requesting {link}')
+        print(term.format(f'Requesting {link}', term.Color.CYAN))  # pylint: disable=no-member
 
         session = request_session(link)
         try:
@@ -246,11 +253,11 @@ def crawler(link: str):
         except requests.exceptions.InvalidSchema:
             return
         except requests.RequestException as error:
-            print(f'Failed on {link} ({error})')
+            print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
             QUEUE.put(link)
             return
 
-        print(f'Requested {link}')
+        print(term.format(f'Requested {link}', term.Color.GREEN))  # pylint: disable=no-member
 
         ct_type = response.headers.get('Content-Type', 'undefined')
         if 'html' not in ct_type:
@@ -281,7 +288,7 @@ def process():
             pool.map(crawler, link_list)
         else:
             break
-    print('Gracefully exit...')
+    print(term.format('Gracefully exiting...', term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 ###############################################################################
