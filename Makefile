@@ -18,6 +18,10 @@ coverage:
 	rm -rf htmlcov
 	rm .coverage
 
+docker-setup:
+	sudo echo 'DOCKER_OPTS="$DOCKER_OPTS --registry-mirror=https://docker.mirrors.ustc.edu.cn"' >> /etc/default/docker
+	sudo service docker restart
+
 docker-test: clean-misc
 	docker build --tag darc --rm .
 	clear
