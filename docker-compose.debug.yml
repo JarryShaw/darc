@@ -19,10 +19,8 @@ services:
       SOCKS_CTRL: 9051
       # Tor authentication
       TOR_PASS: "16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F"
-      # Tor reset timeout
-      TOR_RESET: 600
-      # time delta in seconds
-      TIME_DELTA: 600
+      # time delta caches in seconds
+      TIME_CACHE: 600
     restart: "on-failure"
     volumes:
       - ./cache:/app/cache

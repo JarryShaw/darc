@@ -11,10 +11,10 @@ import os
 import queue
 import re
 import sys
-import time
 import traceback
 import typing
 import urllib.parse
+import warnings
 
 import bs4
 import requests
@@ -34,9 +34,6 @@ Response = typing.NewType('Response', requests.Response)
 
 # requests.Session
 Session = typing.NewType('Session', requests.Session)
-
-# multiprocessing.Process
-Process = typing.NewType('Process', multiprocessing.Process)
 
 # multiprocessing.Queue
 Queue = typing.NewType('Queue', multiprocessing.Queue)
@@ -64,11 +61,8 @@ SOCKS_CTRL = os.getenv('SOCKS_CTRL', '9051')
 # Tor authentication
 TOR_PASS = os.getenv('TOR_PASS')
 
-# Tor reset timeout
-TOR_RESET = float(os.getenv('TOR_RESET', '60'))
-
-# time delta in seconds
-TIME_DELTA = datetime.timedelta(seconds=int(os.getenv('TIME_DELTA', '60')))
+# time delta for caches in seconds
+TIME_CACHE = datetime.timedelta(seconds=int(os.getenv('TIME_CACHE', '60')))
 
 # link queue
 QUEUE = multiprocessing.Queue()
@@ -87,12 +81,28 @@ class UnsupportedLink(Exception):
     """The link is not supported."""
 
 
+class TorBootstrapFailed(Warning):
+    """Tor bootstrap process failed."""
+
+
 ###############################################################################
 # session
 
+# Tor bootstrapped flag
+_TOR_BS_FLAG = multiprocessing.Value('B', False)
+# Tor bootstrapping lock
+_TOR_BS_LOCK = multiprocessing.Lock()
+# Tor controller
 _CTRL_TOR = None
+# Tor daemon process
 _PROC_TOR = None
-_RST_TOR = None
+
+
+def renew_tor_session():
+    """Renew Tor session."""
+    if _CTRL_TOR is None:
+        return
+    _CTRL_TOR.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
 
 
 def print_bootstrap_lines(line: str):
@@ -101,9 +111,13 @@ def print_bootstrap_lines(line: str):
         print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
 
 
-def bootstrap():
+def tor_bootstrap():
     """Tor bootstrap."""
-    global _CTRL_TOR, _PROC_TOR, _RST_TOR, TOR_PASS
+    # don't re-bootstrap
+    if _TOR_BS_FLAG.value:
+        return
+
+    global _CTRL_TOR, _PROC_TOR, TOR_PASS
 
     # launch Tor process
     _PROC_TOR = launch_tor_with_config(
@@ -122,21 +136,22 @@ def bootstrap():
     _CTRL_TOR = TorController.from_port(port=int(SOCKS_CTRL))
     _CTRL_TOR.authenticate(TOR_PASS)
 
-    # Tor renew process
-    _RST_TOR = multiprocessing.Process(target=renew_tor_session)
-    _RST_TOR.start()
-
-
-def renew_tor_session():
-    """Renew Tor session."""
-    while True:
-        time.sleep(TOR_RESET)
-        _CTRL_TOR.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
-        time.sleep(_CTRL_TOR.get_newnym_wait())
+    # update flag
+    _TOR_BS_FLAG.value = True
 
 
 def tor_session() -> Session:
     """Tor (.onion) session."""
+    if not _TOR_BS_FLAG.value:
+        with _TOR_BS_LOCK:
+            try:
+                tor_bootstrap()
+            except Exception as error:
+                warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 148, 'tor_bootstrap()')
+                print(''.join(
+                    term.format(line, term.Color.YELLOW) for line in warning.splitlines(True)  # pylint: disable=no-member
+                ), end='', file=sys.stderr)
+
     session = requests.Session()
     session.proxies.update({
         'http':  f'socks5://localhost:{SOCKS_PORT}',
@@ -152,6 +167,9 @@ def norm_session() -> Session:
 
 ###############################################################################
 # save
+
+# lock for file I/O
+_SAVE_LOCK = multiprocessing.Lock()
 
 
 def check(link: str) -> str:
@@ -172,7 +190,7 @@ def check(link: str) -> str:
 
     item = sorted(glob_list, reverse=True)[0]
     date = datetime.datetime.fromisoformat(item[len(path)+1:-5])
-    if time - date > TIME_DELTA:
+    if time - date > TIME_CACHE:
         return 'nil'
     return item
 
@@ -203,8 +221,9 @@ def save(link: str, html: bytes):
 
     safe_link = link.replace('"', '\\"')
     safe_path = path.replace('"', '\\"')
-    with open(PATH_MAP, 'a') as file:
-        print(f'"{safe_link}","{safe_path}"', file=file)
+    with _SAVE_LOCK:
+        with open(PATH_MAP, 'a') as file:
+            print(f'"{safe_link}","{safe_path}"', file=file)
 
 
 ###############################################################################
@@ -256,7 +275,7 @@ def crawler(link: str):
 
     else:
 
-        print(term.format(f'Requesting {link}', term.Color.CYAN))  # pylint: disable=no-member
+        print(f'Requesting {link}')
 
         with request_session(link) as session:
             try:
@@ -268,7 +287,7 @@ def crawler(link: str):
                 QUEUE.put(link)
                 return
 
-            print(term.format(f'Requested {link}', term.Color.GREEN))  # pylint: disable=no-member
+            print(f'Requested {link}')
 
             ct_type = response.headers.get('Content-Type', 'undefined')
             if 'html' not in ct_type:
@@ -298,6 +317,7 @@ def process():
                 pool.map(crawler, link_list)
             else:
                 break
+            renew_tor_session()
     print(term.format('Gracefully exiting...', term.Color.MAGENTA))  # pylint: disable=no-member
 
 
@@ -307,7 +327,7 @@ def process():
 
 def _exit():
     """Gracefully exit."""
-    def caller(target: typing.Optional[typing.Union[Queue, Process, Popen]], function: str):
+    def caller(target: typing.Optional[typing.Union[Queue, Popen]], function: str):
         """Wrapper caller."""
         if target is None:
             return
@@ -318,7 +338,6 @@ def _exit():
     caller(QUEUE, 'close')
 
     # close Tor processes
-    caller(_RST_TOR, 'kill')
     caller(_CTRL_TOR, 'close')
     caller(_PROC_TOR, 'terminate')
 
@@ -328,7 +347,6 @@ def get_parser() -> ArgumentParser:
     parser = argparse.ArgumentParser('darc')
 
     parser.add_argument('-f', '--file', help='read links from file')
-    parser.add_argument('-nt', '--no-tor', action='store_true', help='do not start Tor daemon')
     parser.add_argument('link', nargs=argparse.REMAINDER, help='links to craw')
 
     return parser
@@ -346,9 +364,6 @@ def main():
         with open(args.file) as file:
             for line in file:
                 QUEUE.put(line.strip())
-
-    if not args.no_tor:
-        bootstrap()
 
     try:
         process()

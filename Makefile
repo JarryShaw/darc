@@ -10,6 +10,8 @@ init:
 test:
 	pipenv run python src/test_darc.py
 
+clean: clean-misc clean-docker
+
 coverage:
 	pipenv run coverage run src/test_darc.py
 	pipenv run coverage html
