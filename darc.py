@@ -19,7 +19,7 @@ import urllib.parse
 import bs4
 import requests
 import stem
-from stem.control import Controller
+from stem.control import Controller as TorController
 from stem.process import launch_tor_with_config
 from stem.util import term
 
@@ -34,6 +34,18 @@ Response = typing.NewType('Response', requests.Response)
 
 # requests.Session
 Session = typing.NewType('Session', requests.Session)
+
+# multiprocessing.Process
+Process = typing.NewType('Process', multiprocessing.Process)
+
+# multiprocessing.Queue
+Queue = typing.NewType('Queue', multiprocessing.Queue)
+
+# subprocess.Popen
+Popen = typing.NewType('Popen', __import__('subprocess').Popen)
+
+# stem.control.Controller
+Controller = typing.NewType('Controller', TorController)
 
 ###############################################################################
 # const
@@ -51,8 +63,6 @@ SOCKS_CTRL = os.getenv('SOCKS_CTRL', '9051')
 
 # Tor authentication
 TOR_PASS = os.getenv('TOR_PASS')
-if TOR_PASS is None:
-    TOR_PASS = getpass.getpass('Tor authentication: ')
 
 # Tor reset timeout
 TOR_RESET = float(os.getenv('TOR_RESET', '60'))
@@ -80,63 +90,64 @@ class UnsupportedLink(Exception):
 ###############################################################################
 # session
 
-_SESSION_NORM = None
-_SESSION_TOR = None
 _CTRL_TOR = None
 _PROC_TOR = None
 _RST_TOR = None
 
 
+def print_bootstrap_lines(line: str):
+    """Print Tor bootstrap lines."""
+    if 'Bootstrapped ' in line:
+        print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
+
+
+def bootstrap():
+    """Tor bootstrap."""
+    global _CTRL_TOR, _PROC_TOR, _RST_TOR, TOR_PASS
+
+    # launch Tor process
+    _PROC_TOR = launch_tor_with_config(
+        config={
+            'SocksPort': SOCKS_PORT,
+            'ControlPort': SOCKS_CTRL,
+        },
+        take_ownership=True,
+        init_msg_handler=print_bootstrap_lines,
+    )
+
+    if TOR_PASS is None:
+        TOR_PASS = getpass.getpass('Tor authentication: ')
+
+    # Tor controller process
+    _CTRL_TOR = TorController.from_port(port=int(SOCKS_CTRL))
+    _CTRL_TOR.authenticate(TOR_PASS)
+
+    # Tor renew process
+    _RST_TOR = multiprocessing.Process(target=renew_tor_session)
+    _RST_TOR.start()
+
+
 def renew_tor_session():
     """Renew Tor session."""
-    global _CTRL_TOR
-    if _CTRL_TOR is None:
-        _CTRL_TOR = Controller.from_port(port=int(SOCKS_CTRL))
-        _CTRL_TOR.authenticate(TOR_PASS)
-
     while True:
         time.sleep(TOR_RESET)
         _CTRL_TOR.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
         time.sleep(_CTRL_TOR.get_newnym_wait())
 
 
-def print_bootstrap_lines(line: str):
-    if "Bootstrapped " in line:
-        print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
-
-
 def tor_session() -> Session:
     """Tor (.onion) session."""
-    global _PROC_TOR
-    if _PROC_TOR is None:
-        _PROC_TOR = launch_tor_with_config(
-            config={
-                'SocksPort': SOCKS_PORT,
-                'ControlPort': SOCKS_CTRL,
-            },
-            take_ownership=True,
-            init_msg_handler=print_bootstrap_lines,
-        )
-
-    global _RST_TOR
-    if _RST_TOR is None:
-        _RST_TOR = multiprocessing.Process(target=renew_tor_session)
-        _RST_TOR.start()
-
-    global _SESSION_TOR
-    if _SESSION_TOR is None:
-        _SESSION_TOR = requests.Session()
-        _SESSION_TOR.proxies.update({'http':  f'socks5://localhost:{SOCKS_PORT}',
-                                     'https': f'socks5://localhost:{SOCKS_PORT}'})
-    return _SESSION_TOR
+    session = requests.Session()
+    session.proxies.update({
+        'http':  f'socks5://localhost:{SOCKS_PORT}',
+        'https': f'socks5://localhost:{SOCKS_PORT}'
+    })
+    return session
 
 
 def norm_session() -> Session:
     """Normal session"""
-    global _SESSION_NORM
-    if _SESSION_NORM is None:
-        _SESSION_NORM = requests.Session()
-    return _SESSION_NORM
+    return requests.Session()
 
 
 ###############################################################################
@@ -247,22 +258,22 @@ def crawler(link: str):
 
         print(term.format(f'Requesting {link}', term.Color.CYAN))  # pylint: disable=no-member
 
-        session = request_session(link)
-        try:
-            response = session.get(link)
-        except requests.exceptions.InvalidSchema:
-            return
-        except requests.RequestException as error:
-            print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
-            QUEUE.put(link)
-            return
+        with request_session(link) as session:
+            try:
+                response = session.get(link)
+            except requests.exceptions.InvalidSchema:
+                return
+            except requests.RequestException as error:
+                print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                QUEUE.put(link)
+                return
 
-        print(term.format(f'Requested {link}', term.Color.GREEN))  # pylint: disable=no-member
+            print(term.format(f'Requested {link}', term.Color.GREEN))  # pylint: disable=no-member
 
-        ct_type = response.headers.get('Content-Type', 'undefined')
-        if 'html' not in ct_type:
-            return
-        html = response.content
+            ct_type = response.headers.get('Content-Type', 'undefined')
+            if 'html' not in ct_type:
+                return
+            html = response.content
 
         # save HTML
         save(link, html)
@@ -273,21 +284,20 @@ def crawler(link: str):
 
 def process():
     """Main process."""
-    pool = multiprocessing.Pool()
-
-    while True:
-        link_list = list()
+    with multiprocessing.Pool() as pool:
         while True:
-            try:
-                link = QUEUE.get_nowait()
-            except queue.Empty:
-                break
-            link_list.append(link)
+            link_list = list()
+            while True:
+                try:
+                    link = QUEUE.get_nowait()
+                except queue.Empty:
+                    break
+                link_list.append(link)
 
-        if link_list:
-            pool.map(crawler, link_list)
-        else:
-            break
+            if link_list:
+                pool.map(crawler, link_list)
+            else:
+                break
     print(term.format('Gracefully exiting...', term.Color.MAGENTA))  # pylint: disable=no-member
 
 
@@ -297,25 +307,20 @@ def process():
 
 def _exit():
     """Gracefully exit."""
-    with contextlib.suppress():
-        QUEUE.close()
+    def caller(target: typing.Optional[typing.Union[Queue, Process, Popen]], function: str):
+        """Wrapper caller."""
+        if target is None:
+            return
+        with contextlib.suppress():
+            getattr(target, function)()
 
-    with contextlib.suppress():
-        if _SESSION_NORM is not None:
-            _SESSION_NORM.close()
-    with contextlib.suppress():
-        if _SESSION_TOR is not None:
-            _SESSION_TOR.close()
+    # close link queue
+    caller(QUEUE, 'close')
 
-    with contextlib.suppress():
-        if _CTRL_TOR is not None:
-            _CTRL_TOR.close()
-    with contextlib.suppress():
-        if _PROC_TOR is not None:
-            _PROC_TOR.terminate()
-    with contextlib.suppress():
-        if _RST_TOR is not None:
-            _RST_TOR.close()
+    # close Tor processes
+    caller(_RST_TOR, 'kill')
+    caller(_CTRL_TOR, 'close')
+    caller(_PROC_TOR, 'terminate')
 
 
 def get_parser() -> ArgumentParser:
@@ -323,6 +328,7 @@ def get_parser() -> ArgumentParser:
     parser = argparse.ArgumentParser('darc')
 
     parser.add_argument('-f', '--file', help='read links from file')
+    parser.add_argument('-nt', '--no-tor', action='store_true', help='do not start Tor daemon')
     parser.add_argument('link', nargs=argparse.REMAINDER, help='links to craw')
 
     return parser
@@ -340,6 +346,9 @@ def main():
         with open(args.file) as file:
             for line in file:
                 QUEUE.put(line.strip())
+
+    if not args.no_tor:
+        bootstrap()
 
     try:
         process()
