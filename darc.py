@@ -154,8 +154,9 @@ def tor_session() -> Session:
 
     session = requests.Session()
     session.proxies.update({
-        'http':  f'socks5://localhost:{SOCKS_PORT}',
-        'https': f'socks5://localhost:{SOCKS_PORT}'
+        # c.f. https://stackoverflow.com/a/42972942
+        'http':  f'socks5h://localhost:{SOCKS_PORT}',
+        'https': f'socks5h://localhost:{SOCKS_PORT}'
     })
     return session
 
