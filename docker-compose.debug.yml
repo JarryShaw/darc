@@ -5,7 +5,7 @@ services:
     image: darc
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: debug.dockerfile
     ports:
       - 9065:1086
     command: [ "https://www.facebookcorewwwi.onion", "https://www.sjtu.edu.cn" ]

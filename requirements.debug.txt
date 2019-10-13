@@ -1,6 +1,11 @@
+# Python sources
+-i https://pypi.tuna.tsinghua.edu.cn/simple
+--extra-index-url https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple
+--extra-index-url https://pypi.org/simple
+
 # Python packages
 pip==19.2.3
-setuptools==41.4.0
+setuptools==41.2.0
 wheel==0.33.6
 
 # Python dependencies

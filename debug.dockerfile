@@ -12,7 +12,8 @@ FROM python:alpine
 LABEL Name=darc Version=0.0.1
 EXPOSE 9065
 
-RUN apk add --update --no-cache \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
+&& apk add --update --no-cache \
        openrc \
        tor \
    # Tell openrc its running inside a container, till now that has meant LXC
@@ -44,7 +45,7 @@ WORKDIR /app
 ADD . /app
 
 # Using pip:
-RUN python3 -m pip install -r requirements.txt
+RUN python3 -m pip install -r requirements.debug.txt --cache-dir /app/cache
 #CMD ["python3", "-m", "darc"]
 
 ENTRYPOINT [ "python", "darc.py" ]

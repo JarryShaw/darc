@@ -25,7 +25,7 @@ docker-setup:
 	sudo service docker restart
 
 docker-test: clean-misc
-	docker build --tag darc --rm .
+	docker build --file debug.dockerfile --tag darc --rm .
 	clear
 	docker run -it -v ${PATH_ROOT}/data:/darc/db darc 'https://www.sjtu.edu.cn'
 
@@ -71,9 +71,6 @@ clean-pypi:
 	rm -rf build dist *.egg-info
 
 requirements:
-	echo "# Python sources"                                                                            >  requirements.txt
-	pipenv lock -r                           | head -3                                                 >> requirements.txt
-	echo                                                                                               >> requirements.txt
 	echo "# Python packages"                                                                           >> requirements.txt
 	pipenv run python -m pip show pip        | grep Version | sed "s/Version: \(.*\)*/pip==\1/"        >> requirements.txt
 	pipenv run python -m pip show setuptools | grep Version | sed "s/Version: \(.*\)*/setuptools==\1/" >> requirements.txt
@@ -81,3 +78,15 @@ requirements:
 	echo                                                                                               >> requirements.txt
 	echo "# Python dependencies"                                                                       >> requirements.txt
 	pipenv lock -r                           | tail +4                                                 >> requirements.txt
+
+requirements-debug:
+	echo "# Python sources"                                                                            >  requirements.debug.txt
+	pipenv lock -r                           | head -3                                                 >> requirements.debug.txt
+	echo                                                                                               >> requirements.debug.txt
+	echo "# Python packages"                                                                           >> requirements.debug.txt
+	pipenv run python -m pip show pip        | grep Version | sed "s/Version: \(.*\)*/pip==\1/"        >> requirements.debug.txt
+	pipenv run python -m pip show setuptools | grep Version | sed "s/Version: \(.*\)*/setuptools==\1/" >> requirements.debug.txt
+	pipenv run python -m pip show wheel      | grep Version | sed "s/Version: \(.*\)*/wheel==\1/"      >> requirements.debug.txt
+	echo                                                                                               >> requirements.debug.txt
+	echo "# Python dependencies"                                                                       >> requirements.debug.txt
+	pipenv lock -r                           | tail +4                                                 >> requirements.debug.txt
