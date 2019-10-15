@@ -3,6 +3,7 @@
 import argparse
 import contextlib
 import datetime
+import math
 import getpass
 import glob
 import hashlib
@@ -62,7 +63,11 @@ SOCKS_CTRL = os.getenv('SOCKS_CTRL', '9051')
 TOR_PASS = os.getenv('TOR_PASS')
 
 # time delta for caches in seconds
-TIME_CACHE = datetime.timedelta(seconds=int(os.getenv('TIME_CACHE', '60')))
+_TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))
+if math.isfinite(_TIME_CACHE):
+    TIME_CACHE = datetime.timedelta(seconds=_TIME_CACHE)
+else:
+    TIME_CACHE = None
 
 # link queue
 QUEUE = multiprocessing.Queue()
@@ -175,6 +180,9 @@ _SAVE_LOCK = multiprocessing.Lock()
 
 def check(link: str) -> str:
     """Check if we need to re-craw the link."""
+    if _TIME_CACHE is None:
+        return 'nil'
+
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc

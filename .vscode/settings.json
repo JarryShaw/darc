@@ -12,6 +12,7 @@
         "emojize",
         "idna",
         "inited",
+        "isfinite",
         "miniconda",
         "myenv",
         "pysocks",
