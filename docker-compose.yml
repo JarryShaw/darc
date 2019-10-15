@@ -10,6 +10,8 @@ services:
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
+      # processes
+      DARC_CPU: 10
       # data storage
       PATH_DATA: "data"
       # Socks5 proxy & control port

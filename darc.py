@@ -51,6 +51,11 @@ Controller = typing.NewType('Controller', TorController)
 # root path
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
+# process number
+DARC_CPU = os.getenv('DARC_CPU')
+if DARC_CPU is not None:
+    DARC_CPU = int(DARC_CPU)
+
 # data storage
 PATH_DB = os.path.abspath(os.getenv('PATH_DATA', 'data'))
 os.makedirs(PATH_DB, exist_ok=True)
@@ -312,7 +317,7 @@ def crawler(link: str):
 
 def process():
     """Main process."""
-    with multiprocessing.Pool() as pool:
+    with multiprocessing.Pool(processes=DARC_CPU) as pool:
         while True:
             link_list = list()
             while True:
