@@ -6,7 +6,7 @@ services:
     build: .
     ports:
       - 9065:9065
-    command: [ "--file", "/app/top-20k.txt" ]
+    command: [ "--file", "/app/text/market.txt" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
