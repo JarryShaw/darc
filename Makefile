@@ -71,7 +71,7 @@ clean-pypi:
 	rm -rf build dist *.egg-info
 
 requirements:
-	echo "# Python packages"                                                                           >> requirements.txt
+	echo "# Python packages"                                                                           >  requirements.txt
 	pipenv run python -m pip show pip        | grep Version | sed "s/Version: \(.*\)*/pip==\1/"        >> requirements.txt
 	pipenv run python -m pip show setuptools | grep Version | sed "s/Version: \(.*\)*/setuptools==\1/" >> requirements.txt
 	pipenv run python -m pip show wheel      | grep Version | sed "s/Version: \(.*\)*/wheel==\1/"      >> requirements.txt
