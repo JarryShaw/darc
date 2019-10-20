@@ -49,9 +49,8 @@ gitlab-prep:
 
 .ONESHELL:
 gitlab-commit: gitlab-prep
-	message=$(shell git log -1 --pretty=%B)
 	git add .
-	git commit -S -am"${message}"
+	git commit -S -am"$$(git log -1 --pretty=%B)"
 	git push
 
 init:
