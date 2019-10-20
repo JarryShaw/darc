@@ -45,6 +45,8 @@ COPY extra/torrc.alpine /etc/tor/torrc
 
 WORKDIR /app
 ADD . /app
+ADD archive/tor-browser-linux64-8.5.5_en-US.tar.gz /tbb
+COPY driver/geckodriver-v0.26.0-linux64 /usr/local/bin
 
 # Using pip:
 RUN python3 -m pip install -r requirements.debug.txt --cache-dir /app/cache \
