@@ -134,7 +134,7 @@ requirements:
 
 requirements-debug:
 	echo "# Python sources"                                                                            >  requirements.debug.txt
-	pipenv lock -r -d                        | head -3                                                 >> requirements.debug.txt
+	pipenv lock -r                           | head -3                                                 >> requirements.debug.txt
 	echo                                                                                               >> requirements.debug.txt
 	echo "# Python packages"                                                                           >> requirements.debug.txt
 	pipenv run python -m pip show pip        | grep Version | sed "s/Version: \(.*\)*/pip==\1/"        >> requirements.debug.txt
@@ -142,7 +142,7 @@ requirements-debug:
 	pipenv run python -m pip show wheel      | grep Version | sed "s/Version: \(.*\)*/wheel==\1/"      >> requirements.debug.txt
 	echo                                                                                               >> requirements.debug.txt
 	echo "# Python dependencies"                                                                       >> requirements.debug.txt
-	pipenv lock -r -d                        | tail +4                                                 >> requirements.debug.txt
+	pipenv lock -r                           | tail +4                                                 >> requirements.debug.txt
 
 push-github:
 	git config remote.origin.url https://github.com/JarryShaw/darc.git

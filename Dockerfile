@@ -12,24 +12,25 @@ FROM python:3.7-alpine
 LABEL Name=darc Version=0.0.1
 EXPOSE 9065
 
-RUN apk add --update --no-cache \
-       openrc \
-       tor \
-   # Tell openrc its running inside a container, till now that has meant LXC
-&& sed -i 's/#rc_sys=""/rc_sys="lxc"/g' /etc/rc.conf \
-   # Tell openrc loopback and net are already there, since docker handles the networking
-&& echo 'rc_provide="loopback net"' >> /etc/rc.conf \
-   # no need for loggers
-&& sed -i 's/^#\(rc_logger="YES"\)$/\1/' /etc/rc.conf \
-   # can't get ttys unless you run the container in privileged mode
-&& sed -i '/tty/d' /etc/inittab \
-   # can't set hostname since docker sets it
-&& sed -i 's/hostname $opts/# hostname $opts/g' /etc/init.d/hostname \
-   # can't mount tmpfs since not privileged
-&& sed -i 's/mount -t tmpfs/# mount -t tmpfs/g' /lib/rc/sh/init.sh \
-   # can't do cgroups
-&& sed -i 's/cgroup_add_service /# cgroup_add_service /g' /lib/rc/sh/openrc-run.sh \
-&& rc-update add tor default
+RUN apk add --update --no-cache tor
+# RUN apk add --update --no-cache \
+#        openrc \
+#        tor \
+#    # Tell openrc its running inside a container, till now that has meant LXC
+# && sed -i 's/#rc_sys=""/rc_sys="lxc"/g' /etc/rc.conf \
+#    # Tell openrc loopback and net are already there, since docker handles the networking
+# && echo 'rc_provide="loopback net"' >> /etc/rc.conf \
+#    # no need for loggers
+# && sed -i 's/^#\(rc_logger="YES"\)$/\1/' /etc/rc.conf \
+#    # can't get ttys unless you run the container in privileged mode
+# && sed -i '/tty/d' /etc/inittab \
+#    # can't set hostname since docker sets it
+# && sed -i 's/hostname $opts/# hostname $opts/g' /etc/init.d/hostname \
+#    # can't mount tmpfs since not privileged
+# && sed -i 's/mount -t tmpfs/# mount -t tmpfs/g' /lib/rc/sh/init.sh \
+#    # can't do cgroups
+# && sed -i 's/cgroup_add_service /# cgroup_add_service /g' /lib/rc/sh/openrc-run.sh \
+# && rc-update add tor default
 COPY extra/torrc.alpine /etc/tor/torrc
 #RUN apt-get update \
 #&& apt-get install --yes --no-install-recommends \
@@ -41,10 +42,18 @@ COPY extra/torrc.alpine /etc/tor/torrc
 #COPY extra/torrc.debian /etc/tor/torrc
 
 WORKDIR /app
-ADD . /app
+COPY archive \
+     driver \
+     darc.py \
+     LICENSE \
+     MANIFEST.in \
+     README.md \
+     setup.cfg \
+     setup.py \
+     test_darc.py /app/
 
 # Using pip:
-RUN python3 -m pip install -r requirements.txt
+RUN python3 -m pip install -r requirements.txt --no-cache-dir
 #CMD ["python3", "-m", "darc"]
 
 ENTRYPOINT [ "python", "darc.py" ]

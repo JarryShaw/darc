@@ -9,42 +9,17 @@ setuptools==41.4.0
 wheel==0.33.6
 
 # Python dependencies
--e .
-appnope==0.1.0 ; sys_platform == 'darwin'
-astroid==2.3.2
-autopep8==1.4.4
-backcall==0.1.0
 beautifulsoup4[html5lib]==4.8.1
 certifi==2019.9.11
 chardet==3.0.4
-codecov==2.0.15
-coverage==4.5.4
-decorator==4.4.0
 html5lib==1.0.1
 idna==2.8
-ipython-genutils==0.2.0
-ipython==7.8.0
-isort==4.3.21
-jedi==0.15.1
-lazy-object-proxy==1.4.2
-mccabe==0.6.1
-parso==0.5.1
-pexpect==4.7.0 ; sys_platform != 'win32'
-pickleshare==0.7.5
-prompt-toolkit==2.0.10
-ptyprocess==0.6.0
-pycodestyle==2.5.0
-pygments==2.4.2
-pylint==2.4.3
 pysocks==1.7.1
 requests[socks]==2.22.0
 selenium==3.141.0
 six==1.12.0
 soupsieve==1.9.4
 stem==1.7.1
-traitlets==4.3.3
-typed-ast==1.4.0 ; implementation_name == 'cpython' and python_version < '3.8'
+tbselenium==0.4.2
 urllib3==1.25.6
-wcwidth==0.1.7
 webencodings==0.5.1
-wrapt==1.11.2

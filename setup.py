@@ -72,10 +72,10 @@ attrs = dict(
     # python_requires
     # zip_safe,
     install_requires=[
-        'requests[socks]',
         'beautifulsoup4[html5lib]',
-        'selenium',
+        'requests[socks]',
         'stem',
+        'tbselenium',
     ]
 )
 
