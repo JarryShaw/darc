@@ -50,7 +50,7 @@ gitlab-prep:
 
 gitlab-commit-wrapper:
 	git add .
-	git commit -S -am"$$(git log -1 --pretty=%B)"
+	git commit -S -am"$$(cd .. && git log -1 --pretty=%B)"
 	git push
 
 gitlab-commit: gitlab-prep
