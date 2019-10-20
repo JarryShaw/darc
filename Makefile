@@ -32,6 +32,10 @@ commit:
 	    requirements.txt
 	    setup.cfg
 	    setup.py gitlab
+	echo 'archive/*' >> .gitignore
+	echo '!archive/*.tar.gz' >> .gitignore
+	echo 'driver/*' >> .gitignore
+	echo '!driver/*.tar.gz' >> .gitignore
 
 push-github:
 	git config remote.origin.url https://github.com/JarryShaw/darc.git

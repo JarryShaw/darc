@@ -8,8 +8,8 @@ data
 export
 temp
 
-archive/*
-!archive/*.tar.gz
+archive
+driver
 
 gitlab
 
