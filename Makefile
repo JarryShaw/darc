@@ -4,6 +4,43 @@ export CODECOV_TOKEN
 export PIPENV_VERBOSITY=-1
 export PIPENV_VENV_IN_PROJECT=1
 
+commit:
+	cp -rf \
+	    archive \
+	    driver \
+	    extra \
+	    text \
+	    .coveragerc \
+	    .dockerignore \
+	    .gitattributes \
+	    .gitignore \
+	    .travis.yml \
+	    CODE_OF_CONDUCT.md
+	    CONTRIBUTING.md
+	    Dockerfile
+	    LICENSE
+	    MANIFEST.in
+	    Makefile
+	    Pipfile
+	    Pipfile.lock
+	    README.md
+	    darc.py
+	    debug.dockerfile
+	    docker-compose.debug.yml
+	    docker-compose.yml
+	    requirements.debug.txt
+	    requirements.txt
+	    setup.cfg
+	    setup.py gitlab
+
+push-github:
+	git config remote.origin.url https://github.com/JarryShaw/darc.git
+	git push
+
+push-gitlab:
+	git config remote.origin.url git@gitlab.sjtu.edu.cn:xiaojiawei/darc.git
+	git push
+
 init:
 	pipenv install --dev
 

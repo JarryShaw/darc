@@ -4,7 +4,14 @@
 
 cache
 data
+
 export
+temp
+
+archive/*
+!archive/*.tar.gz
+
+gitlab
 
 # Created by https://www.gitignore.io/api/python,macos,linux,visualstudiocode,pycharm,windows
 # Edit at https://www.gitignore.io/?templates=python,macos,linux,visualstudiocode,pycharm,windows
