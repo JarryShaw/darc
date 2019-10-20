@@ -14,6 +14,8 @@ services:
       PYTHONUNBUFFERED: 1
       # processes
       DARC_CPU: 10
+      # debug mode
+      DARC_DEBUG: 1
       # data storage
       PATH_DATA: "data"
       # Socks5 proxy & control port

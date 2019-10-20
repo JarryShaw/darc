@@ -74,6 +74,8 @@ if math.isfinite(_TIME_CACHE):
 else:
     TIME_CACHE = None
 
+DEBUG = bool(os.getenv('DARC_DEBUG').strip())
+
 # link queue
 QUEUE = multiprocessing.Queue()
 
@@ -117,6 +119,10 @@ def renew_tor_session():
 
 def print_bootstrap_lines(line: str):
     """Print Tor bootstrap lines."""
+    if DEBUG:
+        print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
+        return
+
     if 'Bootstrapped ' in line:
         print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
 

@@ -4,7 +4,14 @@ export CODECOV_TOKEN
 export PIPENV_VERBOSITY=-1
 export PIPENV_VENV_IN_PROJECT=1
 
-commit:
+commit: github-commit gitlab-commit
+
+github-commit:
+	git add .
+	git commit -S -a
+	git push
+
+gitlab-prep:
 	cp -rf \
 	    archive \
 	    driver \
@@ -40,12 +47,11 @@ commit:
 	sed '/driver/d' gitlab/.gitignore.tmp > gitlab/.gitignore
 	rm gitlab/.gitignore.tmp
 
-push-github:
-	git config remote.origin.url https://github.com/JarryShaw/darc.git
-	git push
-
-push-gitlab:
-	git config remote.origin.url git@gitlab.sjtu.edu.cn:xiaojiawei/darc.git
+.ONESHELL:
+gitlab-commit: gitlab-prep
+	message=$(shell git log -1 --pretty=%B)
+	git add .
+	git commit -S -am"${message}"
 	git push
 
 init:
@@ -83,6 +89,7 @@ update:
 	pipenv update
 	pipenv install --dev
 	pipenv clean
+	$(MAKE) requirements requirements-debug
 
 dist: clean-pypi pypi-setup pypi-upload
 
@@ -125,7 +132,7 @@ requirements:
 
 requirements-debug:
 	echo "# Python sources"                                                                            >  requirements.debug.txt
-	pipenv lock -r                           | head -3                                                 >> requirements.debug.txt
+	pipenv lock -r -d                        | head -3                                                 >> requirements.debug.txt
 	echo                                                                                               >> requirements.debug.txt
 	echo "# Python packages"                                                                           >> requirements.debug.txt
 	pipenv run python -m pip show pip        | grep Version | sed "s/Version: \(.*\)*/pip==\1/"        >> requirements.debug.txt
@@ -133,4 +140,12 @@ requirements-debug:
 	pipenv run python -m pip show wheel      | grep Version | sed "s/Version: \(.*\)*/wheel==\1/"      >> requirements.debug.txt
 	echo                                                                                               >> requirements.debug.txt
 	echo "# Python dependencies"                                                                       >> requirements.debug.txt
-	pipenv lock -r                           | tail +4                                                 >> requirements.debug.txt
+	pipenv lock -r -d                        | tail +4                                                 >> requirements.debug.txt
+
+push-github:
+	git config remote.origin.url https://github.com/JarryShaw/darc.git
+	git push
+
+push-gitlab:
+	git config remote.origin.url git@gitlab.sjtu.edu.cn:xiaojiawei/darc.git
+	git push
