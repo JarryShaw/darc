@@ -36,6 +36,9 @@ commit:
 	echo '!archive/*.tar.gz' >> gitlab/.gitignore
 	echo 'driver/*' >> gitlab/.gitignore
 	echo '!driver/*.tar.gz' >> gitlab/.gitignore
+	sed '/archive/d' gitlab/.gitignore > gitlab/.gitignore.tmp
+	sed '/driver/d' gitlab/.gitignore.tmp > gitlab/.gitignore
+	rm gitlab/.gitignore.tmp
 
 push-github:
 	git config remote.origin.url https://github.com/JarryShaw/darc.git
