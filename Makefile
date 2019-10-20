@@ -15,22 +15,22 @@ commit:
 	    .gitattributes \
 	    .gitignore \
 	    .travis.yml \
-	    CODE_OF_CONDUCT.md
-	    CONTRIBUTING.md
-	    Dockerfile
-	    LICENSE
-	    MANIFEST.in
-	    Makefile
-	    Pipfile
-	    Pipfile.lock
-	    README.md
-	    darc.py
-	    debug.dockerfile
-	    docker-compose.debug.yml
-	    docker-compose.yml
-	    requirements.debug.txt
-	    requirements.txt
-	    setup.cfg
+	    CODE_OF_CONDUCT.md \
+	    CONTRIBUTING.md \
+	    Dockerfile \
+	    LICENSE \
+	    MANIFEST.in \
+	    Makefile \
+	    Pipfile \
+	    Pipfile.lock \
+	    README.md \
+	    darc.py \
+	    debug.dockerfile \
+	    docker-compose.debug.yml \
+	    docker-compose.yml \
+	    requirements.debug.txt \
+	    requirements.txt \
+	    setup.cfg \
 	    setup.py gitlab
 	echo 'archive/*' >> .gitignore
 	echo '!archive/*.tar.gz' >> .gitignore
