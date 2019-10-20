@@ -14,7 +14,7 @@ install:
 
 # command to run tests
 script:
-  - coverage run src/test_darc.py
+  - coverage run test_darc.py
 
 # coverage
 after_success:

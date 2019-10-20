@@ -47,11 +47,13 @@ gitlab-prep:
 	sed '/driver/d' gitlab/.gitignore.tmp > gitlab/.gitignore
 	rm gitlab/.gitignore.tmp
 
-.ONESHELL:
-gitlab-commit: gitlab-prep
+gitlab-commit-wrapper:
 	git add .
 	git commit -S -am"$$(git log -1 --pretty=%B)"
 	git push
+
+gitlab-commit: gitlab-prep
+	$(MAKE) -C gitlab gitlab-commit-wrapper
 
 init:
 	pipenv install --dev
