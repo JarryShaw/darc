@@ -18,6 +18,7 @@ gitlab-prep:
 	    extra \
 	    text \
 	    .coveragerc \
+		.env \
 	    .dockerignore \
 	    .gitattributes \
 	    .gitignore \
