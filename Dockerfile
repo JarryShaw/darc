@@ -44,8 +44,8 @@ COPY extra/torrc.alpine /etc/tor/torrc
 WORKDIR /app
 #ADD . /app
 
-ADD archive/tor-browser-linux64-8.5.5_en-US.tar.gz /tbb
-COPY driver/geckodriver-v0.26.0-linux64 /usr/local/bin
+ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
+ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
 COPY darc.py \
      LICENSE \
      MANIFEST.in \

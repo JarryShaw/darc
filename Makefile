@@ -12,10 +12,11 @@ github-commit:
 	git push
 
 gitlab-prep:
+	find gitlab -depth 1 | grep -v '.git' | xargs rm -rf
 	cp -rf \
-	    archive \
 	    driver \
 	    extra \
+		tbb \
 	    text \
 	    .coveragerc \
 		.env \
@@ -40,12 +41,12 @@ gitlab-prep:
 	    requirements.txt \
 	    setup.cfg \
 	    setup.py gitlab
-	echo 'archive/*' >> gitlab/.gitignore
-	echo '!archive/*.tar.gz' >> gitlab/.gitignore
 	echo 'driver/*' >> gitlab/.gitignore
 	echo '!driver/*.tar.gz' >> gitlab/.gitignore
-	sed '/archive/d' gitlab/.gitignore > gitlab/.gitignore.tmp
-	sed '/driver/d' gitlab/.gitignore.tmp > gitlab/.gitignore
+	echo 'tbb/*' >> gitlab/.gitignore
+	echo '!tbb/*.tar.gz' >> gitlab/.gitignore
+	sed '/driver/d' gitlab/.gitignore > gitlab/.gitignore.tmp
+	sed '/tbb/d' gitlab/.gitignore.tmp > gitlab/.gitignore
 	rm gitlab/.gitignore.tmp
 
 gitlab-commit-wrapper:

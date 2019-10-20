@@ -8,9 +8,8 @@ data
 export
 temp
 
-archive
 driver
-
+tbb
 gitlab
 
 # Created by https://www.gitignore.io/api/python,macos,linux,visualstudiocode,pycharm,windows
