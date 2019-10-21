@@ -9,17 +9,21 @@
 # If you prefer miniconda:
 #FROM continuumio/miniconda3
 
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 
 LABEL Name=darc Version=0.0.1
 EXPOSE 9065
+
+ENV LANG "C.UTF-8" \
+    LC_ALL "C.UTF-8" \
+    PYTHONIOENCODING "UTF-8"
 
 RUN apt-get update \
  && apt-get install --yes --no-install-recommends \
         apt-transport-https \
         apt-utils \
         ca-certificates
-COPY extra/sources.xenial.list /etc/apt/sources.list
+COPY extra/sources.bionic.list /etc/apt/sources.list
 RUN apt-get update \
  && apt-get install --yes --no-install-recommends \
         software-properties-common \
@@ -28,8 +32,9 @@ RUN apt-get update \
  && apt-get install --yes \
         python3.7 \
         python3-pip \
-        tor
-COPY extra/torrc.xenial /etc/tor/torrc
+        tor \
+ && ln -sf /usr/bin/python3.7 /usr/bin/python3
+COPY extra/torrc.bionic /etc/tor/torrc
 
 WORKDIR /app
 ADD . /app
@@ -38,12 +43,12 @@ ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
 ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
 
 # Using pip:
-RUN python3.7 -m pip install -r requirements.debug.txt --cache-dir /app/cache \
- && python3.7 -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
- && python3.7 -m pip install ipython
+RUN python3 -m pip install -r requirements.debug.txt --cache-dir /app/cache \
+ && python3 -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+ && python3 -m pip install ipython
 #CMD ["python3", "-m", "darc"]
 
-ENTRYPOINT [ "python", "darc.py" ]
+ENTRYPOINT [ "python3", "darc.py" ]
 CMD [ "--help" ]
 
 # Using pipenv:

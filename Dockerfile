@@ -3,46 +3,53 @@
 # OS Support also exists for jessie & stretch (slim and full).
 # See https://hub.docker.com/r/library/python/ for all supported Python
 # tags from Docker Hub.
-FROM python:3.7-alpine
+#FROM python:3.7-alpine
 #FROM python:3.7
 
 # If you prefer miniconda:
 #FROM continuumio/miniconda3
 
+FROM ubuntu:bionic
+
 LABEL Name=darc Version=0.0.1
 EXPOSE 9065
 
-RUN apk add --update --no-cache tor
-# RUN apk add --update --no-cache \
-#        openrc \
-#        tor \
-#    # Tell openrc its running inside a container, till now that has meant LXC
-# && sed -i 's/#rc_sys=""/rc_sys="lxc"/g' /etc/rc.conf \
-#    # Tell openrc loopback and net are already there, since docker handles the networking
-# && echo 'rc_provide="loopback net"' >> /etc/rc.conf \
-#    # no need for loggers
-# && sed -i 's/^#\(rc_logger="YES"\)$/\1/' /etc/rc.conf \
-#    # can't get ttys unless you run the container in privileged mode
-# && sed -i '/tty/d' /etc/inittab \
-#    # can't set hostname since docker sets it
-# && sed -i 's/hostname $opts/# hostname $opts/g' /etc/init.d/hostname \
-#    # can't mount tmpfs since not privileged
-# && sed -i 's/mount -t tmpfs/# mount -t tmpfs/g' /lib/rc/sh/init.sh \
-#    # can't do cgroups
-# && sed -i 's/cgroup_add_service /# cgroup_add_service /g' /lib/rc/sh/openrc-run.sh \
-# && rc-update add tor default
-COPY extra/torrc.alpine /etc/tor/torrc
-#RUN apt-get update \
-#&& apt-get install --yes --no-install-recommends \
-#       apt-transport-https
-#COPY extra/sources.list /etc/apt/sources.list
-#RUN apt-get update \
-#&& apt-get install --yes --no-install-recommends \
-#       tor
-#COPY extra/torrc.debian /etc/tor/torrc
+ENV LANG "C.UTF-8" \
+    LC_ALL "C.UTF-8" \
+    PYTHONIOENCODING "UTF-8"
+
+RUN apt-get update \
+ && apt-get install --yes --no-install-recommends \
+        apt-transport-https \
+        apt-utils \
+        ca-certificates
+COPY extra/sources.bionic.list /etc/apt/sources.list
+RUN apt-get update \
+ && apt-get install --yes --no-install-recommends \
+        software-properties-common \
+ && add-apt-repository ppa:deadsnakes/ppa --yes \
+ && apt update \
+ && apt-get install --yes --no-install-recommends \
+        python3.7 \
+        python3-pip \
+        tor \
+ && ln -sf /usr/bin/python3.7 /usr/bin/python3
+COPY extra/torrc.bionic /etc/tor/torrc
+RUN rm -rf \
+        ## apt repository lists
+        /var/lib/apt/lists/* \
+        ## Python dependencies
+        /tmp/pip \
+ && apt-get remove --auto-remove --yes \
+        apt-transport-https \
+        apt-utils \
+        ca-certificates \
+        software-properties-common \
+ && apt-get autoremove -y \
+ && apt-get autoclean \
+ && apt-get clean
 
 WORKDIR /app
-#ADD . /app
 
 ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
 ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
@@ -58,7 +65,7 @@ COPY darc.py \
 RUN python3 -m pip install -r requirements.txt --no-cache-dir
 #CMD ["python3", "-m", "darc"]
 
-ENTRYPOINT [ "python", "darc.py" ]
+ENTRYPOINT [ "python3", "darc.py" ]
 CMD [ "--help" ]
 
 # Using pipenv:
