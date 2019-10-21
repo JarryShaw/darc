@@ -14,9 +14,9 @@ FROM ubuntu:bionic
 LABEL Name=darc Version=0.0.1
 EXPOSE 9065
 
-ENV LANG "C.UTF-8" \
-    LC_ALL "C.UTF-8" \
-    PYTHONIOENCODING "UTF-8"
+ENV LANG="C.UTF-8" \
+    LC_ALL="C.UTF-8" \
+    PYTHONIOENCODING="UTF-8"
 
 RUN apt-get update \
  && apt-get install --yes --no-install-recommends \
@@ -28,7 +28,7 @@ RUN apt-get update \
  && apt-get install --yes --no-install-recommends \
         software-properties-common \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
- && apt update \
+ && apt-get update \
  && apt-get install --yes --no-install-recommends \
         python3.7 \
         python3-pip \
