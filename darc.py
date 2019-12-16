@@ -76,6 +76,8 @@ SOCKS_CTRL = os.getenv('SOCKS_CTRL', '9051')
 # Tor authentication
 TOR_PASS = os.getenv('TOR_PASS')
 
+TOR_STEM = bool(os.getenv('TOR_STEM', '1').strip())
+
 # time delta for caches in seconds
 _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))
 if math.isfinite(_TIME_CACHE):
@@ -192,7 +194,8 @@ def tor_session() -> Session:
     if not _TOR_BS_FLAG.value:
         with _TOR_BS_LOCK:
             try:
-                tor_bootstrap()
+                if TOR_STEM:
+                    tor_bootstrap()
             except Exception as error:
                 warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 148, 'tor_bootstrap()')
                 print(''.join(
