@@ -2,16 +2,19 @@
 
 import argparse
 import contextlib
+import copy
 import datetime
-import math
 import getpass
 import glob
 import hashlib
+import math
 import multiprocessing
 import os
-import queue
+import posixpath
+#import queue
 import re
 import sys
+import time
 import traceback
 import typing
 import urllib.parse
@@ -20,6 +23,8 @@ import warnings
 import bs4
 import requests
 import stem
+from selenium import webdriver
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 from stem.control import Controller as TorController
 from stem.process import launch_tor_with_config
 from stem.util import term
@@ -45,11 +50,15 @@ Popen = typing.NewType('Popen', __import__('subprocess').Popen)
 # stem.control.Controller
 Controller = typing.NewType('Controller', TorController)
 
+# selenium.webdriver.Chrome
+Driver = typing.NewType('Driver', webdriver.Chrome)
+
 ###############################################################################
 # const
 
 # root path
 ROOT = os.path.dirname(os.path.abspath(__file__))
+CWD = os.path.realpath(os.curdir)
 
 # process number
 DARC_CPU = os.getenv('DARC_CPU')
@@ -74,16 +83,38 @@ if math.isfinite(_TIME_CACHE):
 else:
     TIME_CACHE = None
 
-DEBUG = bool(os.getenv('DARC_DEBUG').strip())
+DEBUG = bool(os.getenv('DARC_DEBUG', '0').strip())
 
 # link queue
-QUEUE = multiprocessing.Queue()
+#QUEUE = multiprocessing.Queue()
+MANAGER = multiprocessing.Manager()
+LIST = MANAGER.list()
 
 # link database
 LINK_DB = list()
 
 # link file mapping
 PATH_MAP = os.path.join(PATH_DB, 'link.csv')
+
+# selenium wait time
+DRIVER_WAIT = int(os.getenv('DARC_WAIT', '60'))
+
+###############################################################################
+# selenium
+
+_proxy = Proxy()
+_proxy.proxy_type = ProxyType.MANUAL
+_proxy.http_proxy = f'socks5://localhost:{SOCKS_PORT}'
+_proxy.ssl_proxy = f'socks5://localhost:{SOCKS_PORT}'
+
+_norm_capabilities = webdriver.DesiredCapabilities.CHROME
+_tor_capabilities = copy.deepcopy(webdriver.DesiredCapabilities.CHROME)
+_proxy.add_to_capabilities(_tor_capabilities)
+
+OPTIONS = webdriver.ChromeOptions()
+OPTIONS.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+if not DEBUG:
+    OPTIONS.add_argument('headless')
 
 ###############################################################################
 # error
@@ -233,11 +264,34 @@ def sanitise(link: str, makedirs: bool = True) -> str:
     return f'{os.path.join(base, name)}_{time}.html'
 
 
-def save(link: str, html: bytes):
+def save(link: str, html: str):
     """Save response."""
     path = sanitise(link)
-    with open(path, 'wb') as file:
+    with open(path, 'w') as file:
         file.write(html)
+
+    safe_link = link.replace('"', '\\"')
+    safe_path = path.replace('"', '\\"')
+    with _SAVE_LOCK:
+        with open(PATH_MAP, 'a') as file:
+            print(f'"{safe_link}","{safe_path}"', file=file)
+
+
+def save_file(link: str, text: bytes):
+    """Save file."""
+    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+
+    # <scheme>/<identifier>/...
+    base = os.path.join(PATH_DB, parse.scheme, host)
+    root = posixpath.split(parse.path)
+    path = os.path.join(base, *root[:-1])
+
+    os.chdir(path)
+    with open(root[-1], 'w') as file:
+        file.write(text)
+    os.chdir(CWD)
 
     safe_link = link.replace('"', '\\"')
     safe_path = path.replace('"', '\\"')
@@ -269,8 +323,8 @@ def extract_links(link: str, html: bytes) -> typing.Iterator[str]:
 
 # link regex mapping
 LINK_MAP = [
-    (r'.*?\.onion', tor_session),
-    (r'.*', norm_session),
+    (r'.*?\.onion', tor_session, _tor_capabilities),
+    (r'.*', norm_session, _norm_capabilities),
 ]
 
 
@@ -278,9 +332,19 @@ def request_session(link: str) -> Session:
     """Get session."""
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
-    for regex, session in LINK_MAP:
+    for regex, session, _ in LINK_MAP:
         if re.match(regex, host):
             return session()
+    raise UnsupportedLink(link)
+
+
+def request_driver(link: str) -> Driver:
+    """Get selenium driver."""
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+    for regex, _, capabilities in LINK_MAP:
+        if re.match(regex, host):
+            return webdriver.Chrome(options=OPTIONS, desired_capabilities=capabilities)
     raise UnsupportedLink(link)
 
 
@@ -293,6 +357,10 @@ def crawler(link: str):
         with open(path, 'rb') as file:
             html = file.read()
 
+        # add link to queue
+        #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+        [LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+
     else:
 
         print(f'Requesting {link}')
@@ -304,21 +372,29 @@ def crawler(link: str):
                 return
             except requests.RequestException as error:
                 print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
-                QUEUE.put(link)
+                #QUEUE.put(link)
+                LIST.append(link)
                 return
 
-            print(f'Requested {link}')
+        ct_type = response.headers.get('Content-Type', 'undefined')
+        if 'html' in ct_type:
+            # retrieve source from Chrome
+            with request_driver(link) as driver:
+                driver.get(link)
+                time.sleep(DRIVER_WAIT)
+                html = driver.page_source
 
-            ct_type = response.headers.get('Content-Type', 'undefined')
-            if 'html' not in ct_type:
-                return
-            html = response.content
+            # save HTML
+            save(link, html)
 
-        # save HTML
-        save(link, html)
+            # add link to queue
+            #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            [LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+        else:
+            text = response.content
+            save_file(link, text)
 
-    # add link to queue
-    [QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+        print(f'Requested {link}')
 
 
 def process():
@@ -327,9 +403,13 @@ def process():
         while True:
             link_list = list()
             while True:
+                #try:
+                #    link = QUEUE.get_nowait()
+                #except queue.Empty:
+                #    break
                 try:
-                    link = QUEUE.get_nowait()
-                except queue.Empty:
+                    link = LIST.pop()
+                except IndexError:
                     break
                 link_list.append(link)
 
@@ -355,7 +435,8 @@ def _exit():
             getattr(target, function)()
 
     # close link queue
-    caller(QUEUE, 'close')
+    #caller(QUEUE, 'close')
+    caller(MANAGER, 'shutdown')
 
     # close Tor processes
     caller(_CTRL_TOR, 'close')
@@ -378,12 +459,14 @@ def main():
     args = parser.parse_args()
 
     for link in args.link:
-        QUEUE.put(link)
+        #QUEUE.put(link)
+        LIST.append(link)
 
     if args.file is not None:
         with open(args.file) as file:
             for line in file:
-                QUEUE.put(line.strip())
+                #QUEUE.put(line.strip())
+                LIST.append(line.strip())
 
     try:
         process()

@@ -19,6 +19,7 @@
         "myenv",
         "parso",
         "pexpect",
+        "posixpath",
         "ptyprocess",
         "pygments",
         "pysocks",

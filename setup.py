@@ -75,7 +75,6 @@ attrs = dict(
         'beautifulsoup4[html5lib]',
         'requests[socks]',
         'stem',
-        'tbselenium',
     ]
 )
 
