@@ -308,7 +308,7 @@ def save_file(link: str, text: bytes, mime: str):
     os.chdir(CWD)
 
     safe_link = link.replace('"', '\\"')
-    safe_path = path.replace('"', '\\"')
+    safe_path = os.path.join(path, root[-1]).replace('"', '\\"')
     with _SAVE_LOCK:
         with open(PATH_MAP, 'a') as file:
             print(f'"{safe_link}","{safe_path}"', file=file)
