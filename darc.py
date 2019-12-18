@@ -8,10 +8,12 @@ import getpass
 import glob
 import hashlib
 import math
+import mimetypes
 import multiprocessing
 import os
 import posixpath
 #import queue
+import random
 import re
 import sys
 import time
@@ -24,6 +26,7 @@ import bs4
 import requests
 import stem
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from stem.control import Controller as TorController
 from stem.process import launch_tor_with_config
@@ -76,7 +79,7 @@ SOCKS_CTRL = os.getenv('SOCKS_CTRL', '9051')
 # Tor authentication
 TOR_PASS = os.getenv('TOR_PASS')
 
-TOR_STEM = bool(os.getenv('TOR_STEM', '1').strip())
+TOR_STEM = bool(int(os.getenv('TOR_STEM', '1')))
 
 # time delta for caches in seconds
 _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))
@@ -85,7 +88,7 @@ if math.isfinite(_TIME_CACHE):
 else:
     TIME_CACHE = None
 
-DEBUG = bool(os.getenv('DARC_DEBUG', '0').strip())
+DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
 
 # link queue
 #QUEUE = multiprocessing.Queue()
@@ -100,6 +103,9 @@ PATH_MAP = os.path.join(PATH_DB, 'link.csv')
 
 # selenium wait time
 DRIVER_WAIT = int(os.getenv('DARC_WAIT', '60'))
+
+# extract link pattern
+EX_LINK = urllib.parse.unquote(os.getenv('EX_LINK', r'.*'))
 
 ###############################################################################
 # selenium
@@ -225,9 +231,6 @@ _SAVE_LOCK = multiprocessing.Lock()
 
 def check(link: str) -> str:
     """Check if we need to re-craw the link."""
-    if _TIME_CACHE is None:
-        return 'nil'
-
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
@@ -243,6 +246,9 @@ def check(link: str) -> str:
         return 'nil'
 
     item = sorted(glob_list, reverse=True)[0]
+    if TIME_CACHE is None:
+        return item
+
     date = datetime.datetime.fromisoformat(item[len(path)+1:-5])
     if time - date > TIME_CACHE:
         return 'nil'
@@ -280,19 +286,24 @@ def save(link: str, html: str):
             print(f'"{safe_link}","{safe_path}"', file=file)
 
 
-def save_file(link: str, text: bytes):
+def save_file(link: str, text: bytes, mime: str):
     """Save file."""
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
 
+    temp_path = parse.path[1:]
+    if not os.path.splitext(temp_path)[1]:
+        temp_path += mimetypes.guess_extension(mime) or ''
+
     # <scheme>/<identifier>/...
     base = os.path.join(PATH_DB, parse.scheme, host)
-    root = posixpath.split(parse.path)
+    root = posixpath.split(temp_path)
     path = os.path.join(base, *root[:-1])
+    os.makedirs(path, exist_ok=True)
 
     os.chdir(path)
-    with open(root[-1], 'w') as file:
+    with open(root[-1], 'wb') as file:
         file.write(text)
     os.chdir(CWD)
 
@@ -317,7 +328,14 @@ def extract_links(link: str, html: bytes) -> typing.Iterator[str]:
         href = child.get('href')
         if href is None:
             continue
-        link_list.append(urllib.parse.urljoin(link, href))
+        temp_link = urllib.parse.urljoin(link, href)
+
+        parse = urllib.parse.urlparse(temp_link)
+        host = parse.hostname or parse.netloc
+        if re.match(EX_LINK, host) is None:
+            continue
+
+        link_list.append(temp_link)
     yield from filter(lambda link: link not in LINK_DB, set(link_list))
 
 
@@ -353,51 +371,61 @@ def request_driver(link: str) -> Driver:
 
 def crawler(link: str):
     """Single crawler for a entry link."""
-    path = check(link)
-    if os.path.isfile(path):
+    try:
+        path = check(link)
+        if os.path.isfile(path):
 
-        print(term.format(f'Cached {link}', term.Color.YELLOW))  # pylint: disable=no-member
-        with open(path, 'rb') as file:
-            html = file.read()
-
-        # add link to queue
-        #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-        [LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-
-    else:
-
-        print(f'Requesting {link}')
-
-        with request_session(link) as session:
-            try:
-                response = session.get(link)
-            except requests.exceptions.InvalidSchema:
-                return
-            except requests.RequestException as error:
-                print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
-                #QUEUE.put(link)
-                LIST.append(link)
-                return
-
-        ct_type = response.headers.get('Content-Type', 'undefined')
-        if 'html' in ct_type:
-            # retrieve source from Chrome
-            with request_driver(link) as driver:
-                driver.get(link)
-                time.sleep(DRIVER_WAIT)
-                html = driver.page_source
-
-            # save HTML
-            save(link, html)
+            print(term.format(f'Cached {link}', term.Color.YELLOW))  # pylint: disable=no-member
+            with open(path, 'rb') as file:
+                html = file.read()
 
             # add link to queue
             #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
             [LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-        else:
-            text = response.content
-            save_file(link, text)
 
-        print(f'Requested {link}')
+        else:
+
+            print(f'Requesting {link}')
+
+            with request_session(link) as session:
+                try:
+                    response = session.get(link)
+                except requests.exceptions.InvalidSchema:
+                    return
+                except requests.RequestException as error:
+                    print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                    #QUEUE.put(link)
+                    LIST.append(link)
+                    return
+
+            ct_type = response.headers.get('Content-Type', 'undefined').lower()
+            if 'html' in ct_type:
+                # retrieve source from Chrome
+                with request_driver(link) as driver:
+                    try:
+                        driver.get(link)
+                    except WebDriverException:
+                        print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                        LIST.append(link)
+                        return
+
+                    time.sleep(DRIVER_WAIT)
+                    html = driver.page_source
+
+                # save HTML
+                save(link, html)
+
+                # add link to queue
+                #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+                [LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            else:
+                text = response.content
+                save_file(link, text, ct_type)
+
+            print(f'Requested {link}')
+    except Exception:
+        traceback.print_exc()
+        LIST.append(link)
 
 
 def process():
@@ -417,6 +445,7 @@ def process():
                 link_list.append(link)
 
             if link_list:
+                random.shuffle(link_list)
                 pool.map(crawler, link_list)
             else:
                 break
