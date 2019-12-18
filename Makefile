@@ -39,13 +39,13 @@ gitlab-prep:
 	    requirements.txt \
 	    setup.cfg \
 	    setup.py gitlab
+	sed '/browser/d' gitlab/.gitignore > gitlab/.gitignore.tmp
+	sed '/driver/d' gitlab/.gitignore.tmp > gitlab/.gitignore.tmp1
+	sed '/tbb/d' gitlab/.gitignore.tmp1 > gitlab/.gitignore
 	echo 'driver/*' >> gitlab/.gitignore
 	echo '!driver/*.tar.gz' >> gitlab/.gitignore
 	echo 'tbb/*' >> gitlab/.gitignore
 	echo '!tbb/*.tar.gz' >> gitlab/.gitignore
-	sed '/browser/d' gitlab/.gitignore > gitlab/.gitignore.tmp
-	sed '/driver/d' gitlab/.gitignore.tmp > gitlab/.gitignore.tmp1
-	sed '/tbb/d' gitlab/.gitignore.tmp1 > gitlab/.gitignore
 	rm gitlab/.gitignore.tmp*
 
 gitlab-commit-wrapper:
