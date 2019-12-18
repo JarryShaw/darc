@@ -43,10 +43,10 @@ gitlab-prep:
 	echo '!driver/*.tar.gz' >> gitlab/.gitignore
 	echo 'tbb/*' >> gitlab/.gitignore
 	echo '!tbb/*.tar.gz' >> gitlab/.gitignore
-	sed '/browser/d' gitlab/.gitignore.tmp > gitlab/.gitignore
-	sed '/driver/d' gitlab/.gitignore > gitlab/.gitignore.tmp
-	sed '/tbb/d' gitlab/.gitignore.tmp > gitlab/.gitignore
-	rm gitlab/.gitignore.tmp
+	sed '/browser/d' gitlab/.gitignore > gitlab/.gitignore.tmp
+	sed '/driver/d' gitlab/.gitignore.tmp > gitlab/.gitignore.tmp1
+	sed '/tbb/d' gitlab/.gitignore.tmp1 > gitlab/.gitignore
+	rm gitlab/.gitignore.tmp*
 
 gitlab-commit-wrapper:
 	git add .
