@@ -14,12 +14,14 @@ github-commit:
 gitlab-prep:
 	find gitlab -depth 1 | grep -v '.git' | xargs rm -rf
 	cp -rf \
+	    browser \
+	    docker \
 	    driver \
 	    extra \
-		tbb \
+	    tbb \
 	    text \
 	    .coveragerc \
-		.env \
+	    .env \
 	    .dockerignore \
 	    .gitattributes \
 	    .gitignore \
@@ -34,10 +36,6 @@ gitlab-prep:
 	    Pipfile.lock \
 	    README.md \
 	    darc.py \
-	    debug.dockerfile \
-	    docker-compose.debug.yml \
-	    docker-compose.yml \
-	    requirements.debug.txt \
 	    requirements.txt \
 	    setup.cfg \
 	    setup.py gitlab
@@ -45,6 +43,7 @@ gitlab-prep:
 	echo '!driver/*.tar.gz' >> gitlab/.gitignore
 	echo 'tbb/*' >> gitlab/.gitignore
 	echo '!tbb/*.tar.gz' >> gitlab/.gitignore
+	sed '/browser/d' gitlab/.gitignore.tmp > gitlab/.gitignore
 	sed '/driver/d' gitlab/.gitignore > gitlab/.gitignore.tmp
 	sed '/tbb/d' gitlab/.gitignore.tmp > gitlab/.gitignore
 	rm gitlab/.gitignore.tmp
