@@ -47,8 +47,10 @@ gitlab-prep:
 	sed '/tbb/d' gitlab/.gitignore.tmp1 > gitlab/.gitignore
 	echo 'driver/*' >> gitlab/.gitignore
 	echo '!driver/*.tar.gz' >> gitlab/.gitignore
+	echo '!driver/*.zip' >> gitlab/.gitignore
 	echo 'tbb/*' >> gitlab/.gitignore
 	echo '!tbb/*.tar.gz' >> gitlab/.gitignore
+	echo '!tbb/*.zip' >> gitlab/.gitignore
 	rm gitlab/.gitignore.tmp*
 
 gitlab-commit-wrapper:
