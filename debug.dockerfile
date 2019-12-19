@@ -61,12 +61,10 @@ RUN set -x \
  && dpkg --install /tmp/google-chrome-stable_current_amd64.deb \
  && which google-chrome
 
-WORKDIR /app
-ADD . /app
-
 # Using pip:
+COPY requirements.debug.txt /tmp
 RUN set -x \
- && python3 -m pip install -r requirements.debug.txt --cache-dir /app/cache \
+ && python3 -m pip install -r /tmp/requirements.debug.txt --cache-dir /app/cache \
  && python3 -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
  && python3 -m pip install ipython
 #CMD ["python3", "-m", "darc"]
@@ -82,3 +80,6 @@ CMD [ "--help" ]
 # Using miniconda (make sure to replace 'myenv' w/ your environment name):
 #RUN conda env create -f environment.yml
 #CMD /bin/bash -c "source activate myenv && python3 -m darc"
+
+WORKDIR /app
+ADD . /app

@@ -53,11 +53,17 @@ RUN set -x \
  && dpkg --install /tmp/google-chrome-stable_current_amd64.deb \
  && which google-chrome
 
+# Using pip:
+COPY requirements.txt /tmp
+RUN python3 -m pip install -r /tmp/requirements.txt --no-cache-dir
+#CMD ["python3", "-m", "darc"]
+
 RUN set -x \
  && rm -rf \
         ## APT repository lists
         /var/lib/apt/lists/* \
         ## Python dependencies
+        /tmp/requirements.txt \
         /tmp/pip \
         ## ChromeDriver
         /tmp/chromedriver_linux64-79.0.3945.36.zip \
@@ -73,19 +79,6 @@ RUN set -x \
  && apt-get autoclean \
  && apt-get clean
 
-WORKDIR /app
-COPY darc.py \
-     LICENSE \
-     MANIFEST.in \
-     README.md \
-     setup.cfg \
-     setup.py \
-     test_darc.py /app/
-
-# Using pip:
-RUN python3 -m pip install -r requirements.txt --no-cache-dir
-#CMD ["python3", "-m", "darc"]
-
 ENTRYPOINT [ "python3", "darc.py" ]
 CMD [ "--help" ]
 
@@ -97,3 +90,12 @@ CMD [ "--help" ]
 # Using miniconda (make sure to replace 'myenv' w/ your environment name):
 #RUN conda env create -f environment.yml
 #CMD /bin/bash -c "source activate myenv && python3 -m darc"
+
+WORKDIR /app
+COPY darc.py \
+     LICENSE \
+     MANIFEST.in \
+     README.md \
+     setup.cfg \
+     setup.py \
+     test_darc.py /app/
