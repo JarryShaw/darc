@@ -23,5 +23,5 @@ export
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
-LICENSE
-README.md
+#LICENSE
+#README.md
