@@ -98,5 +98,4 @@ COPY darc.py \
      README.md \
      setup.cfg \
      setup.py \
-     test_darc.py \
-     text /app/
+     test_darc.py /app/

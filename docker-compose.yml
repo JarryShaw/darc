@@ -29,5 +29,6 @@ services:
       EX_LINK: ".%2A%3F%5C.onion"
     restart: "always"
     volumes:
+      - ./text:/app/text
       - ./cache:/app/cache
       - /data/darc:/app/data
