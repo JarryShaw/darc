@@ -15,7 +15,6 @@ gitlab-prep:
 	find gitlab -depth 1 | grep -v '.git' | xargs rm -rf
 	cp -rf \
 	    browser \
-	    docker \
 	    driver \
 	    extra \
 	    tbb \
@@ -28,6 +27,7 @@ gitlab-prep:
 	    .travis.yml \
 	    CODE_OF_CONDUCT.md \
 	    CONTRIBUTING.md \
+	    Dockerfile \
 	    LICENSE \
 	    MANIFEST.in \
 	    Makefile \
@@ -35,7 +35,10 @@ gitlab-prep:
 	    Pipfile.lock \
 	    README.md \
 	    darc.py \
-		requirements.debug.txt \
+	    debug.dockerfile \
+	    docker-compose.debug.yml \
+	    docker-compose.yml \
+	    requirements.debug.txt \
 	    requirements.txt \
 	    setup.cfg \
 	    setup.py gitlab
