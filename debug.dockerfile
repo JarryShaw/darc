@@ -14,55 +14,61 @@ FROM ubuntu:bionic
 LABEL Name=darc Version=0.0.1
 EXPOSE 9065
 
-ENV LANG="C.UTF-8" \
-    LC_ALL="C.UTF-8" \
-    PYTHONIOENCODING="UTF-8"
+ENV LANG-"C.UTF-8" \
+    LC_ALL-"C.UTF-8" \
+    PYTHONIOENCODING-"UTF-8"
 
-RUN apt-get update \
+# RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
+#  && apk add --update --no-cache \
+#         chromium \
+#         chromium-chromedriver \
+#         tor
+# COPY extra/torrc.alpine /etc/tor/torrc
+RUN set -x \
+ && apt-get update \
  && apt-get install --yes --no-install-recommends \
         apt-transport-https \
         apt-utils \
         ca-certificates
 COPY extra/sources.bionic.list /etc/apt/sources.list
-RUN apt-get update \
+RUN set -x \
+ && apt-get update \
  && apt-get install --yes --no-install-recommends \
+        unzip \
         software-properties-common \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
  && apt-get update \
  && apt-get install --yes --no-install-recommends \
         python3.7 \
         python3-pip \
+        python3-setuptools \
+        python3-wheel \
         tor \
  && ln -sf /usr/bin/python3.7 /usr/bin/python3
 COPY extra/torrc.bionic /etc/tor/torrc
-RUN rm -rf \
-        ## apt repository lists
-        /var/lib/apt/lists/* \
-        ## Python dependencies
-        /tmp/pip \
- && apt-get remove --auto-remove --yes \
-        apt-transport-https \
-        apt-utils \
-        ca-certificates \
-        software-properties-common \
- && apt-get autoremove -y \
- && apt-get autoclean \
- && apt-get clean
+
+# ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
+# ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
+COPY driver/chromedriver_linux64-79.0.3945.36.zip \
+     browser/google-chrome-stable_current_amd64.deb /tmp/
+RUN set -x \
+ ## ChromeDriver
+ && unzip -d /usr/bin /tmp/chromedriver_linux64-79.0.3945.36.zip \
+ && which chromedriver \
+ ## Google Chrome
+ && (dpkg --install /tmp/google-chrome-stable_current_amd64.deb || true) \
+ && apt-get install --fix-broken --yes --no-install-recommends \
+ && dpkg --install /tmp/google-chrome-stable_current_amd64.deb \
+ && which google-chrome
 
 WORKDIR /app
-
-ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
-ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
-COPY darc.py \
-     LICENSE \
-     MANIFEST.in \
-     README.md \
-     setup.cfg \
-     setup.py \
-     test_darc.py /app/
+ADD . /app
 
 # Using pip:
-RUN python3 -m pip install -r requirements.txt --no-cache-dir
+RUN set -x \
+ && python3 -m pip install -r requirements.debug.txt --cache-dir /app/cache \
+ && python3 -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+ && python3 -m pip install ipython
 #CMD ["python3", "-m", "darc"]
 
 ENTRYPOINT [ "python3", "darc.py" ]

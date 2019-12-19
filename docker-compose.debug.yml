@@ -1,19 +1,21 @@
-version: '2.1'
+version: '3'
 
 services:
   darc:
     image: darc
-    build: .
+    build:
+      context: .
+      dockerfile: debug.dockerfile
     ports:
-      - 9065:9065
-    command: [ "--file", "/app/text/market.txt" ]
+      - 9065:1086
+    command: [ "https://www.cavetord6bosm3sl.onion", "https://www.sjtu.edu.cn" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
       # processes
       DARC_CPU: 10
       # debug mode
-      DARC_DEBUG: 0
+      DARC_DEBUG: 1
       # data storage
       PATH_DATA: "data"
       # Socks5 proxy & control port
@@ -21,9 +23,13 @@ services:
       SOCKS_CTRL: 9051
       # Tor authentication
       TOR_PASS: "16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F"
-      # time delta for caches in seconds
-      TIME_CACHE: "inf"
-    restart: "always"
+      # time delta caches in seconds
+      TIME_CACHE: 600
+      # time to wait for selenium
+      DARC_WAIT: 60
+      # extract link pattern
+      EX_LINK: ".%2A%3F%5C.onion"
+    restart: "on-failure"
     volumes:
       - ./cache:/app/cache
-      - /data/darc:/app/data
+      - ./data:/app/data

@@ -28,7 +28,8 @@
         "torrc",
         "tsinghua",
         "wcwidth",
-        "xenial"
+        "xenial",
+        "xvzf"
     ],
     "python.pythonPath": ".venv/bin/python"
 }

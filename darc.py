@@ -11,10 +11,12 @@ import math
 import mimetypes
 import multiprocessing
 import os
+import platform
 import posixpath
 #import queue
 import random
 import re
+import shutil
 import sys
 import time
 import traceback
@@ -119,10 +121,21 @@ _norm_capabilities = webdriver.DesiredCapabilities.CHROME
 _tor_capabilities = copy.deepcopy(webdriver.DesiredCapabilities.CHROME)
 _proxy.add_to_capabilities(_tor_capabilities)
 
+_system = platform.system()
+
 OPTIONS = webdriver.ChromeOptions()
-OPTIONS.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-if not DEBUG:
+if _system == 'Darwin':
+    OPTIONS.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    if not DEBUG:
+        OPTIONS.add_argument('headless')
+elif _system == 'Linux':
+    # c.f. https://stackoverflow.com/a/50642913/7218152
+    OPTIONS.binary_location = shutil.which('google-chrome') or '/usr/bin/google-chrome'
     OPTIONS.add_argument('headless')
+    OPTIONS.add_argument('no-sandbox')
+    OPTIONS.add_argument('disable-dev-shm-usage')
+else:
+    sys.exit(f'unsupported system: {_system}')
 
 ###############################################################################
 # error
