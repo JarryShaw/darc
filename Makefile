@@ -41,7 +41,8 @@ gitlab-prep:
 	    requirements.debug.txt \
 	    requirements.txt \
 	    setup.cfg \
-	    setup.py gitlab
+	    setup.py gitlab \
+	    test_darc.py
 	sed '/browser/d' gitlab/.gitignore > gitlab/.gitignore.tmp
 	sed '/driver/d' gitlab/.gitignore.tmp > gitlab/.gitignore.tmp1
 	sed '/tbb/d' gitlab/.gitignore.tmp1 > gitlab/.gitignore
