@@ -123,19 +123,21 @@ _proxy.add_to_capabilities(_tor_capabilities)
 
 _system = platform.system()
 
-OPTIONS = webdriver.ChromeOptions()
+_norm_options = webdriver.ChromeOptions()
 if _system == 'Darwin':
-    OPTIONS.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    _norm_options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     if not DEBUG:
-        OPTIONS.add_argument('headless')
+        _norm_options.add_argument('headless')
 elif _system == 'Linux':
     # c.f. https://stackoverflow.com/a/50642913/7218152
-    OPTIONS.binary_location = shutil.which('google-chrome') or '/usr/bin/google-chrome'
-    OPTIONS.add_argument('headless')
-    OPTIONS.add_argument('no-sandbox')
-    OPTIONS.add_argument('disable-dev-shm-usage')
+    _norm_options.binary_location = shutil.which('google-chrome') or '/usr/bin/google-chrome'
+    _norm_options.add_argument('headless')
+    _norm_options.add_argument('no-sandbox')
+    _norm_options.add_argument('disable-dev-shm-usage')
 else:
     sys.exit(f'unsupported system: {_system}')
+_tor_options = copy.deepcopy(_norm_options)
+_tor_options.add_argument(f'--proxy-server=socks5://localhost:{SOCKS_PORT}')
 
 ###############################################################################
 # error
@@ -357,8 +359,8 @@ def extract_links(link: str, html: bytes) -> typing.Iterator[str]:
 
 # link regex mapping
 LINK_MAP = [
-    (r'.*?\.onion', tor_session, _tor_capabilities),
-    (r'.*', norm_session, _norm_capabilities),
+    (r'.*?\.onion', tor_session, _tor_options, _tor_capabilities),
+    (r'.*', norm_session, _norm_options, _norm_capabilities),
 ]
 
 
@@ -366,7 +368,7 @@ def request_session(link: str) -> Session:
     """Get session."""
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
-    for regex, session, _ in LINK_MAP:
+    for regex, session, _, _ in LINK_MAP:
         if re.match(regex, host):
             return session()
     raise UnsupportedLink(link)
@@ -376,9 +378,9 @@ def request_driver(link: str) -> Driver:
     """Get selenium driver."""
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
-    for regex, _, capabilities in LINK_MAP:
+    for regex, _, options, capabilities in LINK_MAP:
         if re.match(regex, host):
-            return webdriver.Chrome(options=OPTIONS, desired_capabilities=capabilities)
+            return webdriver.Chrome(options=options, desired_capabilities=capabilities)
     raise UnsupportedLink(link)
 
 
@@ -459,7 +461,7 @@ def process():
 
             if link_list:
                 random.shuffle(link_list)
-                pool.map(crawler, link_list)
+                pool.map(crawler, set(link_list))
             else:
                 break
             renew_tor_session()
