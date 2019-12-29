@@ -91,7 +91,7 @@ try:
         # password
         # fullname
         long_description_content_type='text/markdown',
-        python_requires='>=3.5',
+        python_requires='>=3.7',
         zip_safe=True,
     ))
 except ImportError:
