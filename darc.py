@@ -299,7 +299,10 @@ def check(link: str) -> str:
     if TIME_CACHE is None:
         return item
 
-    date = datetime.datetime.fromisoformat(item[len(path)+1:-5])
+    try:
+        date = datetime.datetime.fromisoformat(item[len(path)+1:-5])
+    except ValueError:
+        return 'nil'
     if time - date > TIME_CACHE:
         return 'nil'
     return item
