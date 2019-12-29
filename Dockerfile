@@ -69,9 +69,9 @@ RUN set -x \
         /tmp/chromedriver_linux64-79.0.3945.36.zip \
         ## Google Chrome
         /tmp/google-chrome-stable_current_amd64.deb \
- && apt-get remove --auto-remove --yes \
-        software-properties-common \
-        unzip \
+ #&& apt-get remove --auto-remove --yes \
+ #       software-properties-common \
+ #       unzip \
  && apt-get autoremove -y \
  && apt-get autoclean \
  && apt-get clean
