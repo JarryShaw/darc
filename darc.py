@@ -114,37 +114,49 @@ EMPTY = '<html><head></head><body></body></html>'
 ###############################################################################
 # selenium
 
-_proxy = Proxy()
-_proxy.proxy_type = ProxyType.MANUAL
-_proxy.http_proxy = f'socks5://localhost:{SOCKS_PORT}'
-_proxy.ssl_proxy = f'socks5://localhost:{SOCKS_PORT}'
-
-_norm_capabilities = webdriver.DesiredCapabilities.CHROME
-_tor_capabilities = copy.deepcopy(webdriver.DesiredCapabilities.CHROME)
-# _proxy.add_to_capabilities(_tor_capabilities)
-
 _system = platform.system()
 
 # c.f. https://peter.sh/experiments/chromium-command-line-switches/
 _norm_options = webdriver.ChromeOptions()
+_tor_options = webdriver.ChromeOptions()
+
 if _system == 'Darwin':
     _norm_options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    _tor_options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+
     if not DEBUG:
         _norm_options.add_argument('--headless')
+        _tor_options.add_argument('--headless')
 elif _system == 'Linux':
     _norm_options.binary_location = shutil.which('google-chrome') or '/usr/bin/google-chrome'
+    _tor_options.binary_location = shutil.which('google-chrome') or '/usr/bin/google-chrome'
+
     _norm_options.add_argument('--headless')
+    _tor_options.add_argument('--headless')
+
     # c.f. https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
     if getpass.getuser() == 'root':
         _norm_options.add_argument('--no-sandbox')
-    #_norm_options.add_argument('--disable-dev-shm-usage')
+        _tor_options.add_argument('--no-sandbox')
+
+    # c.f. http://crbug.com/715363
+    _norm_options.add_argument('--disable-dev-shm-usage')
+    _tor_options.add_argument('--disable-dev-shm-usage')
 else:
     sys.exit(f'unsupported system: {_system}')
 
-_tor_options = copy.deepcopy(_norm_options)
 # c.f. https://www.chromium.org/developers/design-documents/network-stack/socks-proxy
 _tor_options.add_argument(f'--proxy-server=socks5://localhost:{SOCKS_PORT}')
 _tor_options.add_argument('--host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost"')
+
+_norm_capabilities = webdriver.DesiredCapabilities.CHROME.copy()
+_tor_capabilities = webdriver.DesiredCapabilities.CHROME.copy()
+
+_tor_proxy = Proxy()
+_tor_proxy.proxy_type = ProxyType.MANUAL
+_tor_proxy.http_proxy = f'socks5://localhost:{SOCKS_PORT}'
+_tor_proxy.ssl_proxy = f'socks5://localhost:{SOCKS_PORT}'
+_tor_proxy.add_to_capabilities(_tor_capabilities)
 
 ###############################################################################
 # error
