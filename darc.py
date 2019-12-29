@@ -7,6 +7,7 @@ import datetime
 import getpass
 import glob
 import hashlib
+import json
 import math
 import mimetypes
 import multiprocessing
@@ -304,7 +305,8 @@ def check(link: str) -> str:
     return item
 
 
-def sanitise(link: str, makedirs: bool = True, raw: bool = False) -> str:
+def sanitise(link: str, makedirs: bool = True,
+             raw: bool = False, headers: bool = False) -> str:
     """Sanitise link to path."""
     # return urllib.parse.quote(link, safe='')
 
@@ -321,6 +323,8 @@ def sanitise(link: str, makedirs: bool = True, raw: bool = False) -> str:
         os.makedirs(base, exist_ok=True)
     if raw:
         return f'{os.path.join(base, name)}_{time}_raw.html'
+    if headers:
+        return f'{os.path.join(base, name)}_{time}.json'
     return f'{os.path.join(base, name)}_{time}.html'
 
 
@@ -356,9 +360,29 @@ def save_sitemap(link: str, text: str) -> str:
     return path
 
 
+def save_headers(link: str, response: Response) -> str:
+    """Save HTTP response headers."""
+    data = dict()
+    data['[metadata]'] = dict()
+    data.update(response.headers)
+
+    data['[metadata]']['URL'] = response.url
+    data['[metadata]']['Reason'] = response.reason
+    data['[metadata]']['Status-Code'] = response.status_code
+
+    data['[metadata]']['Cookies'] = response.cookies.get_dict()
+    data['[metadata]']['Request-Method'] = response.request.method
+    data['[metadata]']['Request-Headers'] = dict(response.request.headers)
+
+    path = sanitise(link, headers=True)
+    with open(path, 'w') as file:
+        json.dump(data, file, indent=2)
+    return path
+
+
 def save(link: str, html: typing.Union[str, bytes], orig: bool = False) -> str:
     """Save response."""
-    path = sanitise(link, orig)
+    path = sanitise(link, raw=orig)
     if orig:
         with open(path, 'wb') as file:
             file.write(html)
@@ -496,14 +520,14 @@ def fetch_sitemap(link: str):
             except requests.exceptions.InvalidSchema:
                 return
             except requests.RequestException as error:
-                print(term.format(f'Failed on {robots_link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                print(term.format(f'Failed on {robots_link} <{error}>', term.Color.RED))  # pylint: disable=no-member
                 return
 
         if response.ok:
             save_robots(robots_link, response.text)
             robots_text = response.text
         else:
-            print(term.format(f'Failed on {robots_link} <{response.status_code}>', term.Color.RED))  # pylint: disable=no-member
+            print(term.format(f'Failed on {robots_link} [{response.status_code}]', term.Color.RED))  # pylint: disable=no-member
             robots_text = ''
 
     sitemap_link = get_sitemap(link, robots_text)
@@ -515,11 +539,11 @@ def fetch_sitemap(link: str):
             except requests.exceptions.InvalidSchema:
                 return
             except requests.RequestException as error:
-                print(term.format(f'Failed on {sitemap_link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                print(term.format(f'Failed on {sitemap_link} <{error}>', term.Color.RED))  # pylint: disable=no-member
                 return
 
         if not response.ok:
-            print(term.format(f'Failed on {sitemap_link} <{response.status_code}>', term.Color.RED))  # pylint: disable=no-member
+            print(term.format(f'Failed on {sitemap_link} [{response.status_code}]', term.Color.RED))  # pylint: disable=no-member
             return
         save_sitemap(sitemap_link, response.text)
 
@@ -531,10 +555,6 @@ def fetch_sitemap(link: str):
 def crawler(link: str):
     """Single crawler for a entry link."""
     try:
-        if not check_folder(link):
-            # fetch sitemap.xml
-            fetch_sitemap(link)
-
         path = check(link)
         if os.path.isfile(path):
 
@@ -550,25 +570,32 @@ def crawler(link: str):
 
             print(f'Requesting {link}')
 
+            # fetch sitemap.xml
+            if not check_folder(link):
+                with contextlib.suppress(Exception):
+                    fetch_sitemap(link)
+
             with request_session(link) as session:
                 try:
                     response = session.get(link)
                 except requests.exceptions.InvalidSchema:
                     return
                 except requests.RequestException as error:
-                    print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                    print(term.format(f'Failed on {link} <{error}>', term.Color.RED))  # pylint: disable=no-member
                     #QUEUE.put(link)
                     LIST.append(link)
                     return
 
+            save_headers(link, response)
             if not response.ok:
-                print(term.format(f'Failed on {link} <{response.status_code}>', term.Color.RED))  # pylint: disable=no-member
+                print(term.format(f'Failed on {link} [{response.status_code}]', term.Color.RED))  # pylint: disable=no-member
                 #QUEUE.put(link)
                 LIST.append(link)
                 return
 
             ct_type = response.headers.get('Content-Type', 'undefined').lower()
             if 'html' not in ct_type:
+                print(term.format(f'Unexpected content type from {link} ({ct_type})', term.Color.RED))  # pylint: disable=no-member
                 return
                 # text = response.content
                 # save_file(link, text, ct_type)
@@ -587,7 +614,7 @@ def crawler(link: str):
                 try:
                     driver.get(link)
                 except WebDriverException:
-                    print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                    print(term.format(f'Failed on {link} <{error}>', term.Color.RED))  # pylint: disable=no-member
                     LIST.append(link)
                     return
 
