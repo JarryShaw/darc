@@ -2,7 +2,7 @@
 
 import argparse
 import contextlib
-import copy
+#import copy
 import datetime
 import getpass
 import glob
@@ -10,15 +10,16 @@ import hashlib
 import json
 import math
 import mimetypes
-import multiprocessing
+#import multiprocessing
 import os
 import platform
 import posixpath
-#import queue
+import queue
 import random
 import re
 import shutil
 import sys
+#import threading
 #import time
 import traceback
 import typing
@@ -49,7 +50,10 @@ Response = typing.NewType('Response', requests.Response)
 Session = typing.NewType('Session', requests.Session)
 
 # multiprocessing.Queue
-Queue = typing.NewType('Queue', multiprocessing.Queue)
+#Queue = typing.NewType('Queue', multiprocessing.Queue)
+
+# queue.Queue
+Queue = typing.NewType('Queue', queue.Queue)
 
 # subprocess.Popen
 Popen = typing.NewType('Popen', __import__('subprocess').Popen)
@@ -95,9 +99,10 @@ else:
 DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
 
 # link queue
+QUEUE = queue.Queue()
 #QUEUE = multiprocessing.Queue()
-MANAGER = multiprocessing.Manager()
-LIST = MANAGER.list()
+#MANAGER = multiprocessing.Manager()
+#LIST = MANAGER.list()
 
 # link file mapping
 PATH_MAP = os.path.join(PATH_DB, 'link.csv')
@@ -110,6 +115,10 @@ EX_LINK = urllib.parse.unquote(os.getenv('EX_LINK', r'.*'))
 
 # empty page
 EMPTY = '<html><head></head><body></body></html>'
+
+# mapping dict
+MAP_SESSION = dict()
+MAP_DRIVER = dict()
 
 ###############################################################################
 # selenium
@@ -140,8 +149,8 @@ elif _system == 'Linux':
         _tor_options.add_argument('--no-sandbox')
 
     # c.f. http://crbug.com/715363
-    _norm_options.add_argument('--disable-dev-shm-usage')
-    _tor_options.add_argument('--disable-dev-shm-usage')
+    #_norm_options.add_argument('--disable-dev-shm-usage')
+    #_tor_options.add_argument('--disable-dev-shm-usage')
 else:
     sys.exit(f'unsupported system: {_system}')
 
@@ -174,9 +183,12 @@ class TorBootstrapFailed(Warning):
 # session
 
 # Tor bootstrapped flag
-_TOR_BS_FLAG = multiprocessing.Value('B', False)
+_TOR_BS_FLAG = False
+#_TOR_BS_FLAG = multiprocessing.Value('B', False)
 # Tor bootstrapping lock
-_TOR_BS_LOCK = multiprocessing.Lock()
+_TOR_BS_LOCK = contextlib.nullcontext()
+#_TOR_BS_LOCK = multiprocessing.Lock()
+#_TOR_BS_LOCK = threading.Lock()
 # Tor controller
 _CTRL_TOR = None
 # Tor daemon process
@@ -192,18 +204,21 @@ def renew_tor_session():
 
 def print_bootstrap_lines(line: str):
     """Print Tor bootstrap lines."""
-    if DEBUG:
-        print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
-        return
+    print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
+    # if DEBUG:
+    #     print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
+    #     return
 
-    if 'Bootstrapped ' in line:
-        print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
+    # if 'Bootstrapped ' in line:
+    #     print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
 
 
 def tor_bootstrap():
     """Tor bootstrap."""
     # don't re-bootstrap
-    if _TOR_BS_FLAG.value:
+    #if _TOR_BS_FLAG.value:
+    global _TOR_BS_FLAG
+    if _TOR_BS_FLAG:
         return
 
     global _CTRL_TOR, _PROC_TOR, TOR_PASS
@@ -226,12 +241,14 @@ def tor_bootstrap():
     _CTRL_TOR.authenticate(TOR_PASS)
 
     # update flag
-    _TOR_BS_FLAG.value = True
+    #_TOR_BS_FLAG.value = True
+    _TOR_BS_FLAG = True
 
 
 def tor_session() -> Session:
     """Tor (.onion) session."""
-    if not _TOR_BS_FLAG.value:
+    #if not _TOR_BS_FLAG.value:
+    if not _TOR_BS_FLAG:
         with _TOR_BS_LOCK:
             try:
                 if TOR_STEM:
@@ -260,7 +277,9 @@ def norm_session() -> Session:
 # save
 
 # lock for file I/O
-_SAVE_LOCK = multiprocessing.Lock()
+_SAVE_LOCK = contextlib.nullcontext()
+#_SAVE_LOCK = multiprocessing.Lock()
+#_SAVE_LOCK = threading.Lock()
 
 
 def check_robots(link: str) -> str:
@@ -509,9 +528,16 @@ def request_session(link: str) -> Session:
     """Get session."""
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
+
+    # temp = MAP_SESSION.get(host)
+    # if temp is not None:
+    #     return temp
+
     for regex, session, _, _ in LINK_MAP:
         if re.match(regex, host):
-            return session()
+            temp = session()
+            # MAP_SESSION[host] = temp
+            return temp
     raise UnsupportedLink(link)
 
 
@@ -519,9 +545,16 @@ def request_driver(link: str) -> Driver:
     """Get selenium driver."""
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
+
+    # temp = MAP_DRIVER.get(host)
+    # if temp is not None:
+    #     return temp
+
     for regex, _, options, capabilities in LINK_MAP:
         if re.match(regex, host):
-            return webdriver.Chrome(options=options, desired_capabilities=capabilities)
+            temp = webdriver.Chrome(options=options, desired_capabilities=capabilities)
+            # MAP_DRIVER[host] = temp
+            return temp
     raise UnsupportedLink(link)
 
 
@@ -567,8 +600,8 @@ def fetch_sitemap(link: str):
         save_sitemap(sitemap_link, response.text)
 
     # add link to queue
-    #[QUEUE.put(url) for url in read_sitemap(link, sitemap_path)]  # pylint: disable=expression-not-assigned
-    [LIST.append(url) for url in read_sitemap(link, sitemap_path)]  # pylint: disable=expression-not-assigned
+    [QUEUE.put(url) for url in read_sitemap(link, sitemap_path)]  # pylint: disable=expression-not-assigned
+    #[LIST.append(url) for url in read_sitemap(link, sitemap_path)]  # pylint: disable=expression-not-assigned
 
 
 def crawler(link: str):
@@ -582,8 +615,8 @@ def crawler(link: str):
                 html = file.read()
 
             # add link to queue
-            #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-            [LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            [QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            #[LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
 
         else:
 
@@ -601,15 +634,15 @@ def crawler(link: str):
                     return
                 except requests.RequestException as error:
                     print(term.format(f'Failed on {link} <{error}>', term.Color.RED))  # pylint: disable=no-member
-                    #QUEUE.put(link)
-                    LIST.append(link)
+                    QUEUE.put(link)
+                    #LIST.append(link)
                     return
 
             save_headers(link, response)
             if not response.ok:
                 print(term.format(f'Failed on {link} [{response.status_code}]', term.Color.RED))  # pylint: disable=no-member
-                #QUEUE.put(link)
-                LIST.append(link)
+                QUEUE.put(link)
+                #LIST.append(link)
                 return
 
             ct_type = response.headers.get('Content-Type', 'undefined').lower()
@@ -623,8 +656,8 @@ def crawler(link: str):
             save(link, response.content, orig=True)
 
             # add link to queue
-            #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-            [LIST.append(href) for href in extract_links(link, response.content)]  # pylint: disable=expression-not-assigned
+            [QUEUE.put(href) for href in extract_links(link, response.content)]  # pylint: disable=expression-not-assigned
+            #[LIST.append(href) for href in extract_links(link, response.content)]  # pylint: disable=expression-not-assigned
 
             # wait for some time to avoid Too Many Requests
             #time.sleep(random.random() * DRIVER_WAIT)
@@ -636,9 +669,10 @@ def crawler(link: str):
 
                 try:
                     driver.get(link)
-                except WebDriverException:
+                except WebDriverException as error:
                     print(term.format(f'Failed on {link} <{error}>', term.Color.RED))  # pylint: disable=no-member
-                    LIST.append(link)
+                    QUEUE.put(link)
+                    #LIST.append(link)
                     return
 
                 # get HTML source
@@ -646,44 +680,74 @@ def crawler(link: str):
 
                 if html == EMPTY:
                     print(term.format(f'Empty page from {link}', term.Color.RED))  # pylint: disable=no-member
-                    LIST.append(link)
+                    QUEUE.put(link)
+                    #LIST.append(link)
                     return
 
             # save HTML
             save(link, html)
 
             # add link to queue
-            #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-            [LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            [QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            #[LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
 
             print(f'Requested {link}')
     except Exception:
         traceback.print_exc()
-        LIST.append(link)
+        QUEUE.put(link)
+        #LIST.append(link)
+
+
+# def process():
+#     """Main process."""
+#     with multiprocessing.Pool(processes=DARC_CPU) as pool:
+#         while True:
+#             link_list = list()
+#             while True:
+#                 try:
+#                     link = QUEUE.get_nowait()
+#                 except queue.Empty:
+#                     break
+#                 # try:
+#                 #     link = LIST.pop()
+#                 # except IndexError:
+#                 #     break
+#                 link_list.append(link)
+
+#             if link_list:
+#                 random.shuffle(link_list)
+#                 pool.map(crawler, set(link_list))
+#             else:
+#                 break
+#             renew_tor_session()
+#     print(term.format('Gracefully exiting...', term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def process():
     """Main process."""
-    with multiprocessing.Pool(processes=DARC_CPU) as pool:
+    while True:
+        link_list = list()
         while True:
-            link_list = list()
-            while True:
-                #try:
-                #    link = QUEUE.get_nowait()
-                #except queue.Empty:
-                #    break
-                try:
-                    link = LIST.pop()
-                except IndexError:
-                    break
-                link_list.append(link)
-
-            if link_list:
-                random.shuffle(link_list)
-                pool.map(crawler, set(link_list))
-            else:
+            try:
+                link = QUEUE.get_nowait()
+            except queue.Empty:
                 break
-            renew_tor_session()
+            link_list.append(link)
+
+        if link_list:
+            random.shuffle(link_list)
+
+            # thread_list = list()
+            # for link in set(link_list):
+            #     thread = threading.Thread(target=crawler, args=(link,))
+            #     thread_list.append(thread)
+            #     thread.start()
+            # for thread in thread_list:
+            #     thread.join()
+
+            [crawler(link) for link in set(link_list)]  # pylint: disable=expression-not-assigned
+        else:
+            break
     print(term.format('Gracefully exiting...', term.Color.MAGENTA))  # pylint: disable=no-member
 
 
@@ -702,7 +766,7 @@ def _exit():
 
     # close link queue
     #caller(QUEUE, 'close')
-    caller(MANAGER, 'shutdown')
+    #aller(MANAGER, 'shutdown')
 
     # close Tor processes
     caller(_CTRL_TOR, 'close')
@@ -725,14 +789,14 @@ def main():
     args = parser.parse_args()
 
     for link in args.link:
-        #QUEUE.put(link)
-        LIST.append(link)
+        QUEUE.put(link)
+        #LIST.append(link)
 
     if args.file is not None:
         with open(args.file) as file:
             for line in file:
-                #QUEUE.put(line.strip())
-                LIST.append(line.strip())
+                QUEUE.put(line.strip())
+                #LIST.append(line.strip())
 
     try:
         process()
