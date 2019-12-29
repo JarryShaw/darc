@@ -1,4 +1,7 @@
+archive
+data
 export
+tbb
 
 **/.classpath
 **/.dockerignore

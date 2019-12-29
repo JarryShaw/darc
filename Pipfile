@@ -22,10 +22,11 @@ coverage = "*"
 codecov = "*"
 
 [packages]
-requests = {extras = ["socks"],version = "*"}
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}
+defusedxml = "*"
+requests = {extras = ["socks"],version = "*"}
 stem = "*"
 selenium = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "*"

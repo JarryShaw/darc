@@ -25,6 +25,7 @@ import urllib.parse
 import warnings
 
 import bs4
+import defusedxml.ElementTree
 import requests
 import stem
 from selenium import webdriver
@@ -97,9 +98,6 @@ DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
 MANAGER = multiprocessing.Manager()
 LIST = MANAGER.list()
 
-# link database
-LINK_DB = list()
-
 # link file mapping
 PATH_MAP = os.path.join(PATH_DB, 'link.csv')
 
@@ -123,21 +121,26 @@ _proxy.add_to_capabilities(_tor_capabilities)
 
 _system = platform.system()
 
+# c.f. https://peter.sh/experiments/chromium-command-line-switches/
 _norm_options = webdriver.ChromeOptions()
 if _system == 'Darwin':
     _norm_options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     if not DEBUG:
-        _norm_options.add_argument('headless')
+        _norm_options.add_argument('--headless')
 elif _system == 'Linux':
-    # c.f. https://stackoverflow.com/a/50642913/7218152
     _norm_options.binary_location = shutil.which('google-chrome') or '/usr/bin/google-chrome'
-    _norm_options.add_argument('headless')
-    _norm_options.add_argument('no-sandbox')
-    _norm_options.add_argument('disable-dev-shm-usage')
+    _norm_options.add_argument('--headless')
+    # c.f. https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
+    if getpass.getuser() == 'root':
+        _norm_options.add_argument('--no-sandbox')
+    #_norm_options.add_argument('--disable-dev-shm-usage')
 else:
     sys.exit(f'unsupported system: {_system}')
+
 _tor_options = copy.deepcopy(_norm_options)
+# c.f. https://www.chromium.org/developers/design-documents/network-stack/socks-proxy
 _tor_options.add_argument(f'--proxy-server=socks5://localhost:{SOCKS_PORT}')
+_tor_options.add_argument('--host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost"')
 
 ###############################################################################
 # error
@@ -244,6 +247,37 @@ def norm_session() -> Session:
 _SAVE_LOCK = multiprocessing.Lock()
 
 
+def check_robots(link: str) -> str:
+    """Check if robots.txt already exists."""
+    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+
+    # <scheme>/<identifier>/<sitemap>
+    return os.path.join(PATH_DB, parse.scheme, host, 'robots.txt')
+
+
+def check_sitemap(link: str) -> str:
+    """Check if sitemap.xml already exists."""
+    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+
+    # <scheme>/<identifier>/<sitemap>
+    return os.path.join(PATH_DB, parse.scheme, host, 'sitemap.xml')
+
+
+def check_folder(link: str) -> bool:
+    """Check if folder created."""
+    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+
+    # <scheme>/<identifier>/<timestamp>-<hash>.html
+    base = os.path.join(PATH_DB, parse.scheme, host)
+    return os.path.isdir(base)
+
+
 def check(link: str) -> str:
     """Check if we need to re-craw the link."""
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
@@ -270,7 +304,7 @@ def check(link: str) -> str:
     return item
 
 
-def sanitise(link: str, makedirs: bool = True) -> str:
+def sanitise(link: str, makedirs: bool = True, raw: bool = False) -> str:
     """Sanitise link to path."""
     # return urllib.parse.quote(link, safe='')
 
@@ -285,12 +319,51 @@ def sanitise(link: str, makedirs: bool = True) -> str:
 
     if makedirs:
         os.makedirs(base, exist_ok=True)
+    if raw:
+        return f'{os.path.join(base, name)}_{time}_raw.html'
     return f'{os.path.join(base, name)}_{time}.html'
 
 
-def save(link: str, html: str):
+def save_robots(link: str, text: str) -> str:
+    """Save `robots.txt`."""
+    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+
+    ## <scheme>/<identifier>/<sitemap>
+    base = os.path.join(PATH_DB, parse.scheme, host)
+    os.makedirs(base, exist_ok=True)
+
+    path = os.path.join(base, 'robots.txt')
+    with open(path, 'w') as file:
+        file.write(text)
+    return path
+
+
+def save_sitemap(link: str, text: str) -> str:
+    """Save `sitemap.xml`."""
+    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+
+    # <scheme>/<identifier>/<sitemap>
+    base = os.path.join(PATH_DB, parse.scheme, host)
+    os.makedirs(base, exist_ok=True)
+
+    path = os.path.join(base, 'sitemap.xml')
+    with open(path, 'w') as file:
+        file.write(text)
+    return path
+
+
+def save(link: str, html: typing.Union[str, bytes], orig: bool = False) -> str:
     """Save response."""
-    path = sanitise(link)
+    path = sanitise(link, orig)
+    if orig:
+        with open(path, 'wb') as file:
+            file.write(html)
+        return path
+
     with open(path, 'w') as file:
         file.write(html)
 
@@ -299,6 +372,7 @@ def save(link: str, html: str):
     with _SAVE_LOCK:
         with open(PATH_MAP, 'a') as file:
             print(f'"{safe_link}","{safe_path}"', file=file)
+    return path
 
 
 def save_file(link: str, text: bytes, mime: str):
@@ -333,6 +407,30 @@ def save_file(link: str, text: bytes, mime: str):
 # parse
 
 
+def get_sitemap(link: str, text: str) -> str:
+    """Fetch link to sitemap."""
+    for line in filter(lambda line: line.strip().casefold(), text.splitlines()):
+        if line.startswith('sitemap'):
+            with contextlib.suppress(ValueError):
+                _, sitemap = line.split(':')
+                return urllib.parse.urljoin(link, sitemap.strip())
+    return urllib.parse.urljoin(link, '/sitemap.xml')
+
+
+def read_sitemap(link: str, path: str) -> str:
+    """Read sitemap."""
+    tree = defusedxml.ElementTree.parse(path)
+    root = tree.getroot()
+
+    link_list = list()
+    root_tag = root.tag[-6:]
+    if root_tag == 'urlset':
+        schema = root.tag[:-6]  # urlset
+        for loc in root.findall(f'{schema}url/{schema}loc'):
+            link_list.append(urllib.parse.urljoin(link, loc.text))
+    yield from set(link_list)
+
+
 def extract_links(link: str, html: bytes) -> typing.Iterator[str]:
     """Extract links from HTML context."""
     soup = bs4.BeautifulSoup(html, 'html5lib')
@@ -351,7 +449,7 @@ def extract_links(link: str, html: bytes) -> typing.Iterator[str]:
             continue
 
         link_list.append(temp_link)
-    yield from filter(lambda link: link not in LINK_DB, set(link_list))
+    yield from set(link_list)
 
 
 ###############################################################################
@@ -384,9 +482,59 @@ def request_driver(link: str) -> Driver:
     raise UnsupportedLink(link)
 
 
+def fetch_sitemap(link: str):
+    """Fetch sitemap."""
+    robots_path = check_robots(link)
+    if os.path.isfile(robots_path):
+        with open(robots_path) as file:
+            robots_text = file.read()
+    else:
+        robots_link = urllib.parse.urljoin(link, '/robots.txt')
+        with request_session(robots_link) as session:
+            try:
+                response = session.get(robots_link)
+            except requests.exceptions.InvalidSchema:
+                return
+            except requests.RequestException as error:
+                print(term.format(f'Failed on {robots_link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                return
+
+        if response.ok:
+            save_robots(robots_link, response.text)
+            robots_text = response.text
+        else:
+            print(term.format(f'Failed on {robots_link} <{response.status_code}>', term.Color.RED))  # pylint: disable=no-member
+            robots_text = ''
+
+    sitemap_link = get_sitemap(link, robots_text)
+    sitemap_path = check_sitemap(sitemap_link)
+    if not os.path.isfile(sitemap_path):
+        with request_session(sitemap_link) as session:
+            try:
+                response = session.get(sitemap_link)
+            except requests.exceptions.InvalidSchema:
+                return
+            except requests.RequestException as error:
+                print(term.format(f'Failed on {sitemap_link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                return
+
+        if not response.ok:
+            print(term.format(f'Failed on {sitemap_link} <{response.status_code}>', term.Color.RED))  # pylint: disable=no-member
+            return
+        save_sitemap(sitemap_link, response.text)
+
+    # add link to queue
+    #[QUEUE.put(url) for url in read_sitemap(link, sitemap_path)]  # pylint: disable=expression-not-assigned
+    [LIST.append(url) for url in read_sitemap(link, sitemap_path)]  # pylint: disable=expression-not-assigned
+
+
 def crawler(link: str):
     """Single crawler for a entry link."""
     try:
+        if not check_folder(link):
+            # fetch sitemap.xml
+            fetch_sitemap(link)
+
         path = check(link)
         if os.path.isfile(path):
 
@@ -413,29 +561,45 @@ def crawler(link: str):
                     LIST.append(link)
                     return
 
+            if not response.ok:
+                print(term.format(f'Failed on {link} <{response.status_code}>', term.Color.RED))  # pylint: disable=no-member
+                #QUEUE.put(link)
+                LIST.append(link)
+                return
+
             ct_type = response.headers.get('Content-Type', 'undefined').lower()
-            if 'html' in ct_type:
-                # retrieve source from Chrome
-                with request_driver(link) as driver:
-                    try:
-                        driver.get(link)
-                    except WebDriverException:
-                        print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
-                        LIST.append(link)
-                        return
+            if 'html' not in ct_type:
+                return
+                # text = response.content
+                # save_file(link, text, ct_type)
 
-                    time.sleep(DRIVER_WAIT)
-                    html = driver.page_source
+            # save HTML
+            save(link, response.content, orig=True)
 
-                # save HTML
-                save(link, html)
+            # wait for some time to avoid Too Many Requests
+            time.sleep(random.random() * DRIVER_WAIT)
 
-                # add link to queue
-                #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-                [LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-            else:
-                text = response.content
-                save_file(link, text, ct_type)
+            # retrieve source from Chrome
+            with request_driver(link) as driver:
+                # wait for page to finish loading
+                driver.implicitly_wait(DRIVER_WAIT)
+
+                try:
+                    driver.get(link)
+                except WebDriverException:
+                    print(term.format(f'Failed on {link} ({error})', term.Color.RED))  # pylint: disable=no-member
+                    LIST.append(link)
+                    return
+
+                # get HTML source
+                html = driver.page_source
+
+            # save HTML
+            save(link, html)
+
+            # add link to queue
+            #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            [LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
 
             print(f'Requested {link}')
     except Exception:

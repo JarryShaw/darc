@@ -73,6 +73,7 @@ attrs = dict(
     # zip_safe,
     install_requires=[
         'beautifulsoup4[html5lib]',
+        'defusedxml',
         'requests[socks]',
         'stem',
     ]

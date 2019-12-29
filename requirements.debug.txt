@@ -9,9 +9,10 @@ setuptools==42.0.2
 wheel==0.33.6
 
 # Python dependencies
-beautifulsoup4[html5lib]==4.8.1
+beautifulsoup4[html5lib]==4.8.2
 certifi==2019.11.28
 chardet==3.0.4
+defusedxml==0.6.0
 html5lib==1.0.1
 idna==2.8
 pysocks==1.7.1

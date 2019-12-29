@@ -114,6 +114,7 @@ clean-pyc:
 	find . -iname '*.pyc' | xargs rm -f
 
 clean-misc: clean-pyc
+	tar -cvzf archive/$(shell date '+%Y-%m-%d-%H-%M-%S').tar.gz ${PATH_DATA}
 	rm -rf ${PATH_DATA}
 
 clean-docker:

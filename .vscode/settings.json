@@ -8,6 +8,7 @@
         "cmdclass",
         "conda",
         "continuumio",
+        "cvzf",
         "darc",
         "emojize",
         "genutils",
