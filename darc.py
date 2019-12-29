@@ -295,17 +295,18 @@ def check(link: str) -> str:
     if not glob_list:
         return 'nil'
 
-    item = sorted(glob_list, reverse=True)[0]
+    item_list = sorted(glob_list, reverse=True)
     if TIME_CACHE is None:
-        return item
+        return item_list[0]
 
-    try:
-        date = datetime.datetime.fromisoformat(item[len(path)+1:-5])
-    except ValueError:
-        return 'nil'
-    if time - date > TIME_CACHE:
-        return 'nil'
-    return item
+    for item in item_list:
+        try:
+            date = datetime.datetime.fromisoformat(item[len(path)+1:-5])
+        except ValueError:
+            continue
+        if time - date <= TIME_CACHE:
+            return item
+    return 'nil'
 
 
 def sanitise(link: str, makedirs: bool = True,

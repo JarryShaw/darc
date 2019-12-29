@@ -26,19 +26,19 @@ ENV LANG-"C.UTF-8" \
 # COPY extra/torrc.alpine /etc/tor/torrc
 RUN set -x \
  && apt-get update \
- && apt-get install --yes --no-install-recommends \
+ && apt-get install --yes \
         apt-transport-https \
         apt-utils \
         ca-certificates
 COPY extra/sources.bionic.list /etc/apt/sources.list
 RUN set -x \
  && apt-get update \
- && apt-get install --yes --no-install-recommends \
+ && apt-get install --yes \
         unzip \
         software-properties-common \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
  && apt-get update \
- && apt-get install --yes --no-install-recommends \
+ && apt-get install --yes \
         python3.7 \
         python3-pip \
         python3-setuptools \
@@ -57,7 +57,7 @@ RUN set -x \
  && which chromedriver \
  ## Google Chrome
  && (dpkg --install /tmp/google-chrome-stable_current_amd64.deb || true) \
- && apt-get install --fix-broken --yes --no-install-recommends \
+ && apt-get install --fix-broken --yes \
  && dpkg --install /tmp/google-chrome-stable_current_amd64.deb \
  && which google-chrome
 

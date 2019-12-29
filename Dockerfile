@@ -70,9 +70,6 @@ RUN set -x \
         ## Google Chrome
         /tmp/google-chrome-stable_current_amd64.deb \
  && apt-get remove --auto-remove --yes \
-        apt-transport-https \
-        apt-utils \
-        ca-certificates \
         software-properties-common \
         unzip \
  && apt-get autoremove -y \
