@@ -19,7 +19,7 @@ import random
 import re
 import shutil
 import sys
-import time
+#import time
 import traceback
 import typing
 import urllib.parse
@@ -108,6 +108,9 @@ DRIVER_WAIT = int(os.getenv('DARC_WAIT', '60'))
 # extract link pattern
 EX_LINK = urllib.parse.unquote(os.getenv('EX_LINK', r'.*'))
 
+# empty page
+EMPTY = '<html><head></head><body></body></html>'
+
 ###############################################################################
 # selenium
 
@@ -118,7 +121,7 @@ _proxy.ssl_proxy = f'socks5://localhost:{SOCKS_PORT}'
 
 _norm_capabilities = webdriver.DesiredCapabilities.CHROME
 _tor_capabilities = copy.deepcopy(webdriver.DesiredCapabilities.CHROME)
-_proxy.add_to_capabilities(_tor_capabilities)
+# _proxy.add_to_capabilities(_tor_capabilities)
 
 _system = platform.system()
 
@@ -459,7 +462,7 @@ def read_sitemap(link: str, path: str) -> str:
     yield from set(link_list)
 
 
-def extract_links(link: str, html: bytes) -> typing.Iterator[str]:
+def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[str]:
     """Extract links from HTML context."""
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
@@ -607,8 +610,12 @@ def crawler(link: str):
             # save HTML
             save(link, response.content, orig=True)
 
+            # add link to queue
+            #[QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            [LIST.append(href) for href in extract_links(link, response.content)]  # pylint: disable=expression-not-assigned
+
             # wait for some time to avoid Too Many Requests
-            time.sleep(random.random() * DRIVER_WAIT)
+            #time.sleep(random.random() * DRIVER_WAIT)
 
             # retrieve source from Chrome
             with request_driver(link) as driver:
@@ -624,6 +631,11 @@ def crawler(link: str):
 
                 # get HTML source
                 html = driver.page_source
+
+                if html == EMPTY:
+                    print(term.format(f'Empty page from {link}', term.Color.RED))  # pylint: disable=no-member
+                    LIST.append(link)
+                    return
 
             # save HTML
             save(link, html)
