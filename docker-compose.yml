@@ -4,8 +4,8 @@ services:
   darc:
     image: darc
     build: .
-    ports:
-      - 9065:9065
+    # ports:
+    #   - 9065:9065
     command: [ "--file", "/app/text/market.txt" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered

@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: debug.dockerfile
     ports:
-      - 9065:1086
+      - 9050:1086
     command: [ "https://www.nytimes3xbfgragh.onion", "https://www.sjtu.edu.cn" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered

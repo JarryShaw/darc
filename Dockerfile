@@ -12,7 +12,7 @@
 FROM ubuntu:bionic
 
 LABEL Name=darc Version=0.0.1
-EXPOSE 9065
+#EXPOSE 9065
 
 ENV LANG="C.UTF-8" \
     LC_ALL="C.UTF-8" \
