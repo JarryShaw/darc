@@ -20,7 +20,7 @@ import re
 import shutil
 import sys
 #import threading
-#import time
+import time
 import traceback
 import typing
 import urllib.parse
@@ -114,7 +114,7 @@ DRIVER_WAIT = int(os.getenv('DARC_WAIT', '60'))
 EX_LINK = urllib.parse.unquote(os.getenv('EX_LINK', r'.*'))
 
 # empty page
-EMPTY = '<html><head></head><body></body></html>'
+EMPTY_PAGE = '<html><head></head><body></body></html>'
 
 # mapping dict
 MAP_SESSION = dict()
@@ -665,7 +665,7 @@ def crawler(link: str):
             # retrieve source from Chrome
             with request_driver(link) as driver:
                 # wait for page to finish loading
-                driver.implicitly_wait(DRIVER_WAIT)
+                #driver.implicitly_wait(DRIVER_WAIT)
 
                 try:
                     driver.get(link)
@@ -675,10 +675,13 @@ def crawler(link: str):
                     #LIST.append(link)
                     return
 
+                # wait for page to finish loading
+                time.wait(DRIVER_WAIT)
+
                 # get HTML source
                 html = driver.page_source
 
-                if html == EMPTY:
+                if html == EMPTY_PAGE:
                     print(term.format(f'Empty page from {link}', term.Color.RED))  # pylint: disable=no-member
                     QUEUE.put(link)
                     #LIST.append(link)
