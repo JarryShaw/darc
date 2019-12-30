@@ -149,8 +149,8 @@ elif _system == 'Linux':
         _tor_options.add_argument('--no-sandbox')
 
     # c.f. http://crbug.com/715363
-    #_norm_options.add_argument('--disable-dev-shm-usage')
-    #_tor_options.add_argument('--disable-dev-shm-usage')
+    _norm_options.add_argument('--disable-dev-shm-usage')
+    _tor_options.add_argument('--disable-dev-shm-usage')
 else:
     sys.exit(f'unsupported system: {_system}')
 
