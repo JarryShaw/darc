@@ -620,12 +620,10 @@ def crawler(link: str):
 
         else:
 
-            print(f'Requesting {link}')
+            # if it's a new host
+            new_host = not check_folder(link)
 
-            # fetch sitemap.xml
-            if not check_folder(link):
-                with contextlib.suppress(Exception):
-                    fetch_sitemap(link)
+            print(f'Requesting {link}')
 
             with request_session(link) as session:
                 try:
@@ -658,6 +656,11 @@ def crawler(link: str):
             # add link to queue
             [QUEUE.put(href) for href in extract_links(link, response.content)]  # pylint: disable=expression-not-assigned
             #[LIST.append(href) for href in extract_links(link, response.content)]  # pylint: disable=expression-not-assigned
+
+            # fetch sitemap.xml
+            if new_host:
+                with contextlib.suppress(Exception):
+                    fetch_sitemap(link)
 
             # wait for some time to avoid Too Many Requests
             #time.sleep(random.random() * DRIVER_WAIT)
