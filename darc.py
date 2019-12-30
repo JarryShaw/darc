@@ -72,9 +72,9 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 CWD = os.path.realpath(os.curdir)
 
 # process number
-DARC_CPU = os.getenv('DARC_CPU')
-if DARC_CPU is not None:
-    DARC_CPU = int(DARC_CPU)
+# DARC_CPU = os.getenv('DARC_CPU')
+# if DARC_CPU is not None:
+#     DARC_CPU = int(DARC_CPU)
 
 # data storage
 PATH_DB = os.path.abspath(os.getenv('PATH_DATA', 'data'))
@@ -679,7 +679,7 @@ def crawler(link: str):
                     return
 
                 # wait for page to finish loading
-                time.wait(DRIVER_WAIT)
+                time.sleep(DRIVER_WAIT)
 
                 # get HTML source
                 html = driver.page_source
