@@ -425,7 +425,7 @@ def norm_driver() -> Driver:
 # requests
 
 # Tor bootstrapped flag
-_TOR_BS_FLAG = TOR_STEM  # only if Tor managed through stem
+_TOR_BS_FLAG = not TOR_STEM  # only if Tor managed through stem
 # if FLAG_MP:
 #     _TOR_BS_FLAG = MANAGER.Value('B', False)
 # else:
