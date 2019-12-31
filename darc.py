@@ -87,8 +87,8 @@ if DARC_CPU is not None:
     DARC_CPU = int(DARC_CPU)
 
 # use multiprocessing?
-FLAG_MP = bool(int(os.getenv('FLAG_MULTIPROCESSING', '1')))
-FLAG_TH = bool(int(os.getenv('FLAG_MULTITHREADING', '0')))
+FLAG_MP = bool(int(os.getenv('DARC_MULTIPROCESSING', '1')))
+FLAG_TH = bool(int(os.getenv('DARC_MULTITHREADING', '0')))
 if FLAG_MP and FLAG_TH:
     sys.exit('cannot enable multiprocessing and multithreading at the same time')
 
@@ -732,7 +732,8 @@ def crawler(url: str):
                     return
 
                 # wait for page to finish loading
-                time.sleep(SE_WAIT)
+                if SE_WAIT is not None:
+                    time.sleep(SE_WAIT)
 
                 # get HTML source
                 html = driver.page_source

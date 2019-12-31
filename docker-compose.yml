@@ -10,21 +10,27 @@ services:
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
-      # processes
-      DARC_CPU: 10
       # debug mode
       DARC_DEBUG: 0
+      # processes
+      DARC_CPU: 10
+      # multiprocessing
+      DARC_MULTIPROCESSING: 0
+      # multithreading
+      DARC_MULTITHREADING: 0
       # data storage
       PATH_DATA: "data"
-      # Socks5 proxy & control port
-      SOCKS_PORT: 9050
-      SOCKS_CTRL: 9051
+      # Tor proxy & control port
+      TOR_PORT: 9050
+      TOR_CTRL: 9051
+      # Tor management method
+      TOR_STEM: 1
       # Tor authentication
       TOR_PASS: "16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F"
       # time delta for caches in seconds
       TIME_CACHE: "inf"
       # time to wait for selenium
-      DARC_WAIT: 60
+      SE_WAIT: 60
       # extract link pattern
       EX_LINK: ".%2A%3F%5C.onion"
     restart: "always"
