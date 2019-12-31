@@ -17,18 +17,18 @@ import posixpath
 import queue
 import random
 import re
-import subprocess
 import shutil
+import subprocess
 import sys
 import threading
 import time
 import traceback
 import typing
 import urllib.parse
+import urllib.robotparser
 import warnings
 
 import bs4
-import defusedxml.ElementTree
 import requests
 import selenium.common.exceptions
 import selenium.webdriver
@@ -547,17 +547,12 @@ def get_sitemap(link: str, text: str) -> Link:
     return parse_link(urllib.parse.urljoin(link, '/sitemap.xml'))
 
 
-def read_sitemap(link: str, path: str) -> typing.Iterator[str]:
+def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
     """Read sitemap."""
-    tree = defusedxml.ElementTree.parse(path)
-    root = tree.getroot()
-
     link_list = list()
-    root_tag = root.tag[-6:]
-    if root_tag == 'urlset':
-        schema = root.tag[:-6]  # <...>urlset
-        for loc in root.findall(f'{schema}url/{schema}loc'):
-            link_list.append(urllib.parse.urljoin(link, loc.text))
+    soup = bs4.BeautifulSoup(text)
+    for loc in soup.find_all('loc'):
+        link_list.append(urllib.parse.urljoin(link, loc.text))
     yield from set(link_list)
 
 
@@ -640,7 +635,13 @@ def fetch_sitemap(link: Link):
 
     sitemap_link = get_sitemap(link.url, robots_text)
     sitemap_path = has_sitemap(sitemap_link)
-    if sitemap_path is None:
+    if sitemap_path is not None:
+
+        with open(sitemap_path) as file:
+            sitemap_text = file.read()
+
+    else:
+
         with request_session(sitemap_link) as session:
             try:
                 response = session.get(sitemap_link.url)
@@ -655,10 +656,12 @@ def fetch_sitemap(link: Link):
             print(render_error(f'Failed on {sitemap_link.url} [{response.status_code}]',
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             return
-        sitemap_path = save_sitemap(sitemap_link, response.text)
+
+        sitemap_text = response.text
+        save_sitemap(sitemap_link, sitemap_text)
 
     # add link to queue
-    [QUEUE.put(url) for url in read_sitemap(link.url, sitemap_path)]  # pylint: disable=expression-not-assigned
+    [QUEUE.put(url) for url in read_sitemap(link.url, sitemap_text)]  # pylint: disable=expression-not-assigned
 
 
 def crawler(url: str):
