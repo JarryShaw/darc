@@ -99,7 +99,9 @@ PATH_DB = os.path.abspath(os.getenv('PATH_DATA', 'data'))
 os.makedirs(PATH_DB, exist_ok=True)
 
 # link file mapping
-PATH_MAP = os.path.join(PATH_DB, 'link.csv')
+PATH_LN = os.path.join(PATH_DB, 'link.csv')
+PATH_QR = os.path.join(PATH_DB, '_queue_requests.txt')
+PATH_QS = os.path.join(PATH_DB, '_queue_selenium.txt')
 
 # extract link pattern
 EX_LINK = urllib.parse.unquote(os.getenv('EX_LINK', r'.*'))
@@ -134,11 +136,9 @@ del _SE_WAIT
 SE_EMPTY = '<html><head></head><body></body></html>'
 
 # link queue
-if FLAG_MP:
-    MANAGER = multiprocessing.Manager()
-    QUEUE = MANAGER.Queue()
-else:
-    QUEUE = queue.Queue()
+MANAGER = multiprocessing.Manager()
+QUEUE_REQUESTS = MANAGER.Queue()  # url
+QUEUE_SELENIUM = MANAGER.Queue()  # (ts, url)
 
 ###############################################################################
 # error
@@ -284,7 +284,12 @@ def sanitise(link: Link, time: typing.Optional[Datetime] = None,  # pylint: disa
 def save_robots(link: Link, text: str) -> str:
     """Save `robots.txt`."""
     path = os.path.join(link.base, 'robots.txt')
+
+    root = os.path.split(path)[0]
+    os.makedirs(root, exist_ok=True)
+
     with open(path, 'w') as file:
+        print(f'# {link.url}', file=file)
         file.write(text)
     return path
 
@@ -326,19 +331,25 @@ def save_headers(time: Datetime, link: Link, response: Response) -> str:  # pyli
 
 def save_html(time: Datetime, link: Link, html: typing.Union[str, bytes], raw: bool = False) -> str:  # pylint: disable=redefined-outer-name
     """Save response."""
+    # comment line
+    comment = f'<!-- {link.url} -->'
+
     path = sanitise(link, time, raw=raw)
     if raw:
         with open(path, 'wb') as file:
+            file.write(comment.encode())
+            file.write(os.linesep.encode())
             file.write(html)
         return path
 
     with open(path, 'w') as file:
+        print(comment, file=file)
         file.write(html)
 
     safe_link = link.url.replace('"', '\\"')
     safe_path = path.replace('"', '\\"')
     with _SAVE_LOCK:
-        with open(PATH_MAP, 'a') as file:
+        with open(PATH_LN, 'a') as file:
             print(f'"{safe_link}","{safe_path}"', file=file)
     return path
 
@@ -438,18 +449,7 @@ def norm_driver() -> Driver:
 
 # Tor bootstrapped flag
 _TOR_BS_FLAG = not TOR_STEM  # only if Tor managed through stem
-# if FLAG_MP:
-#     _TOR_BS_FLAG = MANAGER.Value('B', False)
-# else:
-#     _TOR_BS_FLAG = argparse.Namespace(value=False)
-# # Tor bootstrapping lock
-# if FLAG_MP:
-#     _TOR_BS_LOCK = MANAGER.Lock()  # pylint: disable=no-member
-# elif FLAG_TH:
-#     _TOR_BS_LOCK = threading.Lock()
-# else:
-#     _TOR_BS_LOCK = contextlib.nullcontext()
-# Toe controller
+# Tor controller
 _TOR_CTRL = None
 # Tor daemon process
 _TOR_PROC = None
@@ -510,7 +510,7 @@ def tor_bootstrap():
         _tor_bootstrap()
     except Exception as error:
         warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 310, 'tor_bootstrap()')
-        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)
+        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
 def has_tor(link_pool: typing.Set[str]) -> bool:
@@ -667,7 +667,54 @@ def fetch_sitemap(link: Link):
             save_sitemap(sitemap_link, sitemap_text)
 
         # add link to queue
-        [QUEUE.put(url) for url in read_sitemap(link.url, sitemap_text)]  # pylint: disable=expression-not-assigned
+        [QUEUE_REQUESTS.put(url) for url in read_sitemap(link.url, sitemap_text)]  # pylint: disable=expression-not-assigned
+
+
+def loader(entry: typing.Tuple[Datetime, str]):
+    """Single loader for a entry link."""
+    timestamp, url = entry
+    link = parse_link(url)
+
+    try:
+        print(f'Loading {link.url}')
+
+        # retrieve source from Chrome
+        with request_driver(link) as driver:
+            # wait for page to finish loading
+            #driver.implicitly_wait(SE_WAIT)
+
+            try:
+                driver.get(link.url)
+            except selenium.common.exceptions.WebDriverException as error:
+                print(render_error(f'Fail to load {link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                QUEUE_SELENIUM.put((timestamp, link.url))
+                return
+
+            # wait for page to finish loading
+            if SE_WAIT is not None:
+                time.sleep(SE_WAIT)
+
+            # get HTML source
+            html = driver.page_source
+
+            if html == SE_EMPTY:
+                print(render_error(f'Empty page from {link.url}',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                QUEUE_SELENIUM.put((timestamp, link.url))
+                return
+
+        # save HTML
+        save_html(timestamp, link, html)
+
+        # add link to queue
+        [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+
+        print(f'Loaded {link.url}')
+    except Exception:
+        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+        QUEUE_SELENIUM.put(link.url)
 
 
 def crawler(url: str):
@@ -685,7 +732,14 @@ def crawler(url: str):
                 html = file.read()
 
             # add link to queue
-            [QUEUE.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+
+            # load sitemap.xml
+            try:
+                fetch_sitemap(link)
+            except Exception:
+                error = f'[Error loading sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
         else:
 
@@ -704,8 +758,16 @@ def crawler(url: str):
                 except requests.RequestException as error:
                     print(render_error(f'Failed on {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE.put(link.url)
+                    QUEUE_REQUESTS.put(link.url)
                     return
+
+            # fetch sitemap.xml
+            if new_host:
+                try:
+                    fetch_sitemap(link)
+                except Exception:
+                    error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
             # check content type
             ct_type = response.headers.get('Content-Type', 'undefined').casefold()
@@ -719,74 +781,83 @@ def crawler(url: str):
             # save headers
             save_headers(timestamp, link, response)
 
+            html = response.content
+            if not html:
+                print(render_error(f'Empty response from {link.url}',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                QUEUE_REQUESTS.put((timestamp, link.url))
+                return
+
             # save HTML
-            save_html(timestamp, link, response.content, raw=True)
+            save_html(timestamp, link, html, raw=True)
 
             # add link to queue
-            [QUEUE.put(href) for href in extract_links(link.url, response.content)]  # pylint: disable=expression-not-assigned
-
-            # fetch sitemap.xml
-            if new_host:
-                try:
-                    fetch_sitemap(link)
-                except Exception:
-                    error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)
+            [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
 
             if not response.ok:
                 print(render_error(f'Failed on {link.url} [{response.status_code}]',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                QUEUE.put(link.url)
+                QUEUE_REQUESTS.put(link.url)
                 return
 
-            # wait for some time to avoid Too Many Requests
-            #time.sleep(random.random() * SE_WAIT)
-
-            # retrieve source from Chrome
-            with request_driver(link) as driver:
-                # wait for page to finish loading
-                #driver.implicitly_wait(SE_WAIT)
-
-                try:
-                    driver.get(link.url)
-                except selenium.common.exceptions.WebDriverException as error:
-                    print(render_error(f'Failed on {link.url} <{error}>',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE.put(link.url)
-                    return
-
-                # wait for page to finish loading
-                if SE_WAIT is not None:
-                    time.sleep(SE_WAIT)
-
-                # get HTML source
-                html = driver.page_source
-
-                if html == SE_EMPTY:
-                    print(render_error(f'Empty page from {link.url}',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE.put(link.url)
-                    return
-
-            # save HTML
-            save_html(timestamp, link, html)
-
             # add link to queue
-            [QUEUE.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            QUEUE_SELENIUM.put((timestamp, link.url))
 
             print(f'Requested {link.url}')
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)
-        QUEUE.put(link.url)
+        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+        QUEUE_REQUESTS.put(link.url)
 
 
-def _get_links() -> typing.Optional[typing.Set[str]]:
+def _load_last_word():
+    """Load data to queue."""
+    if os.path.isfile(PATH_QR):
+        with open(PATH_QR) as file:
+            for line in file:
+                QUEUE_REQUESTS.put(line.strip())
+        os.remove(PATH_QR)
+
+    if os.path.isfile(PATH_QS):
+        with open(PATH_QS) as file:
+            for line in file:
+                timestamp, link = line.strip().split(maxsplit=1)
+                QUEUE_SELENIUM.put((datetime.datetime.fromisoformat(timestamp), link))
+        os.remove(PATH_QS)
+
+
+def _dump_last_word():
+    """Dump data in queue."""
+    with open(PATH_QR, 'w') as file:
+        for link in _get_requests_links():
+            print(link, file=file)
+
+    with open(PATH_QS, 'w') as file:
+        for timestamp, link in _get_selenium_links():
+            print(f'{timestamp.isoformat()} {link}', file=file)
+
+
+def _get_selenium_links() -> typing.Optional[typing.Set[typing.Tuple[Datetime, str]]]:
     """Fetch links from queue."""
     link_list = list()
     while True:
         try:
-            link = QUEUE.get_nowait()
+            link = QUEUE_SELENIUM.get_nowait()
+        except queue.Empty:
+            break
+        link_list.append(link)
+
+    if link_list:
+        random.shuffle(link_list)
+    return set(link_list)
+
+
+def _get_requests_links() -> typing.Optional[typing.Set[str]]:
+    """Fetch links from queue."""
+    link_list = list()
+    while True:
+        try:
+            link = QUEUE_REQUESTS.get_nowait()
         except queue.Empty:
             break
         link_list.append(link)
@@ -802,42 +873,45 @@ def _get_links() -> typing.Optional[typing.Set[str]]:
 
 def process():
     """Main process."""
-    if FLAG_MP:
+    try:
         with multiprocessing.Pool(processes=DARC_CPU) as pool:
             while True:
-                link_pool = _get_links()
+                # requests crawler
+                link_pool = _get_requests_links()
                 if link_pool:
                     pool.map(crawler, link_pool)
                 else:
                     break
+
+                # selenium loader
+                item_pool = _get_selenium_links()
+                if item_pool:
+                    if FLAG_MP:
+                        pool.map(loader, item_pool)
+                    elif FLAG_TH and DARC_CPU:
+                        thread_list = list()
+                        for _ in range(DARC_CPU):
+                            try:
+                                item = item_pool.pop()
+                            except KeyError:
+                                break
+                            thread = threading.Thread(target=loader, args=(item,))
+                            thread_list.append(thread)
+                            thread.start()
+                        for thread in thread_list:
+                            thread.join()
+                    else:
+                        [loader(item) for item in item_pool]  # pylint: disable=expression-not-assigned
+                else:
+                    break
+
+                # renew Tor session
                 renew_tor_session()
-    elif FLAG_TH and DARC_CPU:
-        while True:
-            link_pool = _get_links()
-            if link_pool:
-                while link_pool:
-                    thread_list = list()
-                    for _ in range(DARC_CPU):
-                        try:
-                            link = link_pool.pop()
-                        except KeyError:
-                            break
-                        thread = threading.Thread(target=crawler, args=(link,))
-                        thread_list.append(thread)
-                        thread.start()
-                    for thread in thread_list:
-                        thread.join()
-            else:
-                break
-            renew_tor_session()
-    else:
-        while True:
-            link_pool = _get_links()
-            if link_pool:
-                [crawler(link) for link in set(link_pool)]  # pylint: disable=expression-not-assigned
-            else:
-                break
-            renew_tor_session()
+                print(stem.util.term.format('Starting next round...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    except BaseException:
+        print(stem.util.term.format('Keeping last words...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        _dump_last_word()
+        raise
     print(stem.util.term.format('Gracefully existing...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
@@ -879,13 +953,14 @@ def main():
     args = parser.parse_args()
 
     for link in args.link:
-        QUEUE.put(link)
+        QUEUE_REQUESTS.put(link)
 
     if args.file is not None:
         with open(args.file) as file:
             for line in file:
-                QUEUE.put(line.strip())
+                QUEUE_REQUESTS.put(line.strip())
 
+    _load_last_word()
     try:
         process()
     except BaseException:
