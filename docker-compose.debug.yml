@@ -34,7 +34,9 @@ services:
       # time to wait for selenium
       SE_WAIT: 60
       # extract link pattern
-      EX_LINK: ".%2A%3F%5C.onion"
+      LINK_EX: ".%2A%3F%5C.onion"
+      # link black list
+      LINK_BL: '[ "%28.%2A%5C.%29%3Ffacebookcorewwwi%5C.onion" ]'
     restart: "on-failure"
     volumes:
       - ./cache:/app/cache

@@ -104,7 +104,10 @@ PATH_QR = os.path.join(PATH_DB, '_queue_requests.txt')
 PATH_QS = os.path.join(PATH_DB, '_queue_selenium.txt')
 
 # extract link pattern
-EX_LINK = urllib.parse.unquote(os.getenv('EX_LINK', r'.*'))
+LINK_EX = urllib.parse.unquote(os.getenv('LINK_EX', r'.*'))
+
+# link black list
+LINK_BL = [urllib.parse.unquote(link) for link in json.loads(os.getenv('LINK_BL', '[]'))]
 
 # Tor Socks5 proxy & control port
 TOR_PORT = os.getenv('TOR_PORT', '9050')
@@ -545,6 +548,21 @@ def norm_session() -> Session:
 # parse
 
 
+def _match(link: str) -> bool:
+    """Check if link in black list."""
+    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+
+    if re.match(LINK_EX, host) is None:
+        return True
+
+    for pattern in LINK_BL:
+        if re.match(pattern, host) is not None:
+            return True
+    return False
+
+
 def get_sitemap(link: str, text: str) -> typing.List[Link]:
     """Fetch link to sitemap."""
     rp = urllib.robotparser.RobotFileParser()
@@ -561,7 +579,10 @@ def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
     link_list = list()
     soup = bs4.BeautifulSoup(text, 'html5lib')
     for loc in soup.find_all('loc'):
-        link_list.append(urllib.parse.urljoin(link, loc.text))
+        temp_link = urllib.parse.urljoin(link, loc.text)
+        if _match(temp_link):
+            continue
+        link_list.append(temp_link)
     yield from set(link_list)
 
 
@@ -576,12 +597,7 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
         if href is None:
             continue
         temp_link = urllib.parse.urljoin(link, href)
-
-        # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = urllib.parse.urlparse(temp_link)
-        host = parse.hostname or parse.netloc
-
-        if re.match(EX_LINK, host) is None:
+        if _match(temp_link):
             continue
         link_list.append(temp_link)
     yield from set(link_list)
