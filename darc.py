@@ -686,14 +686,14 @@ def crawler(url: str):
                 except requests.RequestException as error:
                     print(render_error(f'Failed on {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE.put(link)
+                    QUEUE.put(link.url)
                     return
 
             save_headers(link, response)
             if not response.ok:
                 print(render_error(f'Failed on {link.url} [{response.status_code}]',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                QUEUE.put(link)
+                QUEUE.put(link.url)
                 return
 
             ct_type = response.headers.get('Content-Type', 'undefined').lower()
