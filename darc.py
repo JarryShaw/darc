@@ -44,6 +44,8 @@ import stem.util.term
 # argparse.ArgumentParser
 ArgumentParser = typing.NewType('ArgumentParser', argparse.ArgumentParser)
 
+Datetime = typing.NewType('Datetime', datetime.datetime)
+
 # requests.Response
 Response = typing.NewType('Response', requests.Response)
 
@@ -236,7 +238,7 @@ def has_folder(link: Link) -> typing.Optional[str]:
     return link.base if os.path.isdir(link.base) else None
 
 
-def has_html(link: Link) -> typing.Optional[str]:
+def has_html(time: Datetime, link: Link) -> typing.Optional[str]:  # pylint: disable=redefined-outer-name
     """Check if we need to re-craw the link."""
     path = os.path.join(link.base, link.name)
     glob_list = list()
@@ -253,27 +255,29 @@ def has_html(link: Link) -> typing.Optional[str]:
     if TIME_CACHE is None:
         return glob_list[0]
 
-    now = datetime.datetime.now()
     for item in glob_list:
         item_date = item.stem.split('_')[1]
         date = datetime.datetime.fromisoformat(item_date)
-        if now - date <= TIME_CACHE:
+        if time - date <= TIME_CACHE:
             return item
     return None
 
 
-def sanitise(link: Link, raw: bool = False, headers: bool = False) -> str:
+def sanitise(link: Link, time: typing.Optional[Datetime] = None,  # pylint: disable=redefined-outer-name
+             raw: bool = False, headers: bool = False) -> str:
     """Sanitise link to path."""
     os.makedirs(link.base, exist_ok=True)
 
     path = os.path.join(link.base, link.name)
-    time = datetime.datetime.now().isoformat()  # pylint: disable=redefined-outer-name
+    if time is None:
+        time = datetime.datetime.now()
+    ts = time.isoformat()
 
     if raw:
-        return f'{path}_{time}_raw.html'
+        return f'{path}_{ts}_raw.html'
     if headers:
-        return f'{path}_{time}.json'
-    return f'{path}_{time}.html'
+        return f'{path}_{ts}.json'
+    return f'{path}_{ts}.html'
 
 
 def save_robots(link: Link, text: str) -> str:
@@ -292,7 +296,7 @@ def save_sitemap(link: Link, text: str) -> str:
     return path
 
 
-def save_headers(link: Link, response: Response) -> str:
+def save_headers(time: Datetime, link: Link, response: Response) -> str:  # pylint: disable=redefined-outer-name
     """Save HTTP response headers."""
     data = dict()
     data['[metadata]'] = dict()
@@ -306,15 +310,15 @@ def save_headers(link: Link, response: Response) -> str:
     data['[metadata]']['Request-Method'] = response.request.method
     data['[metadata]']['Request-Headers'] = dict(response.request.headers)
 
-    path = sanitise(link, headers=True)
+    path = sanitise(link, time, headers=True)
     with open(path, 'w') as file:
         json.dump(data, file, indent=2)
     return path
 
 
-def save_html(link: Link, html: typing.Union[str, bytes], raw: bool = False) -> str:
+def save_html(time: Datetime, link: Link, html: typing.Union[str, bytes], raw: bool = False) -> str:  # pylint: disable=redefined-outer-name
     """Save response."""
-    path = sanitise(link, raw=raw)
+    path = sanitise(link, time, raw=raw)
     if raw:
         with open(path, 'wb') as file:
             file.write(html)
@@ -323,7 +327,7 @@ def save_html(link: Link, html: typing.Union[str, bytes], raw: bool = False) -> 
     with open(path, 'w') as file:
         file.write(html)
 
-    safe_link = link.replace('"', '\\"')
+    safe_link = link.url.replace('"', '\\"')
     safe_path = path.replace('"', '\\"')
     with _SAVE_LOCK:
         with open(PATH_MAP, 'a') as file:
@@ -661,7 +665,10 @@ def crawler(url: str):
     """Single crawler for a entry link."""
     link = parse_link(url)
     try:
-        path = has_html(link)
+        # timestamp
+        timestamp = datetime.datetime.now()
+
+        path = has_html(timestamp, link)
         if path is not None:
 
             print(stem.util.term.format(f'Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
@@ -689,14 +696,8 @@ def crawler(url: str):
                     QUEUE.put(link.url)
                     return
 
-            save_headers(link, response)
-            if not response.ok:
-                print(render_error(f'Failed on {link.url} [{response.status_code}]',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                QUEUE.put(link.url)
-                return
-
-            ct_type = response.headers.get('Content-Type', 'undefined').lower()
+            # check content type
+            ct_type = response.headers.get('Content-Type', 'undefined').casefold()
             if 'html' not in ct_type:
                 # text = response.content
                 # save_file(link, text)
@@ -704,8 +705,11 @@ def crawler(url: str):
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
+            # save headers
+            save_headers(timestamp, link, response)
+
             # save HTML
-            save_html(link, response.content, raw=True)
+            save_html(timestamp, link, response.content, raw=True)
 
             # add link to queue
             [QUEUE.put(href) for href in extract_links(link.url, response.content)]  # pylint: disable=expression-not-assigned
@@ -714,6 +718,12 @@ def crawler(url: str):
             if new_host:
                 with contextlib.suppress(Exception):
                     fetch_sitemap(link)
+
+            if not response.ok:
+                print(render_error(f'Failed on {link.url} [{response.status_code}]',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                QUEUE.put(link.url)
+                return
 
             # wait for some time to avoid Too Many Requests
             #time.sleep(random.random() * SE_WAIT)
@@ -745,7 +755,7 @@ def crawler(url: str):
                     return
 
             # save HTML
-            save_html(link, html)
+            save_html(timestamp, link, html)
 
             # add link to queue
             [QUEUE.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
