@@ -227,8 +227,9 @@ def has_robots(link: Link) -> typing.Optional[str]:
 
 def has_sitemap(link: Link) -> typing.Optional[str]:
     """Check if sitemap.xml already exists."""
-    # <scheme>/<host>/sitemap.xml
-    path = os.path.join(link.base, 'sitemap.xml')
+    # <scheme>/<host>/sitemap_<hash>.xml
+    name = hashlib.sha256(link.url.encode()).hexdigest()
+    path = os.path.join(link.base, f'sitemap_{name}.xml')
     return path if os.path.isfile(path) else None
 
 
@@ -290,8 +291,15 @@ def save_robots(link: Link, text: str) -> str:
 
 def save_sitemap(link: Link, text: str) -> str:
     """Save `sitemap.xml`."""
-    path = os.path.join(link.base, 'sitemap.xml')
+    # <scheme>/<host>/sitemap_<hash>.xml
+    name = hashlib.sha256(link.url.encode()).hexdigest()
+    path = os.path.join(link.base, f'sitemap_{name}.xml')
+
+    root = os.path.split(path)[0]
+    os.makedirs(root, exist_ok=True)
+
     with open(path, 'w') as file:
+        print(f'<!-- {link.url} -->', file=file)
         file.write(text)
     return path
 
@@ -537,20 +545,21 @@ def norm_session() -> Session:
 # parse
 
 
-def get_sitemap(link: str, text: str) -> Link:
+def get_sitemap(link: str, text: str) -> typing.List[Link]:
     """Fetch link to sitemap."""
-    for line in filter(lambda line: line.strip().casefold(), text.splitlines()):
-        if line.startswith('sitemap'):
-            with contextlib.suppress(ValueError):
-                _, sitemap = line.split(':')
-                return parse_link(urllib.parse.urljoin(link, sitemap.strip()))
-    return parse_link(urllib.parse.urljoin(link, '/sitemap.xml'))
+    rp = urllib.robotparser.RobotFileParser()
+    rp.parse(text.splitlines())
+
+    sitemaps = rp.site_maps()
+    if sitemaps is None:
+        return [parse_link(urllib.parse.urljoin(link, '/sitemap.xml'))]
+    return [parse_link(urllib.parse.urljoin(link, sitemap)) for sitemap in sitemaps]
 
 
 def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
     """Read sitemap."""
     link_list = list()
-    soup = bs4.BeautifulSoup(text)
+    soup = bs4.BeautifulSoup(text, 'html5lib')
     for loc in soup.find_all('loc'):
         link_list.append(urllib.parse.urljoin(link, loc.text))
     yield from set(link_list)
@@ -618,8 +627,6 @@ def fetch_sitemap(link: Link):
         with request_session(robots_link) as session:
             try:
                 response = session.get(robots_link.url)
-            except requests.exceptions.InvalidSchema:
-                return
             except requests.RequestException as error:
                 print(render_error(f'Failed on {robots_link.url} <{error}>',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
@@ -633,35 +640,34 @@ def fetch_sitemap(link: Link):
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             robots_text = ''
 
-    sitemap_link = get_sitemap(link.url, robots_text)
-    sitemap_path = has_sitemap(sitemap_link)
-    if sitemap_path is not None:
+    sitemaps = get_sitemap(link.url, robots_text)
+    for sitemap_link in sitemaps:
+        sitemap_path = has_sitemap(sitemap_link)
+        if sitemap_path is not None:
 
-        with open(sitemap_path) as file:
-            sitemap_text = file.read()
+            with open(sitemap_path) as file:
+                sitemap_text = file.read()
 
-    else:
+        else:
 
-        with request_session(sitemap_link) as session:
-            try:
-                response = session.get(sitemap_link.url)
-            except requests.exceptions.InvalidSchema:
-                return
-            except requests.RequestException as error:
-                print(render_error(f'Failed on {sitemap_link.url} <{error}>',
+            with request_session(sitemap_link) as session:
+                try:
+                    response = session.get(sitemap_link.url)
+                except requests.RequestException as error:
+                    print(render_error(f'Failed on {sitemap_link.url} <{error}>',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                    continue
+
+            if not response.ok:
+                print(render_error(f'Failed on {sitemap_link.url} [{response.status_code}]',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                return
+                continue
 
-        if not response.ok:
-            print(render_error(f'Failed on {sitemap_link.url} [{response.status_code}]',
-                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-            return
+            sitemap_text = response.text
+            save_sitemap(sitemap_link, sitemap_text)
 
-        sitemap_text = response.text
-        save_sitemap(sitemap_link, sitemap_text)
-
-    # add link to queue
-    [QUEUE.put(url) for url in read_sitemap(link.url, sitemap_text)]  # pylint: disable=expression-not-assigned
+        # add link to queue
+        [QUEUE.put(url) for url in read_sitemap(link.url, sitemap_text)]  # pylint: disable=expression-not-assigned
 
 
 def crawler(url: str):
@@ -691,7 +697,9 @@ def crawler(url: str):
             with request_session(link) as session:
                 try:
                     response = session.get(link.url)
-                except requests.exceptions.InvalidSchema:
+                except requests.exceptions.InvalidSchema as error:
+                    print(render_error(f'Failed on {link.url} <{error}>',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     return
                 except requests.RequestException as error:
                     print(render_error(f'Failed on {link.url} <{error}>',
@@ -719,8 +727,11 @@ def crawler(url: str):
 
             # fetch sitemap.xml
             if new_host:
-                with contextlib.suppress(Exception):
+                try:
                     fetch_sitemap(link)
+                except Exception:
+                    error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)
 
             if not response.ok:
                 print(render_error(f'Failed on {link.url} [{response.status_code}]',
@@ -766,8 +777,7 @@ def crawler(url: str):
             print(f'Requested {link.url}')
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-        print(render_error(error, stem.util.term.Color.CYAN),
-              end='', file=sys.stderr)
+        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)
         QUEUE.put(link.url)
 
 

@@ -3,8 +3,8 @@
 # OS Support also exists for jessie & stretch (slim and full).
 # See https://hub.docker.com/r/library/python/ for all supported Python
 # tags from Docker Hub.
-#FROM python:3.7-alpine
-#FROM python:3.7
+#FROM python:3.8-alpine
+#FROM python:3.8
 
 # If you prefer miniconda:
 #FROM continuumio/miniconda3
@@ -39,12 +39,12 @@ RUN set -x \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
  && apt-get update \
  && apt-get install --yes \
-        python3.7 \
+        python3.8 \
         python3-pip \
         python3-setuptools \
         python3-wheel \
         tor \
- && ln -sf /usr/bin/python3.7 /usr/bin/python3
+ && ln -sf /usr/bin/python3.8 /usr/bin/python3
 COPY extra/torrc.bionic /etc/tor/torrc
 
 # ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
