@@ -162,182 +162,6 @@ def render_error(message: str, colour: Color) -> str:
 
 
 ###############################################################################
-# selenium
-
-
-def get_options(type: str = 'norm') -> Options:  # pylint: disable=redefined-builtin
-    """Generate options."""
-    _system = platform.system()
-
-    # initiate options
-    options = selenium.webdriver.ChromeOptions()
-
-    if _system == 'Darwin':
-        options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-
-        if not DEBUG:
-            options.add_argument('--headless')
-    elif _system == 'Linux':
-        options.binary_location = shutil.which('google-chrome')
-        options.add_argument('--headless')
-
-        # c.f. https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
-        if getpass.getuser() == 'root':
-            options.add_argument('--no-sandbox')
-
-        # c.f. http://crbug.com/715363
-        options.add_argument('--disable-dev-shm-usage')
-    else:
-        raise UnsupportedPlatform(f'unsupported system: {_system}')
-
-    if type == 'tor':
-        # c.f. https://www.chromium.org/developers/design-documents/network-stack/socks-proxy
-        options.add_argument(f'--proxy-server=socks5://localhost:{TOR_PORT}')
-        options.add_argument('--host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost"')
-    return options
-
-
-def get_capabilities(type: str = 'norm') -> dict:  # pylint: disable=redefined-builtin
-    """Generate desied capabilities."""
-    # do not modify source dict
-    capabilities = selenium.webdriver.DesiredCapabilities.CHROME.copy()
-
-    if type == 'tor':
-        proxy = selenium.webdriver.Proxy()
-        proxy.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
-        proxy.http_proxy = f'socks5://localhost:{TOR_PORT}'
-        proxy.ssl_proxy = f'socks5://localhost:{TOR_PORT}'
-        proxy.add_to_capabilities(capabilities)
-    return capabilities
-
-
-def tor_driver() -> Driver:
-    """Tor (.onion) driver."""
-    options = get_options('tor')
-    capabilities = get_capabilities('tor')
-
-    # initiate driver
-    driver = selenium.webdriver.Chrome(options=options,
-                                       desired_capabilities=capabilities)
-    return driver
-
-
-def norm_driver() -> Driver:
-    """Normal driver."""
-    options = get_options('norm')
-    capabilities = get_capabilities('norm')
-
-    # initiate driver
-    driver = selenium.webdriver.Chrome(options=options,
-                                       desired_capabilities=capabilities)
-    return driver
-
-
-###############################################################################
-# requests
-
-# Tor bootstrapped flag
-_TOR_BS_FLAG = TOR_STEM  # only if Tor managed through stem
-# if FLAG_MP:
-#     _TOR_BS_FLAG = MANAGER.Value('B', False)
-# else:
-#     _TOR_BS_FLAG = argparse.Namespace(value=False)
-# # Tor bootstrapping lock
-# if FLAG_MP:
-#     _TOR_BS_LOCK = MANAGER.Lock()  # pylint: disable=no-member
-# elif FLAG_TH:
-#     _TOR_BS_LOCK = threading.Lock()
-# else:
-#     _TOR_BS_LOCK = contextlib.nullcontext()
-# Toe controller
-_TOR_CTRL = None
-# Tor daemon process
-_TOR_PROC = None
-
-
-def renew_tor_session():
-    """Renew Tor session."""
-    if _TOR_CTRL is None:
-        return
-    _TOR_CTRL.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
-
-
-def print_bootstrap_lines(line: str):
-    """Print Tor bootstrap lines."""
-    if DEBUG:
-        print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
-        return
-
-    if 'Bootstrapped ' in line:
-        print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
-
-
-def _tor_bootstrap():
-    """Tor bootstrap."""
-    global _TOR_BS_FLAG, _TOR_CTRL, _TOR_PROC, TOR_PASS
-
-    # launch Tor process
-    _TOR_PROC = stem.process.launch_tor_with_config(
-        config={
-            'SocksPort': TOR_PORT,
-            'ControlPort': TOR_CTRL,
-        },
-        take_ownership=True,
-        init_msg_handler=print_bootstrap_lines,
-    )
-
-    if TOR_PASS is None:
-        TOR_PASS = getpass.getpass('Tor authentication: ')
-
-    # Tor controller process
-    _TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))
-    _TOR_CTRL.authenticate(TOR_PASS)
-
-    # update flag
-    #_TOR_BS_FLAG.value = True
-    _TOR_BS_FLAG = True
-
-
-def tor_bootstrap():
-    """Bootstrap wrapper for Tor."""
-    # don't re-bootstrap
-    #if _TOR_BS_FLAG.value:
-    if _TOR_BS_FLAG:
-        return
-
-    # with _TOR_BS_LOCK:
-    try:
-        _tor_bootstrap()
-    except Exception as error:
-        warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 310, 'tor_bootstrap()')
-        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)
-
-
-def has_tor(link_pool: typing.Set[Link]) -> bool:
-    """Check if contain Tor links."""
-    for link in link_pool:
-        if re.match(r'.*?\.onion', link.host):
-            return True
-    return False
-
-
-def tor_session() -> Session:
-    """Tor (.onion) session."""
-    session = requests.Session()
-    session.proxies.update({
-        # c.f. https://stackoverflow.com/a/42972942
-        'http':  f'socks5h://localhost:{TOR_PORT}',
-        'https': f'socks5h://localhost:{TOR_PORT}'
-    })
-    return session
-
-
-def norm_session() -> Session:
-    """Normal session"""
-    return requests.Session()
-
-
-###############################################################################
 # save
 
 # lock for file I/O
@@ -349,7 +173,7 @@ else:
     _SAVE_LOCK = contextlib.nullcontext()
 
 
-@dataclasses.dataclasses
+@dataclasses.dataclass
 class Link:
     """Parsed link."""
 
@@ -526,6 +350,186 @@ def save_file(link: Link, content: bytes) -> str:
 
 
 ###############################################################################
+# selenium
+
+
+def get_options(type: str = 'norm') -> Options:  # pylint: disable=redefined-builtin
+    """Generate options."""
+    _system = platform.system()
+
+    # initiate options
+    options = selenium.webdriver.ChromeOptions()
+
+    if _system == 'Darwin':
+        options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+
+        if not DEBUG:
+            options.add_argument('--headless')
+    elif _system == 'Linux':
+        options.binary_location = shutil.which('google-chrome')
+        options.add_argument('--headless')
+
+        # c.f. https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
+        if getpass.getuser() == 'root':
+            options.add_argument('--no-sandbox')
+
+        # c.f. http://crbug.com/715363
+        options.add_argument('--disable-dev-shm-usage')
+    else:
+        raise UnsupportedPlatform(f'unsupported system: {_system}')
+
+    if type == 'tor':
+        # c.f. https://www.chromium.org/developers/design-documents/network-stack/socks-proxy
+        options.add_argument(f'--proxy-server=socks5://localhost:{TOR_PORT}')
+        options.add_argument('--host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost"')
+    return options
+
+
+def get_capabilities(type: str = 'norm') -> dict:  # pylint: disable=redefined-builtin
+    """Generate desied capabilities."""
+    # do not modify source dict
+    capabilities = selenium.webdriver.DesiredCapabilities.CHROME.copy()
+
+    if type == 'tor':
+        proxy = selenium.webdriver.Proxy()
+        proxy.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
+        proxy.http_proxy = f'socks5://localhost:{TOR_PORT}'
+        proxy.ssl_proxy = f'socks5://localhost:{TOR_PORT}'
+        proxy.add_to_capabilities(capabilities)
+    return capabilities
+
+
+def tor_driver() -> Driver:
+    """Tor (.onion) driver."""
+    options = get_options('tor')
+    capabilities = get_capabilities('tor')
+
+    # initiate driver
+    driver = selenium.webdriver.Chrome(options=options,
+                                       desired_capabilities=capabilities)
+    return driver
+
+
+def norm_driver() -> Driver:
+    """Normal driver."""
+    options = get_options('norm')
+    capabilities = get_capabilities('norm')
+
+    # initiate driver
+    driver = selenium.webdriver.Chrome(options=options,
+                                       desired_capabilities=capabilities)
+    return driver
+
+
+###############################################################################
+# requests
+
+# Tor bootstrapped flag
+_TOR_BS_FLAG = TOR_STEM  # only if Tor managed through stem
+# if FLAG_MP:
+#     _TOR_BS_FLAG = MANAGER.Value('B', False)
+# else:
+#     _TOR_BS_FLAG = argparse.Namespace(value=False)
+# # Tor bootstrapping lock
+# if FLAG_MP:
+#     _TOR_BS_LOCK = MANAGER.Lock()  # pylint: disable=no-member
+# elif FLAG_TH:
+#     _TOR_BS_LOCK = threading.Lock()
+# else:
+#     _TOR_BS_LOCK = contextlib.nullcontext()
+# Toe controller
+_TOR_CTRL = None
+# Tor daemon process
+_TOR_PROC = None
+
+
+def renew_tor_session():
+    """Renew Tor session."""
+    if _TOR_CTRL is None:
+        return
+    _TOR_CTRL.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
+
+
+def print_bootstrap_lines(line: str):
+    """Print Tor bootstrap lines."""
+    if DEBUG:
+        print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+        return
+
+    if 'Bootstrapped ' in line:
+        print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+
+
+def _tor_bootstrap():
+    """Tor bootstrap."""
+    global _TOR_BS_FLAG, _TOR_CTRL, _TOR_PROC, TOR_PASS
+
+    # launch Tor process
+    _TOR_PROC = stem.process.launch_tor_with_config(
+        config={
+            'SocksPort': TOR_PORT,
+            'ControlPort': TOR_CTRL,
+        },
+        take_ownership=True,
+        init_msg_handler=print_bootstrap_lines,
+    )
+
+    if TOR_PASS is None:
+        TOR_PASS = getpass.getpass('Tor authentication: ')
+
+    # Tor controller process
+    _TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))
+    _TOR_CTRL.authenticate(TOR_PASS)
+
+    # update flag
+    #_TOR_BS_FLAG.value = True
+    _TOR_BS_FLAG = True
+
+
+def tor_bootstrap():
+    """Bootstrap wrapper for Tor."""
+    # don't re-bootstrap
+    #if _TOR_BS_FLAG.value:
+    if _TOR_BS_FLAG:
+        return
+
+    # with _TOR_BS_LOCK:
+    try:
+        _tor_bootstrap()
+    except Exception as error:
+        warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 310, 'tor_bootstrap()')
+        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)
+
+
+def has_tor(link_pool: typing.Set[str]) -> bool:
+    """Check if contain Tor links."""
+    for link in link_pool:
+        # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+        parse = urllib.parse.urlparse(link)
+        host = parse.hostname or parse.netloc
+
+        if re.match(r'.*?\.onion', host):
+            return True
+    return False
+
+
+def tor_session() -> Session:
+    """Tor (.onion) session."""
+    session = requests.Session()
+    session.proxies.update({
+        # c.f. https://stackoverflow.com/a/42972942
+        'http':  f'socks5h://localhost:{TOR_PORT}',
+        'https': f'socks5h://localhost:{TOR_PORT}'
+    })
+    return session
+
+
+def norm_session() -> Session:
+    """Normal session"""
+    return requests.Session()
+
+
+###############################################################################
 # parse
 
 
@@ -539,7 +543,7 @@ def get_sitemap(link: str, text: str) -> Link:
     return parse_link(urllib.parse.urljoin(link, '/sitemap.xml'))
 
 
-def read_sitemap(link: str, path: str) -> typing.Iterator[Link]:
+def read_sitemap(link: str, path: str) -> typing.Iterator[str]:
     """Read sitemap."""
     tree = defusedxml.ElementTree.parse(path)
     root = tree.getroot()
@@ -549,12 +553,11 @@ def read_sitemap(link: str, path: str) -> typing.Iterator[Link]:
     if root_tag == 'urlset':
         schema = root.tag[:-6]  # <...>urlset
         for loc in root.findall(f'{schema}url/{schema}loc'):
-            link_obj = parse_link(urllib.parse.urljoin(link, loc.text))
-            link_list.append(link_obj)
+            link_list.append(urllib.parse.urljoin(link, loc.text))
     yield from set(link_list)
 
 
-def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[Link]:
+def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[str]:
     """Extract links from HTML context."""
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
@@ -564,11 +567,15 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
         href = child.get('href')
         if href is None:
             continue
-        link_obj = parse_link(urllib.parse.urljoin(link, href))
+        temp_link = urllib.parse.urljoin(link, href)
 
-        if re.match(EX_LINK, link_obj.host) is None:
+        # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+        parse = urllib.parse.urlparse(temp_link)
+        host = parse.hostname or parse.netloc
+
+        if re.match(EX_LINK, host) is None:
             continue
-        link_list.append(link_obj)
+        link_list.append(temp_link)
     yield from set(link_list)
 
 
@@ -627,7 +634,7 @@ def fetch_sitemap(link: Link):
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             robots_text = ''
 
-    sitemap_link = get_sitemap(link, robots_text)
+    sitemap_link = get_sitemap(link.url, robots_text)
     sitemap_path = has_sitemap(sitemap_link)
     if sitemap_path is None:
         with request_session(sitemap_link) as session:
@@ -647,11 +654,12 @@ def fetch_sitemap(link: Link):
         sitemap_path = save_sitemap(sitemap_link, response.text)
 
     # add link to queue
-    [QUEUE.put(url) for url in read_sitemap(link, sitemap_path)]  # pylint: disable=expression-not-assigned
+    [QUEUE.put(url) for url in read_sitemap(link.url, sitemap_path)]  # pylint: disable=expression-not-assigned
 
 
-def crawler(link: Link):
+def crawler(url: str):
     """Single crawler for a entry link."""
+    link = parse_link(url)
     try:
         path = has_html(link)
         if path is not None:
@@ -661,7 +669,7 @@ def crawler(link: Link):
                 html = file.read()
 
             # add link to queue
-            [QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            [QUEUE.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
 
         else:
 
@@ -700,7 +708,7 @@ def crawler(link: Link):
             save_html(link, response.content, raw=True)
 
             # add link to queue
-            [QUEUE.put(href) for href in extract_links(link, response.content)]  # pylint: disable=expression-not-assigned
+            [QUEUE.put(href) for href in extract_links(link.url, response.content)]  # pylint: disable=expression-not-assigned
 
             # fetch sitemap.xml
             if new_host:
@@ -720,7 +728,7 @@ def crawler(link: Link):
                 except selenium.common.exceptions.WebDriverException as error:
                     print(render_error(f'Failed on {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE.put(link)
+                    QUEUE.put(link.url)
                     return
 
                 # wait for page to finish loading
@@ -732,24 +740,24 @@ def crawler(link: Link):
                 if html == SE_EMPTY:
                     print(render_error(f'Empty page from {link.url}',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE.put(link)
+                    QUEUE.put(link.url)
                     return
 
             # save HTML
             save_html(link, html)
 
             # add link to queue
-            [QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
+            [QUEUE.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
 
             print(f'Requested {link.url}')
     except Exception:
-        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc()
-        print(render_error(error, stem.util.term.Color.YELLOW),
+        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+        print(render_error(error, stem.util.term.Color.CYAN),
               end='', file=sys.stderr)
-        QUEUE.put(link)
+        QUEUE.put(link.url)
 
 
-def _get_links() -> typing.Optional[typing.Set[Link]]:
+def _get_links() -> typing.Optional[typing.Set[str]]:
     """Fetch links from queue."""
     link_list = list()
     while True:
