@@ -2,24 +2,25 @@
 
 import argparse
 import contextlib
-#import copy
+import dataclasses
 import datetime
 import getpass
 import glob
 import hashlib
 import json
 import math
-import mimetypes
-#import multiprocessing
+import multiprocessing
 import os
+import pathlib
 import platform
 import posixpath
 import queue
 import random
 import re
+import subprocess
 import shutil
 import sys
-#import threading
+import threading
 import time
 import traceback
 import typing
@@ -29,13 +30,13 @@ import warnings
 import bs4
 import defusedxml.ElementTree
 import requests
+import selenium.common.exceptions
+import selenium.webdriver
+import selenium.webdriver.common.proxy
 import stem
-from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common.proxy import Proxy, ProxyType
-from stem.control import Controller as TorController
-from stem.process import launch_tor_with_config
-from stem.util import term
+import stem.control
+import stem.process
+import stem.util.term
 
 ###############################################################################
 # typings
@@ -49,44 +50,66 @@ Response = typing.NewType('Response', requests.Response)
 # requests.Session
 Session = typing.NewType('Session', requests.Session)
 
-# multiprocessing.Queue
-#Queue = typing.NewType('Queue', multiprocessing.Queue)
-
 # queue.Queue
 Queue = typing.NewType('Queue', queue.Queue)
 
 # subprocess.Popen
-Popen = typing.NewType('Popen', __import__('subprocess').Popen)
+Popen = typing.NewType('Popen', subprocess.Popen)
 
 # stem.control.Controller
-Controller = typing.NewType('Controller', TorController)
+Controller = typing.NewType('Controller', stem.control.Controller)
+
+# stem.util.term.Color
+Color = typing.NewType('Color', stem.util.term.Color)
 
 # selenium.webdriver.Chrome
-Driver = typing.NewType('Driver', webdriver.Chrome)
+Driver = typing.NewType('Driver', selenium.webdriver.Chrome)
+
+# selenium.webdriver.ChromeOptions
+Options = typing.NewType('Options', selenium.webdriver.ChromeOptions)
+
+# selenium.webdriver.DesiredCapabilities
+DesiredCapabilities = typing.NewType('DesiredCapabilities', selenium.webdriver.DesiredCapabilities)
 
 ###############################################################################
 # const
+
+# debug mode?
+DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
 
 # root path
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CWD = os.path.realpath(os.curdir)
 
 # process number
-# DARC_CPU = os.getenv('DARC_CPU')
-# if DARC_CPU is not None:
-#     DARC_CPU = int(DARC_CPU)
+DARC_CPU = os.getenv('DARC_CPU')
+if DARC_CPU is not None:
+    DARC_CPU = int(DARC_CPU)
+
+# use multiprocessing?
+FLAG_MP = bool(int(os.getenv('FLAG_MULTIPROCESSING', '1')))
+FLAG_TH = bool(int(os.getenv('FLAG_MULTITHREADING', '0')))
+if FLAG_MP and FLAG_TH:
+    sys.exit('cannot enable multiprocessing and multithreading at the same time')
 
 # data storage
 PATH_DB = os.path.abspath(os.getenv('PATH_DATA', 'data'))
 os.makedirs(PATH_DB, exist_ok=True)
 
-# Socks5 proxy & control port
-SOCKS_PORT = os.getenv('SOCKS_PORT', '9050')
-SOCKS_CTRL = os.getenv('SOCKS_CTRL', '9051')
+# link file mapping
+PATH_MAP = os.path.join(PATH_DB, 'link.csv')
+
+# extract link pattern
+EX_LINK = urllib.parse.unquote(os.getenv('EX_LINK', r'.*'))
+
+# Tor Socks5 proxy & control port
+TOR_PORT = os.getenv('TOR_PORT', '9050')
+TOR_CTRL = os.getenv('TOR_CTRL', '9051')
 
 # Tor authentication
 TOR_PASS = os.getenv('TOR_PASS')
 
+# use stem to manage Tor?
 TOR_STEM = bool(int(os.getenv('TOR_STEM', '1')))
 
 # time delta for caches in seconds
@@ -95,77 +118,25 @@ if math.isfinite(_TIME_CACHE):
     TIME_CACHE = datetime.timedelta(seconds=_TIME_CACHE)
 else:
     TIME_CACHE = None
-
-DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
-
-# link queue
-QUEUE = queue.Queue()
-#QUEUE = multiprocessing.Queue()
-#MANAGER = multiprocessing.Manager()
-#LIST = MANAGER.list()
-
-# link file mapping
-PATH_MAP = os.path.join(PATH_DB, 'link.csv')
+del _TIME_CACHE
 
 # selenium wait time
-DRIVER_WAIT = int(os.getenv('DARC_WAIT', '60'))
-
-# extract link pattern
-EX_LINK = urllib.parse.unquote(os.getenv('EX_LINK', r'.*'))
-
-# empty page
-EMPTY_PAGE = '<html><head></head><body></body></html>'
-
-# mapping dict
-MAP_SESSION = dict()
-MAP_DRIVER = dict()
-
-###############################################################################
-# selenium
-
-_system = platform.system()
-
-# c.f. https://peter.sh/experiments/chromium-command-line-switches/
-_norm_options = webdriver.ChromeOptions()
-_tor_options = webdriver.ChromeOptions()
-
-if _system == 'Darwin':
-    _norm_options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-    _tor_options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-
-    if not DEBUG:
-        _norm_options.add_argument('--headless')
-        _tor_options.add_argument('--headless')
-elif _system == 'Linux':
-    _norm_options.binary_location = shutil.which('google-chrome') or '/usr/bin/google-chrome'
-    _tor_options.binary_location = shutil.which('google-chrome') or '/usr/bin/google-chrome'
-
-    _norm_options.add_argument('--headless')
-    _tor_options.add_argument('--headless')
-
-    # c.f. https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
-    if getpass.getuser() == 'root':
-        _norm_options.add_argument('--no-sandbox')
-        _tor_options.add_argument('--no-sandbox')
-
-    # c.f. http://crbug.com/715363
-    _norm_options.add_argument('--disable-dev-shm-usage')
-    _tor_options.add_argument('--disable-dev-shm-usage')
+_SE_WAIT = float(os.getenv('SE_WAIT', '60'))
+if math.isfinite(_SE_WAIT):
+    SE_WAIT = _SE_WAIT
 else:
-    sys.exit(f'unsupported system: {_system}')
+    SE_WAIT = None
+del _SE_WAIT
 
-# c.f. https://www.chromium.org/developers/design-documents/network-stack/socks-proxy
-_tor_options.add_argument(f'--proxy-server=socks5://localhost:{SOCKS_PORT}')
-_tor_options.add_argument('--host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost"')
+# selenium empty page
+SE_EMPTY = '<html><head></head><body></body></html>'
 
-_norm_capabilities = webdriver.DesiredCapabilities.CHROME.copy()
-_tor_capabilities = webdriver.DesiredCapabilities.CHROME.copy()
-
-_tor_proxy = Proxy()
-_tor_proxy.proxy_type = ProxyType.MANUAL
-_tor_proxy.http_proxy = f'socks5://localhost:{SOCKS_PORT}'
-_tor_proxy.ssl_proxy = f'socks5://localhost:{SOCKS_PORT}'
-_tor_proxy.add_to_capabilities(_tor_capabilities)
+# link queue
+if FLAG_MP:
+    MANAGER = multiprocessing.Manager()
+    QUEUE = MANAGER.Queue()
+else:
+    QUEUE = queue.Queue()
 
 ###############################################################################
 # error
@@ -175,59 +146,141 @@ class UnsupportedLink(Exception):
     """The link is not supported."""
 
 
+class UnsupportedPlatform(Exception):
+    """The platform is not supported."""
+
+
 class TorBootstrapFailed(Warning):
     """Tor bootstrap process failed."""
 
 
+def render_error(message: str, colour: Color) -> str:
+    """Render error message."""
+    return ''.join(
+        stem.util.term.format(line, colour) for line in message.splitlines(True)
+    )
+
+
 ###############################################################################
-# session
+# selenium
+
+
+def get_options(type: str = 'norm') -> Options:  # pylint: disable=redefined-builtin
+    """Generate options."""
+    _system = platform.system()
+
+    # initiate options
+    options = selenium.webdriver.ChromeOptions()
+
+    if _system == 'Darwin':
+        options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+
+        if not DEBUG:
+            options.add_argument('--headless')
+    elif _system == 'Linux':
+        options.binary_location = shutil.which('google-chrome')
+        options.add_argument('--headless')
+
+        # c.f. https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
+        if getpass.getuser() == 'root':
+            options.add_argument('--no-sandbox')
+
+        # c.f. http://crbug.com/715363
+        options.add_argument('--disable-dev-shm-usage')
+    else:
+        raise UnsupportedPlatform(f'unsupported system: {_system}')
+
+    if type == 'tor':
+        # c.f. https://www.chromium.org/developers/design-documents/network-stack/socks-proxy
+        options.add_argument(f'--proxy-server=socks5://localhost:{TOR_PORT}')
+        options.add_argument('--host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost"')
+    return options
+
+
+def get_capabilities(type: str = 'norm') -> dict:  # pylint: disable=redefined-builtin
+    """Generate desied capabilities."""
+    # do not modify source dict
+    capabilities = selenium.webdriver.DesiredCapabilities.CHROME.copy()
+
+    if type == 'tor':
+        proxy = selenium.webdriver.Proxy()
+        proxy.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
+        proxy.http_proxy = f'socks5://localhost:{TOR_PORT}'
+        proxy.ssl_proxy = f'socks5://localhost:{TOR_PORT}'
+        proxy.add_to_capabilities(capabilities)
+    return capabilities
+
+
+def tor_driver() -> Driver:
+    """Tor (.onion) driver."""
+    options = get_options('tor')
+    capabilities = get_capabilities('tor')
+
+    # initiate driver
+    driver = selenium.webdriver.Chrome(options=options,
+                                       desired_capabilities=capabilities)
+    return driver
+
+
+def norm_driver() -> Driver:
+    """Normal driver."""
+    options = get_options('norm')
+    capabilities = get_capabilities('norm')
+
+    # initiate driver
+    driver = selenium.webdriver.Chrome(options=options,
+                                       desired_capabilities=capabilities)
+    return driver
+
+
+###############################################################################
+# requests
 
 # Tor bootstrapped flag
-_TOR_BS_FLAG = False
-#_TOR_BS_FLAG = multiprocessing.Value('B', False)
-# Tor bootstrapping lock
-_TOR_BS_LOCK = contextlib.nullcontext()
-#_TOR_BS_LOCK = multiprocessing.Lock()
-#_TOR_BS_LOCK = threading.Lock()
-# Tor controller
-_CTRL_TOR = None
+_TOR_BS_FLAG = TOR_STEM  # only if Tor managed through stem
+# if FLAG_MP:
+#     _TOR_BS_FLAG = MANAGER.Value('B', False)
+# else:
+#     _TOR_BS_FLAG = argparse.Namespace(value=False)
+# # Tor bootstrapping lock
+# if FLAG_MP:
+#     _TOR_BS_LOCK = MANAGER.Lock()  # pylint: disable=no-member
+# elif FLAG_TH:
+#     _TOR_BS_LOCK = threading.Lock()
+# else:
+#     _TOR_BS_LOCK = contextlib.nullcontext()
+# Toe controller
+_TOR_CTRL = None
 # Tor daemon process
-_PROC_TOR = None
+_TOR_PROC = None
 
 
 def renew_tor_session():
     """Renew Tor session."""
-    if _CTRL_TOR is None:
+    if _TOR_CTRL is None:
         return
-    _CTRL_TOR.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
+    _TOR_CTRL.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
 
 
 def print_bootstrap_lines(line: str):
     """Print Tor bootstrap lines."""
-    print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
-    # if DEBUG:
-    #     print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
-    #     return
-
-    # if 'Bootstrapped ' in line:
-    #     print(term.format(line, term.Color.BLUE))  # pylint: disable=no-member
-
-
-def tor_bootstrap():
-    """Tor bootstrap."""
-    # don't re-bootstrap
-    #if _TOR_BS_FLAG.value:
-    global _TOR_BS_FLAG
-    if _TOR_BS_FLAG:
+    if DEBUG:
+        print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
         return
 
-    global _CTRL_TOR, _PROC_TOR, TOR_PASS
+    if 'Bootstrapped ' in line:
+        print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+
+
+def _tor_bootstrap():
+    """Tor bootstrap."""
+    global _TOR_BS_FLAG, _TOR_CTRL, _TOR_PROC, TOR_PASS
 
     # launch Tor process
-    _PROC_TOR = launch_tor_with_config(
+    _TOR_PROC = stem.process.launch_tor_with_config(
         config={
-            'SocksPort': SOCKS_PORT,
-            'ControlPort': SOCKS_CTRL,
+            'SocksPort': TOR_PORT,
+            'ControlPort': TOR_CTRL,
         },
         take_ownership=True,
         init_msg_handler=print_bootstrap_lines,
@@ -237,33 +290,44 @@ def tor_bootstrap():
         TOR_PASS = getpass.getpass('Tor authentication: ')
 
     # Tor controller process
-    _CTRL_TOR = TorController.from_port(port=int(SOCKS_CTRL))
-    _CTRL_TOR.authenticate(TOR_PASS)
+    _TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))
+    _TOR_CTRL.authenticate(TOR_PASS)
 
     # update flag
     #_TOR_BS_FLAG.value = True
     _TOR_BS_FLAG = True
 
 
+def tor_bootstrap():
+    """Bootstrap wrapper for Tor."""
+    # don't re-bootstrap
+    #if _TOR_BS_FLAG.value:
+    if _TOR_BS_FLAG:
+        return
+
+    # with _TOR_BS_LOCK:
+    try:
+        _tor_bootstrap()
+    except Exception as error:
+        warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 310, 'tor_bootstrap()')
+        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)
+
+
+def has_tor(link_pool: typing.Set[Link]) -> bool:
+    """Check if contain Tor links."""
+    for link in link_pool:
+        if re.match(r'.*?\.onion', link.host):
+            return True
+    return False
+
+
 def tor_session() -> Session:
     """Tor (.onion) session."""
-    #if not _TOR_BS_FLAG.value:
-    if not _TOR_BS_FLAG:
-        with _TOR_BS_LOCK:
-            try:
-                if TOR_STEM:
-                    tor_bootstrap()
-            except Exception as error:
-                warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 148, 'tor_bootstrap()')
-                print(''.join(
-                    term.format(line, term.Color.YELLOW) for line in warning.splitlines(True)  # pylint: disable=no-member
-                ), end='', file=sys.stderr)
-
     session = requests.Session()
     session.proxies.update({
         # c.f. https://stackoverflow.com/a/42972942
-        'http':  f'socks5h://localhost:{SOCKS_PORT}',
-        'https': f'socks5h://localhost:{SOCKS_PORT}'
+        'http':  f'socks5h://localhost:{TOR_PORT}',
+        'https': f'socks5h://localhost:{TOR_PORT}'
     })
     return session
 
@@ -277,128 +341,134 @@ def norm_session() -> Session:
 # save
 
 # lock for file I/O
-_SAVE_LOCK = contextlib.nullcontext()
-#_SAVE_LOCK = multiprocessing.Lock()
-#_SAVE_LOCK = threading.Lock()
+if FLAG_MP:
+    _SAVE_LOCK = MANAGER.Lock()  # pylint: disable=no-member
+elif FLAG_TH:
+    _SAVE_LOCK = threading.Lock()
+else:
+    _SAVE_LOCK = contextlib.nullcontext()
 
 
-def check_robots(link: str) -> str:
+@dataclasses.dataclasses
+class Link:
+    """Parsed link."""
+
+    # original link
+    url: str
+
+    # urllib.parse.urlparse
+    url_parse: urllib.parse.ParseResult
+
+    # hostname / netloc
+    host: str
+    # base folder
+    base: str
+    # hashed link
+    name: str
+
+    def __hash__(self):
+        return hash(self.url)
+
+    def __str__(self):
+        return self.url
+
+
+def parse_link(link: str) -> Link:
+    """Parse link."""
+    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+    parse = urllib.parse.urlparse(link)
+    host = parse.hostname or parse.netloc
+
+    # <scheme>/<host>/<hash>-<timestamp>.html
+    base = os.path.join(PATH_DB, parse.scheme, host)
+    name = hashlib.sha256(link.encode()).hexdigest()
+
+    return Link(
+        url=link,
+        url_parse=parse,
+        host=host,
+        base=base,
+        name=name,
+    )
+
+
+def has_robots(link: Link) -> typing.Optional[str]:
     """Check if robots.txt already exists."""
-    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
-
-    # <scheme>/<identifier>/<sitemap>
-    return os.path.join(PATH_DB, parse.scheme, host, 'robots.txt')
+    # <scheme>/<host>/robots.txt
+    path = os.path.join(link.base, 'robots.txt')
+    return path if os.path.isfile(path) else None
 
 
-def check_sitemap(link: str) -> str:
+def has_sitemap(link: Link) -> typing.Optional[str]:
     """Check if sitemap.xml already exists."""
-    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
-
-    # <scheme>/<identifier>/<sitemap>
-    return os.path.join(PATH_DB, parse.scheme, host, 'sitemap.xml')
+    # <scheme>/<host>/sitemap.xml
+    path = os.path.join(link.base, 'sitemap.xml')
+    return path if os.path.isfile(path) else None
 
 
-def check_folder(link: str) -> bool:
+def has_folder(link: Link) -> typing.Optional[str]:
     """Check if folder created."""
-    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
-
-    # <scheme>/<identifier>/<timestamp>-<hash>.html
-    base = os.path.join(PATH_DB, parse.scheme, host)
-    return os.path.isdir(base)
+    # <scheme>/<host>/
+    return link.base if os.path.isdir(link.base) else None
 
 
-def check(link: str) -> str:
+def has_html(link: Link) -> typing.Optional[str]:
     """Check if we need to re-craw the link."""
-    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
-
-    # <scheme>/<identifier>/<timestamp>-<hash>.html
-    base = os.path.join(PATH_DB, parse.scheme, host)
-    name = hashlib.sha256(link.encode()).hexdigest()
-    path = os.path.join(base, name)
-    time = datetime.datetime.now()  # pylint: disable=redefined-outer-name
-
-    glob_list = glob.glob(f'{path}_*.html')
-    if not glob_list:
-        return 'nil'
-
-    item_list = sorted(glob_list, reverse=True)
-    if TIME_CACHE is None:
-        return item_list[0]
-
-    for item in item_list:
-        try:
-            date = datetime.datetime.fromisoformat(item[len(path)+1:-5])
-        except ValueError:
+    path = os.path.join(link.base, link.name)
+    glob_list = list()
+    for item in glob.glob(f'{path}_*.html'):
+        temp = pathlib.Path(item)
+        if temp.stem.endswith('_raw'):
             continue
-        if time - date <= TIME_CACHE:
+        glob_list.append(temp)
+
+    if not glob_list:
+        return None
+
+    # disable caching
+    if TIME_CACHE is None:
+        return glob_list[0]
+
+    now = datetime.datetime.now()
+    for item in glob_list:
+        item_date = item.stem.split('_')[1]
+        date = datetime.datetime.fromisoformat(item_date)
+        if now - date <= TIME_CACHE:
             return item
-    return 'nil'
+    return None
 
 
-def sanitise(link: str, makedirs: bool = True,
-             raw: bool = False, headers: bool = False) -> str:
+def sanitise(link: Link, raw: bool = False, headers: bool = False) -> str:
     """Sanitise link to path."""
-    # return urllib.parse.quote(link, safe='')
+    os.makedirs(link.base, exist_ok=True)
 
-    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
-
-    # <scheme>/<identifier>/<timestamp>-<hash>.html
-    base = os.path.join(PATH_DB, parse.scheme, host)
-    name = hashlib.sha256(link.encode()).hexdigest()
+    path = os.path.join(link.base, link.name)
     time = datetime.datetime.now().isoformat()  # pylint: disable=redefined-outer-name
 
-    if makedirs:
-        os.makedirs(base, exist_ok=True)
     if raw:
-        return f'{os.path.join(base, name)}_{time}_raw.html'
+        return f'{path}_{time}_raw.html'
     if headers:
-        return f'{os.path.join(base, name)}_{time}.json'
-    return f'{os.path.join(base, name)}_{time}.html'
+        return f'{path}_{time}.json'
+    return f'{path}_{time}.html'
 
 
-def save_robots(link: str, text: str) -> str:
+def save_robots(link: Link, text: str) -> str:
     """Save `robots.txt`."""
-    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
-
-    ## <scheme>/<identifier>/<sitemap>
-    base = os.path.join(PATH_DB, parse.scheme, host)
-    os.makedirs(base, exist_ok=True)
-
-    path = os.path.join(base, 'robots.txt')
+    path = os.path.join(link.base, 'robots.txt')
     with open(path, 'w') as file:
         file.write(text)
     return path
 
 
-def save_sitemap(link: str, text: str) -> str:
+def save_sitemap(link: Link, text: str) -> str:
     """Save `sitemap.xml`."""
-    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
-
-    # <scheme>/<identifier>/<sitemap>
-    base = os.path.join(PATH_DB, parse.scheme, host)
-    os.makedirs(base, exist_ok=True)
-
-    path = os.path.join(base, 'sitemap.xml')
+    path = os.path.join(link.base, 'sitemap.xml')
     with open(path, 'w') as file:
         file.write(text)
     return path
 
 
-def save_headers(link: str, response: Response) -> str:
+def save_headers(link: Link, response: Response) -> str:
     """Save HTTP response headers."""
     data = dict()
     data['[metadata]'] = dict()
@@ -418,10 +488,10 @@ def save_headers(link: str, response: Response) -> str:
     return path
 
 
-def save(link: str, html: typing.Union[str, bytes], orig: bool = False) -> str:
+def save_html(link: Link, html: typing.Union[str, bytes], raw: bool = False) -> str:
     """Save response."""
-    path = sanitise(link, raw=orig)
-    if orig:
+    path = sanitise(link, raw=raw)
+    if raw:
         with open(path, 'wb') as file:
             file.write(html)
         return path
@@ -437,49 +507,39 @@ def save(link: str, html: typing.Union[str, bytes], orig: bool = False) -> str:
     return path
 
 
-def save_file(link: str, text: bytes, mime: str):
+def save_file(link: Link, content: bytes) -> str:
     """Save file."""
-    # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
+    # remove leading slash '/'
+    temp_path = link.url_parse.path[1:]
 
-    temp_path = parse.path[1:]
-    if not os.path.splitext(temp_path)[1]:
-        temp_path += mimetypes.guess_extension(mime) or ''
-
-    # <scheme>/<identifier>/...
-    base = os.path.join(PATH_DB, parse.scheme, host)
+    # <scheme>/<host>/...
     root = posixpath.split(temp_path)
-    path = os.path.join(base, *root[:-1])
+    path = os.path.join(link.base, *root[:-1])
     os.makedirs(path, exist_ok=True)
 
     os.chdir(path)
     with open(root[-1], 'wb') as file:
-        file.write(text)
+        file.write(content)
     os.chdir(CWD)
 
-    safe_link = link.replace('"', '\\"')
-    safe_path = os.path.join(path, root[-1]).replace('"', '\\"')
-    with _SAVE_LOCK:
-        with open(PATH_MAP, 'a') as file:
-            print(f'"{safe_link}","{safe_path}"', file=file)
+    return os.path.join(path, root[-1])
 
 
 ###############################################################################
 # parse
 
 
-def get_sitemap(link: str, text: str) -> str:
+def get_sitemap(link: str, text: str) -> Link:
     """Fetch link to sitemap."""
     for line in filter(lambda line: line.strip().casefold(), text.splitlines()):
         if line.startswith('sitemap'):
             with contextlib.suppress(ValueError):
                 _, sitemap = line.split(':')
-                return urllib.parse.urljoin(link, sitemap.strip())
-    return urllib.parse.urljoin(link, '/sitemap.xml')
+                return parse_link(urllib.parse.urljoin(link, sitemap.strip()))
+    return parse_link(urllib.parse.urljoin(link, '/sitemap.xml'))
 
 
-def read_sitemap(link: str, path: str) -> str:
+def read_sitemap(link: str, path: str) -> typing.Iterator[Link]:
     """Read sitemap."""
     tree = defusedxml.ElementTree.parse(path)
     root = tree.getroot()
@@ -487,13 +547,14 @@ def read_sitemap(link: str, path: str) -> str:
     link_list = list()
     root_tag = root.tag[-6:]
     if root_tag == 'urlset':
-        schema = root.tag[:-6]  # urlset
+        schema = root.tag[:-6]  # <...>urlset
         for loc in root.findall(f'{schema}url/{schema}loc'):
-            link_list.append(urllib.parse.urljoin(link, loc.text))
+            link_obj = parse_link(urllib.parse.urljoin(link, loc.text))
+            link_list.append(link_obj)
     yield from set(link_list)
 
 
-def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[str]:
+def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[Link]:
     """Extract links from HTML context."""
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
@@ -503,14 +564,11 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
         href = child.get('href')
         if href is None:
             continue
-        temp_link = urllib.parse.urljoin(link, href)
+        link_obj = parse_link(urllib.parse.urljoin(link, href))
 
-        parse = urllib.parse.urlparse(temp_link)
-        host = parse.hostname or parse.netloc
-        if re.match(EX_LINK, host) is None:
+        if re.match(EX_LINK, link_obj.host) is None:
             continue
-
-        link_list.append(temp_link)
+        link_list.append(link_obj)
     yield from set(link_list)
 
 
@@ -519,143 +577,130 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
 
 # link regex mapping
 LINK_MAP = [
-    (r'.*?\.onion', tor_session, _tor_options, _tor_capabilities),
-    (r'.*', norm_session, _norm_options, _norm_capabilities),
+    (r'.*?\.onion', tor_session, tor_driver),
+    (r'.*', norm_session, norm_driver),
 ]
 
 
-def request_session(link: str) -> Session:
-    """Get session."""
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
-
-    # temp = MAP_SESSION.get(host)
-    # if temp is not None:
-    #     return temp
-
-    for regex, session, _, _ in LINK_MAP:
-        if re.match(regex, host):
-            temp = session()
-            # MAP_SESSION[host] = temp
-            return temp
+def request_session(link: Link) -> Session:
+    """Get requests session."""
+    for regex, session, _ in LINK_MAP:
+        if re.match(regex, link.host):
+            return session()
     raise UnsupportedLink(link)
 
 
-def request_driver(link: str) -> Driver:
+def request_driver(link: Link) -> Driver:
     """Get selenium driver."""
-    parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
-
-    # temp = MAP_DRIVER.get(host)
-    # if temp is not None:
-    #     return temp
-
-    for regex, _, options, capabilities in LINK_MAP:
-        if re.match(regex, host):
-            temp = webdriver.Chrome(options=options, desired_capabilities=capabilities)
-            # MAP_DRIVER[host] = temp
-            return temp
+    for regex, _, driver in LINK_MAP:
+        if re.match(regex, link.host):
+            return driver()
     raise UnsupportedLink(link)
 
 
-def fetch_sitemap(link: str):
+def fetch_sitemap(link: Link):
     """Fetch sitemap."""
-    robots_path = check_robots(link)
-    if os.path.isfile(robots_path):
+    robots_path = has_robots(link)
+    if robots_path is not None:
+
         with open(robots_path) as file:
             robots_text = file.read()
+
     else:
-        robots_link = urllib.parse.urljoin(link, '/robots.txt')
+
+        robots_link = parse_link(urllib.parse.urljoin(link.url, '/robots.txt'))
         with request_session(robots_link) as session:
             try:
-                response = session.get(robots_link)
+                response = session.get(robots_link.url)
             except requests.exceptions.InvalidSchema:
                 return
             except requests.RequestException as error:
-                print(term.format(f'Failed on {robots_link} <{error}>', term.Color.RED))  # pylint: disable=no-member
+                print(render_error(f'Failed on {robots_link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
         if response.ok:
             save_robots(robots_link, response.text)
             robots_text = response.text
         else:
-            print(term.format(f'Failed on {robots_link} [{response.status_code}]', term.Color.RED))  # pylint: disable=no-member
+            print(render_error(f'Failed on {robots_link.url} [{response.status_code}]',
+                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             robots_text = ''
 
     sitemap_link = get_sitemap(link, robots_text)
-    sitemap_path = check_sitemap(sitemap_link)
-    if not os.path.isfile(sitemap_path):
+    sitemap_path = has_sitemap(sitemap_link)
+    if sitemap_path is None:
         with request_session(sitemap_link) as session:
             try:
-                response = session.get(sitemap_link)
+                response = session.get(sitemap_link.url)
             except requests.exceptions.InvalidSchema:
                 return
             except requests.RequestException as error:
-                print(term.format(f'Failed on {sitemap_link} <{error}>', term.Color.RED))  # pylint: disable=no-member
+                print(render_error(f'Failed on {sitemap_link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
         if not response.ok:
-            print(term.format(f'Failed on {sitemap_link} [{response.status_code}]', term.Color.RED))  # pylint: disable=no-member
+            print(render_error(f'Failed on {sitemap_link.url} [{response.status_code}]',
+                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             return
-        save_sitemap(sitemap_link, response.text)
+        sitemap_path = save_sitemap(sitemap_link, response.text)
 
     # add link to queue
     [QUEUE.put(url) for url in read_sitemap(link, sitemap_path)]  # pylint: disable=expression-not-assigned
-    #[LIST.append(url) for url in read_sitemap(link, sitemap_path)]  # pylint: disable=expression-not-assigned
 
 
-def crawler(link: str):
+def crawler(link: Link):
     """Single crawler for a entry link."""
     try:
-        path = check(link)
-        if os.path.isfile(path):
+        path = has_html(link)
+        if path is not None:
 
-            print(term.format(f'Cached {link}', term.Color.YELLOW))  # pylint: disable=no-member
+            print(stem.util.term.format(f'Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
             with open(path, 'rb') as file:
                 html = file.read()
 
             # add link to queue
             [QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-            #[LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
 
         else:
 
             # if it's a new host
-            new_host = not check_folder(link)
+            new_host = has_folder(link) is None
 
-            print(f'Requesting {link}')
+            print(f'Requesting {link.url}')
 
             with request_session(link) as session:
                 try:
-                    response = session.get(link)
+                    response = session.get(link.url)
                 except requests.exceptions.InvalidSchema:
                     return
                 except requests.RequestException as error:
-                    print(term.format(f'Failed on {link} <{error}>', term.Color.RED))  # pylint: disable=no-member
+                    print(render_error(f'Failed on {link.url} <{error}>',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     QUEUE.put(link)
-                    #LIST.append(link)
                     return
 
             save_headers(link, response)
             if not response.ok:
-                print(term.format(f'Failed on {link} [{response.status_code}]', term.Color.RED))  # pylint: disable=no-member
+                print(render_error(f'Failed on {link.url} [{response.status_code}]',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 QUEUE.put(link)
-                #LIST.append(link)
                 return
 
             ct_type = response.headers.get('Content-Type', 'undefined').lower()
             if 'html' not in ct_type:
-                print(term.format(f'Unexpected content type from {link} ({ct_type})', term.Color.RED))  # pylint: disable=no-member
-                return
                 # text = response.content
-                # save_file(link, text, ct_type)
+                # save_file(link, text)
+                print(render_error(f'Unexpected content type from {link.url} ({ct_type})',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                return
 
             # save HTML
-            save(link, response.content, orig=True)
+            save_html(link, response.content, raw=True)
 
             # add link to queue
             [QUEUE.put(href) for href in extract_links(link, response.content)]  # pylint: disable=expression-not-assigned
-            #[LIST.append(href) for href in extract_links(link, response.content)]  # pylint: disable=expression-not-assigned
 
             # fetch sitemap.xml
             if new_host:
@@ -663,98 +708,105 @@ def crawler(link: str):
                     fetch_sitemap(link)
 
             # wait for some time to avoid Too Many Requests
-            #time.sleep(random.random() * DRIVER_WAIT)
+            #time.sleep(random.random() * SE_WAIT)
 
             # retrieve source from Chrome
             with request_driver(link) as driver:
                 # wait for page to finish loading
-                #driver.implicitly_wait(DRIVER_WAIT)
+                #driver.implicitly_wait(SE_WAIT)
 
                 try:
-                    driver.get(link)
-                except WebDriverException as error:
-                    print(term.format(f'Failed on {link} <{error}>', term.Color.RED))  # pylint: disable=no-member
+                    driver.get(link.url)
+                except selenium.common.exceptions.WebDriverException as error:
+                    print(render_error(f'Failed on {link.url} <{error}>',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     QUEUE.put(link)
-                    #LIST.append(link)
                     return
 
                 # wait for page to finish loading
-                time.sleep(DRIVER_WAIT)
+                time.sleep(SE_WAIT)
 
                 # get HTML source
                 html = driver.page_source
 
-                if html == EMPTY_PAGE:
-                    print(term.format(f'Empty page from {link}', term.Color.RED))  # pylint: disable=no-member
+                if html == SE_EMPTY:
+                    print(render_error(f'Empty page from {link.url}',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     QUEUE.put(link)
-                    #LIST.append(link)
                     return
 
             # save HTML
-            save(link, html)
+            save_html(link, html)
 
             # add link to queue
             [QUEUE.put(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
-            #[LIST.append(href) for href in extract_links(link, html)]  # pylint: disable=expression-not-assigned
 
-            print(f'Requested {link}')
+            print(f'Requested {link.url}')
     except Exception:
-        traceback.print_exc()
+        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc()
+        print(render_error(error, stem.util.term.Color.YELLOW),
+              end='', file=sys.stderr)
         QUEUE.put(link)
-        #LIST.append(link)
 
 
-# def process():
-#     """Main process."""
-#     with multiprocessing.Pool(processes=DARC_CPU) as pool:
-#         while True:
-#             link_list = list()
-#             while True:
-#                 try:
-#                     link = QUEUE.get_nowait()
-#                 except queue.Empty:
-#                     break
-#                 # try:
-#                 #     link = LIST.pop()
-#                 # except IndexError:
-#                 #     break
-#                 link_list.append(link)
+def _get_links() -> typing.Optional[typing.Set[Link]]:
+    """Fetch links from queue."""
+    link_list = list()
+    while True:
+        try:
+            link = QUEUE.get_nowait()
+        except queue.Empty:
+            break
+        link_list.append(link)
 
-#             if link_list:
-#                 random.shuffle(link_list)
-#                 pool.map(crawler, set(link_list))
-#             else:
-#                 break
-#             renew_tor_session()
-#     print(term.format('Gracefully exiting...', term.Color.MAGENTA))  # pylint: disable=no-member
+    if link_list:
+        random.shuffle(link_list)
+
+    link_pool = set(link_list)
+    if not _TOR_BS_FLAG and has_tor(link_pool):
+        tor_bootstrap()
+    return link_pool
 
 
 def process():
     """Main process."""
-    while True:
-        link_list = list()
+    if FLAG_MP:
+        with multiprocessing.Pool(processes=DARC_CPU) as pool:
+            while True:
+                link_pool = _get_links()
+                if link_pool:
+                    pool.map(crawler, link_pool)
+                else:
+                    break
+                renew_tor_session()
+    elif FLAG_TH and DARC_CPU:
         while True:
-            try:
-                link = QUEUE.get_nowait()
-            except queue.Empty:
+            link_pool = _get_links()
+            if link_pool:
+                while link_pool:
+                    thread_list = list()
+                    for _ in range(DARC_CPU):
+                        try:
+                            link = link_pool.pop()
+                        except KeyError:
+                            break
+                        thread = threading.Thread(target=crawler, args=(link,))
+                        thread_list.append(thread)
+                        thread.start()
+                    for thread in thread_list:
+                        thread.join()
+            else:
                 break
-            link_list.append(link)
-
-        if link_list:
-            random.shuffle(link_list)
-
-            # thread_list = list()
-            # for link in set(link_list):
-            #     thread = threading.Thread(target=crawler, args=(link,))
-            #     thread_list.append(thread)
-            #     thread.start()
-            # for thread in thread_list:
-            #     thread.join()
-
-            [crawler(link) for link in set(link_list)]  # pylint: disable=expression-not-assigned
-        else:
-            break
-    print(term.format('Gracefully exiting...', term.Color.MAGENTA))  # pylint: disable=no-member
+            renew_tor_session()
+    else:
+        while True:
+            link_pool = _get_links()
+            if link_pool:
+                [crawler(link) for link in set(link_pool)]  # pylint: disable=expression-not-assigned
+            else:
+                break
+            renew_tor_session()
+    print(stem.util.term.format('Gracefully existing...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 ###############################################################################
@@ -771,12 +823,12 @@ def _exit():
             getattr(target, function)()
 
     # close link queue
-    #caller(QUEUE, 'close')
-    #aller(MANAGER, 'shutdown')
+    if FLAG_MP:
+        caller(MANAGER, 'shutdown')
 
     # close Tor processes
-    caller(_CTRL_TOR, 'close')
-    caller(_PROC_TOR, 'terminate')
+    caller(_TOR_CTRL, 'close')
+    caller(_TOR_PROC, 'terminate')
 
 
 def get_parser() -> ArgumentParser:
@@ -796,13 +848,11 @@ def main():
 
     for link in args.link:
         QUEUE.put(link)
-        #LIST.append(link)
 
     if args.file is not None:
         with open(args.file) as file:
             for line in file:
                 QUEUE.put(line.strip())
-                #LIST.append(line.strip())
 
     try:
         process()
