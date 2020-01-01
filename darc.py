@@ -945,8 +945,7 @@ def _exit():
             getattr(target, function)()
 
     # close link queue
-    if FLAG_MP:
-        caller(MANAGER, 'shutdown')
+    caller(MANAGER, 'shutdown')
 
     # close Tor processes
     caller(_TOR_CTRL, 'close')
