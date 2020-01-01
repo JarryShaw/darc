@@ -37,6 +37,7 @@ import stem
 import stem.control
 import stem.process
 import stem.util.term
+import urllib3
 
 ###############################################################################
 # typings
@@ -701,6 +702,11 @@ def loader(entry: typing.Tuple[Datetime, str]):
 
             try:
                 driver.get(link.url)
+            except urllib3.exceptions.HTTPError as error:
+                print(render_error(f'Fail to load {link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                QUEUE_SELENIUM.put((timestamp, link.url))
+                return
             except selenium.common.exceptions.WebDriverException as error:
                 print(render_error(f'Fail to load {link.url} <{error}>',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
