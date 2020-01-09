@@ -27,6 +27,8 @@ services:
       TOR_STEM: 1
       # Tor authentication
       TOR_PASS: "16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F"
+      # Tor bootstrap retry
+      TOR_RETRY: 10
       # time delta for caches in seconds
       TIME_CACHE: "inf"
       # time to wait for selenium

@@ -120,6 +120,9 @@ TOR_PASS = os.getenv('TOR_PASS')
 # use stem to manage Tor?
 TOR_STEM = bool(int(os.getenv('TOR_STEM', '1')))
 
+# Tor bootstrap retry
+TOR_RETRY = int(os.getenv('TOR_RETRY', '3'))
+
 # time delta for caches in seconds
 _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))
 if math.isfinite(_TIME_CACHE):
@@ -510,11 +513,13 @@ def tor_bootstrap():
         return
 
     # with _TOR_BS_LOCK:
-    try:
-        _tor_bootstrap()
-    except Exception as error:
-        warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 310, 'tor_bootstrap()')
-        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    for _ in range(TOR_RETRY+1):
+        try:
+            _tor_bootstrap()
+            break
+        except Exception as error:
+            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 514, 'tor_bootstrap()')
+            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
 def has_tor(link_pool: typing.Set[str]) -> bool:
