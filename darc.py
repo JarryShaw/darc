@@ -107,6 +107,9 @@ PATH_LN = os.path.join(PATH_DB, 'link.csv')
 PATH_QR = os.path.join(PATH_DB, '_queue_requests.txt')
 PATH_QS = os.path.join(PATH_DB, '_queue_selenium.txt')
 
+# PID file
+PATH_ID = os.path.join(PATH_DB, 'darc.pid')
+
 # extract link pattern
 LINK_EX = urllib.parse.unquote(os.getenv('LINK_EX', r'.*'))
 
@@ -842,6 +845,9 @@ def crawler(url: str):
 
 def _load_last_word():
     """Load data to queue."""
+    with open(PATH_ID, 'w') as file:
+        print(os.getpid(), file=file)
+
     if os.path.isfile(PATH_QR):
         with open(PATH_QR) as file:
             for line in file:
@@ -865,6 +871,9 @@ def _dump_last_word():
     with open(PATH_QS, 'w') as file:
         for timestamp, link in _get_selenium_links():
             print(f'{timestamp.isoformat()} {link}', file=file)
+
+    if os.path.isfile(PATH_ID):
+        os.remove(PATH_ID)
 
 
 def _get_selenium_links() -> typing.Optional[typing.Set[typing.Tuple[Datetime, str]]]:
@@ -904,6 +913,10 @@ def _get_requests_links() -> typing.Optional[typing.Set[str]]:
 def process():
     """Main process."""
     try:
+        # load remaining links
+        _load_last_word()
+
+        # start mainloop
         with multiprocessing.Pool(processes=DARC_CPU) as pool:
             while True:
                 # requests crawler
@@ -994,7 +1007,6 @@ def main():
             for line in file:
                 QUEUE_REQUESTS.put(line.strip())
 
-    _load_last_word()
     try:
         process()
     except BaseException:
