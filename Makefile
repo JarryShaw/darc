@@ -87,6 +87,13 @@ docker-test: clean-misc
 	clear
 	docker run -it -v ${PATH_ROOT}/data:/darc/db darc 'https://www.sjtu.edu.cn'
 
+docker-restart:
+	git pull
+	docker-compose stop
+	docker-compose build
+	docker system prune --volumes -f
+	docker-compose up -d
+
 compose-test: clean-misc clean-docker
 	docker-compose --file docker-compose.debug.yml build
 	clear
