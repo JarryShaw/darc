@@ -40,6 +40,7 @@ gitlab-prep:
 	    docker-compose.yml \
 	    requirements.debug.txt \
 	    requirements.txt \
+	    run.sh \
 	    setup.cfg \
 	    setup.py \
 	    test_darc.py gitlab
