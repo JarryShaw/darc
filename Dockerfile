@@ -76,7 +76,8 @@ RUN set -x \
  && apt-get autoclean \
  && apt-get clean
 
-ENTRYPOINT [ "python3", "darc.py" ]
+#ENTRYPOINT [ "python3", "darc.py" ]
+ENTRYPOINT [ "bash", "run.sh" ]
 CMD [ "--help" ]
 
 # Using pipenv:
@@ -93,6 +94,7 @@ COPY darc.py \
      LICENSE \
      MANIFEST.in \
      README.md \
+     run.sh \
      setup.cfg \
      setup.py \
      test_darc.py /app/

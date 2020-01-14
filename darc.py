@@ -77,6 +77,9 @@ DesiredCapabilities = typing.NewType('DesiredCapabilities', selenium.webdriver.D
 ###############################################################################
 # const
 
+# reboot mode?
+REBOOT = bool(int(os.getenv('DARC_REBOOT', '0')))
+
 # debug mode?
 DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
 
@@ -930,6 +933,11 @@ def process():
                     else:
                         [loader(item) for item in item_pool]  # pylint: disable=expression-not-assigned
                 else:
+                    break
+
+                # quit in reboot mode
+                if REBOOT:
+                    _dump_last_word()
                     break
 
                 # renew Tor session
