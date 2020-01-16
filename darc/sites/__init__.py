@@ -7,7 +7,7 @@ import darc.typing as typing
 from darc.link import Link
 
 SITEMAP = {
-    'www.bing.com': 'sample',  # darc.sites.sample
+    'www.sample.com': 'sample',  # darc.sites.sample
 }
 
 
