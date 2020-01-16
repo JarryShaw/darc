@@ -73,6 +73,7 @@ attrs = dict(
         'requests[socks]',
         'selenium',
         'stem',
+        'typing_extensions',
     ]
 )
 
