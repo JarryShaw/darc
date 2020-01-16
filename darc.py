@@ -869,7 +869,7 @@ def _dump_last_word():
             print(link, file=file)
 
     with open(PATH_QS, 'w') as file:
-        for timestamp, link in _get_selenium_links():
+        for (timestamp, link) in _get_selenium_links():
             print(f'{timestamp.isoformat()} {link}', file=file)
 
     if os.path.isfile(PATH_ID):
@@ -878,17 +878,17 @@ def _dump_last_word():
 
 def _get_selenium_links() -> typing.Optional[typing.Set[typing.Tuple[Datetime, str]]]:
     """Fetch links from queue."""
-    link_list = list()
+    entry_list = list()
     while True:
         try:
-            link = QUEUE_SELENIUM.get_nowait()
+            entry = QUEUE_SELENIUM.get_nowait()
         except queue.Empty:
             break
-        link_list.append(link)
+        entry_list.append(entry)
 
-    if link_list:
-        random.shuffle(link_list)
-    return set(link_list)
+    if entry_list:
+        random.shuffle(entry_list)
+    return set(entry_list)
 
 
 def _get_requests_links() -> typing.Optional[typing.Set[str]]:
