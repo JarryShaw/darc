@@ -3,6 +3,8 @@ global-exclude *.py[cod]$
 
 prune .venv
 prune __pycache__
+prune gitlab
+prune temp
 
 include README.md
 include LICENSE

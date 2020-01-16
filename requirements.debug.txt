@@ -17,8 +17,9 @@ idna==2.8
 pysocks==1.7.1
 requests[socks]==2.22.0
 selenium==3.141.0
-six==1.13.0
+six==1.14.0
 soupsieve==1.9.5
 stem==1.8.0
+typing-extensions==3.7.4.1
 urllib3==1.25.7
 webencodings==0.5.1

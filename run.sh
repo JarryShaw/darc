@@ -4,5 +4,5 @@ set -e
 
 while true; do
     echo "+ Starting application..."
-    python3 darc.py $@
+    python3 -m darc $@
 done

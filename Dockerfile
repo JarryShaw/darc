@@ -90,7 +90,7 @@ CMD [ "--help" ]
 #CMD /bin/bash -c "source activate myenv && python3 -m darc"
 
 WORKDIR /app
-COPY darc.py \
+COPY darc \
      LICENSE \
      MANIFEST.in \
      README.md \
@@ -98,3 +98,4 @@ COPY darc.py \
      setup.cfg \
      setup.py \
      test_darc.py /app/
+RUN python3 -m pip install -e .

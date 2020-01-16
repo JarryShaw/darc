@@ -26,6 +26,7 @@ beautifulsoup4 = {extras = ["html5lib"],version = "*"}
 requests = {extras = ["socks"],version = "*"}
 stem = "*"
 selenium = "*"
+typing-extensions = "*"
 
 [requires]
 python_version = "3.8"

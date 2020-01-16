@@ -15,6 +15,7 @@ gitlab-prep:
 	find gitlab -depth 1 | grep -v '.git' | xargs rm -rf
 	cp -rf \
 	    browser \
+	    darc \
 	    driver \
 	    extra \
 	    tbb \
@@ -34,7 +35,6 @@ gitlab-prep:
 	    Pipfile \
 	    Pipfile.lock \
 	    README.md \
-	    darc.py \
 	    debug.dockerfile \
 	    docker-compose.debug.yml \
 	    docker-compose.yml \
