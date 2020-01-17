@@ -54,3 +54,6 @@ DesiredCapabilities = typing.NewType('DesiredCapabilities', selenium.webdriver.D
 
 # types.ModuleType
 ModuleType = typing.NewType('ModuleType', types.ModuleType)
+
+# types.FrameType
+FrameType = typing.NewType('FrameType', types.FrameType)

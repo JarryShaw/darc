@@ -44,3 +44,4 @@ services:
       - ./text:/app/text
       - ./cache:/app/cache
       - /data/darc:/app/data
+    stop_signal: SIGINT

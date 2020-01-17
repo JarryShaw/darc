@@ -45,3 +45,4 @@ services:
     volumes:
       - ./cache:/app/cache
       - ./data:/app/data
+    stop_signal: SIGINT

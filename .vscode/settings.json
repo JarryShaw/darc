@@ -25,6 +25,7 @@
         "ptyprocess",
         "pygments",
         "pysocks",
+        "signum",
         "tbselenium",
         "tmpfs",
         "torrc",
