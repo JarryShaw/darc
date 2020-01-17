@@ -146,9 +146,7 @@ def crawler(url: str):
             with request_session(link) as session:
                 try:
                     # requests session hook
-                    session = crawler_hook(link, session)
-
-                    response = session.get(link.url)
+                    response = crawler_hook(link, session)
                 except requests.exceptions.InvalidSchema as error:
                     print(render_error(f'Failed on {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
@@ -222,8 +220,6 @@ def loader(entry: typing.Tuple[typing.Datetime, str]):
             #driver.implicitly_wait(SE_WAIT)
 
             try:
-                driver.get(link.url)
-
                 # selenium driver hook
                 driver = loader_hook(link, driver)
             except urllib3.exceptions.HTTPError as error:

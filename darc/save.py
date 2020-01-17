@@ -48,12 +48,13 @@ def has_folder(link: Link) -> typing.Optional[str]:
 def has_html(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pylint: disable=redefined-outer-name
     """Check if we need to re-craw the link."""
     path = os.path.join(link.base, link.name)
-    glob_list = list()
+    temp_list = list()
     for item in glob.glob(f'{path}_*.html'):
         temp = pathlib.Path(item)
         if temp.stem.endswith('_raw'):
             continue
-        glob_list.append(temp)
+        temp_list.append(temp)
+    glob_list = sorted(temp_list, reverse=True)
 
     if not glob_list:
         return None
