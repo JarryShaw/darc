@@ -88,9 +88,12 @@ docker-test: clean-misc
 	clear
 	docker run -it -v ${PATH_ROOT}/data:/darc/db darc 'https://www.sjtu.edu.cn'
 
-docker-restart:
-	git pull
+docker-stop:
+	[ -f ${PATH_DATA}/darc.pid ] && docker-compose exec darc kill -2 $(shell cat ${PATH_DATA}/darc.pid)
 	docker-compose stop
+
+docker-restart: docker-stop
+	git pull
 	docker-compose build
 	docker system prune --volumes -f
 	docker-compose up -d
