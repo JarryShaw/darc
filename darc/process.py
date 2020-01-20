@@ -6,6 +6,7 @@ import multiprocessing
 import os
 import queue
 import random
+import signal
 import threading
 
 import stem
@@ -15,7 +16,7 @@ import stem.util.term
 
 import darc.typing as typing
 from darc.const import (DARC_CPU, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS, QUEUE_REQUESTS,
-                        QUEUE_SELENIUM, REBOOT)
+                        QUEUE_SELENIUM, REBOOT, getpid)
 from darc.crawl import crawler, loader
 from darc.proxy.tor import _TOR_BS_FLAG, has_tor, renew_tor_session, tor_bootstrap
 
@@ -41,34 +42,23 @@ def _load_last_word():
 
 def _dump_last_word():
     """Dump data in queue."""
-    with open(PATH_QR, 'w') as file:
-        for link in _get_requests_links():
-            print(link, file=file)
+    requests_links = _get_requests_links()
+    if requests_links:
+        with open(PATH_QR, 'w') as file:
+            for link in requests_links:
+                print(link, file=file)
 
-    with open(PATH_QS, 'w') as file:
-        for (timestamp, link) in _get_selenium_links():
-            print(f'{timestamp.isoformat()} {link}', file=file)
+    selenium_links = _get_selenium_links()
+    if selenium_links:
+        with open(PATH_QS, 'w') as file:
+            for (timestamp, link) in selenium_links:
+                print(f'{timestamp.isoformat()} {link}', file=file)
 
     if os.path.isfile(PATH_ID):
         os.remove(PATH_ID)
 
 
-def _get_selenium_links() -> typing.Optional[typing.Set[typing.Tuple[typing.Datetime, str]]]:
-    """Fetch links from queue."""
-    entry_list = list()
-    while True:
-        try:
-            entry = QUEUE_SELENIUM.get_nowait()
-        except queue.Empty:
-            break
-        entry_list.append(entry)
-
-    if entry_list:
-        random.shuffle(entry_list)
-    return set(entry_list)
-
-
-def _get_requests_links() -> typing.Optional[typing.Set[str]]:
+def _get_requests_links() -> typing.Set[str]:
     """Fetch links from queue."""
     link_list = list()
     while True:
@@ -87,8 +77,47 @@ def _get_requests_links() -> typing.Optional[typing.Set[str]]:
     return link_pool
 
 
+def _get_selenium_links() -> typing.Set[typing.Tuple[typing.Datetime, str]]:
+    """Fetch links from queue."""
+    entry_list = list()
+    while True:
+        try:
+            entry = QUEUE_SELENIUM.get_nowait()
+        except queue.Empty:
+            break
+        entry_list.append(entry)
+
+    if entry_list:
+        random.shuffle(entry_list)
+    return set(entry_list)
+
+
+def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
+                    frame: typing.Optional[typing.FrameType] = None):  # pylint: disable=unused-argument
+    """Signal handler."""
+    if os.getpid() != getpid():
+        return
+
+    print(stem.util.term.format('Keeping last words...',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
+    # keep records
+    _dump_last_word()
+
+    try:
+        strsignal = signal.strsignal(signum)
+    except Exception:
+        strsignal = signum
+    print(stem.util.term.format(f'Exit with signal: {strsignal} <{frame}>',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
+
 def process():
     """Main process."""
+    #signal.signal(signal.SIGINT, _signal_handler)
+    signal.signal(signal.SIGTERM, _signal_handler)
+    #signal.signal(signal.SIGKILL, _signal_handler)
+
     try:
         # load remaining links
         _load_last_word()

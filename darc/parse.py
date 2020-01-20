@@ -57,8 +57,7 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
     link_list = []
     for child in filter(lambda element: isinstance(element, bs4.element.Tag),
                         soup.descendants):
-        href = child.get('href')
-        if href is None:
+        if (href := child.get('href', child.get('src'))) is None:
             continue
         temp_link = urllib.parse.urljoin(link, href)
         if _match(temp_link):

@@ -28,6 +28,7 @@ RUN set -x \
  && apt-get install --yes --no-install-recommends \
         unzip \
         software-properties-common \
+        tzdata \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
  && apt-get update \
  && apt-get install --yes --no-install-recommends \
@@ -38,6 +39,12 @@ RUN set -x \
         tor \
  && ln -sf /usr/bin/python3.8 /usr/bin/python3
 COPY extra/torrc.bionic /etc/tor/torrc
+
+# set up timezone
+RUN echo 'Asia/Shanghai' > /etc/timezone \
+ && rm -f /etc/localtime \
+ && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+ && dpkg-reconfigure -f noninteractive tzdata
 
 # ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
 # ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /

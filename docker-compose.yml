@@ -4,8 +4,6 @@ services:
   darc:
     image: darc
     build: .
-    # ports:
-    #   - 9065:9065
     command: [ "--file", "/app/text/market.txt" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
@@ -44,4 +42,7 @@ services:
       - ./text:/app/text
       - ./cache:/app/cache
       - /data/darc:/app/data
+      ## change timezone
+      - /etc:/etc
+      - /usr/share/zoneinfo:/usr/share/zoneinfo
     stop_signal: SIGINT

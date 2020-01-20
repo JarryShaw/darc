@@ -45,4 +45,7 @@ services:
     volumes:
       - ./cache:/app/cache
       - ./data:/app/data
+      ## change timezone
+      - /etc:/etc
+      - /usr/share/zoneinfo:/usr/share/zoneinfo
     stop_signal: SIGINT

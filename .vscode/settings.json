@@ -30,6 +30,7 @@
         "tmpfs",
         "torrc",
         "tsinghua",
+        "tzdata",
         "wcwidth",
         "xenial",
         "xvzf"

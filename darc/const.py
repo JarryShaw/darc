@@ -84,3 +84,11 @@ SE_EMPTY = '<html><head></head><body></body></html>'
 MANAGER = multiprocessing.Manager()
 QUEUE_REQUESTS = MANAGER.Queue()  # url
 QUEUE_SELENIUM = MANAGER.Queue()  # (ts, url)
+
+
+def getpid() -> int:
+    """Get process ID."""
+    if os.path.isfile(PATH_ID):
+        with open(PATH_ID) as file:
+            return int(file.read().strip())
+    return -1

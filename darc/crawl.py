@@ -6,7 +6,6 @@ import os
 import re
 import shutil
 import sys
-import time
 import traceback
 import urllib.parse
 import urllib.robotparser
@@ -22,7 +21,7 @@ import stem.util.term
 import urllib3
 
 import darc.typing as typing
-from darc.const import QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY, SE_WAIT
+from darc.const import QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY
 from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
 from darc.parse import extract_links, get_sitemap, read_sitemap
@@ -143,6 +142,14 @@ def crawler(url: str):
 
             print(f'Requesting {link.url}')
 
+            # fetch sitemap.xml
+            if new_host:
+                try:
+                    fetch_sitemap(link)
+                except Exception:
+                    error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+
             with request_session(link) as session:
                 try:
                     # requests session hook
@@ -157,13 +164,8 @@ def crawler(url: str):
                     QUEUE_REQUESTS.put(link.url)
                     return
 
-            # fetch sitemap.xml
-            if new_host:
-                try:
-                    fetch_sitemap(link)
-                except Exception:
-                    error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+            # save headers
+            save_headers(timestamp, link, response)
 
             # check content type
             ct_type = response.headers.get('Content-Type', 'undefined').casefold()
@@ -173,9 +175,6 @@ def crawler(url: str):
                 print(render_error(f'Unexpected content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
-
-            # save headers
-            save_headers(timestamp, link, response)
 
             html = response.content
             if not html:
@@ -232,10 +231,6 @@ def loader(entry: typing.Tuple[typing.Datetime, str]):
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 QUEUE_SELENIUM.put((timestamp, link.url))
                 return
-
-            # wait for page to finish loading
-            if SE_WAIT is not None:
-                time.sleep(SE_WAIT)
 
             # get HTML source
             html = driver.page_source
