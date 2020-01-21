@@ -26,8 +26,8 @@ from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
 from darc.parse import extract_links, get_sitemap, read_sitemap
 from darc.requests import norm_session, tor_session
-from darc.save import (has_folder, has_html, has_robots, has_sitemap, save_headers, save_html,
-                       save_robots, save_sitemap)
+from darc.save import (has_folder, has_html, has_raw, has_robots, has_sitemap, save_headers,
+                       save_html, save_robots, save_sitemap)
 from darc.selenium import norm_driver, tor_driver
 from darc.sites import crawler_hook, loader_hook
 
@@ -81,7 +81,7 @@ def fetch_sitemap(link: Link):
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             robots_text = ''
 
-    sitemaps = get_sitemap(link.url, robots_text)
+    sitemaps = get_sitemap(link.url, robots_text, host=link.host)
     for sitemap_link in sitemaps:
         sitemap_path = has_sitemap(sitemap_link)
         if sitemap_path is not None:
@@ -118,15 +118,15 @@ def crawler(url: str):
         # timestamp
         timestamp = datetime.datetime.now()
 
-        path = has_html(timestamp, link)
+        path = has_raw(timestamp, link)
         if path is not None:
 
-            print(stem.util.term.format(f'Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+            print(stem.util.term.format(f'[REQUESTS] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
             with open(path, 'rb') as file:
                 html = file.read()
 
             # add link to queue
-            [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
 
             # load sitemap.xml
             try:
@@ -211,43 +211,52 @@ def loader(entry: typing.Tuple[typing.Datetime, str]):
     link = parse_link(url)
 
     try:
-        print(f'Loading {link.url}')
+        path = has_html(timestamp, link)
+        if path is not None:
 
-        # retrieve source from Chrome
-        with request_driver(link) as driver:
-            # wait for page to finish loading
-            #driver.implicitly_wait(SE_WAIT)
+            print(stem.util.term.format(f'[SELENIUM] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+            with open(path, 'rb') as file:
+                html = file.read()
 
-            try:
-                # selenium driver hook
-                driver = loader_hook(link, driver)
-            except urllib3.exceptions.HTTPError as error:
-                print(render_error(f'Fail to load {link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                QUEUE_SELENIUM.put((timestamp, link.url))
-                return
-            except selenium.common.exceptions.WebDriverException as error:
-                print(render_error(f'Fail to load {link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                QUEUE_SELENIUM.put((timestamp, link.url))
-                return
+            # add link to queue
+            [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
 
-            # get HTML source
-            html = driver.page_source
+        else:
 
-            if html == SE_EMPTY:
-                print(render_error(f'Empty page from {link.url}',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                QUEUE_SELENIUM.put((timestamp, link.url))
-                return
+            print(f'Loading {link.url}')
 
-        # save HTML
-        save_html(timestamp, link, html)
+            # retrieve source from Chrome
+            with request_driver(link) as driver:
+                try:
+                    # selenium driver hook
+                    driver = loader_hook(link, driver)
+                except urllib3.exceptions.HTTPError as error:
+                    print(render_error(f'Fail to load {link.url} <{error}>',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                    QUEUE_SELENIUM.put((timestamp, link.url))
+                    return
+                except selenium.common.exceptions.WebDriverException as error:
+                    print(render_error(f'Fail to load {link.url} <{error}>',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                    QUEUE_SELENIUM.put((timestamp, link.url))
+                    return
 
-        # add link to queue
-        [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+                # get HTML source
+                html = driver.page_source
 
-        print(f'Loaded {link.url}')
+                if html == SE_EMPTY:
+                    print(render_error(f'Empty page from {link.url}',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                    QUEUE_SELENIUM.put((timestamp, link.url))
+                    return
+
+            # save HTML
+            save_html(timestamp, link, html)
+
+            # add link to queue
+            [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+
+            print(f'Loaded {link.url}')
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member

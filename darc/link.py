@@ -6,6 +6,7 @@ import hashlib
 import os
 import urllib
 
+import darc.typing as typing
 from darc.const import PATH_DB
 
 
@@ -33,11 +34,12 @@ class Link:
         return self.url
 
 
-def parse_link(link: str) -> Link:
+def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     """Parse link."""
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
+    if host is None:
+        host = parse.hostname or parse.netloc
 
     # <scheme>/<host>/<hash>-<timestamp>.html
     base = os.path.join(PATH_DB, parse.scheme, host)

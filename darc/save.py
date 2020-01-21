@@ -4,7 +4,6 @@
 import contextlib
 import datetime
 import glob
-import hashlib
 import json
 import os
 import pathlib
@@ -34,8 +33,7 @@ def has_robots(link: Link) -> typing.Optional[str]:
 def has_sitemap(link: Link) -> typing.Optional[str]:
     """Check if sitemap.xml already exists."""
     # <scheme>/<host>/sitemap_<hash>.xml
-    name = hashlib.sha256(link.url.encode()).hexdigest()
-    path = os.path.join(link.base, f'sitemap_{name}.xml')
+    path = os.path.join(link.base, f'sitemap_{link.name}.xml')
     return path if os.path.isfile(path) else None
 
 
@@ -45,8 +43,29 @@ def has_folder(link: Link) -> typing.Optional[str]:
     return link.base if os.path.isdir(link.base) else None
 
 
+def has_raw(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pylint: disable=redefined-outer-name
+    """Check if we need to re-craw the link by requests."""
+    path = os.path.join(link.base, link.name)
+    temp_list = glob.glob(f'{path}_*_raw.html')
+    glob_list = sorted((pathlib.Path(item) for item in temp_list), reverse=True)
+
+    if not glob_list:
+        return None
+
+    # disable caching
+    if TIME_CACHE is None:
+        return glob_list[0]
+
+    for item in glob_list:
+        item_date = item.stem.split('_')[1]
+        date = datetime.datetime.fromisoformat(item_date)
+        if time - date <= TIME_CACHE:
+            return item
+    return None
+
+
 def has_html(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pylint: disable=redefined-outer-name
-    """Check if we need to re-craw the link."""
+    """Check if we need to re-craw the link by selenium."""
     path = os.path.join(link.base, link.name)
     temp_list = list()
     for item in glob.glob(f'{path}_*.html'):
@@ -88,6 +107,13 @@ def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylin
     return f'{path}_{ts}.html'
 
 
+def save_link(link: Link):
+    """Save link hash database."""
+    with _SAVE_LOCK:
+        with open(PATH_LN, 'a') as file:
+            print(f'{link.url_parse.scheme}/{link.host} {link.name} {link}', file=file)
+
+
 def save_robots(link: Link, text: str) -> str:
     """Save `robots.txt`."""
     path = os.path.join(link.base, 'robots.txt')
@@ -104,8 +130,7 @@ def save_robots(link: Link, text: str) -> str:
 def save_sitemap(link: Link, text: str) -> str:
     """Save `sitemap.xml`."""
     # <scheme>/<host>/sitemap_<hash>.xml
-    name = hashlib.sha256(link.url.encode()).hexdigest()
-    path = os.path.join(link.base, f'sitemap_{name}.xml')
+    path = os.path.join(link.base, f'sitemap_{link.name}.xml')
 
     root = os.path.split(path)[0]
     os.makedirs(root, exist_ok=True)
@@ -113,6 +138,8 @@ def save_sitemap(link: Link, text: str) -> str:
     with open(path, 'w') as file:
         print(f'<!-- {link.url} -->', file=file)
         file.write(text)
+
+    save_link(link)
     return path
 
 
@@ -133,6 +160,8 @@ def save_headers(time: typing.Datetime, link: Link, response: typing.Response) -
     path = sanitise(link, time, headers=True)
     with open(path, 'w') as file:
         json.dump(data, file, indent=2)
+
+    save_link(link)
     return path
 
 
@@ -147,17 +176,10 @@ def save_html(time: typing.Datetime, link: Link, html: typing.Union[str, bytes],
             file.write(comment.encode())
             file.write(os.linesep.encode())
             file.write(html)
-        return path
-
-    with open(path, 'w') as file:
-        print(comment, file=file)
-        file.write(html)
-
-    safe_link = link.url.replace('"', '\\"')
-    safe_path = path.replace('"', '\\"')
-    with _SAVE_LOCK:
-        with open(PATH_LN, 'a') as file:
-            print(f'"{safe_link}","{safe_path}"', file=file)
+    else:
+        with open(path, 'w') as file:
+            print(comment, file=file)
+            file.write(html)
     return path
 
 

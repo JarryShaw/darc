@@ -27,7 +27,7 @@ def _match(link: str) -> bool:
     return False
 
 
-def get_sitemap(link: str, text: str) -> typing.List[Link]:
+def get_sitemap(link: str, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
     """Fetch link to sitemap."""
     rp = urllib.robotparser.RobotFileParser()
     rp.parse(text.splitlines())
@@ -35,7 +35,7 @@ def get_sitemap(link: str, text: str) -> typing.List[Link]:
     sitemaps = rp.site_maps()
     if sitemaps is None:
         return [parse_link(urllib.parse.urljoin(link, '/sitemap.xml'))]
-    return [parse_link(urllib.parse.urljoin(link, sitemap)) for sitemap in sitemaps]
+    return [parse_link(urllib.parse.urljoin(link, sitemap), host=host) for sitemap in sitemaps]
 
 
 def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
