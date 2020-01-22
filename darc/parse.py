@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Source parser."""
 
+import io
 import re
 import urllib.parse
 import urllib.robotparser
@@ -27,10 +28,11 @@ def _match(link: str) -> bool:
     return False
 
 
-def get_sitemap(link: str, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
-    """Fetch link to sitemap."""
+def read_robots(link: str, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
+    """Read robots."""
     rp = urllib.robotparser.RobotFileParser()
-    rp.parse(text.splitlines())
+    with io.StringIO(text) as file:
+        rp.parse(file)
 
     sitemaps = rp.site_maps()
     if sitemaps is None:
@@ -38,11 +40,24 @@ def get_sitemap(link: str, text: str, host: typing.Optional[str] = None) -> typi
     return [parse_link(urllib.parse.urljoin(link, sitemap), host=host) for sitemap in sitemaps]
 
 
+def get_sitemap(link: str, text: str, host: typing.Optional[str] = None) -> typing.Iterator[str]:
+    """Fetch link to sitemap."""
+    sitemaps = list()
+    soup = bs4.BeautifulSoup(text, 'html5lib')
+
+    # https://www.sitemaps.org/protocol.html#index
+    for loc in soup.select('sitemapindex > sitemap > loc'):
+        sitemaps.append(urllib.parse.urljoin(link, loc.text))
+    return [parse_link(sitemap, host=host) for sitemap in sitemaps]
+
+
 def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
     """Read sitemap."""
     link_list = list()
     soup = bs4.BeautifulSoup(text, 'html5lib')
-    for loc in soup.find_all('loc'):
+
+    # https://www.sitemaps.org/protocol.html
+    for loc in soup.select('urlset > url > loc'):
         temp_link = urllib.parse.urljoin(link, loc.text)
         if _match(temp_link):
             continue
@@ -55,8 +70,7 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
     link_list = []
-    for child in filter(lambda element: isinstance(element, bs4.element.Tag),
-                        soup.descendants):
+    for child in soup.find_all(lambda tag: tag.has_attr('href') or tag.has_attr('src')):
         if (href := child.get('href', child.get('src'))) is None:
             continue
         temp_link = urllib.parse.urljoin(link, href)

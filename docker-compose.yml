@@ -18,6 +18,8 @@ services:
       DARC_MULTIPROCESSING: 0
       # multithreading
       DARC_MULTITHREADING: 0
+      # time lapse
+      DARC_WAIT: 60
       # data storage
       PATH_DATA: "data"
       # Tor proxy & control port
@@ -45,4 +47,3 @@ services:
       ## change timezone
       - /etc:/etc
       - /usr/share/zoneinfo:/usr/share/zoneinfo
-    stop_signal: SIGINT

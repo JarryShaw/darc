@@ -23,6 +23,15 @@ else:
     _SAVE_LOCK = contextlib.nullcontext()
 
 
+def has_folder(link: Link) -> typing.Optional[str]:  # pylint: disable=inconsistent-return-statements
+    """Check if is a new host."""
+    # <scheme>/<host>/sitemap_<hash>.xml
+    glob_list = glob.glob(os.path.join(link.base, 'sitemap_*.xml'))
+    if not glob_list:
+        return
+    return link.base
+
+
 def has_robots(link: Link) -> typing.Optional[str]:
     """Check if robots.txt already exists."""
     # <scheme>/<host>/robots.txt
@@ -35,12 +44,6 @@ def has_sitemap(link: Link) -> typing.Optional[str]:
     # <scheme>/<host>/sitemap_<hash>.xml
     path = os.path.join(link.base, f'sitemap_{link.name}.xml')
     return path if os.path.isfile(path) else None
-
-
-def has_folder(link: Link) -> typing.Optional[str]:
-    """Check if folder created."""
-    # <scheme>/<host>/
-    return link.base if os.path.isdir(link.base) else None
 
 
 def has_raw(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pylint: disable=redefined-outer-name
@@ -111,7 +114,7 @@ def save_link(link: Link):
     """Save link hash database."""
     with _SAVE_LOCK:
         with open(PATH_LN, 'a') as file:
-            print(f'{link.url_parse.scheme}/{link.host} {link.name} {link}', file=file)
+            print(f'{link.url_parse.scheme} {link.host} {link.name} {link}', file=file)
 
 
 def save_robots(link: Link, text: str) -> str:

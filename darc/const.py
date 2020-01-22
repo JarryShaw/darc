@@ -83,7 +83,7 @@ SE_EMPTY = '<html><head></head><body></body></html>'
 # link queue
 MANAGER = multiprocessing.Manager()
 QUEUE_REQUESTS = MANAGER.Queue()  # url
-QUEUE_SELENIUM = MANAGER.Queue()  # (ts, url)
+QUEUE_SELENIUM = MANAGER.Queue()  # url
 
 
 def getpid() -> int:

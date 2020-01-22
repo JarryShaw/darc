@@ -1,6 +1,6 @@
 # Python packages
-pip==19.3.1
-setuptools==42.0.2
+pip==20.0.1
+setuptools==45.1.0
 wheel==0.33.6
 
 # Python dependencies
@@ -16,5 +16,5 @@ six==1.14.0
 soupsieve==1.9.5
 stem==1.8.0
 typing-extensions==3.7.4.1
-urllib3==1.25.7
+urllib3==1.25.8
 webencodings==0.5.1

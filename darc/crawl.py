@@ -2,6 +2,7 @@
 """Web crawlers."""
 
 import datetime
+import gzip
 import os
 import re
 import shutil
@@ -24,7 +25,7 @@ import darc.typing as typing
 from darc.const import QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY
 from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
-from darc.parse import extract_links, get_sitemap, read_sitemap
+from darc.parse import extract_links, get_sitemap, read_robots, read_sitemap
 from darc.requests import norm_session, tor_session
 from darc.save import (has_folder, has_html, has_raw, has_robots, has_sitemap, save_headers,
                        save_html, save_robots, save_sitemap)
@@ -59,17 +60,20 @@ def fetch_sitemap(link: Link):
     robots_path = has_robots(link)
     if robots_path is not None:
 
+        print(stem.util.term.format(f'[ROBOTS] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
         with open(robots_path) as file:
             robots_text = file.read()
 
     else:
 
         robots_link = parse_link(urllib.parse.urljoin(link.url, '/robots.txt'))
+        print(f'[ROBOTS] Checking {robots_link.url}')
+
         with request_session(robots_link) as session:
             try:
                 response = session.get(robots_link.url)
             except requests.RequestException as error:
-                print(render_error(f'Failed on {robots_link.url} <{error}>',
+                print(render_error(f'[ROBOTS] Failed on {robots_link.url} <{error}>',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
@@ -77,42 +81,60 @@ def fetch_sitemap(link: Link):
             save_robots(robots_link, response.text)
             robots_text = response.text
         else:
-            print(render_error(f'Failed on {robots_link.url} [{response.status_code}]',
+            print(render_error(f'[ROBOTS] Failed on {robots_link.url} [{response.status_code}]',
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             robots_text = ''
 
-    sitemaps = get_sitemap(link.url, robots_text, host=link.host)
+        print(f'[ROBOTS] Checked {robots_link.url}')
+
+    sitemaps = sitemaps = read_robots(link.url, robots_text, host=link.host)
     for sitemap_link in sitemaps:
         sitemap_path = has_sitemap(sitemap_link)
         if sitemap_path is not None:
 
+            print(stem.util.term.format(f'[SITEMAP] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
             with open(sitemap_path) as file:
                 sitemap_text = file.read()
 
         else:
 
+            print(f'[SITEMAP] Fetching {sitemap_link.url}')
+
             with request_session(sitemap_link) as session:
                 try:
                     response = session.get(sitemap_link.url)
                 except requests.RequestException as error:
-                    print(render_error(f'Failed on {sitemap_link.url} <{error}>',
+                    print(render_error(f'[SITEMAP] Failed on {sitemap_link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     continue
 
             if not response.ok:
-                print(render_error(f'Failed on {sitemap_link.url} [{response.status_code}]',
+                print(render_error(f'[SITEMAP] Failed on {sitemap_link.url} [{response.status_code}]',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 continue
 
-            sitemap_text = response.text
+            # check content type
+            ct_type = response.headers.get('Content-Type', 'text/xml').casefold()
+            if ct_type == 'application/gzip':
+                try:
+                    sitemap_text = gzip.decompress(response.content).decode()
+                except UnicodeDecodeError:
+                    sitemap_text = response.text
+            else:
+                sitemap_text = response.text
             save_sitemap(sitemap_link, sitemap_text)
+
+            print(f'[SITEMAP] Fetched {sitemap_link.url}')
+
+        # get more sitemaps
+        sitemaps.extend(get_sitemap(sitemap_link.url, sitemap_text, host=link.host))
 
         # add link to queue
         [QUEUE_REQUESTS.put(url) for url in read_sitemap(link.url, sitemap_text)]  # pylint: disable=expression-not-assigned
 
 
 def crawler(url: str):
-    """Single crawler for a entry link."""
+    """Single requests crawler for a entry link."""
     link = parse_link(url)
     try:
         # timestamp
@@ -140,7 +162,7 @@ def crawler(url: str):
             # if it's a new host
             new_host = has_folder(link) is None
 
-            print(f'Requesting {link.url}')
+            print(f'[REQUESTS] Requesting {link.url}')
 
             # fetch sitemap.xml
             if new_host:
@@ -155,11 +177,11 @@ def crawler(url: str):
                     # requests session hook
                     response = crawler_hook(link, session)
                 except requests.exceptions.InvalidSchema as error:
-                    print(render_error(f'Failed on {link.url} <{error}>',
+                    print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     return
                 except requests.RequestException as error:
-                    print(render_error(f'Failed on {link.url} <{error}>',
+                    print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     QUEUE_REQUESTS.put(link.url)
                     return
@@ -168,19 +190,19 @@ def crawler(url: str):
             save_headers(timestamp, link, response)
 
             # check content type
-            ct_type = response.headers.get('Content-Type', 'undefined').casefold()
+            ct_type = response.headers.get('Content-Type', 'text/html').casefold()
             if 'html' not in ct_type:
                 # text = response.content
                 # save_file(link, text)
-                print(render_error(f'Unexpected content type from {link.url} ({ct_type})',
+                print(render_error(f'[REQUESTS] Unexpected content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
             html = response.content
             if not html:
-                print(render_error(f'Empty response from {link.url}',
+                print(render_error(f'[REQUESTS] Empty response from {link.url}',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                QUEUE_REQUESTS.put((timestamp, link.url))
+                QUEUE_REQUESTS.put(link.url)
                 return
 
             # save HTML
@@ -190,27 +212,28 @@ def crawler(url: str):
             [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
 
             if not response.ok:
-                print(render_error(f'Failed on {link.url} [{response.status_code}]',
+                print(render_error(f'[REQUESTS] Failed on {link.url} [{response.status_code}]',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 QUEUE_REQUESTS.put(link.url)
                 return
 
             # add link to queue
-            QUEUE_SELENIUM.put((timestamp, link.url))
+            QUEUE_SELENIUM.put(link.url)
 
-            print(f'Requested {link.url}')
+            print(f'[REQUESTS] Requested {link.url}')
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
         QUEUE_REQUESTS.put(link.url)
 
 
-def loader(entry: typing.Tuple[typing.Datetime, str]):
-    """Single loader for a entry link."""
-    timestamp, url = entry
+def loader(url: str):
+    """Single selenium loader for a entry link."""
     link = parse_link(url)
-
     try:
+        # timestamp
+        timestamp = datetime.datetime.now()
+
         path = has_html(timestamp, link)
         if path is not None:
 
@@ -223,7 +246,7 @@ def loader(entry: typing.Tuple[typing.Datetime, str]):
 
         else:
 
-            print(f'Loading {link.url}')
+            print(f'[SELENIUM] Loading {link.url}')
 
             # retrieve source from Chrome
             with request_driver(link) as driver:
@@ -231,23 +254,23 @@ def loader(entry: typing.Tuple[typing.Datetime, str]):
                     # selenium driver hook
                     driver = loader_hook(link, driver)
                 except urllib3.exceptions.HTTPError as error:
-                    print(render_error(f'Fail to load {link.url} <{error}>',
+                    print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE_SELENIUM.put((timestamp, link.url))
+                    QUEUE_SELENIUM.put(link.url)
                     return
                 except selenium.common.exceptions.WebDriverException as error:
-                    print(render_error(f'Fail to load {link.url} <{error}>',
+                    print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE_SELENIUM.put((timestamp, link.url))
+                    QUEUE_SELENIUM.put(link.url)
                     return
 
                 # get HTML source
                 html = driver.page_source
 
                 if html == SE_EMPTY:
-                    print(render_error(f'Empty page from {link.url}',
+                    print(render_error(f'[SELENIUM] Empty page from {link.url}',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE_SELENIUM.put((timestamp, link.url))
+                    QUEUE_SELENIUM.put(link.url)
                     return
 
             # save HTML
@@ -256,7 +279,7 @@ def loader(entry: typing.Tuple[typing.Datetime, str]):
             # add link to queue
             [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
 
-            print(f'Loaded {link.url}')
+            print(f'[SELENIUM] Loaded {link.url}')
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member

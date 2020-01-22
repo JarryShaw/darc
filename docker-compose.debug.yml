@@ -8,7 +8,7 @@ services:
       dockerfile: debug.dockerfile
     ports:
       - 9050:1086
-    command: [ "https://www.nytimes3xbfgragh.onion", "https://www.bing.com" ]
+    command: [ "https://www.bing.com" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -22,6 +22,8 @@ services:
       DARC_MULTIPROCESSING: 0
       # multithreading
       DARC_MULTITHREADING: 0
+      # time lapse
+      DARC_WAIT: 60
       # data storage
       PATH_DATA: "data"
       # Tor proxy & control port
@@ -38,11 +40,10 @@ services:
       # time to wait for selenium
       SE_WAIT: 60
       # extract link pattern
-      LINK_EX: ".%2A%3F%5C.onion"
+      # LINK_EX: ".%2A%3F%5C.onion"
       # link black list
       LINK_BL: '[ "%28.%2A%5C.%29%3Ffacebookcorewwwi%5C.onion" ]'
     restart: "on-failure"
     volumes:
       - ./cache:/app/cache
       - ./data:/app/data
-    stop_signal: SIGINT

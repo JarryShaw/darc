@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Main processing."""
 
-import datetime
 import multiprocessing
 import os
 import queue
@@ -35,8 +34,7 @@ def _load_last_word():
     if os.path.isfile(PATH_QS):
         with open(PATH_QS) as file:
             for line in file:
-                timestamp, link = line.strip().split(maxsplit=1)
-                QUEUE_SELENIUM.put((datetime.datetime.fromisoformat(timestamp), link))
+                QUEUE_SELENIUM.put(line.strip())
         os.remove(PATH_QS)
 
 
@@ -51,8 +49,8 @@ def _dump_last_word():
     selenium_links = _get_selenium_links()
     if selenium_links:
         with open(PATH_QS, 'w') as file:
-            for (timestamp, link) in selenium_links:
-                print(f'{timestamp.isoformat()} {link}', file=file)
+            for link in selenium_links:
+                print(link, file=file)
 
     if os.path.isfile(PATH_ID):
         os.remove(PATH_ID)
@@ -79,17 +77,17 @@ def _get_requests_links() -> typing.Set[str]:
 
 def _get_selenium_links() -> typing.Set[typing.Tuple[typing.Datetime, str]]:
     """Fetch links from queue."""
-    entry_list = list()
+    link_list = list()
     while True:
         try:
-            entry = QUEUE_SELENIUM.get_nowait()
+            link = QUEUE_SELENIUM.get_nowait()
         except queue.Empty:
             break
-        entry_list.append(entry)
+        link_list.append(link)
 
-    if entry_list:
-        random.shuffle(entry_list)
-    return set(entry_list)
+    if link_list:
+        random.shuffle(link_list)
+    return set(link_list)
 
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
@@ -133,15 +131,15 @@ def process():
                     break
 
                 # selenium loader
-                item_pool = _get_selenium_links()
-                if item_pool:
+                link_pool = _get_selenium_links()
+                if link_pool:
                     if FLAG_MP:
-                        pool.map(loader, item_pool)
+                        pool.map(loader, link_pool)
                     elif FLAG_TH and DARC_CPU:
                         thread_list = list()
                         for _ in range(DARC_CPU):
                             try:
-                                item = item_pool.pop()
+                                item = link_pool.pop()
                             except KeyError:
                                 break
                             thread = threading.Thread(target=loader, args=(item,))
@@ -150,7 +148,7 @@ def process():
                         for thread in thread_list:
                             thread.join()
                     else:
-                        [loader(item) for item in item_pool]  # pylint: disable=expression-not-assigned
+                        [loader(item) for item in link_pool]  # pylint: disable=expression-not-assigned
                 else:
                     break
 
