@@ -19,6 +19,7 @@ def get_options(type: str = 'norm') -> typing.Options:  # pylint: disable=redefi
     # initiate options
     options = selenium.webdriver.ChromeOptions()
 
+    # https://peter.sh/experiments/chromium-command-line-switches/
     if _system == 'Darwin':
         options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 

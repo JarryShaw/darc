@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Source parser."""
 
+import contextlib
 import io
 import re
 import urllib.parse
@@ -65,7 +66,20 @@ def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
     yield from set(link_list)
 
 
-def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[str]:
+def check_header(link: str) -> str:
+    """Request the link using HEAD command."""
+    from darc.crawl import request_session  # pylint: disable=import-outside-toplevel
+
+    with request_session(link) as session:
+        with contextlib.suppress():
+            response = session.head(link)
+
+        # fetch content type
+        return response.headers.get('Content-Type', 'text/html').casefold()
+    return 'null'
+
+
+def extract_links(link: str, html: typing.Union[str, bytes], check: bool = False) -> typing.Iterator[str]:
     """Extract links from HTML context."""
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
@@ -76,5 +90,10 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
         temp_link = urllib.parse.urljoin(link, href)
         if _match(temp_link):
             continue
+        # check content type
+        if check:
+            ct_type = check_header(link)
+            if 'html' not in ct_type:
+                continue
         link_list.append(temp_link)
     yield from set(link_list)

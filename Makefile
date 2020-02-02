@@ -20,6 +20,7 @@ gitlab-prep:
 	    extra \
 	    tbb \
 	    text \
+		vendor \
 	    .coveragerc \
 	    .env \
 	    .dockerignore \

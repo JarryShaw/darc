@@ -26,9 +26,14 @@ RUN set -x \
         ca-certificates \
  && apt-get update \
  && apt-get install --yes --no-install-recommends \
-        unzip \
+        gcc \
+        g++ \
+        make \
         software-properties-common \
+        tar \
         tzdata \
+        unzip \
+        zlib1g-dev \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
  && apt-get update \
  && apt-get install --yes --no-install-recommends \
@@ -36,9 +41,34 @@ RUN set -x \
         python3-pip \
         python3-setuptools \
         python3-wheel \
-        tor \
  && ln -sf /usr/bin/python3.8 /usr/bin/python3
+
+## Tor
+RUN set -x \
+ && apt-get update \
+ && apt-get install --yes --no-install-recommends tor
 COPY extra/torrc.bionic /etc/tor/torrc
+
+## I2P
+RUN set -x \
+ && apt-add-repository ppa:i2p-maintainers/i2p --yes \
+ && apt-get update \
+ && apt-get install --yes --no-install-recommends i2p
+
+## NoIP
+COPY vendor/noip-duc-linux.tar.gz /tmp
+RUN set -x \
+ && cd /tmp \
+ && tar xf noip-duc-linux.tar.gz \
+ && mv noip-2.1.9-1 /usr/local/src/noip \
+ && make install
+
+## ZeroNet
+COPY vendor/ZeroNet-py3-linux64.tar.gz /tmp
+RUN set -x \
+ && cd /tmp \
+ && tar xvpfz ZeroNet-py3-linux64.tar.gz \
+ && mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
 
 # set up timezone
 RUN echo 'Asia/Shanghai' > /etc/timezone \

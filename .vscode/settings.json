@@ -19,6 +19,7 @@
         "mccabe",
         "miniconda",
         "myenv",
+        "noip",
         "parso",
         "pexpect",
         "posixpath",
@@ -33,6 +34,7 @@
         "tzdata",
         "wcwidth",
         "xenial",
+        "xvpfz",
         "xvzf"
     ],
     "python.pythonPath": ".venv/bin/python"

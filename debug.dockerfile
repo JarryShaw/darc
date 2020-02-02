@@ -34,8 +34,14 @@ COPY extra/sources.bionic.list /etc/apt/sources.list
 RUN set -x \
  && apt-get update \
  && apt-get install --yes \
-        unzip \
+        gcc \
+        g++ \
+        make \
         software-properties-common \
+        tar \
+        tzdata \
+        unzip \
+        zlib1g-dev \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
  && apt-get update \
  && apt-get install --yes \
@@ -43,9 +49,40 @@ RUN set -x \
         python3-pip \
         python3-setuptools \
         python3-wheel \
-        tor \
  && ln -sf /usr/bin/python3.8 /usr/bin/python3
+
+## Tor
+RUN set -x \
+ && apt-get update \
+ && apt-get install --yes tor
 COPY extra/torrc.bionic /etc/tor/torrc
+
+## I2P
+RUN set -x \
+ && apt-add-repository ppa:i2p-maintainers/i2p --yes \
+ && apt-get update \
+ && apt-get install --yes i2p
+
+## NoIP
+COPY vendor/noip-duc-linux.tar.gz /tmp
+RUN set -x \
+ && cd /tmp \
+ && tar xf noip-duc-linux.tar.gz \
+ && mv noip-2.1.9-1 /usr/local/src/noip \
+ && make install
+
+## ZeroNet
+COPY vendor/ZeroNet-py3-linux64.tar.gz /tmp
+RUN set -x \
+ && cd /tmp \
+ && tar xvpfz ZeroNet-py3-linux64.tar.gz \
+ && mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
+
+# set up timezone
+RUN echo 'Asia/Shanghai' > /etc/timezone \
+ && rm -f /etc/localtime \
+ && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+ && dpkg-reconfigure -f noninteractive tzdata
 
 # ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
 # ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin

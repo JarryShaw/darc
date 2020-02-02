@@ -26,17 +26,10 @@ from darc.const import QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY
 from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
 from darc.parse import extract_links, get_sitemap, read_robots, read_sitemap
-from darc.requests import norm_session, tor_session
+from darc.proxy import LINK_MAP
 from darc.save import (has_folder, has_html, has_raw, has_robots, has_sitemap, save_headers,
                        save_html, save_robots, save_sitemap)
-from darc.selenium import norm_driver, tor_driver
 from darc.sites import crawler_hook, loader_hook
-
-# link regex mapping
-LINK_MAP = [
-    (r'.*?\.onion', tor_session, tor_driver),
-    (r'.*', norm_session, norm_driver),
-]
 
 
 def request_session(link: Link) -> typing.Session:
@@ -148,7 +141,7 @@ def crawler(url: str):
                 html = file.read()
 
             # add link to queue
-            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html, check=True)]  # pylint: disable=expression-not-assigned
 
             # load sitemap.xml
             try:
