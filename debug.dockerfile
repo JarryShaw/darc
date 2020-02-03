@@ -43,6 +43,7 @@ RUN set -x \
         unzip \
         zlib1g-dev \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
+ && apt-add-repository ppa:i2p-maintainers/i2p --yes \
  && apt-get update \
  && apt-get install --yes \
         python3.8 \
@@ -52,16 +53,11 @@ RUN set -x \
  && ln -sf /usr/bin/python3.8 /usr/bin/python3
 
 ## Tor
-RUN set -x \
- && apt-get update \
- && apt-get install --yes tor
+RUN apt-get install --yes tor
 COPY extra/torrc.bionic /etc/tor/torrc
 
 ## I2P
-RUN set -x \
- && apt-add-repository ppa:i2p-maintainers/i2p --yes \
- && apt-get update \
- && apt-get install --yes i2p
+RUN apt-get install --yes i2p
 
 ## NoIP
 COPY vendor/noip-duc-linux.tar.gz /tmp
