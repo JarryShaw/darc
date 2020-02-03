@@ -65,6 +65,7 @@ RUN set -x \
  && cd /tmp \
  && tar xf noip-duc-linux.tar.gz \
  && mv noip-2.1.9-1 /usr/local/src/noip \
+ && cd /usr/local/src/noip \
  && make install
 
 ## ZeroNet
