@@ -56,9 +56,8 @@ COPY vendor/noip-duc-linux.tar.gz /tmp
 RUN set -x \
  && cd /tmp \
  && tar xf noip-duc-linux.tar.gz \
- && mv noip-2.1.9-1 /usr/local/src/noip \
- && cd /usr/local/src/noip \
- && make install
+ && mv noip-2.1.9-1 /usr/local/src/noip
+ # make install
 
 ## ZeroNet
 COPY vendor/ZeroNet-py3-linux64.tar.gz /tmp
