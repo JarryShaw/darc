@@ -24,16 +24,17 @@ ENV LANG-"C.UTF-8" \
 #         chromium-chromedriver \
 #         tor
 # COPY extra/torrc.alpine /etc/tor/torrc
+COPY extra/retry.sh /usr/local/bin/retry
 RUN set -x \
- && apt-get update \
- && apt-get install --yes \
+ && retry apt-get update \
+ && retry apt-get install --yes \
         apt-transport-https \
         apt-utils \
         ca-certificates
 COPY extra/sources.bionic.list /etc/apt/sources.list
 RUN set -x \
- && apt-get update \
- && apt-get install --yes \
+ && retry apt-get update \
+ && retry apt-get install --yes \
         gcc \
         g++ \
         make \
@@ -42,10 +43,10 @@ RUN set -x \
         tzdata \
         unzip \
         zlib1g-dev \
- && add-apt-repository ppa:deadsnakes/ppa --yes \
- && apt-add-repository ppa:i2p-maintainers/i2p --yes \
- && apt-get update \
- && apt-get install --yes \
+ && retry add-apt-repository ppa:deadsnakes/ppa --yes \
+ && retry apt-add-repository ppa:i2p-maintainers/i2p --yes \
+ && retry apt-get update \
+ && retry apt-get install --yes \
         python3.8 \
         python3-pip \
         python3-setuptools \
@@ -53,11 +54,11 @@ RUN set -x \
  && ln -sf /usr/bin/python3.8 /usr/bin/python3
 
 ## Tor
-RUN apt-get install --yes tor
+RUN retry apt-get install --yes tor
 COPY extra/torrc.bionic /etc/tor/torrc
 
 ## I2P
-RUN apt-get install --yes i2p
+RUN retry apt-get install --yes i2p
 
 ## NoIP
 COPY vendor/noip-duc-linux.tar.gz /tmp
@@ -90,7 +91,7 @@ RUN set -x \
  && which chromedriver \
  ## Google Chrome
  && (dpkg --install /tmp/google-chrome-stable_current_amd64.deb || true) \
- && apt-get install --fix-broken --yes \
+ && retry apt-get install --fix-broken --yes \
  && dpkg --install /tmp/google-chrome-stable_current_amd64.deb \
  && which google-chrome
 

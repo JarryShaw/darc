@@ -17,6 +17,7 @@
         "inited",
         "isfinite",
         "mccabe",
+        "mexit",
         "miniconda",
         "myenv",
         "noip",

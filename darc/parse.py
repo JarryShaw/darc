@@ -70,12 +70,13 @@ def check_header(link: str) -> str:
     """Request the link using HEAD command."""
     from darc.crawl import request_session  # pylint: disable=import-outside-toplevel
 
-    with request_session(link) as session:
-        with contextlib.suppress():
+    link_obj = parse_link(link)
+    with contextlib.suppress():
+        with request_session(link_obj) as session:
             response = session.head(link)
 
-        # fetch content type
-        return response.headers.get('Content-Type', 'text/html').casefold()
+            # fetch content type
+            return response.headers.get('Content-Type', 'text/html').casefold()
     return 'null'
 
 
