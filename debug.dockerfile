@@ -118,9 +118,9 @@ CMD [ "--help" ]
 #RUN conda env create -f environment.yml
 #CMD /bin/bash -c "source activate myenv && python3 -m darc"
 
-# change user
-USER darc
-
 WORKDIR /app
 ADD . /app
 RUN python3 -m pip install -e .
+
+# change user
+USER darc
