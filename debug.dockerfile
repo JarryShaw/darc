@@ -121,6 +121,3 @@ CMD [ "--help" ]
 WORKDIR /app
 ADD . /app
 RUN python3 -m pip install -e .
-
-# change user
-USER darc

@@ -134,6 +134,3 @@ COPY LICENSE \
      setup.py \
      test_darc.py /app/
 RUN python3 -m pip install -e .
-
-# change user
-USER darc
