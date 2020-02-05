@@ -4,10 +4,12 @@
 import dataclasses
 import hashlib
 import os
+import re
 import urllib
 
 import darc.typing as typing
 from darc.const import PATH_DB
+from darc.proxy.i2p import I2P_PORT
 
 
 @dataclasses.dataclass
@@ -16,6 +18,8 @@ class Link:
 
     # original link
     url: str
+    # proxy type
+    proxy: str
 
     # urllib.parse.urlparse
     url_parse: urllib.parse.ParseResult
@@ -41,6 +45,15 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     if host is None:
         host = parse.hostname or parse.netloc
 
+    if re.fullmatch(r'.*?\.onion', host):
+        proxy_type = 'tor'
+    elif re.fullmatch(r'.*?\.i2p', host):
+        proxy_type = 'i2p'
+    elif host == f'127.0.0.1:{I2P_PORT}':
+        proxy_type = 'zeronet'
+    else:
+        proxy_type = 'norm'
+
     # <scheme>/<host>/<hash>-<timestamp>.html
     base = os.path.join(PATH_DB, parse.scheme, host)
     name = hashlib.sha256(link.encode()).hexdigest()
@@ -51,4 +64,5 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         host=host,
         base=base,
         name=name,
+        proxy=proxy_type,
     )

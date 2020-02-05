@@ -14,8 +14,20 @@ class UnsupportedPlatform(Exception):
     """The platform is not supported."""
 
 
+class UnsupportedProxy(Exception):
+    """The proxy is not supported."""
+
+
 class TorBootstrapFailed(Warning):
     """Tor bootstrap process failed."""
+
+
+class I2PBootstrapFailed(Warning):
+    """I2P bootstrap process failed."""
+
+
+class ZeroNetBootstrapFailed(Warning):
+    """ZeroNet bootstrap process failed."""
 
 
 def render_error(message: str, colour: typing.Color) -> str:

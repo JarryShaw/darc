@@ -5,17 +5,21 @@
 import requests
 
 import darc.typing as typing
-from darc.const import TOR_PORT
+from darc.proxy.tor import TOR_REQUESTS_PROXY
+from darc.proxy.i2p import I2P_REQUESTS_PROXY
+
+
+def i2p_session() -> typing.Session:
+    """I2P (.i2p) session."""
+    session = requests.Session()
+    session.proxies.update(I2P_REQUESTS_PROXY)
+    return session
 
 
 def tor_session() -> typing.Session:
     """Tor (.onion) session."""
     session = requests.Session()
-    session.proxies.update({
-        # c.f. https://stackoverflow.com/a/42972942
-        'http':  f'socks5h://localhost:{TOR_PORT}',
-        'https': f'socks5h://localhost:{TOR_PORT}'
-    })
+    session.proxies.update(TOR_REQUESTS_PROXY)
     return session
 
 

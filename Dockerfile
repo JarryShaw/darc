@@ -50,6 +50,7 @@ COPY extra/torrc.bionic /etc/tor/torrc
 
 ## I2P
 RUN apt-get install --yes --no-install-recommends i2p
+COPY extra/i2p.bionic /etc/defaults/i2p
 
 ## NoIP
 COPY vendor/noip-duc-linux.tar.gz /tmp
@@ -65,6 +66,7 @@ RUN set -x \
  && cd /tmp \
  && tar xvpfz ZeroNet-py3-linux64.tar.gz \
  && mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
+COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
 
 # set up timezone
 RUN echo 'Asia/Shanghai' > /etc/timezone \
@@ -121,6 +123,9 @@ CMD [ "--help" ]
 # Using miniconda (make sure to replace 'myenv' w/ your environment name):
 #RUN conda env create -f environment.yml
 #CMD /bin/bash -c "source activate myenv && python3 -m darc"
+
+# change user
+USER darc
 
 WORKDIR /app
 COPY darc/ /app/darc/

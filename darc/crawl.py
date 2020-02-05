@@ -4,7 +4,6 @@
 import datetime
 import gzip
 import os
-import re
 import shutil
 import sys
 import traceback
@@ -34,18 +33,18 @@ from darc.sites import crawler_hook, loader_hook
 
 def request_session(link: Link) -> typing.Session:
     """Get requests session."""
-    for regex, session, _ in LINK_MAP:
-        if re.match(regex, link.host):
-            return session()
-    raise UnsupportedLink(link)
+    session, _ = LINK_MAP.get(link.type)
+    if session is None:
+        raise UnsupportedLink(link.url)
+    return session()
 
 
 def request_driver(link: Link) -> typing.Driver:
     """Get selenium driver."""
-    for regex, _, driver in LINK_MAP:
-        if re.match(regex, link.host):
-            return driver()
-    raise UnsupportedLink(link)
+    _, driver = LINK_MAP.get(link.type)
+    if driver is None:
+        raise UnsupportedLink(link.url)
+    return driver()
 
 
 def fetch_sitemap(link: Link):
@@ -141,7 +140,7 @@ def crawler(url: str):
                 html = file.read()
 
             # add link to queue
-            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html, check=True)]  # pylint: disable=expression-not-assigned
+            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
 
             # load sitemap.xml
             try:

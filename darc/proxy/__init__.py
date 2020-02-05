@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """Proxy utilities."""
 
-from darc.requests import norm_session, tor_session
-from darc.selenium import norm_driver, tor_driver
+import darc.typing as typing
+from darc.requests import i2p_session, norm_session, tor_session
+from darc.selenium import i2p_driver, norm_driver, tor_driver
 
 # link regex mapping
-LINK_MAP = [
-    (r'.*?\.onion', tor_session, tor_driver),
-    (r'.*', norm_session, norm_driver),
-]
+LINK_MAP: typing.LinkMap = dict(
+    norm=(norm_session, norm_driver),
+    tor=(tor_session, tor_driver),
+    i2p=(i2p_session, i2p_driver),
+)

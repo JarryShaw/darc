@@ -57,3 +57,6 @@ ModuleType = typing.NewType('ModuleType', types.ModuleType)
 
 # types.FrameType
 FrameType = typing.NewType('FrameType', types.FrameType)
+
+# Dict[str, Tuple[Callable, Callable]]
+LinkMap = typing.Dict[str, typing.Tuple[typing.Callable[[], Session], typing.Callable[[], Driver]]]

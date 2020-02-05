@@ -8,8 +8,10 @@ import shutil
 import selenium
 
 import darc.typing as typing
-from darc.const import DEBUG, TOR_PORT
-from darc.error import UnsupportedPlatform
+from darc.const import DEBUG
+from darc.error import UnsupportedPlatform, UnsupportedProxy
+from darc.proxy.i2p import I2P_PORT, I2P_SELENIUM_PROXY
+from darc.proxy.tor import TOR_PORT, TOR_SELENIUM_PROXY
 
 
 def get_options(type: str = 'norm') -> typing.Options:  # pylint: disable=redefined-builtin
@@ -38,9 +40,16 @@ def get_options(type: str = 'norm') -> typing.Options:  # pylint: disable=redefi
     else:
         raise UnsupportedPlatform(f'unsupported system: {_system}')
 
-    if type == 'tor':
+    if type != 'norm':
+        if type == 'tor':
+            port = TOR_PORT
+        elif type == 'i2p':
+            port = I2P_PORT
+        else:
+            raise UnsupportedProxy(f'unsupported proxy: {type}')
+
         # c.f. https://www.chromium.org/developers/design-documents/network-stack/socks-proxy
-        options.add_argument(f'--proxy-server=socks5://localhost:{TOR_PORT}')
+        options.add_argument(f'--proxy-server=socks5://localhost:{port}')
         options.add_argument('--host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost"')
     return options
 
@@ -50,13 +59,26 @@ def get_capabilities(type: str = 'norm') -> dict:  # pylint: disable=redefined-b
     # do not modify source dict
     capabilities = selenium.webdriver.DesiredCapabilities.CHROME.copy()
 
-    if type == 'tor':
-        proxy = selenium.webdriver.Proxy()
-        proxy.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
-        proxy.http_proxy = f'socks5://localhost:{TOR_PORT}'
-        proxy.ssl_proxy = f'socks5://localhost:{TOR_PORT}'
-        proxy.add_to_capabilities(capabilities)
+    if type == 'norm':
+        pass
+    elif type == 'tor':
+        TOR_SELENIUM_PROXY.add_to_capabilities(capabilities)
+    elif type == 'i2p':
+        I2P_SELENIUM_PROXY.add_to_capabilities(capabilities)
+    else:
+        raise UnsupportedProxy(f'unsupported proxy: {type}')
     return capabilities
+
+
+def i2p_driver() -> typing.Driver:
+    """I2P (.i2p) driver."""
+    options = get_options('i2p')
+    capabilities = get_capabilities('i2p')
+
+    # initiate driver
+    driver = selenium.webdriver.Chrome(options=options,
+                                       desired_capabilities=capabilities)
+    return driver
 
 
 def tor_driver() -> typing.Driver:

@@ -2,16 +2,44 @@
 """Tor proxy."""
 
 import getpass
+import os
 import re
 import sys
 import urllib
 import warnings
 
+import selenium
 import stem
 
 import darc.typing as typing
-from darc.const import DEBUG, TOR_CTRL, TOR_PASS, TOR_PORT, TOR_RETRY, TOR_STEM
+from darc.const import DEBUG
 from darc.error import TorBootstrapFailed, render_error
+
+__all__ = ['TOR_REQUESTS_PROXY', 'TOR_SELENIUM_PROXY']
+
+# Tor Socks5 proxy & control port
+TOR_PORT = os.getenv('TOR_PORT', '9050')
+TOR_CTRL = os.getenv('TOR_CTRL', '9051')
+
+# Tor authentication
+TOR_PASS = os.getenv('TOR_PASS')
+
+# use stem to manage Tor?
+TOR_STEM = bool(int(os.getenv('TOR_STEM', '1')))
+
+# Tor bootstrap retry
+TOR_RETRY = int(os.getenv('TOR_RETRY', '3'))
+
+# proxy
+TOR_REQUESTS_PROXY = {
+    # c.f. https://stackoverflow.com/a/42972942
+    'http':  f'socks5h://localhost:{TOR_PORT}',
+    'https': f'socks5h://localhost:{TOR_PORT}'
+}
+TOR_SELENIUM_PROXY = selenium.webdriver.Proxy()
+TOR_SELENIUM_PROXY.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
+TOR_SELENIUM_PROXY.http_proxy = f'socks5://localhost:{TOR_PORT}'
+TOR_SELENIUM_PROXY.ssl_proxy = f'socks5://localhost:{TOR_PORT}'
 
 # Tor bootstrapped flag
 _TOR_BS_FLAG = not TOR_STEM  # only if Tor managed through stem
@@ -60,24 +88,21 @@ def _tor_bootstrap():
     _TOR_CTRL.authenticate(TOR_PASS)
 
     # update flag
-    #_TOR_BS_FLAG.value = True
     _TOR_BS_FLAG = True
 
 
 def tor_bootstrap():
     """Bootstrap wrapper for Tor."""
     # don't re-bootstrap
-    #if _TOR_BS_FLAG.value:
     if _TOR_BS_FLAG:
         return
 
-    # with _TOR_BS_LOCK:
     for _ in range(TOR_RETRY+1):
         try:
             _tor_bootstrap()
             break
         except Exception as error:
-            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 514, 'tor_bootstrap()')
+            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 91, 'tor_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
@@ -88,6 +113,6 @@ def has_tor(link_pool: typing.Set[str]) -> bool:
         parse = urllib.parse.urlparse(link)
         host = parse.hostname or parse.netloc
 
-        if re.match(r'.*?\.onion', host):
+        if re.fullmatch(r'.*?\.onion', host):
             return True
     return False

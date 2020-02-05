@@ -9,7 +9,9 @@ import traceback
 import darc.typing as typing
 from darc.const import MANAGER, QUEUE_REQUESTS
 from darc.process import process
+from darc.proxy.i2p import _I2P_PROC
 from darc.proxy.tor import _TOR_CTRL, _TOR_PROC
+from darc.proxy.zeronet import _ZERONET_PROC
 
 
 def _exit():
@@ -26,7 +28,14 @@ def _exit():
 
     # close Tor processes
     caller(_TOR_CTRL, 'close')
-    caller(_TOR_PROC, 'terminate')
+    caller(_TOR_PROC, 'kill')
+    caller(_TOR_PROC, 'wait')
+
+    # close I2P process
+    caller(_I2P_PROC, 'kill')
+    caller(_I2P_PROC, 'wait')
+    caller(_ZERONET_PROC, 'kill')
+    caller(_ZERONET_PROC, 'wait')
 
 
 def get_parser() -> typing.ArgumentParser:

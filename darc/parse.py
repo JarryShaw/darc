@@ -10,7 +10,7 @@ import urllib.robotparser
 import bs4
 
 import darc.typing as typing
-from darc.const import LINK_BL, LINK_EX
+from darc.const import LINK_BLACK_LIST, LINK_WHITE_LIST
 from darc.link import Link, parse_link
 
 
@@ -20,11 +20,12 @@ def _match(link: str) -> bool:
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
 
-    if re.match(LINK_EX, host) is None:
-        return True
+    for pattern in LINK_WHITE_LIST:
+        if re.fullmatch(pattern, host) is None:
+            return True
 
-    for pattern in LINK_BL:
-        if re.match(pattern, host) is not None:
+    for pattern in LINK_BLACK_LIST:
+        if re.fullmatch(pattern, host) is not None:
             return True
     return False
 
@@ -80,7 +81,7 @@ def check_header(link: str) -> str:
     return 'null'
 
 
-def extract_links(link: str, html: typing.Union[str, bytes], check: bool = False) -> typing.Iterator[str]:
+def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[str]:
     """Extract links from HTML context."""
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
@@ -91,10 +92,10 @@ def extract_links(link: str, html: typing.Union[str, bytes], check: bool = False
         temp_link = urllib.parse.urljoin(link, href)
         if _match(temp_link):
             continue
+
         # check content type
-        if check:
-            ct_type = check_header(link)
-            if 'html' not in ct_type:
-                continue
+        ct_type = check_header(link)
+        if 'html' not in ct_type:
+            continue
         link_list.append(temp_link)
     yield from set(link_list)

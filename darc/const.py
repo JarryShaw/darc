@@ -7,7 +7,6 @@ import math
 import multiprocessing
 import os
 import sys
-import urllib
 
 # reboot mode?
 REBOOT = bool(int(os.getenv('DARC_REBOOT', '0')))
@@ -43,23 +42,10 @@ PATH_QS = os.path.join(PATH_DB, '_queue_selenium.txt')
 PATH_ID = os.path.join(PATH_DB, 'darc.pid')
 
 # extract link pattern
-LINK_EX = urllib.parse.unquote(os.getenv('LINK_EX', r'.*'))
+LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
 
 # link black list
-LINK_BL = [urllib.parse.unquote(link) for link in json.loads(os.getenv('LINK_BL', '[]'))]
-
-# Tor Socks5 proxy & control port
-TOR_PORT = os.getenv('TOR_PORT', '9050')
-TOR_CTRL = os.getenv('TOR_CTRL', '9051')
-
-# Tor authentication
-TOR_PASS = os.getenv('TOR_PASS')
-
-# use stem to manage Tor?
-TOR_STEM = bool(int(os.getenv('TOR_STEM', '1')))
-
-# Tor bootstrap retry
-TOR_RETRY = int(os.getenv('TOR_RETRY', '3'))
+LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
 
 # time delta for caches in seconds
 _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))

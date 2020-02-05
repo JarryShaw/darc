@@ -17,7 +17,9 @@ import darc.typing as typing
 from darc.const import (DARC_CPU, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS, QUEUE_REQUESTS,
                         QUEUE_SELENIUM, REBOOT, getpid)
 from darc.crawl import crawler, loader
+from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, has_tor, renew_tor_session, tor_bootstrap
+from darc.proxy.zeronet import _ZERONET_BS_FLAG, has_zeronet, zeronet_bootstrap
 
 
 def _load_last_word():
@@ -72,6 +74,10 @@ def _get_requests_links() -> typing.Set[str]:
     link_pool = set(link_list)
     if not _TOR_BS_FLAG and has_tor(link_pool):
         tor_bootstrap()
+    if not _I2P_BS_FLAG and has_i2p(link_pool):
+        i2p_bootstrap()
+    if not _ZERONET_BS_FLAG and has_zeronet(link_pool):
+        zeronet_bootstrap()
     return link_pool
 
 
