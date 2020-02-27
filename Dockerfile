@@ -38,13 +38,13 @@ RUN set -x \
  && add-apt-repository ppa:linuxuprising/java --yes \
  && add-apt-repository ppa:i2p-maintainers/i2p --yes \
  && apt-get update \
- && apt-get install --yes --no-install-recommends \
+ && yes | apt-get install --yes --no-install-recommends \
         oracle-java13-installer \
         python3.8 \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && ln -sf /usr/bin/python3.8 /usr/bin/python3
+ && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 
 ## Tor
 RUN apt-get install --yes --no-install-recommends tor

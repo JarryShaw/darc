@@ -47,13 +47,13 @@ RUN set -x \
  && retry add-apt-repository ppa:linuxuprising/java --yes \
  && retry add-apt-repository ppa:i2p-maintainers/i2p --yes \
  && retry apt-get update \
- && retry apt-get install --yes \
+ && yes | retry apt-get install --yes \
         oracle-java13-installer \
         python3.8 \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && ln -sf /usr/bin/python3.8 /usr/bin/python3
+ && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 
 ## Tor
 RUN retry apt-get install --yes tor
