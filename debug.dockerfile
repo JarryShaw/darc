@@ -44,9 +44,11 @@ RUN set -x \
         unzip \
         zlib1g-dev \
  && retry add-apt-repository ppa:deadsnakes/ppa --yes \
- && retry apt-add-repository ppa:i2p-maintainers/i2p --yes \
+ && retry add-apt-repository ppa:linuxuprising/java --yes \
+ && retry add-apt-repository ppa:i2p-maintainers/i2p --yes \
  && retry apt-get update \
  && retry apt-get install --yes \
+        oracle-java13-installer \
         python3.8 \
         python3-pip \
         python3-setuptools \
@@ -61,14 +63,6 @@ COPY extra/torrc.bionic /etc/tor/torrc
 RUN retry apt-get install --yes i2p
 COPY extra/i2p.bionic /etc/defaults/i2p
 
-## NoIP
-COPY vendor/noip-duc-linux.tar.gz /tmp
-RUN set -x \
- && cd /tmp \
- && tar xf noip-duc-linux.tar.gz \
- && mv noip-2.1.9-1 /usr/local/src/noip
- # make install
-
 ## ZeroNet
 COPY vendor/ZeroNet-py3-linux64.tar.gz /tmp
 RUN set -x \
@@ -76,6 +70,20 @@ RUN set -x \
  && tar xvpfz ZeroNet-py3-linux64.tar.gz \
  && mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
 COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
+
+## FreeNet
+COPY vendor/new_installer_offline.jar /tmp
+RUN set -x \
+ && cd /tmp \
+ && java -jar new_installer_offline.jar
+
+## NoIP
+COPY vendor/noip-duc-linux.tar.gz /tmp
+RUN set -x \
+ && cd /tmp \
+ && tar xf noip-duc-linux.tar.gz \
+ && mv noip-2.1.9-1 /usr/local/src/noip
+ # make install
 
 # set up timezone
 RUN echo 'Asia/Shanghai' > /etc/timezone \

@@ -40,9 +40,10 @@ def _exit():
 
 def get_parser() -> typing.ArgumentParser:
     """Argument parser."""
-    parser = argparse.ArgumentParser('darc')
+    parser = argparse.ArgumentParser('darc',
+                                     description='darkweb swiss knife crawler')
 
-    parser.add_argument('-f', '--file', help='read links from file')
+    parser.add_argument('-f', '--file', action='append', help='read links from file')
     parser.add_argument('link', nargs=argparse.REMAINDER, help='links to craw')
 
     return parser
@@ -53,18 +54,25 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
 
+    __exit = True
     for link in args.link:
+        __exit = False
         QUEUE_REQUESTS.put(link)
 
     if args.file is not None:
-        with open(args.file) as file:
-            for line in file:
-                QUEUE_REQUESTS.put(line.strip())
+        for path in args.file:
+            with open(path) as file:
+                for line in file:
+                    __exit = False
+                    QUEUE_REQUESTS.put(line.strip())
 
-    try:
-        process()
-    except BaseException:
-        traceback.print_exc()
+    if __exit:
+        parser.print_help()
+    else:
+        try:
+            process()
+        except BaseException:
+            traceback.print_exc()
     _exit()
 
 

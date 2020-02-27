@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """I2P proxy."""
 
+import io
 import os
 import re
 import subprocess
@@ -8,11 +9,15 @@ import sys
 import urllib.parse
 import warnings
 
+import requests
 import selenium
 import stem
+import stem.util.term
 
 import darc.typing as typing
+from darc.const import QUEUE_REQUESTS
 from darc.error import I2PBootstrapFailed, render_error
+from darc.link import Link, parse_link
 
 __all__ = ['I2P_REQUESTS_PROXY', 'I2P_SELENIUM_PROXY']
 
@@ -79,3 +84,69 @@ def has_i2p(link_pool: typing.Set[str]) -> bool:
         if re.fullmatch(r'.*?\.i2p', host):
             return True
     return False
+
+
+def has_hosts(link: Link) -> typing.Optional[str]:
+    """Check if hosts.txt already exists."""
+    # <scheme>/<host>/hosts.txt
+    path = os.path.join(link.base, 'hosts.txt')
+    return path if os.path.isfile(path) else None
+
+
+def save_hosts(link: Link, text: str) -> str:
+    """Save `hosts.txt`."""
+    path = os.path.join(link.base, 'hosts.txt')
+
+    root = os.path.split(path)[0]
+    os.makedirs(root, exist_ok=True)
+
+    with open(path, 'w') as file:
+        print(f'# {link.url}', file=file)
+        file.write(text)
+    return path
+
+
+def read_hosts(text: typing.Iterable[str]) -> typing.Iterable[str]:
+    """Read `hosts.txt`."""
+    for line in filter(lambda s: s.strip(), text):
+        if line.startswith('#'):
+            continue
+        yield line.split('=')[0]
+
+
+def fetch_hosts(link: Link):
+    """Fetch `hosts.txt`."""
+    hosts_path = has_hosts(link)
+    if hosts_path is not None:
+
+        print(stem.util.term.format(f'[HOSTS] Cached {link.url}',
+                                    stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+        hosts_file = open(hosts_path)
+
+    else:
+
+        from darc.requests import i2p_session  # pylint: disable=import-outside-toplevel
+
+        hosts_link = parse_link(urllib.parse.urljoin(link.url, '/hosts.txt'))
+        print(f'[HOSTS] Subscribing {hosts_link.url}')
+
+        with i2p_session() as session:
+            try:
+                response = session.get(hosts_link.url)
+            except requests.RequestException as error:
+                print(render_error(f'[HOSTS] Failed on {hosts_link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                return
+
+        if response.ok:
+            save_hosts(hosts_link, response.text)
+            hosts_file = io.StringIO(response.text)
+        else:
+            print(render_error(f'[HOSTS] Failed on {hosts_link.url} [{response.status_code}]',
+                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            hosts_file = io.StringIO()
+
+        print(f'[HOSTS] Subscribed {hosts_link.url}')
+
+    # add link to queue
+    [QUEUE_REQUESTS.put(url) for url in read_hosts(hosts_file)]  # pylint: disable=expression-not-assigned

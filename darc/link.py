@@ -5,11 +5,10 @@ import dataclasses
 import hashlib
 import os
 import re
-import urllib
+import urllib.parse
 
 import darc.typing as typing
 from darc.const import PATH_DB
-from darc.proxy.i2p import I2P_PORT
 
 
 @dataclasses.dataclass
@@ -40,6 +39,8 @@ class Link:
 
 def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     """Parse link."""
+    from darc.proxy.i2p import I2P_PORT  # pylint: disable=import-outside-toplevel
+
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
     if host is None:

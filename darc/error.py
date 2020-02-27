@@ -30,6 +30,10 @@ class ZeroNetBootstrapFailed(Warning):
     """ZeroNet bootstrap process failed."""
 
 
+class SiteNotFoundWarning(ImportWarning):
+    """Site customisation not found."""
+
+
 def render_error(message: str, colour: typing.Color) -> str:
     """Render error message."""
     return ''.join(

@@ -35,9 +35,11 @@ RUN set -x \
         unzip \
         zlib1g-dev \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
+ && add-apt-repository ppa:linuxuprising/java --yes \
  && add-apt-repository ppa:i2p-maintainers/i2p --yes \
  && apt-get update \
  && apt-get install --yes --no-install-recommends \
+        oracle-java13-installer \
         python3.8 \
         python3-pip \
         python3-setuptools \
@@ -52,14 +54,6 @@ COPY extra/torrc.bionic /etc/tor/torrc
 RUN apt-get install --yes --no-install-recommends i2p
 COPY extra/i2p.bionic /etc/defaults/i2p
 
-## NoIP
-COPY vendor/noip-duc-linux.tar.gz /tmp
-RUN set -x \
- && cd /tmp \
- && tar xf noip-duc-linux.tar.gz \
- && mv noip-2.1.9-1 /usr/local/src/noip
- # make install
-
 ## ZeroNet
 COPY vendor/ZeroNet-py3-linux64.tar.gz /tmp
 RUN set -x \
@@ -67,6 +61,20 @@ RUN set -x \
  && tar xvpfz ZeroNet-py3-linux64.tar.gz \
  && mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
 COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
+
+## FreeNet
+COPY vendor/new_installer_offline.jar /tmp
+RUN set -x \
+ && cd /tmp \
+ && java -jar new_installer_offline.jar
+
+## NoIP
+COPY vendor/noip-duc-linux.tar.gz /tmp
+RUN set -x \
+ && cd /tmp \
+ && tar xvpfz noip-duc-linux.tar.gz \
+ && mv noip-2.1.9-1 /usr/local/src/noip
+ # make install
 
 # set up timezone
 RUN echo 'Asia/Shanghai' > /etc/timezone \
@@ -104,6 +112,10 @@ RUN set -x \
         /tmp/chromedriver_linux64-79.0.3945.36.zip \
         ## Google Chrome
         /tmp/google-chrome-stable_current_amd64.deb \
+        ## Vendors
+        /tmp/new_installer_offline.jar \
+        /tmp/noip-duc-linux.tar.gz \
+        /tmp/ZeroNet-py3-linux64.tar.gz \
  #&& apt-get remove --auto-remove --yes \
  #       software-properties-common \
  #       unzip \

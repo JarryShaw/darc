@@ -2,6 +2,7 @@
 """Source saving."""
 
 import contextlib
+import dataclasses
 import datetime
 import glob
 import json
@@ -148,17 +149,16 @@ def save_sitemap(link: Link, text: str) -> str:
 
 def save_headers(time: typing.Datetime, link: Link, response: typing.Response) -> str:  # pylint: disable=redefined-outer-name
     """Save HTTP response headers."""
-    data = dict()
-    data['[metadata]'] = dict()
-    data.update(response.headers)
-
-    data['[metadata]']['URL'] = response.url
-    data['[metadata]']['Reason'] = response.reason
-    data['[metadata]']['Status-Code'] = response.status_code
-
-    data['[metadata]']['Cookies'] = response.cookies.get_dict()
-    data['[metadata]']['Request-Method'] = response.request.method
-    data['[metadata]']['Request-Headers'] = dict(response.request.headers)
+    data = {
+        '[metadata]': dataclasses.asdict(link),
+        'URL': response.url,
+        'Method': response.request.method,
+        'Status-Code': response.status_code,
+        'Reason': response.reason,
+        'Cookies': response.cookies.get_dict(),
+        'Request': dict(response.request.headers),
+        'Response': response.headers,
+    }
 
     path = sanitise(link, time, headers=True)
     with open(path, 'w') as file:

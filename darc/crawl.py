@@ -26,6 +26,7 @@ from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
 from darc.parse import extract_links, get_sitemap, read_robots, read_sitemap
 from darc.proxy import LINK_MAP
+from darc.proxy.i2p import fetch_hosts
 from darc.save import (has_folder, has_html, has_raw, has_robots, has_sitemap, save_headers,
                        save_html, save_robots, save_sitemap)
 from darc.sites import crawler_hook, loader_hook
@@ -70,8 +71,8 @@ def fetch_sitemap(link: Link):
                 return
 
         if response.ok:
-            save_robots(robots_link, response.text)
             robots_text = response.text
+            save_robots(robots_link, robots_text)
         else:
             print(render_error(f'[ROBOTS] Failed on {robots_link.url} [{response.status_code}]',
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
@@ -79,7 +80,7 @@ def fetch_sitemap(link: Link):
 
         print(f'[ROBOTS] Checked {robots_link.url}')
 
-    sitemaps = sitemaps = read_robots(link.url, robots_text, host=link.host)
+    sitemaps = read_robots(link.url, robots_text, host=link.host)
     for sitemap_link in sitemaps:
         sitemap_path = has_sitemap(sitemap_link)
         if sitemap_path is not None:
@@ -135,19 +136,26 @@ def crawler(url: str):
         path = has_raw(timestamp, link)
         if path is not None:
 
-            print(stem.util.term.format(f'[REQUESTS] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
-            with open(path, 'rb') as file:
-                html = file.read()
-
-            # add link to queue
-            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
-
             # load sitemap.xml
             try:
                 fetch_sitemap(link)
             except Exception:
                 error = f'[Error loading sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                 print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+
+            # load hosts.txt
+            try:
+                fetch_hosts(link)
+            except Exception:
+                error = f'[Error loading hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+
+            print(stem.util.term.format(f'[REQUESTS] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+            with open(path, 'rb') as file:
+                html = file.read()
+
+            # add link to queue
+            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
 
         else:
 
@@ -156,12 +164,19 @@ def crawler(url: str):
 
             print(f'[REQUESTS] Requesting {link.url}')
 
-            # fetch sitemap.xml
             if new_host:
+                # fetch sitemap.xml
                 try:
                     fetch_sitemap(link)
                 except Exception:
                     error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+
+                # fetch hosts.txt
+                try:
+                    fetch_hosts(link)
+                except Exception:
+                    error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                     print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
             with request_session(link) as session:
