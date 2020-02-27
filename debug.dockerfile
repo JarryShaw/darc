@@ -45,8 +45,6 @@ RUN set -x \
         tar \
         unzip \
         zlib1g-dev \
- && retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
-        tzdata \
  && retry add-apt-repository ppa:deadsnakes/ppa --yes \
  && retry add-apt-repository ppa:linuxuprising/java --yes \
  && retry add-apt-repository ppa:i2p-maintainers/i2p --yes \
@@ -56,9 +54,13 @@ RUN set -x \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && retry pty-install --stdin 'yes' apt-get install --yes \
-        oracle-java13-installer \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
+RUN retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
+        tzdata \
+ && ( retry pty-install --stdin 'yes' apt-get install --yes \
+        oracle-java13-installer \
+    || true ) \
+ && dpkg --configure -a
 
 ## Tor
 RUN retry apt-get install --yes tor
