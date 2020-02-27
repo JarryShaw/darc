@@ -19,7 +19,7 @@ ENV LANG="C.UTF-8" \
     LC_ALL="C.UTF-8" \
     PYTHONIOENCODING="UTF-8"
 
-COPY extra/install.py /usr/local/bin/install
+COPY extra/install.py /usr/local/bin/pty-install
 RUN set -x \
  && apt-get update \
  && apt-get install --yes --no-install-recommends \
@@ -37,7 +37,7 @@ RUN set -x \
         tar \
         unzip \
         zlib1g-dev \
- && install --stdin '6\n70' apt-get install --yes --no-install-recommends \
+ && pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
  && add-apt-repository ppa:linuxuprising/java --yes \
@@ -48,7 +48,7 @@ RUN set -x \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && install --stdin 'yes' apt-get install --yes \
+ && pty-install --stdin 'yes' apt-get install --yes \
         oracle-java13-installer \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 

@@ -27,7 +27,7 @@ ENV LANG="C.UTF-8" \
 #         tor
 # COPY extra/torrc.alpine /etc/tor/torrc
 COPY extra/retry.sh /usr/local/bin/retry
-COPY extra/install.py /usr/local/bin/install
+COPY extra/install.py /usr/local/bin/pty-install
 RUN set -x \
  && retry apt-get update \
  && retry apt-get install --yes \
@@ -45,7 +45,7 @@ RUN set -x \
         tar \
         unzip \
         zlib1g-dev \
- && retry install --stdin '6\n70' apt-get install --yes --no-install-recommends \
+ && retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
  && retry add-apt-repository ppa:deadsnakes/ppa --yes \
  && retry add-apt-repository ppa:linuxuprising/java --yes \
@@ -56,7 +56,7 @@ RUN set -x \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && retry install --stdin 'yes' apt-get install --yes \
+ && retry pty-install --stdin 'yes' apt-get install --yes \
         oracle-java13-installer \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 
