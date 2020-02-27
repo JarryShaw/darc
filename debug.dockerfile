@@ -40,19 +40,23 @@ RUN set -x \
         make \
         software-properties-common \
         tar \
-        tzdata \
         unzip \
         zlib1g-dev \
+ && echo -e '6\n70' | \
+    retry apt-get install --yes --no-install-recommends \
+        tzdata \
  && retry add-apt-repository ppa:deadsnakes/ppa --yes \
  && retry add-apt-repository ppa:linuxuprising/java --yes \
  && retry add-apt-repository ppa:i2p-maintainers/i2p --yes \
  && retry apt-get update \
- && yes | retry apt-get install --yes \
-        oracle-java13-installer \
+ && retry apt-get install --yes \
         python3.8 \
         python3-pip \
         python3-setuptools \
         python3-wheel \
+ && yes | \
+    retry apt-get install --yes \
+        oracle-java13-installer \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 
 ## Tor
@@ -85,11 +89,11 @@ RUN set -x \
  && mv noip-2.1.9-1 /usr/local/src/noip
  # make install
 
-# set up timezone
-RUN echo 'Asia/Shanghai' > /etc/timezone \
- && rm -f /etc/localtime \
- && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
- && dpkg-reconfigure -f noninteractive tzdata
+# # set up timezone
+# RUN echo 'Asia/Shanghai' > /etc/timezone \
+#  && rm -f /etc/localtime \
+#  && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+#  && dpkg-reconfigure -f noninteractive tzdata
 
 # ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
 # ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
