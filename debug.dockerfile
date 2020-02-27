@@ -14,9 +14,11 @@ FROM ubuntu:bionic
 LABEL Name=darc Version=0.0.1
 #EXPOSE 9050
 
-ENV LANG-"C.UTF-8" \
-    LC_ALL-"C.UTF-8" \
-    PYTHONIOENCODING-"UTF-8"
+# ARG DEBIAN_FRONTEND="noninteractive"
+ARG DEBIAN_FRONTEND="teletype"
+ENV LANG="C.UTF-8" \
+    LC_ALL="C.UTF-8" \
+    PYTHONIOENCODING="UTF-8"
 
 # RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
 #  && apk add --update --no-cache \
@@ -25,6 +27,7 @@ ENV LANG-"C.UTF-8" \
 #         tor
 # COPY extra/torrc.alpine /etc/tor/torrc
 COPY extra/retry.sh /usr/local/bin/retry
+COPY extra/install.py /usr/local/bin/install
 RUN set -x \
  && retry apt-get update \
  && retry apt-get install --yes \
@@ -42,8 +45,7 @@ RUN set -x \
         tar \
         unzip \
         zlib1g-dev \
- && echo -e '6\n70' | \
-    retry apt-get install --yes --no-install-recommends \
+ && retry install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
  && retry add-apt-repository ppa:deadsnakes/ppa --yes \
  && retry add-apt-repository ppa:linuxuprising/java --yes \
@@ -54,8 +56,7 @@ RUN set -x \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && yes | \
-    retry apt-get install --yes \
+ && retry install --stdin 'yes' apt-get install --yes \
         oracle-java13-installer \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 
