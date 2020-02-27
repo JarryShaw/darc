@@ -37,7 +37,7 @@ RUN set -x \
         tar \
         unzip \
         zlib1g-dev \
- && retry install --stdin '6\n70' apt-get install --yes --no-install-recommends \
+ && install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
  && add-apt-repository ppa:linuxuprising/java --yes \
@@ -48,7 +48,7 @@ RUN set -x \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && retry install --stdin 'yes' apt-get install --yes \
+ && install --stdin 'yes' apt-get install --yes \
         oracle-java13-installer \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 
