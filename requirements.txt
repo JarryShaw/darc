@@ -1,6 +1,6 @@
 # Python packages
 pip==20.0.2
-setuptools==45.1.0
+setuptools==45.2.0
 wheel==0.34.2
 
 # Python dependencies
@@ -8,12 +8,12 @@ beautifulsoup4[html5lib]==4.8.2
 certifi==2019.11.28
 chardet==3.0.4
 html5lib==1.0.1
-idna==2.8
+idna==2.9
 pysocks==1.7.1
-requests[socks]==2.22.0
+requests[socks]==2.23.0
 selenium==3.141.0
 six==1.14.0
-soupsieve==1.9.5
+soupsieve==2.0
 stem==1.8.0
 typing-extensions==3.7.4.1
 urllib3==1.25.8
