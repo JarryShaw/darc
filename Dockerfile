@@ -34,10 +34,8 @@ RUN retry apt-get update \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 RUN retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
- && ( retry pty-install --stdin 'yes' apt-get install --yes \
-        oracle-java13-installer \
-    || true ) \
- && dpkg --configure -a
+ && retry pty-install --stdin 'yes' apt-get install --yes \
+        oracle-java13-installer
 RUN retry apt-get install --yes --no-install-recommends \
         sudo \
  && adduser --disabled-password --gecos '' darc \
@@ -61,18 +59,23 @@ RUN set -x \
 COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
 
 ## FreeNet
+USER darc
 COPY vendor/new_installer_offline.jar /tmp
 RUN set -x \
  && cd /tmp \
- && su -m darc -c "java -jar new_installer_offline.jar"
+ && ( pty-install --stdin '/home/darc/freenet\n1' java -jar new_installer_offline.jar || true ) \
+ && sudo mv /home/darc/freenet /usr/local/src/freenet
+USER root
 
 ## NoIP
 COPY vendor/noip-duc-linux.tar.gz /tmp
 RUN set -x \
  && cd /tmp \
  && tar xvpfz noip-duc-linux.tar.gz \
- && mv noip-2.1.9-1 /usr/local/src/noip
- # make install
+ && mv noip-2.1.9-1 /usr/local/src/noip \
+ && cd noip \
+ && make
+ # && make install
 
 # # set up timezone
 # RUN echo 'Asia/Shanghai' > /etc/timezone \
