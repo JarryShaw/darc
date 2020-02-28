@@ -83,6 +83,8 @@ def i2p_bootstrap():
     if _I2P_BS_FLAG:
         return
 
+    print(stem.util.term.format('Bootstrapping I2P proxy...',
+                                stem.util.term.Color.BLUE))  # pylint: disable=no-member
     for _ in range(I2P_RETRY+1):
         try:
             _i2p_bootstrap()

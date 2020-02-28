@@ -33,7 +33,7 @@ _ZERONET_PROC = None
 
 
 def _zeronet_bootstrap():
-    """ZERONET bootstrap."""
+    """ZeroNet bootstrap."""
     global _ZERONET_BS_FLAG, _ZERONET_PROC
 
     # launch Tor first
@@ -64,11 +64,13 @@ def _zeronet_bootstrap():
 
 
 def zeronet_bootstrap():
-    """Bootstrap wrapper for ZERONET."""
+    """Bootstrap wrapper for ZeroNet."""
     # don't re-bootstrap
     if _ZERONET_BS_FLAG:
         return
 
+    print(stem.util.term.format('Bootstrapping ZeroNet proxy...',
+                                stem.util.term.Color.BLUE))  # pylint: disable=no-member
     for _ in range(ZERONET_RETRY+1):
         try:
             _zeronet_bootstrap()
@@ -79,7 +81,7 @@ def zeronet_bootstrap():
 
 
 def has_zeronet(link_pool: typing.Set[str]) -> bool:
-    """Check if contain ZERONET links."""
+    """Check if contain ZeroNet links."""
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
         parse = urllib.parse.urlparse(link)

@@ -11,7 +11,7 @@ import warnings
 import stem
 
 import darc.typing as typing
-from darc.error import ZeroNetBootstrapFailed, render_error
+from darc.error import FreenetBootstrapFailed, render_error
 
 # bootstrap wait
 BS_WAIT = float(os.getenv('FREENET_BS_WAIT', '10'))
@@ -65,12 +65,14 @@ def freenet_bootstrap():
     if _FREENET_BS_FLAG:
         return
 
+    print(stem.util.term.format('Bootstrapping Freenet proxy...',
+                                stem.util.term.Color.BLUE))  # pylint: disable=no-member
     for _ in range(FREENET_RETRY+1):
         try:
             _freenet_bootstrap()
             break
         except Exception as error:
-            warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 64, 'freenet_bootstrap()')
+            warning = warnings.formatwarning(error, FreenetBootstrapFailed, __file__, 64, 'freenet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 

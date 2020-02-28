@@ -30,6 +30,10 @@ class ZeroNetBootstrapFailed(Warning):
     """ZeroNet bootstrap process failed."""
 
 
+class FreenetBootstrapFailed(Warning):
+    """Freenet bootstrap process failed."""
+
+
 class SiteNotFoundWarning(ImportWarning):
     """Site customisation not found."""
 
