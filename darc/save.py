@@ -157,7 +157,7 @@ def save_headers(time: typing.Datetime, link: Link, response: typing.Response) -
     """Save HTTP response headers."""
     data = {
         '[metadata]': dataclasses.asdict(link),
-        'Timestamp': time,
+        'Timestamp': time.isoformat(),
         'URL': response.url,
         'Method': response.request.method,
         'Status-Code': response.status_code,
