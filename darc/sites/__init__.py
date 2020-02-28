@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Site specific customisation."""
 
+import collections
+
 import importlib
 import warnings
 
@@ -8,14 +10,14 @@ import darc.typing as typing
 from darc.error import SiteNotFoundWarning
 from darc.link import Link
 
-SITEMAP = {
+SITEMAP = collections.defaultdict(lambda: 'default', {
     # 'www.sample.com': 'sample',  # darc.sites.sample
-}
+})
 
 
 def _get_spec(link: Link) -> typing.ModuleType:
     """Load spec if any."""
-    spec = SITEMAP.get(link.host, 'default')
+    spec = SITEMAP[link.host]
     try:
         return importlib.import_module(f'darc.sites.{spec}')
     except ImportError:

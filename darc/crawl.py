@@ -34,7 +34,7 @@ from darc.sites import crawler_hook, loader_hook
 
 def request_session(link: Link) -> typing.Session:
     """Get requests session."""
-    session, _ = LINK_MAP.get(link.proxy)
+    session, _ = LINK_MAP[link.proxy]
     if session is None:
         raise UnsupportedLink(link.url)
     return session()
@@ -42,7 +42,7 @@ def request_session(link: Link) -> typing.Session:
 
 def request_driver(link: Link) -> typing.Driver:
     """Get selenium driver."""
-    _, driver = LINK_MAP.get(link.proxy)
+    _, driver = LINK_MAP[link.proxy]
     if driver is None:
         raise UnsupportedLink(link.url)
     return driver()
