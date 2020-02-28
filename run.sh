@@ -8,9 +8,6 @@ WAIT=${DARC_WAIT=10}
 # signal handlers
 trap '[ -f ${PATH_DATA}/darc.pid ] && kill -2 $(cat ${PATH_DATA}/darc.pid)' SIGINT SIGTERM SIGKILL
 
-# setup I2P
-cp /app/extra/i2p.bionic /etc/default/i2p
-
 # initialise
 echo "+ Starting application..."
 python3 -m darc $@

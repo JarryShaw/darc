@@ -136,12 +136,13 @@ def crawler(url: str):
         path = has_raw(timestamp, link)
         if path is not None:
 
-            # load sitemap.xml
-            try:
-                fetch_sitemap(link)
-            except Exception:
-                error = f'[Error loading sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+            if link.proxy != 'zeronet':
+                # load sitemap.xml
+                try:
+                    fetch_sitemap(link)
+                except Exception:
+                    error = f'[Error loading sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
             # load hosts.txt
             if link.proxy == 'i2p':
@@ -166,12 +167,13 @@ def crawler(url: str):
             print(f'[REQUESTS] Requesting {link.url}')
 
             if new_host:
-                # fetch sitemap.xml
-                try:
-                    fetch_sitemap(link)
-                except Exception:
-                    error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                if link.proxy != 'zeronet':
+                    # fetch sitemap.xml
+                    try:
+                        fetch_sitemap(link)
+                    except Exception:
+                        error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
                 if link.proxy == 'i2p':
                     # fetch hosts.txt

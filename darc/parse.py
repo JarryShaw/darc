@@ -18,7 +18,7 @@ def _match_link(link: str) -> bool:
     """Check if link in black list."""
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
-    host = parse.hostname or parse.netloc
+    host = parse.netloc or parse.hostname
 
     # any matching white list
     if any(re.fullmatch(pattern, host, re.IGNORECASE) is not None for pattern in LINK_WHITE_LIST):

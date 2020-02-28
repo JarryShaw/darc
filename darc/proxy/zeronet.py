@@ -37,7 +37,7 @@ def _zeronet_bootstrap():
     tor_bootstrap()
 
     # launch ZeroNet process
-    args = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'start']
+    args = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'main']
     _ZERONET_PROC = subprocess.Popen(
         args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
@@ -68,7 +68,7 @@ def zeronet_bootstrap():
             _zeronet_bootstrap()
             break
         except Exception as error:
-            warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 53, 'zeronet_bootstrap()')
+            warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 68, 'zeronet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
@@ -78,6 +78,6 @@ def has_zeronet(link_pool: typing.Set[str]) -> bool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
         parse = urllib.parse.urlparse(link)
 
-        if parse.netloc == f'127.0.0.1:{ZERONET_PORT}':
+        if parse.netloc in (f'127.0.0.1:{ZERONET_PORT}', f'localhost:{ZERONET_PORT}'):
             return True
     return False

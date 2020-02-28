@@ -111,7 +111,7 @@ def has_tor(link_pool: typing.Set[str]) -> bool:
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
         parse = urllib.parse.urlparse(link)
-        host = parse.hostname or parse.netloc
+        host = parse.netloc or parse.hostname
 
         if re.fullmatch(r'.*?\.onion', host):
             return True

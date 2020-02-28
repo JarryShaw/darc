@@ -50,7 +50,7 @@ def _i2p_bootstrap():
     global _I2P_BS_FLAG, _I2P_PROC
 
     # launch I2P process
-    args = ['i2prouter', 'start']
+    args = ['su', '-', 'darc', 'i2prouter', 'start']
     _I2P_PROC = subprocess.Popen(
         args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
@@ -81,7 +81,7 @@ def i2p_bootstrap():
             _i2p_bootstrap()
             break
         except Exception as error:
-            warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 65, 'i2p_bootstrap()')
+            warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 81, 'i2p_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
@@ -90,7 +90,7 @@ def has_i2p(link_pool: typing.Set[str]) -> bool:
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
         parse = urllib.parse.urlparse(link)
-        host = parse.hostname or parse.netloc
+        host = parse.netloc or parse.hostname
 
         if re.fullmatch(r'.*?\.i2p', host):
             return True

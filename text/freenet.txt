@@ -1,0 +1,16 @@
+# FMS
+http://127.0.0.1:8888/USK@0npnMrqZNKRCRoGojZV93UNHCMN-6UU3rRSAmP6jNLE,~BG-edFtdCC1cSH4O3BWdeIYa8Sw5DfyrSV-TKdO5ec,AQACAAE/fms/142/
+http://localhost:8888/USK@xedmmitRTj9-PXJxoPbD7RY1gf9pKi0OcsRmjNPPIU4,AzFWTYV~9-I~eXis14tIkJ4XkF17gIgZrB294LjFXjc,AQACAAE/fmsguide/6/
+http://localhost:8888/USK@Gq-FBhpgvr11VGpapG~y0rGFOAHVfzyW1WoKGwK-fFw,MpzFUh5Rmw6N~aMKwm9h2Uk~6aTRhYaY0shXVotgBUc,AQACAAE/fniki/85/SomeDude
+http://localhost:8888/USK@vytzawkXsTcNzUh~utLVBWrh97i4aBx-rMVFDQo-wlw,qszc-N3w8IPEpOZt18IUapGdENTtqEuSfss5l64Mdoc,AQACAAE/jfms/7/
+
+# Sone
+http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/
+
+# Freemail
+
+# Frost
+http://127.0.0.1:8888/USK@oyjm9tEWQ1fYbYDsBfJ017-ip9uTPzPLB52QHMduBIc,HE~wfG205QnSscK-U9FX7hAtGVkJg1~GRjkU1qkceTE,AQABAAE/frost/-1/
+http://127.0.0.1:8888/USK@~kiTTy3Rc2kOhIRnJl1P13JXtZeJSqln76h7DC3AgGw,Ocr6A3ZSED6iBZJZrCd9jTtW5JuxkRP7S4NXL9XWBgg,AQACAAE/The_Kitty/12/
+
+# Freetalk

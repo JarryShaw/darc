@@ -1,0 +1,23 @@
+# ZeroHello
+http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D
+
+# ZeroBlog
+http://127.0.0.1:43110/1BLogC9LN4oPDcruNz3qo1ysa133E9AGg8
+http://127.0.0.1:43110/blog.zeronetwork.bit
+
+# ZeroTalk
+http://127.0.0.1:43110/1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT
+http://127.0.0.1:43110/talk.zeronetwork.bit
+
+# ZeroMail
+http://127.0.0.1:43110/1MaiL5gfBM1cyb4a8e3iiL8L5gXmoAJu27
+http://127.0.0.1:43110/mail.zeronetwork.bit
+
+# ZeroMe
+http://127.0.0.1:43110/1MeFqFfFFGQfa1J3gJyYYUvb5Lksczq7nH
+
+# ReactionGIFs
+http://127.0.0.1:43110/1Gif7PqWTzVWDQ42Mo7np3zXmGAo3DXc7h
+
+# ZeroChat
+http://127.0.0.1:43110/1AvF5TpcaamRNtqvN1cnDEWzNmUtD47Npg

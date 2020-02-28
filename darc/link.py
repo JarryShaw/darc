@@ -10,6 +10,12 @@ import urllib.parse
 import darc.typing as typing
 from darc.const import PATH_DB
 
+try:
+    from pathlib import PosixPath
+    PosixPath(os.curdir)
+except NotImplementedError:
+    from pathlib import PurePosixPath as PosixPath
+
 
 @dataclasses.dataclass
 class Link:
@@ -39,24 +45,36 @@ class Link:
 
 def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     """Parse link."""
-    from darc.proxy.i2p import I2P_PORT  # pylint: disable=import-outside-toplevel
+    from darc.proxy.freenet import FREENET_PORT  # pylint: disable=import-outside-toplevel
+    from darc.proxy.zeronet import ZERONET_PORT  # pylint: disable=import-outside-toplevel
 
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
     if host is None:
-        host = parse.hostname or parse.netloc
+        host = parse.netloc or parse.hostname
 
+    hostname = host
     if re.fullmatch(r'.*?\.onion', host):
         proxy_type = 'tor'
     elif re.fullmatch(r'.*?\.i2p', host):
         proxy_type = 'i2p'
-    elif host == f'127.0.0.1:{I2P_PORT}':
-        proxy_type = 'zeronet'
+    elif host in (f'127.0.0.1:{ZERONET_PORT}', f'localhost:{ZERONET_PORT}'):
+        if parse.path == '/':
+            proxy_type = 'norm'
+        else:
+            proxy_type = 'zeronet'
+            hostname = f'{PosixPath(parse.path).parts[1]}.zeronet'
+    elif host in (f'127.0.0.1:{FREENET_PORT}', f'localhost:{FREENET_PORT}'):
+        if parse.path == '/':
+            proxy_type = 'norm'
+        else:
+            proxy_type = 'freenet'
+            hostname = f'{PosixPath(parse.path).parts[1]}.freenet'
     else:
         proxy_type = 'norm'
 
     # <scheme>/<host>/<hash>-<timestamp>.html
-    base = os.path.join(PATH_DB, parse.scheme, host)
+    base = os.path.join(PATH_DB, parse.scheme, hostname)
     name = hashlib.sha256(link.encode()).hexdigest()
 
     return Link(

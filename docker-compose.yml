@@ -4,7 +4,10 @@ services:
   darc:
     image: darc
     build: .
-    command: [ "--file", "/app/text/market.txt", "--file", "/app/text/i2p.txt" ]
+    command: [ "--file", "/app/text/market.txt",
+               "--file", "/app/text/i2p.txt",
+               "--file", "/app/text/zeronet.txt",
+               "--file", "/app/text/freenet.txt" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
