@@ -201,11 +201,15 @@ def crawler(url: str):
             # check content type
             ct_type = response.headers.get('Content-Type', 'text/html').casefold()
             if 'html' not in ct_type:
-                text = response.content
-                save_file(link, text)
-
                 print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+
+                text = response.content
+                try:
+                    save_file(link, text)
+                except Exception as error:
+                    print(render_error(f'[REQUESTS] Failed to save generic file from {link.url}',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
             html = response.content
