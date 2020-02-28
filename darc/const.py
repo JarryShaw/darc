@@ -6,7 +6,11 @@ import json
 import math
 import multiprocessing
 import os
+import pprint
+import shutil
 import sys
+
+import stem.util.term
 
 # reboot mode?
 REBOOT = bool(int(os.getenv('DARC_REBOOT', '0')))
@@ -43,15 +47,39 @@ PATH_ID = os.path.join(PATH_DB, 'darc.pid')
 
 # extract link pattern
 LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
+if DEBUG:
+    print(stem.util.term.format('LINK_WHITE_LIST',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    pprint.pprint(LINK_WHITE_LIST)
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 # link black list
 LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
+if DEBUG:
+    print(stem.util.term.format('LINK_BLACK_LIST',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    pprint.pprint(LINK_BLACK_LIST)
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 # content type white list
 MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
+if DEBUG:
+    print(stem.util.term.format('MIME_WHITE_LIST',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    pprint.pprint(MIME_WHITE_LIST)
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 # content type black list
 MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
+if DEBUG:
+    print(stem.util.term.format('MIME_BLACK_LIST',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    pprint.pprint(MIME_BLACK_LIST)
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 # time delta for caches in seconds
 _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))

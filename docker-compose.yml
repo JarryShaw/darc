@@ -38,18 +38,35 @@ services:
       I2P_PORT: 4444
       # I2P bootstrap retry
       I2P_RETRY: 10
+      # I2P bootstrap wait
+      I2P_WAIT: 90
       # ZeroNet port
       ZERONET_PORT: 43110
       # ZeroNet bootstrap retry
       ZERONET_RETRY: 10
       # ZeroNet project path
       ZERONET_PATH: "/usr/local/src/zeronet"
+      # ZeroNet bootstrap wait
+      ZERONET_WAIT: 90
+      # Freenet port
+      FREENET_PORT: 8888
+      # Freenet bootstrap retry
+      FREENET_RETRY: 0
+      # Freenet project path
+      FREENET_PATH: "/usr/local/src/freenet"
+      # Freenet bootstrap wait
+      FREENET_WAIT: 90
       # time delta for caches in seconds
       TIME_CACHE: 600  # 1 hour
       # time to wait for selenium
       SE_WAIT: 5
       # extract link pattern
-      LINK_WHITE_LIST: '[ ".*?\\.onion", ".*?\\.i2p", "127\\.0\\.0\\.1:43110" ]'
+      LINK_WHITE_LIST: '[
+        ".*?\\.onion",
+        ".*?\\.i2p",
+        "127\\.0\\.0\\.1:43110", "localhost:43110",
+        "127\\.0\\.0\\.1:8888", "localhost:8888"
+      ]'
       # link black list
       LINK_BLACK_LIST: '[ "(.*\\.)?facebookcorewwwi\\.onion" ]'
       # content type white list

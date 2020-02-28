@@ -3,8 +3,10 @@
 
 import multiprocessing
 import os
+import pprint
 import queue
 import random
+import shutil
 import signal
 import threading
 
@@ -14,8 +16,8 @@ import stem.process
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import (DARC_CPU, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS, QUEUE_REQUESTS,
-                        QUEUE_SELENIUM, REBOOT, getpid)
+from darc.const import (DARC_CPU, DEBUG, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS,
+                        QUEUE_REQUESTS, QUEUE_SELENIUM, REBOOT, getpid)
 from darc.crawl import crawler, loader
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap, has_freenet
 from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
@@ -73,6 +75,13 @@ def _get_requests_links() -> typing.Set[str]:
         random.shuffle(link_list)
 
     link_pool = set(link_list)
+    if DEBUG:
+        print(stem.util.term.format('LINK POOL',
+                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        pprint.pprint(sorted(link_pool))
+        print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
     if not _TOR_BS_FLAG and has_tor(link_pool):
         tor_bootstrap()
     if not _I2P_BS_FLAG and has_i2p(link_pool):

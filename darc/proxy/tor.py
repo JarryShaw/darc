@@ -98,7 +98,7 @@ def tor_bootstrap():
         return
 
     print(stem.util.term.format('Bootstrapping Tor proxy...',
-                                stem.util.term.Color.BLUE))  # pylint: disable=no-member
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(TOR_RETRY+1):
         try:
             _tor_bootstrap()

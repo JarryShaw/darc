@@ -23,7 +23,7 @@ from darc.link import Link, parse_link
 __all__ = ['I2P_REQUESTS_PROXY', 'I2P_SELENIUM_PROXY']
 
 # bootstrap wait
-BS_WAIT = float(os.getenv('I2P_BS_WAIT', '10'))
+BS_WAIT = float(os.getenv('I2P_WAIT', '90'))
 
 # I2P port
 I2P_PORT = os.getenv('I2P_PORT', '4444')
@@ -84,7 +84,7 @@ def i2p_bootstrap():
         return
 
     print(stem.util.term.format('Bootstrapping I2P proxy...',
-                                stem.util.term.Color.BLUE))  # pylint: disable=no-member
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(I2P_RETRY+1):
         try:
             _i2p_bootstrap()

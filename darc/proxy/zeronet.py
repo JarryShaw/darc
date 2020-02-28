@@ -15,7 +15,7 @@ from darc.error import ZeroNetBootstrapFailed, render_error
 from darc.proxy.tor import tor_bootstrap
 
 # bootstrap wait
-BS_WAIT = float(os.getenv('ZERONET_BS_WAIT', '10'))
+BS_WAIT = float(os.getenv('ZERONET_WAIT', '90'))
 
 # ZeroNet port
 ZERONET_PORT = os.getenv('ZERONET_PORT', '43110')
@@ -70,7 +70,7 @@ def zeronet_bootstrap():
         return
 
     print(stem.util.term.format('Bootstrapping ZeroNet proxy...',
-                                stem.util.term.Color.BLUE))  # pylint: disable=no-member
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(ZERONET_RETRY+1):
         try:
             _zeronet_bootstrap()

@@ -155,8 +155,11 @@ def save_sitemap(link: Link, text: str) -> str:
 
 def save_headers(time: typing.Datetime, link: Link, response: typing.Response) -> str:  # pylint: disable=redefined-outer-name
     """Save HTTP response headers."""
+    metadata = dataclasses.asdict(link)
+    del metadata['url_parse']
+
     data = {
-        '[metadata]': dataclasses.asdict(link),
+        '[metadata]': metadata,
         'Timestamp': time.isoformat(),
         'URL': response.url,
         'Method': response.request.method,

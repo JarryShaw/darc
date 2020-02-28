@@ -14,7 +14,7 @@ import darc.typing as typing
 from darc.error import FreenetBootstrapFailed, render_error
 
 # bootstrap wait
-BS_WAIT = float(os.getenv('FREENET_BS_WAIT', '10'))
+BS_WAIT = float(os.getenv('FREENET_WAIT', '90'))
 
 # Freenet port
 FREENET_PORT = os.getenv('FREENET_PORT', '8888')
@@ -66,7 +66,7 @@ def freenet_bootstrap():
         return
 
     print(stem.util.term.format('Bootstrapping Freenet proxy...',
-                                stem.util.term.Color.BLUE))  # pylint: disable=no-member
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(FREENET_RETRY+1):
         try:
             _freenet_bootstrap()

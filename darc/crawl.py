@@ -136,7 +136,7 @@ def crawler(url: str):
         path = has_raw(timestamp, link)
         if path is not None:
 
-            if link.proxy != 'zeronet':
+            if link.proxy not in ('zeronet', 'freenet'):
                 # load sitemap.xml
                 try:
                     fetch_sitemap(link)
@@ -167,7 +167,7 @@ def crawler(url: str):
             print(f'[REQUESTS] Requesting {link.url}')
 
             if new_host:
-                if link.proxy != 'zeronet':
+                if link.proxy not in ('zeronet', 'freenet'):
                     # fetch sitemap.xml
                     try:
                         fetch_sitemap(link)
