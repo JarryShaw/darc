@@ -10,6 +10,7 @@ import warnings
 import stem
 
 import darc.typing as typing
+from darc.const import DEBUG
 from darc.error import ZeroNetBootstrapFailed, render_error
 from darc.proxy.tor import tor_bootstrap
 
@@ -40,9 +41,17 @@ def _zeronet_bootstrap():
     _ZERONET_PROC = subprocess.Popen(
         args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
-    if _ZERONET_PROC.returncode != 0:
-        raise subprocess.CalledProcessError(_ZERONET_PROC.returncode, args,
-                                            _ZERONET_PROC.stdout, _ZERONET_PROC.stderr)
+
+    stdout, stderr = _ZERONET_PROC.communicate()
+    if DEBUG:
+        print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+    print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
+
+    returncode = _ZERONET_PROC.returncode
+    if returncode is not None and returncode != 0:
+        raise subprocess.CalledProcessError(returncode, args,
+                                            _ZERONET_PROC.stdout,
+                                            _ZERONET_PROC.stderr)
 
     # update flag
     _ZERONET_BS_FLAG = True

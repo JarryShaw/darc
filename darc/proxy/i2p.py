@@ -15,7 +15,7 @@ import stem
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import QUEUE_REQUESTS
+from darc.const import DEBUG, QUEUE_REQUESTS
 from darc.error import I2PBootstrapFailed, render_error
 from darc.link import Link, parse_link
 
@@ -54,9 +54,17 @@ def _i2p_bootstrap():
     _I2P_PROC = subprocess.Popen(
         args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
-    if _I2P_PROC.returncode != 0:
-        raise subprocess.CalledProcessError(_I2P_PROC.returncode, args,
-                                            _I2P_PROC.stdout, _I2P_PROC.stderr)
+
+    stdout, stderr = _I2P_PROC.communicate()
+    if DEBUG:
+        print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+    print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
+
+    returncode = _I2P_PROC.returncode
+    if returncode is not None and returncode != 0:
+        raise subprocess.CalledProcessError(returncode, args,
+                                            _I2P_PROC.stdout,
+                                            _I2P_PROC.stderr)
 
     # update flag
     _I2P_BS_FLAG = True
