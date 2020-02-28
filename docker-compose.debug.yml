@@ -8,7 +8,17 @@ services:
       dockerfile: debug.dockerfile
     ports:
       - 9050:1086
-    command: [ "https://www.nytimes3xbfgragh.onion", "https://www.bing.com" ]
+    command:
+      # normal
+      - https://www.bing.com
+      # Tor
+      - https://www.nytimes3xbfgragh.onion
+      # I2P
+      - http://zzz.i2p
+      # ZeroNet
+      - http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D
+      # Freenet
+      - http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1

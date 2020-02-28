@@ -54,25 +54,19 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
 
-    __exit = True
     for link in args.link:
-        __exit = False
         QUEUE_REQUESTS.put(link)
 
     if args.file is not None:
         for path in args.file:
             with open(path) as file:
                 for line in file:
-                    __exit = False
                     QUEUE_REQUESTS.put(line.strip())
 
-    if __exit:
-        parser.print_help()
-    else:
-        try:
-            process()
-        except BaseException:
-            traceback.print_exc()
+    try:
+        process()
+    except BaseException:
+        traceback.print_exc()
     _exit()
 
 
