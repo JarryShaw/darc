@@ -36,10 +36,13 @@ def _zeronet_bootstrap():
     tor_bootstrap()
 
     # launch ZeroNet process
+    args = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'start']
     _ZERONET_PROC = subprocess.Popen(
-        [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'start'],
-        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
+    if _ZERONET_PROC.returncode != 0:
+        raise subprocess.CalledProcessError(_ZERONET_PROC.returncode, args,
+                                            _ZERONET_PROC.stdout, _ZERONET_PROC.stderr)
 
     # update flag
     _ZERONET_BS_FLAG = True

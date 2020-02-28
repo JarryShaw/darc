@@ -13,5 +13,7 @@ MEMORYLIMIT="128"
 
 # Running I2P as the root user is *not* recommended.
 # Please edit /etc/default/i2p and set the variable RUN_AS_USER.
+#RUN_AS_USER=www-data
+
 # To run as root anyway, edit /etc/default/i2p and set ALLOW_ROOT=true.
 ALLOW_ROOT=true

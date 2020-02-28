@@ -50,10 +50,13 @@ def _i2p_bootstrap():
     global _I2P_BS_FLAG, _I2P_PROC
 
     # launch I2P process
+    args = ['i2prouter', 'start']
     _I2P_PROC = subprocess.Popen(
-        ['i2prouter', 'start'],
-        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
+    if _I2P_PROC.returncode != 0:
+        raise subprocess.CalledProcessError(_I2P_PROC.returncode, args,
+                                            _I2P_PROC.stdout, _I2P_PROC.stderr)
 
     # update flag
     _I2P_BS_FLAG = True
