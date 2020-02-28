@@ -31,6 +31,8 @@ COPY extra/install.py /usr/local/bin/pty-install
 RUN set -x \
  && retry apt-get update \
  && retry apt-get install --yes \
+        apt-utils \
+ && retry apt-get install --yes \
         apt-transport-https \
         ca-certificates
 COPY extra/sources.bionic.list /etc/apt/sources.list
@@ -86,7 +88,7 @@ COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
 COPY vendor/new_installer_offline.jar /tmp
 RUN set -x \
  && cd /tmp \
- && su -m darc -c "sudo java -jar new_installer_offline.jar"
+ && su -m darc -c "java -jar new_installer_offline.jar"
 
 ## NoIP
 COPY vendor/noip-duc-linux.tar.gz /tmp
