@@ -56,8 +56,10 @@ RUN retry apt-get update \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 RUN retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
- && retry pty-install --stdin 'yes' apt-get install --yes \
-        oracle-java13-installer
+ && ( retry pty-install --stdin 'yes' apt-get install --yes \
+        oracle-java13-installer \
+    || true ) \
+ && dpkg --configure -a
 RUN retry apt-get install --yes \
         sudo \
  && adduser --disabled-password --gecos '' darc \
