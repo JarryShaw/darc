@@ -56,8 +56,9 @@ services:
     restart: "always"
     volumes:
       - ./text:/app/text
-      - ./cache:/app/cache
+      - ./extra:/app/extra
       - /data/darc:/app/data
+      # - ./cache:/app/cache
       # ## change timezone
       # - /etc:/etc
       # - /usr/share/zoneinfo:/usr/share/zoneinfo

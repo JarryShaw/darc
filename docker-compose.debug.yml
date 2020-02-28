@@ -59,5 +59,7 @@ services:
       MIME_BLACK_LIST: '[ "text/css", "application/javascript", "text/json" ]'
     restart: "on-failure"
     volumes:
-      - ./cache:/app/cache
+      # - ./cache:/app/cache
+      - ./extra:/app/extra
       - ./data:/app/data
+      - ./text:/app/text
