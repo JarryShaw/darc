@@ -4,14 +4,17 @@
 import os
 import subprocess
 import sys
+import time
 import urllib.parse
 import warnings
 
 import stem
 
 import darc.typing as typing
-from darc.const import DEBUG
 from darc.error import ZeroNetBootstrapFailed, render_error
+
+# bootstrap wait
+BS_WAIT = float(os.getenv('FREENET_BS_WAIT', '10'))
 
 # Freenet port
 FREENET_PORT = os.getenv('FREENET_PORT', '8888')
@@ -34,14 +37,17 @@ def _freenet_bootstrap():
 
     # launch Freenet process
     args = ['su', '-', 'darc', os.path.join(FREENET_PATH, 'run.sh'), 'start']
-    _FREENET_PROC = subprocess.Popen(
-        args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-    )
+    _FREENET_PROC = subprocess.Popen(args)
+    time.sleep(BS_WAIT)
 
-    stdout, stderr = _FREENET_PROC.communicate()
-    if DEBUG:
-        print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
-    print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
+    # _FREENET_PROC = subprocess.Popen(
+    #     args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    # )
+
+    # stdout, stderr = _FREENET_PROC.communicate(timeout=BS_WAIT)
+    # if DEBUG:
+    #     print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+    # print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
 
     returncode = _FREENET_PROC.returncode
     if returncode is not None and returncode != 0:

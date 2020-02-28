@@ -4,15 +4,18 @@
 import os
 import subprocess
 import sys
+import time
 import urllib.parse
 import warnings
 
 import stem
 
 import darc.typing as typing
-from darc.const import DEBUG
 from darc.error import ZeroNetBootstrapFailed, render_error
 from darc.proxy.tor import tor_bootstrap
+
+# bootstrap wait
+BS_WAIT = float(os.getenv('ZERONET_BS_WAIT', '10'))
 
 # ZeroNet port
 ZERONET_PORT = os.getenv('ZERONET_PORT', '43110')
@@ -38,14 +41,17 @@ def _zeronet_bootstrap():
 
     # launch ZeroNet process
     args = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'main']
-    _ZERONET_PROC = subprocess.Popen(
-        args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-    )
+    _ZERONET_PROC = subprocess.Popen(args)
+    time.sleep(BS_WAIT)
 
-    stdout, stderr = _ZERONET_PROC.communicate()
-    if DEBUG:
-        print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
-    print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
+    # _ZERONET_PROC = subprocess.Popen(
+    #     args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    # )
+
+    # stdout, stderr = _ZERONET_PROC.communicate()
+    # if DEBUG:
+    #     print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+    # print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
 
     returncode = _ZERONET_PROC.returncode
     if returncode is not None and returncode != 0:

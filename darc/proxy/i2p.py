@@ -6,6 +6,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 import urllib.parse
 import warnings
 
@@ -15,11 +16,14 @@ import stem
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DEBUG, QUEUE_REQUESTS
+from darc.const import QUEUE_REQUESTS
 from darc.error import I2PBootstrapFailed, render_error
 from darc.link import Link, parse_link
 
 __all__ = ['I2P_REQUESTS_PROXY', 'I2P_SELENIUM_PROXY']
+
+# bootstrap wait
+BS_WAIT = float(os.getenv('I2P_BS_WAIT', '10'))
 
 # I2P port
 I2P_PORT = os.getenv('I2P_PORT', '4444')
@@ -51,14 +55,17 @@ def _i2p_bootstrap():
 
     # launch I2P process
     args = ['su', '-', 'darc', 'i2prouter', 'start']
-    _I2P_PROC = subprocess.Popen(
-        args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-    )
+    _I2P_PROC = subprocess.Popen(args)
+    time.sleep(BS_WAIT)
 
-    stdout, stderr = _I2P_PROC.communicate()
-    if DEBUG:
-        print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
-    print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
+    # _I2P_PROC = subprocess.Popen(
+    #     args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    # )
+
+    # stdout, stderr = _I2P_PROC.communicate()
+    # if DEBUG:
+    #     print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+    # print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
 
     returncode = _I2P_PROC.returncode
     if returncode is not None and returncode != 0:
