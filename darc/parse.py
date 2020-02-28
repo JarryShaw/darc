@@ -10,23 +10,39 @@ import urllib.robotparser
 import bs4
 
 import darc.typing as typing
-from darc.const import LINK_BLACK_LIST, LINK_WHITE_LIST
+from darc.const import LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST, MIME_WHITE_LIST
 from darc.link import Link, parse_link
 
 
-def _match(link: str) -> bool:
+def _match_link(link: str) -> bool:
     """Check if link in black list."""
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
     host = parse.hostname or parse.netloc
 
-    for pattern in LINK_WHITE_LIST:
-        if re.fullmatch(pattern, host) is None:
-            return True
+    # any matching white list
+    if any(re.fullmatch(pattern, host, re.IGNORECASE) is not None for pattern in LINK_WHITE_LIST):
+        return False
 
-    for pattern in LINK_BLACK_LIST:
-        if re.fullmatch(pattern, host) is not None:
-            return True
+    # any matching black list
+    if any(re.fullmatch(pattern, host, re.IGNORECASE) is not None for pattern in LINK_BLACK_LIST):
+        return True
+
+    # fallback
+    return False
+
+
+def _match_mime(mime: str) -> bool:
+    """Check if content type in black list."""
+    # any matching white list
+    if any(re.fullmatch(pattern, mime, re.IGNORECASE) is not None for pattern in MIME_WHITE_LIST):
+        return False
+
+    # any matching black list
+    if any(re.fullmatch(pattern, mime, re.IGNORECASE) is not None for pattern in MIME_BLACK_LIST):
+        return True
+
+    # fallback
     return False
 
 
@@ -61,7 +77,12 @@ def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
     # https://www.sitemaps.org/protocol.html
     for loc in soup.select('urlset > url > loc'):
         temp_link = urllib.parse.urljoin(link, loc.text)
-        if _match(temp_link):
+        if _match_link(temp_link):
+            continue
+
+        # check content type
+        ct_type = check_header(link)
+        if _match_mime(ct_type):
             continue
         link_list.append(temp_link)
     yield from set(link_list)
@@ -90,12 +111,12 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
         if (href := child.get('href', child.get('src'))) is None:
             continue
         temp_link = urllib.parse.urljoin(link, href)
-        if _match(temp_link):
+        if _match_link(temp_link):
             continue
 
         # check content type
         ct_type = check_header(link)
-        if 'html' not in ct_type:
+        if _match_mime(ct_type):
             continue
         link_list.append(temp_link)
     yield from set(link_list)

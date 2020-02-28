@@ -12,7 +12,7 @@ import posixpath
 import threading
 
 import darc.typing as typing
-from darc.const import CWD, FLAG_MP, FLAG_TH, MANAGER, PATH_LN, TIME_CACHE
+from darc.const import FLAG_MP, FLAG_TH, MANAGER, PATH_LN, TIME_CACHE
 from darc.link import Link
 
 # lock for file I/O
@@ -50,6 +50,9 @@ def has_sitemap(link: Link) -> typing.Optional[str]:
 def has_raw(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pylint: disable=redefined-outer-name
     """Check if we need to re-craw the link by requests."""
     path = os.path.join(link.base, link.name)
+    if data_list := glob.glob(f'{path}.dat'):
+        return data_list[0]
+
     temp_list = glob.glob(f'{path}_*_raw.html')
     glob_list = sorted((pathlib.Path(item) for item in temp_list), reverse=True)
 
@@ -95,11 +98,14 @@ def has_html(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pyli
 
 
 def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylint: disable=redefined-outer-name
-             raw: bool = False, headers: bool = False) -> str:
+             raw: bool = False, data: bool = False, headers: bool = False) -> str:
     """Sanitise link to path."""
     os.makedirs(link.base, exist_ok=True)
 
     path = os.path.join(link.base, link.name)
+    if data:
+        return f'{path}.dat'
+
     if time is None:
         time = datetime.datetime.now()
     ts = time.isoformat()
@@ -151,13 +157,14 @@ def save_headers(time: typing.Datetime, link: Link, response: typing.Response) -
     """Save HTTP response headers."""
     data = {
         '[metadata]': dataclasses.asdict(link),
+        'Timestamp': time,
         'URL': response.url,
         'Method': response.request.method,
         'Status-Code': response.status_code,
         'Reason': response.reason,
         'Cookies': response.cookies.get_dict(),
         'Request': dict(response.request.headers),
-        'Response': response.headers,
+        'Response': dict(response.headers),
     }
 
     path = sanitise(link, time, headers=True)
@@ -188,6 +195,11 @@ def save_html(time: typing.Datetime, link: Link, html: typing.Union[str, bytes],
 
 def save_file(link: Link, content: bytes) -> str:
     """Save file."""
+    # real path
+    dest = sanitise(link, data=True)
+    with open(dest, 'wb') as file:
+        file.write(content)
+
     # remove leading slash '/'
     temp_path = link.url_parse.path[1:]
 
@@ -196,9 +208,11 @@ def save_file(link: Link, content: bytes) -> str:
     path = os.path.join(link.base, *root[:-1])
     os.makedirs(path, exist_ok=True)
 
-    os.chdir(path)
-    with open(root[-1], 'wb') as file:
-        file.write(content)
-    os.chdir(CWD)
+    # os.chdir(path)
+    # with open(root[-1], 'wb') as file:
+    #     file.write(content)
+    # os.chdir(CWD)
 
-    return os.path.join(path, root[-1])
+    link = os.path.join(path, root[-1])
+    os.link(dest, link)
+    return dest

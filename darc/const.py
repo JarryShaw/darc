@@ -47,6 +47,12 @@ LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
 # link black list
 LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
 
+# content type white list
+MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
+
+# content type black list
+MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
+
 # time delta for caches in seconds
 _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))
 if math.isfinite(_TIME_CACHE):

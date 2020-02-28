@@ -27,8 +27,8 @@ from darc.link import Link, parse_link
 from darc.parse import extract_links, get_sitemap, read_robots, read_sitemap
 from darc.proxy import LINK_MAP
 from darc.proxy.i2p import fetch_hosts
-from darc.save import (has_folder, has_html, has_raw, has_robots, has_sitemap, save_headers,
-                       save_html, save_robots, save_sitemap)
+from darc.save import (has_folder, has_html, has_raw, has_robots, has_sitemap, save_file,
+                       save_headers, save_html, save_robots, save_sitemap)
 from darc.sites import crawler_hook, loader_hook
 
 
@@ -144,11 +144,12 @@ def crawler(url: str):
                 print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
             # load hosts.txt
-            try:
-                fetch_hosts(link)
-            except Exception:
-                error = f'[Error loading hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+            if link.proxy == 'i2p':
+                try:
+                    fetch_hosts(link)
+                except Exception:
+                    error = f'[Error loading hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
             print(stem.util.term.format(f'[REQUESTS] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
             with open(path, 'rb') as file:
@@ -172,12 +173,13 @@ def crawler(url: str):
                     error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                     print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
-                # fetch hosts.txt
-                try:
-                    fetch_hosts(link)
-                except Exception:
-                    error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                if link.proxy == 'i2p':
+                    # fetch hosts.txt
+                    try:
+                        fetch_hosts(link)
+                    except Exception:
+                        error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
             with request_session(link) as session:
                 try:
@@ -199,9 +201,10 @@ def crawler(url: str):
             # check content type
             ct_type = response.headers.get('Content-Type', 'text/html').casefold()
             if 'html' not in ct_type:
-                # text = response.content
-                # save_file(link, text)
-                print(render_error(f'[REQUESTS] Unexpected content type from {link.url} ({ct_type})',
+                text = response.content
+                save_file(link, text)
+
+                print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 

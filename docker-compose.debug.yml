@@ -50,9 +50,13 @@ services:
       # time to wait for selenium
       SE_WAIT: 60
       # extract link pattern
-      # LINK_WHITE_LIST: '[ ".*?\\.onion", ".*?\\.i2p", "127\\.0\\.0\\.1:43110" ]'
+      LINK_WHITE_LIST: '[ ".*?\\.onion", ".*?\\.i2p", "127\\.0\\.0\\.1:43110" ]'
       # link black list
       LINK_BLACK_LIST: '[ "(.*\\.)?facebookcorewwwi\\.onion" ]'
+      # content type white list
+      MIME_WHITE_LIST: '[ "text/html", "application/xhtml+xml" ]'
+      # content type black list
+      MIME_BLACK_LIST: '[ "text/css", "application/javascript", "text/json" ]'
     restart: "on-failure"
     volumes:
       - ./cache:/app/cache
