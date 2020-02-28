@@ -32,7 +32,6 @@ RUN set -x \
  && retry apt-get update \
  && retry apt-get install --yes \
         apt-transport-https \
-        apt-utils \
         ca-certificates
 COPY extra/sources.bionic.list /etc/apt/sources.list
 RUN set -x \
@@ -47,8 +46,8 @@ RUN set -x \
         zlib1g-dev \
  && retry add-apt-repository ppa:deadsnakes/ppa --yes \
  && retry add-apt-repository ppa:linuxuprising/java --yes \
- && retry add-apt-repository ppa:i2p-maintainers/i2p --yes \
- && retry apt-get update \
+ && retry add-apt-repository ppa:i2p-maintainers/i2p --yes
+RUN retry apt-get update \
  && retry apt-get install --yes \
         python3.8 \
         python3-pip \
@@ -57,10 +56,13 @@ RUN set -x \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 RUN retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
- && ( retry pty-install --stdin 'yes' apt-get install --yes \
-        oracle-java13-installer \
-    || true ) \
- && dpkg --configure -a
+ && retry pty-install --stdin 'yes' apt-get install --yes \
+        oracle-java13-installer
+RUN retry apt-get install --yes \
+        sudo \
+ && adduser --disabled-password --gecos '' darc \
+ && adduser darc sudo \
+ && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 ## Tor
 RUN retry apt-get install --yes tor
@@ -82,7 +84,7 @@ COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
 COPY vendor/new_installer_offline.jar /tmp
 RUN set -x \
  && cd /tmp \
- && java -jar new_installer_offline.jar
+ && su -m darc -c "sudo java -jar new_installer_offline.jar"
 
 ## NoIP
 COPY vendor/noip-duc-linux.tar.gz /tmp
