@@ -23,6 +23,6 @@ def tor_session() -> typing.Session:
     return session
 
 
-def norm_session() -> typing.Session:
+def null_session() -> typing.Session:
     """Normal session"""
     return requests.Session()

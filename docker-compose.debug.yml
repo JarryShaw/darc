@@ -34,7 +34,7 @@ services:
       # processes
       DARC_CPU: 10
       # multiprocessing
-      DARC_MULTIPROCESSING: 0
+      DARC_MULTIPROCESSING: 1
       # multithreading
       DARC_MULTITHREADING: 0
       # time lapse

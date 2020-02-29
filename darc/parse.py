@@ -15,7 +15,7 @@ from darc.const import DEBUG, LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST,
 from darc.link import Link, parse_link
 
 
-def _match_link(link: str) -> bool:
+def match_link(link: str) -> bool:
     """Check if link in black list."""
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
@@ -41,7 +41,7 @@ def _match_link(link: str) -> bool:
     return False
 
 
-def _match_mime(mime: str) -> bool:
+def match_mime(mime: str) -> bool:
     """Check if content type in black list."""
     # any matching white list
     if any(re.fullmatch(pattern, mime, re.IGNORECASE) is not None for pattern in MIME_WHITE_LIST):
@@ -86,12 +86,12 @@ def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
     # https://www.sitemaps.org/protocol.html
     for loc in soup.select('urlset > url > loc'):
         temp_link = urllib.parse.urljoin(link, loc.text)
-        if _match_link(temp_link):
+        if match_link(temp_link):
             continue
 
         # check content type
         ct_type = check_header(link)
-        if _match_mime(ct_type):
+        if match_mime(ct_type):
             continue
         link_list.append(temp_link)
     yield from set(link_list)
@@ -120,12 +120,12 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
         if (href := child.get('href', child.get('src'))) is None:
             continue
         temp_link = urllib.parse.urljoin(link, href)
-        if _match_link(temp_link):
+        if match_link(temp_link):
             continue
 
-        # check content type
-        ct_type = check_header(link)
-        if _match_mime(ct_type):
-            continue
+        # # check content type
+        # ct_type = check_header(link)
+        # if match_mime(ct_type):
+        #     continue
         link_list.append(temp_link)
     yield from set(link_list)

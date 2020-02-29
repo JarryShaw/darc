@@ -4,6 +4,7 @@ data
 export
 tbb
 temp
+gitlab
 
 **/.classpath
 **/.dockerignore

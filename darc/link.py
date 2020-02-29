@@ -60,21 +60,21 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         proxy_type = 'i2p'
     elif host in (f'127.0.0.1:{ZERONET_PORT}', f'localhost:{ZERONET_PORT}'):
         if parse.path == '/':
-            proxy_type = 'norm'
+            proxy_type = 'null'
         else:
             proxy_type = 'zeronet'
-            hostname = f'{PosixPath(parse.path).parts[1]}.zeronet'
+            hostname = PosixPath(parse.path).parts[1]
     elif host in (f'127.0.0.1:{FREENET_PORT}', f'localhost:{FREENET_PORT}'):
         if parse.path == '/':
-            proxy_type = 'norm'
+            proxy_type = 'null'
         else:
             proxy_type = 'freenet'
-            hostname = f'{PosixPath(parse.path).parts[1]}.freenet'
+            hostname = PosixPath(parse.path).parts[1]
     else:
-        proxy_type = 'norm'
+        proxy_type = 'null'
 
-    # <scheme>/<host>/<hash>-<timestamp>.html
-    base = os.path.join(PATH_DB, parse.scheme, hostname)
+    # <proxy>/<scheme>/<host>/<hash>-<timestamp>.html
+    base = os.path.join(PATH_DB, proxy_type, parse.scheme, hostname)
     name = hashlib.sha256(link.encode()).hexdigest()
 
     return Link(

@@ -147,7 +147,7 @@ def has_i2p(link_pool: typing.Set[str]) -> bool:
 
 def has_hosts(link: Link) -> typing.Optional[str]:
     """Check if hosts.txt already exists."""
-    # <scheme>/<host>/hosts.txt
+    # <proxy>/<scheme>/<host>/hosts.txt
     path = os.path.join(link.base, 'hosts.txt')
     return path if os.path.isfile(path) else None
 

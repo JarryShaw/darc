@@ -14,7 +14,7 @@ from darc.proxy.i2p import I2P_PORT, I2P_SELENIUM_PROXY
 from darc.proxy.tor import TOR_PORT, TOR_SELENIUM_PROXY
 
 
-def get_options(type: str = 'norm') -> typing.Options:  # pylint: disable=redefined-builtin
+def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefined-builtin
     """Generate options."""
     _system = platform.system()
 
@@ -40,7 +40,7 @@ def get_options(type: str = 'norm') -> typing.Options:  # pylint: disable=redefi
     else:
         raise UnsupportedPlatform(f'unsupported system: {_system}')
 
-    if type != 'norm':
+    if type != 'null':
         if type == 'tor':
             port = TOR_PORT
         elif type == 'i2p':
@@ -54,12 +54,12 @@ def get_options(type: str = 'norm') -> typing.Options:  # pylint: disable=redefi
     return options
 
 
-def get_capabilities(type: str = 'norm') -> dict:  # pylint: disable=redefined-builtin
+def get_capabilities(type: str = 'null') -> dict:  # pylint: disable=redefined-builtin
     """Generate desied capabilities."""
     # do not modify source dict
     capabilities = selenium.webdriver.DesiredCapabilities.CHROME.copy()
 
-    if type == 'norm':
+    if type == 'null':
         pass
     elif type == 'tor':
         TOR_SELENIUM_PROXY.add_to_capabilities(capabilities)
@@ -92,10 +92,10 @@ def tor_driver() -> typing.Driver:
     return driver
 
 
-def norm_driver() -> typing.Driver:
+def null_driver() -> typing.Driver:
     """Normal driver."""
-    options = get_options('norm')
-    capabilities = get_capabilities('norm')
+    options = get_options('null')
+    capabilities = get_capabilities('null')
 
     # initiate driver
     driver = selenium.webdriver.Chrome(options=options,

@@ -26,8 +26,8 @@ else:
 
 def has_folder(link: Link) -> typing.Optional[str]:  # pylint: disable=inconsistent-return-statements
     """Check if is a new host."""
-    # <scheme>/<host>/sitemap_<hash>.xml
-    glob_list = glob.glob(os.path.join(link.base, 'sitemap_*.xml'))
+    # <proxy>/<scheme>/<host>/<hash>.json
+    glob_list = glob.glob(os.path.join(link.base, '*.json'))
     if not glob_list:
         return
     return link.base
@@ -35,14 +35,14 @@ def has_folder(link: Link) -> typing.Optional[str]:  # pylint: disable=inconsist
 
 def has_robots(link: Link) -> typing.Optional[str]:
     """Check if robots.txt already exists."""
-    # <scheme>/<host>/robots.txt
+    # <proxy>/<scheme>/<host>/robots.txt
     path = os.path.join(link.base, 'robots.txt')
     return path if os.path.isfile(path) else None
 
 
 def has_sitemap(link: Link) -> typing.Optional[str]:
     """Check if sitemap.xml already exists."""
-    # <scheme>/<host>/sitemap_<hash>.xml
+    # <proxy>/<scheme>/<host>/sitemap_<hash>.xml
     path = os.path.join(link.base, f'sitemap_{link.name}.xml')
     return path if os.path.isfile(path) else None
 
@@ -50,7 +50,7 @@ def has_sitemap(link: Link) -> typing.Optional[str]:
 def has_raw(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pylint: disable=redefined-outer-name
     """Check if we need to re-craw the link by requests."""
     path = os.path.join(link.base, link.name)
-    if data_list := glob.glob(f'{path}.dat'):
+    if data_list := glob.glob(f'{path}_*.dat'):
         return data_list[0]
 
     temp_list = glob.glob(f'{path}_*_raw.html')
@@ -103,9 +103,6 @@ def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylin
     os.makedirs(link.base, exist_ok=True)
 
     path = os.path.join(link.base, link.name)
-    if data:
-        return f'{path}.dat'
-
     if time is None:
         time = datetime.datetime.now()
     ts = time.isoformat()
@@ -114,6 +111,8 @@ def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylin
         return f'{path}_{ts}_raw.html'
     if headers:
         return f'{path}_{ts}.json'
+    if data:
+        return f'{path}_{ts}.dat'
     return f'{path}_{ts}.html'
 
 
@@ -121,7 +120,7 @@ def save_link(link: Link):
     """Save link hash database."""
     with _SAVE_LOCK:
         with open(PATH_LN, 'a') as file:
-            print(f'{link.url_parse.scheme} {os.path.split(link.base)[1]} {link.name} {link}', file=file)
+            print(f'{link.proxy} {link.url_parse.scheme} {os.path.split(link.base)[1]} {link.name} {link}', file=file)
 
 
 def save_robots(link: Link, text: str) -> str:
@@ -139,7 +138,7 @@ def save_robots(link: Link, text: str) -> str:
 
 def save_sitemap(link: Link, text: str) -> str:
     """Save `sitemap.xml`."""
-    # <scheme>/<host>/sitemap_<hash>.xml
+    # <proxy>/<scheme>/<host>/sitemap_<hash>.xml
     path = os.path.join(link.base, f'sitemap_{link.name}.xml')
 
     root = os.path.split(path)[0]
@@ -196,17 +195,17 @@ def save_html(time: typing.Datetime, link: Link, html: typing.Union[str, bytes],
     return path
 
 
-def save_file(link: Link, content: bytes) -> str:
+def save_file(time: typing.Datetime, link: Link, content: bytes) -> str:
     """Save file."""
     # real path
-    dest = sanitise(link, data=True)
+    dest = sanitise(link, time, data=True)
     with open(dest, 'wb') as file:
         file.write(content)
 
     # remove leading slash '/'
     temp_path = link.url_parse.path[1:]
 
-    # <scheme>/<host>/...
+    # <proxy>/<scheme>/<host>/...
     root = posixpath.split(temp_path)
     path = os.path.join(link.base, *root[:-1])
     os.makedirs(path, exist_ok=True)

@@ -24,7 +24,7 @@ import darc.typing as typing
 from darc.const import QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY
 from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
-from darc.parse import extract_links, get_sitemap, read_robots, read_sitemap
+from darc.parse import extract_links, get_sitemap, match_mime, read_robots, read_sitemap
 from darc.proxy import LINK_MAP
 from darc.proxy.i2p import fetch_hosts
 from darc.save import (has_folder, has_html, has_raw, has_robots, has_sitemap, save_file,
@@ -206,11 +206,14 @@ def crawler(url: str):
                 print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
 
+                if match_mime(ct_type):
+                    return
+
                 text = response.content
                 try:
-                    save_file(link, text)
+                    save_file(timestamp, link, text)
                 except Exception as error:
-                    print(render_error(f'[REQUESTS] Failed to save generic file from {link.url}',
+                    print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
