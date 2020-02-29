@@ -52,6 +52,8 @@ services:
       TOR_RETRY: 0
       # Tor bootstrap config
       TOR_CFG: "{}"
+      # Tor bootstrap wait
+      TOR_WAIT: 90
       # I2P port
       I2P_PORT: 4444
       # I2P bootstrap retry

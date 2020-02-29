@@ -13,7 +13,9 @@ import urllib
 import warnings
 
 import selenium
-import stem
+import stem.control
+import stem.process
+import stem.util.term
 
 import darc.typing as typing
 from darc.const import DEBUG, VERBOSE
@@ -23,6 +25,9 @@ __all__ = ['TOR_REQUESTS_PROXY', 'TOR_SELENIUM_PROXY']
 
 # Tor configs
 TOR_CFG = json.loads(os.getenv('TOR_CFG', '{}'))
+
+# bootstrap wait
+BS_WAIT = float(os.getenv('TOR_WAIT', '90'))
 
 # Tor Socks5 proxy & control port
 TOR_PORT = os.getenv('TOR_PORT', '9050')
@@ -93,8 +98,9 @@ def _tor_bootstrap():
     # launch Tor process
     _TOR_PROC = stem.process.launch_tor_with_config(
         config=_TOR_CONFIG,
-        take_ownership=True,
         init_msg_handler=print_bootstrap_lines,
+        timeout=BS_WAIT,
+        take_ownership=True,
     )
 
     if TOR_PASS is None:

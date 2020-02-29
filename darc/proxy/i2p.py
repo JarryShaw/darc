@@ -11,7 +11,6 @@ import shlex
 import shutil
 import subprocess
 import sys
-import time
 import traceback
 import urllib.parse
 import warnings
@@ -79,17 +78,19 @@ def _i2p_bootstrap():
     global _I2P_BS_FLAG, _I2P_PROC
 
     # launch I2P process
-    _I2P_PROC = subprocess.Popen(_I2P_ARGS)
-    time.sleep(BS_WAIT)
+    _I2P_PROC = subprocess.Popen(
+        _I2P_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    )
 
-    # _I2P_PROC = subprocess.Popen(
-    #     args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-    # )
-
-    # stdout, stderr = _I2P_PROC.communicate()
-    # if DEBUG:
-    #     print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
-    # print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
+    try:
+        stdout, stderr = _I2P_PROC.communicate(timeout=BS_WAIT)
+    except subprocess.TimeoutExpired as error:
+        stdout, stderr = error.stdout, error.stderr
+    if VERBOSE:
+        if stdout is not None:
+            print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+    if stderr is not None:
+        print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
 
     returncode = _I2P_PROC.returncode
     if returncode is not None and returncode != 0:
