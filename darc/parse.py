@@ -8,10 +8,9 @@ import urllib.parse
 import urllib.robotparser
 
 import bs4
-import stem.util.term
 
 import darc.typing as typing
-from darc.const import DEBUG, LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST, MIME_WHITE_LIST
+from darc.const import LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST, MIME_WHITE_LIST
 from darc.link import Link, parse_link
 
 
@@ -20,10 +19,6 @@ def match_link(link: str) -> bool:
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
     parse = urllib.parse.urlparse(link)
     host = parse.netloc or parse.hostname
-
-    if DEBUG:
-        print(stem.util.term.format(f'Matching {host!r} from {link}',
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
     # invalid hostname
     if host is None:
