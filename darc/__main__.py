@@ -60,7 +60,7 @@ def main():
     if DEBUG:
         print(stem.util.term.format('Initialising...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
-    for link in args.link:
+    for link in filter(lambda s: s.strip(), args.link):
         if DEBUG:
             print(stem.util.term.format(link, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
         QUEUE_REQUESTS.put(link)
@@ -68,7 +68,9 @@ def main():
     if args.file is not None:
         for path in args.file:
             with open(path) as file:
-                for line in file:
+                for line in filter(lambda s: s.strip(), file):
+                    if line.startswith('#'):
+                        continue
                     if DEBUG:
                         print(stem.util.term.format(line, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
                     QUEUE_REQUESTS.put(line.strip())
