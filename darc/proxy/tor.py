@@ -8,6 +8,7 @@ import pprint
 import re
 import shutil
 import sys
+import traceback
 import urllib
 import warnings
 
@@ -120,6 +121,10 @@ def tor_bootstrap():
             _tor_bootstrap()
             break
         except Exception as error:
+            if DEBUG:
+                error = f'[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+            print(render_error(error, stem.util.term.Color.CYAN), end='', file=sys.stderr)  # pylint: disable=no-member
+
             warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 91, 'tor_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 

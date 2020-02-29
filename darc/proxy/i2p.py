@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import time
+import traceback
 import urllib.parse
 import warnings
 
@@ -113,6 +114,10 @@ def i2p_bootstrap():
             _i2p_bootstrap()
             break
         except Exception as error:
+            if DEBUG:
+                error = f'[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+            print(render_error(error, stem.util.term.Color.CYAN), end='', file=sys.stderr)  # pylint: disable=no-member
+
             warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 81, 'i2p_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 

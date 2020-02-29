@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import sys
 import time
+import traceback
 import urllib.parse
 import warnings
 
@@ -97,6 +98,10 @@ def freenet_bootstrap():
             _freenet_bootstrap()
             break
         except Exception as error:
+            if DEBUG:
+                error = f'[Error bootstraping Freenet proxy]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+            print(render_error(error, stem.util.term.Color.CYAN), end='', file=sys.stderr)  # pylint: disable=no-member
+
             warning = warnings.formatwarning(error, FreenetBootstrapFailed, __file__, 64, 'freenet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 

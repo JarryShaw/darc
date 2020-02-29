@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 import time
+import traceback
 import urllib.parse
 import warnings
 
@@ -92,6 +93,10 @@ def zeronet_bootstrap():
             _zeronet_bootstrap()
             break
         except Exception as error:
+            if DEBUG:
+                error = f'[Error bootstraping ZeroNet proxy]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+            print(render_error(error, stem.util.term.Color.CYAN), end='', file=sys.stderr)  # pylint: disable=no-member
+
             warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 68, 'zeronet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
