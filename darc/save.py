@@ -121,7 +121,7 @@ def save_link(link: Link):
     """Save link hash database."""
     with _SAVE_LOCK:
         with open(PATH_LN, 'a') as file:
-            print(f'{link.url_parse.scheme} {os.path.split(link.base)} {link.name} {link}', file=file)
+            print(f'{link.url_parse.scheme} {os.path.split(link.base)[1]} {link.name} {link}', file=file)
 
 
 def save_robots(link: Link, text: str) -> str:
