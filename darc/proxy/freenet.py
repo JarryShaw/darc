@@ -4,7 +4,9 @@
 import getpass
 import os
 import platform
+import pprint
 import shlex
+import shutil
 import subprocess
 import sys
 import time
@@ -14,7 +16,7 @@ import warnings
 import stem
 
 import darc.typing as typing
-from darc.const import DARC_USER
+from darc.const import DARC_USER, DEBUG
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform, render_error
 
 # ZeroNet args
@@ -46,6 +48,13 @@ if getpass.getuser() == 'root':
 else:
     _FREENET_ARGS = [os.path.join(FREENET_PATH, 'run.sh'), 'start']
 _FREENET_ARGS.extend(FREENET_ARGS)
+
+if DEBUG:
+    print(stem.util.term.format('FREENET_ARGS',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    pprint.pprint(_FREENET_ARGS)
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def _freenet_bootstrap():

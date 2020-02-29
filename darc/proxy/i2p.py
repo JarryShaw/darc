@@ -5,8 +5,10 @@ import getpass
 import io
 import os
 import platform
+import pprint
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import time
@@ -19,7 +21,7 @@ import stem
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DARC_USER, QUEUE_REQUESTS
+from darc.const import DARC_USER, DEBUG, QUEUE_REQUESTS
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
 from darc.link import Link, parse_link
 
@@ -62,6 +64,13 @@ if getpass.getuser() == 'root':
 else:
     _I2P_ARGS = ['i2prouter', 'start']
 _I2P_ARGS.extend(I2P_ARGS)
+
+if DEBUG:
+    print(stem.util.term.format('I2P_ARGS',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    pprint.pprint(_I2P_ARGS)
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def _i2p_bootstrap():

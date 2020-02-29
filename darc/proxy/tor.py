@@ -4,7 +4,9 @@
 import getpass
 import json
 import os
+import pprint
 import re
+import shutil
 import sys
 import urllib
 import warnings
@@ -57,6 +59,13 @@ _TOR_CONFIG = {
     'ControlPort': TOR_CTRL,
 }
 _TOR_CONFIG.update(TOR_CFG)
+
+if DEBUG:
+    print(stem.util.term.format('TOR_CONFIG',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    pprint.pprint(_TOR_CONFIG)
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def renew_tor_session():

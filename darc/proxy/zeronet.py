@@ -2,7 +2,9 @@
 """ZeroNet proxy."""
 
 import os
+import pprint
 import shlex
+import shutil
 import subprocess
 import sys
 import time
@@ -12,6 +14,7 @@ import warnings
 import stem
 
 import darc.typing as typing
+from darc.const import DEBUG
 from darc.error import ZeroNetBootstrapFailed, render_error
 from darc.proxy.tor import tor_bootstrap
 
@@ -37,6 +40,13 @@ _ZERONET_PROC = None
 # ZeroNet bootstrap args
 _ZERONET_ARGS = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'main']
 _ZERONET_ARGS.extend(ZERONET_ARGS)
+
+if DEBUG:
+    print(stem.util.term.format('ZERONET_ARGS',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    pprint.pprint(_ZERONET_ARGS)
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def _zeronet_bootstrap():
