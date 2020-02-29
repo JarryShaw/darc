@@ -2,7 +2,11 @@ FROM ubuntu:bionic
 
 LABEL Name=darc Version=0.0.1
 
-ARG DARC_USER
+STOPSIGNAL SIGINT
+HEALTHCHECK --interval=1h --timeout=1m \
+    CMD wget https://httpbin.org/get -O /dev/null || exit 1
+
+ARG DARC_USER="darc"
 ENV LANG="C.UTF-8" \
     LC_ALL="C.UTF-8" \
     PYTHONIOENCODING="UTF-8" \
