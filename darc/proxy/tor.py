@@ -55,7 +55,8 @@ _TOR_PROC = None
 _TOR_CONFIG = {
     'SocksPort': TOR_PORT,
     'ControlPort': TOR_CTRL,
-}.update(TOR_CFG)
+}
+_TOR_CONFIG.update(TOR_CFG)
 
 
 def renew_tor_session():
