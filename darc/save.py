@@ -206,17 +206,17 @@ def save_file(time: typing.Datetime, link: Link, content: bytes) -> str:
     temp_path = link.url_parse.path[1:]
 
     # <proxy>/<scheme>/<host>/...
-    root = posixpath.split(temp_path)
-    path = os.path.join(link.base, *root[:-1])
+    root, name = posixpath.split(temp_path)
+    path = os.path.join(link.base, root)
     os.makedirs(path, exist_ok=True)
 
     # os.chdir(path)
-    # with open(root[-1], 'wb') as file:
+    # with open(name, 'wb') as file:
     #     file.write(content)
     # os.chdir(CWD)
 
-    dst = os.path.join(path, root[-1])
-    src = os.path.relpath(dest, dst)
+    src = os.path.relpath(dest, path)
+    dst = os.path.join(path, name)
     os.symlink(src, dst, target_is_directory=False)
 
     return dest
