@@ -16,6 +16,8 @@ ENV LANG="C.UTF-8" \
 
 COPY extra/retry.sh /usr/local/bin/retry
 COPY extra/install.py /usr/local/bin/pty-install
+COPY vendor/jdk-13.0.2_linux-x64_bin.tar.gz /var/cache/oracle-jdk13-installer/
+
 RUN set -x \
  && retry apt-get update \
  && retry apt-get install --yes --no-install-recommends \

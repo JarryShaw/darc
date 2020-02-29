@@ -24,7 +24,6 @@ gitlab-prep:
 	    .coveragerc \
 	    .env \
 	    .dockerignore \
-	    .gitattributes \
 	    .gitignore \
 	    .travis.yml \
 	    CODE_OF_CONDUCT.md \
@@ -45,6 +44,7 @@ gitlab-prep:
 	    setup.cfg \
 	    setup.py \
 	    test_darc.py gitlab
+	sed '/lfs/d' .gitattributes > gitlab/.gitattributes
 	sed '/browser/d' gitlab/.gitignore > gitlab/.gitignore.tmp
 	sed '/driver/d' gitlab/.gitignore.tmp > gitlab/.gitignore.tmp1
 	sed '/tbb/d' gitlab/.gitignore.tmp1 > gitlab/.gitignore
