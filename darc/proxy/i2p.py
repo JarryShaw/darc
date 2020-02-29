@@ -17,7 +17,6 @@ import warnings
 
 import requests
 import selenium
-import stem
 import stem.util.term
 
 import darc.typing as typing
@@ -55,12 +54,14 @@ _I2P_BS_FLAG = False
 # I2P daemon process
 _I2P_PROC = None
 # I2P bootstrap args
+_unsupported = False
 if getpass.getuser() == 'root':
     _system = platform.system()
     if _system in ['Linux', 'Darwin']:
         _I2P_ARGS = ['su', '-', DARC_USER, 'i2prouter', 'start']
     else:
-        raise UnsupportedPlatform(f'unsupported system: {_system}')
+        _unsupported = True
+        _I2P_ARGS = list()
 else:
     _I2P_ARGS = ['i2prouter', 'start']
 _I2P_ARGS.extend(I2P_ARGS)
@@ -68,7 +69,11 @@ _I2P_ARGS.extend(I2P_ARGS)
 if VERBOSE:
     print(stem.util.term.format('-*- I2P PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    pprint.pprint(_I2P_ARGS)
+    if _unsupported:
+        print(stem.util.term.format(f'unsupported system: {platform.system()}',
+                                    stem.util.term.Color.RED))  # pylint: disable=no-member
+    else:
+        pprint.pprint(_I2P_ARGS)
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -79,7 +84,7 @@ def _i2p_bootstrap():
 
     # launch I2P process
     _I2P_PROC = subprocess.Popen(
-        _I2P_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        _I2P_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 
     try:
@@ -104,6 +109,9 @@ def _i2p_bootstrap():
 
 def i2p_bootstrap():
     """Bootstrap wrapper for I2P."""
+    if _unsupported:
+        raise UnsupportedPlatform(f'unsupported system: {platform.system()}')
+
     # don't re-bootstrap
     if _I2P_BS_FLAG:
         return
@@ -121,6 +129,8 @@ def i2p_bootstrap():
 
             warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 81, 'i2p_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def has_i2p(link_pool: typing.Set[str]) -> bool:

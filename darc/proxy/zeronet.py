@@ -11,7 +11,7 @@ import traceback
 import urllib.parse
 import warnings
 
-import stem
+import stem.util.term
 
 import darc.typing as typing
 from darc.const import DEBUG, VERBOSE
@@ -58,7 +58,7 @@ def _zeronet_bootstrap():
 
     # launch ZeroNet process
     _ZERONET_PROC = subprocess.Popen(
-        _ZERONET_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        _ZERONET_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 
     try:
@@ -100,6 +100,8 @@ def zeronet_bootstrap():
 
             warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 68, 'zeronet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def has_zeronet(link_pool: typing.Set[str]) -> bool:

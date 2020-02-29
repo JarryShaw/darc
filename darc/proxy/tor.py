@@ -133,6 +133,8 @@ def tor_bootstrap():
 
             warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 91, 'tor_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def has_tor(link_pool: typing.Set[str]) -> bool:

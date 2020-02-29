@@ -13,7 +13,7 @@ import traceback
 import urllib.parse
 import warnings
 
-import stem
+import stem.util.term
 
 import darc.typing as typing
 from darc.const import DARC_USER, DEBUG, VERBOSE
@@ -39,11 +39,13 @@ _FREENET_BS_FLAG = False
 # Freenet daemon process
 _FREENET_PROC = None
 # Freenet bootstrap args
+_unsupported = False
 if getpass.getuser() == 'root':
     _system = platform.system()
     if _system in ['Linux', 'Darwin']:
         _FREENET_ARGS = ['su', '-', DARC_USER, os.path.join(FREENET_PATH, 'run.sh'), 'start']
     else:
+        _unsupported = True
         raise UnsupportedPlatform(f'unsupported system: {_system}')
 else:
     _FREENET_ARGS = [os.path.join(FREENET_PATH, 'run.sh'), 'start']
@@ -52,7 +54,11 @@ _FREENET_ARGS.extend(FREENET_ARGS)
 if VERBOSE:
     print(stem.util.term.format('-*- FREENET PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    pprint.pprint(_FREENET_ARGS)
+    if _unsupported:
+        print(stem.util.term.format(f'unsupported system: {platform.system()}',
+                                    stem.util.term.Color.RED))  # pylint: disable=no-member
+    else:
+        pprint.pprint(_FREENET_ARGS)
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -63,7 +69,7 @@ def _freenet_bootstrap():
 
     # launch Freenet process
     _FREENET_PROC = subprocess.Popen(
-        _FREENET_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        _FREENET_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 
     try:
@@ -88,6 +94,9 @@ def _freenet_bootstrap():
 
 def freenet_bootstrap():
     """Bootstrap wrapper for Freenet."""
+    if _unsupported:
+        raise UnsupportedPlatform(f'unsupported system: {platform.system()}')
+
     # don't re-bootstrap
     if _FREENET_BS_FLAG:
         return
@@ -105,6 +114,8 @@ def freenet_bootstrap():
 
             warning = warnings.formatwarning(error, FreenetBootstrapFailed, __file__, 64, 'freenet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def has_freenet(link_pool: typing.Set[str]) -> bool:
