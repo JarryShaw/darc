@@ -216,6 +216,8 @@ def save_file(link: Link, content: bytes) -> str:
     #     file.write(content)
     # os.chdir(CWD)
 
-    link = os.path.join(path, root[-1])
-    os.symlink(dest, link, target_is_directory=False)
+    dst = os.path.join(path, root[-1])
+    src = os.path.relpath(dest, dst)
+    os.symlink(src, dst, target_is_directory=False)
+
     return dest

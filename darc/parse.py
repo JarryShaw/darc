@@ -22,7 +22,7 @@ def _match_link(link: str) -> bool:
     host = parse.netloc or parse.hostname
 
     if DEBUG:
-        print(stem.util.term.format(f'Matching {host} from {link}',
+        print(stem.util.term.format(f'Matching {host!r} from {link}',
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
     # invalid hostname
