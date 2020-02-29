@@ -19,6 +19,9 @@ REBOOT = bool(int(os.getenv('DARC_REBOOT', '0')))
 # debug mode?
 DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
 
+# verbose mode?
+VERBOSE = bool(int(os.getenv('DARC_VERBOSE', '0'))) or DEBUG
+
 # root path
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CWD = os.path.realpath(os.curdir)
@@ -53,8 +56,8 @@ PATH_ID = os.path.join(PATH_DB, 'darc.pid')
 
 # extract link pattern
 LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
-if DEBUG:
-    print(stem.util.term.format('LINK_WHITE_LIST',
+if VERBOSE:
+    print(stem.util.term.format('-*- LINK WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     pprint.pprint(LINK_WHITE_LIST)
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
@@ -62,8 +65,8 @@ if DEBUG:
 
 # link black list
 LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
-if DEBUG:
-    print(stem.util.term.format('LINK_BLACK_LIST',
+if VERBOSE:
+    print(stem.util.term.format('-*- LINK BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     pprint.pprint(LINK_BLACK_LIST)
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
@@ -71,8 +74,8 @@ if DEBUG:
 
 # content type white list
 MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
-if DEBUG:
-    print(stem.util.term.format('MIME_WHITE_LIST',
+if VERBOSE:
+    print(stem.util.term.format('-*- MIME WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     pprint.pprint(MIME_WHITE_LIST)
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
@@ -80,8 +83,8 @@ if DEBUG:
 
 # content type black list
 MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
-if DEBUG:
-    print(stem.util.term.format('MIME_BLACK_LIST',
+if VERBOSE:
+    print(stem.util.term.format('-*- MIME BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     pprint.pprint(MIME_BLACK_LIST)
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,

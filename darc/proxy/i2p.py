@@ -22,7 +22,7 @@ import stem
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DARC_USER, DEBUG, QUEUE_REQUESTS
+from darc.const import DARC_USER, DEBUG, QUEUE_REQUESTS, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
 from darc.link import Link, parse_link
 
@@ -66,8 +66,8 @@ else:
     _I2P_ARGS = ['i2prouter', 'start']
 _I2P_ARGS.extend(I2P_ARGS)
 
-if DEBUG:
-    print(stem.util.term.format('I2P_ARGS',
+if VERBOSE:
+    print(stem.util.term.format('-*- I2P PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     pprint.pprint(_I2P_ARGS)
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,

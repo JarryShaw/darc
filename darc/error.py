@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Custom exceptions."""
 
-import stem
+import stem.util.term
 
 import darc.typing as typing
 

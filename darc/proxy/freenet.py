@@ -17,7 +17,7 @@ import warnings
 import stem
 
 import darc.typing as typing
-from darc.const import DARC_USER, DEBUG
+from darc.const import DARC_USER, DEBUG, VERBOSE
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform, render_error
 
 # ZeroNet args
@@ -50,8 +50,8 @@ else:
     _FREENET_ARGS = [os.path.join(FREENET_PATH, 'run.sh'), 'start']
 _FREENET_ARGS.extend(FREENET_ARGS)
 
-if DEBUG:
-    print(stem.util.term.format('FREENET_ARGS',
+if VERBOSE:
+    print(stem.util.term.format('-*- FREENET PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     pprint.pprint(_FREENET_ARGS)
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,

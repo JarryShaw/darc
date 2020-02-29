@@ -16,8 +16,8 @@ import stem.process
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import (DARC_CPU, DEBUG, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS,
-                        QUEUE_REQUESTS, QUEUE_SELENIUM, REBOOT, getpid)
+from darc.const import (DARC_CPU, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS, QUEUE_REQUESTS,
+                        QUEUE_SELENIUM, REBOOT, VERBOSE, getpid)
 from darc.crawl import crawler, loader
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap, has_freenet
 from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
@@ -61,7 +61,7 @@ def _dump_last_word():
         os.remove(PATH_ID)
 
 
-def _get_requests_links() -> typing.Set[str]:
+def _get_requests_links() -> typing.List[str]:
     """Fetch links from queue."""
     link_list = list()
     while True:
@@ -74,9 +74,9 @@ def _get_requests_links() -> typing.Set[str]:
     if link_list:
         random.shuffle(link_list)
 
-    link_pool = set(link_list)
-    if DEBUG:
-        print(stem.util.term.format('LINK POOL',
+    link_pool = sorted(set(link_list))
+    if VERBOSE:
+        print(stem.util.term.format('-*- LINK POOL -*-',
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
         pprint.pprint(sorted(link_pool))
         print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
@@ -93,7 +93,7 @@ def _get_requests_links() -> typing.Set[str]:
     return link_pool
 
 
-def _get_selenium_links() -> typing.Set[typing.Tuple[typing.Datetime, str]]:
+def _get_selenium_links() -> typing.List[typing.Tuple[typing.Datetime, str]]:
     """Fetch links from queue."""
     link_list = list()
     while True:
@@ -105,7 +105,7 @@ def _get_selenium_links() -> typing.Set[typing.Tuple[typing.Datetime, str]]:
 
     if link_list:
         random.shuffle(link_list)
-    return set(link_list)
+    return sorted(set(link_list))
 
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member

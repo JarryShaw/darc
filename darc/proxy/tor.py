@@ -16,7 +16,7 @@ import selenium
 import stem
 
 import darc.typing as typing
-from darc.const import DEBUG
+from darc.const import DEBUG, VERBOSE
 from darc.error import TorBootstrapFailed, render_error
 
 __all__ = ['TOR_REQUESTS_PROXY', 'TOR_SELENIUM_PROXY']
@@ -61,8 +61,8 @@ _TOR_CONFIG = {
 }
 _TOR_CONFIG.update(TOR_CFG)
 
-if DEBUG:
-    print(stem.util.term.format('TOR_CONFIG',
+if VERBOSE:
+    print(stem.util.term.format('-*- TOR PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     pprint.pprint(_TOR_CONFIG)
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
