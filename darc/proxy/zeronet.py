@@ -2,6 +2,7 @@
 """ZeroNet proxy."""
 
 import os
+import shlex
 import subprocess
 import sys
 import time
@@ -13,6 +14,9 @@ import stem
 import darc.typing as typing
 from darc.error import ZeroNetBootstrapFailed, render_error
 from darc.proxy.tor import tor_bootstrap
+
+# ZeroNet args
+ZERONET_ARGS = shlex.split(os.getenv('ZERONET_ARGS', ''))
 
 # bootstrap wait
 BS_WAIT = float(os.getenv('ZERONET_WAIT', '90'))
@@ -30,6 +34,9 @@ ZERONET_PATH = os.getenv('ZERONET_PATH', '/usr/local/src/zeronet')
 _ZERONET_BS_FLAG = False
 # ZeroNet daemon process
 _ZERONET_PROC = None
+# ZeroNet bootstrap args
+_ZERONET_ARGS = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'main']
+_ZERONET_ARGS.extend(ZERONET_ARGS)
 
 
 def _zeronet_bootstrap():
@@ -40,8 +47,7 @@ def _zeronet_bootstrap():
     tor_bootstrap()
 
     # launch ZeroNet process
-    args = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'main']
-    _ZERONET_PROC = subprocess.Popen(args)
+    _ZERONET_PROC = subprocess.Popen(_ZERONET_ARGS)
     time.sleep(BS_WAIT)
 
     # _ZERONET_PROC = subprocess.Popen(
@@ -55,7 +61,7 @@ def _zeronet_bootstrap():
 
     returncode = _ZERONET_PROC.returncode
     if returncode is not None and returncode != 0:
-        raise subprocess.CalledProcessError(returncode, args,
+        raise subprocess.CalledProcessError(returncode, _ZERONET_ARGS,
                                             _ZERONET_PROC.stdout,
                                             _ZERONET_PROC.stderr)
 

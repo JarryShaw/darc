@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 """I2P proxy."""
 
+import getpass
 import io
 import os
+import platform
 import re
+import shlex
 import subprocess
 import sys
 import time
@@ -16,11 +19,14 @@ import stem
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import QUEUE_REQUESTS
-from darc.error import I2PBootstrapFailed, render_error
+from darc.const import DARC_USER, QUEUE_REQUESTS
+from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
 from darc.link import Link, parse_link
 
 __all__ = ['I2P_REQUESTS_PROXY', 'I2P_SELENIUM_PROXY']
+
+# I2P args
+I2P_ARGS = shlex.split(os.getenv('I2P_ARGS', ''))
 
 # bootstrap wait
 BS_WAIT = float(os.getenv('I2P_WAIT', '90'))
@@ -42,11 +48,20 @@ I2P_SELENIUM_PROXY.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
 I2P_SELENIUM_PROXY.http_proxy = f'http://localhost:{I2P_PORT}'
 I2P_SELENIUM_PROXY.ssl_proxy = f'http://localhost:{I2P_PORT}'
 
-
 # I2P bootstrapped flag
 _I2P_BS_FLAG = False
 # I2P daemon process
 _I2P_PROC = None
+# I2P bootstrap args
+if getpass.getuser() == 'root':
+    _system = platform.system()
+    if _system in ['Linux', 'Darwin']:
+        _I2P_ARGS = ['su', '-', DARC_USER, 'i2prouter', 'start']
+    else:
+        raise UnsupportedPlatform(f'unsupported system: {_system}')
+else:
+    _I2P_ARGS = ['i2prouter', 'start']
+_I2P_ARGS.extend(I2P_ARGS)
 
 
 def _i2p_bootstrap():
@@ -54,8 +69,7 @@ def _i2p_bootstrap():
     global _I2P_BS_FLAG, _I2P_PROC
 
     # launch I2P process
-    args = ['su', '-', 'darc', 'i2prouter', 'start']
-    _I2P_PROC = subprocess.Popen(args)
+    _I2P_PROC = subprocess.Popen(_I2P_ARGS)
     time.sleep(BS_WAIT)
 
     # _I2P_PROC = subprocess.Popen(
@@ -69,7 +83,7 @@ def _i2p_bootstrap():
 
     returncode = _I2P_PROC.returncode
     if returncode is not None and returncode != 0:
-        raise subprocess.CalledProcessError(returncode, args,
+        raise subprocess.CalledProcessError(returncode, _I2P_ARGS,
                                             _I2P_PROC.stdout,
                                             _I2P_PROC.stderr)
 

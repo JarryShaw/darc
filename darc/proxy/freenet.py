@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """Freenet proxy."""
 
+import getpass
 import os
+import platform
+import shlex
 import subprocess
 import sys
 import time
@@ -11,7 +14,11 @@ import warnings
 import stem
 
 import darc.typing as typing
-from darc.error import FreenetBootstrapFailed, render_error
+from darc.const import DARC_USER
+from darc.error import FreenetBootstrapFailed, UnsupportedPlatform, render_error
+
+# ZeroNet args
+FREENET_ARGS = shlex.split(os.getenv('FREENET_ARGS', ''))
 
 # bootstrap wait
 BS_WAIT = float(os.getenv('FREENET_WAIT', '90'))
@@ -29,6 +36,16 @@ FREENET_PATH = os.getenv('FREENET_PATH', '/usr/local/src/freenet')
 _FREENET_BS_FLAG = False
 # Freenet daemon process
 _FREENET_PROC = None
+# Freenet bootstrap args
+if getpass.getuser() == 'root':
+    _system = platform.system()
+    if _system in ['Linux', 'Darwin']:
+        _FREENET_ARGS = ['su', '-', DARC_USER, os.path.join(FREENET_PATH, 'run.sh'), 'start']
+    else:
+        raise UnsupportedPlatform(f'unsupported system: {_system}')
+else:
+    _FREENET_ARGS = [os.path.join(FREENET_PATH, 'run.sh'), 'start']
+_FREENET_ARGS.extend(FREENET_ARGS)
 
 
 def _freenet_bootstrap():
@@ -36,8 +53,7 @@ def _freenet_bootstrap():
     global _FREENET_BS_FLAG, _FREENET_PROC
 
     # launch Freenet process
-    args = ['su', '-', 'darc', os.path.join(FREENET_PATH, 'run.sh'), 'start']
-    _FREENET_PROC = subprocess.Popen(args)
+    _FREENET_PROC = subprocess.Popen(_FREENET_ARGS)
     time.sleep(BS_WAIT)
 
     # _FREENET_PROC = subprocess.Popen(
@@ -51,7 +67,7 @@ def _freenet_bootstrap():
 
     returncode = _FREENET_PROC.returncode
     if returncode is not None and returncode != 0:
-        raise subprocess.CalledProcessError(returncode, args,
+        raise subprocess.CalledProcessError(returncode, _FREENET_ARGS,
                                             _FREENET_PROC.stdout,
                                             _FREENET_PROC.stderr)
 

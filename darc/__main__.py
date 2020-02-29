@@ -3,11 +3,14 @@
 
 import argparse
 import contextlib
+import shutil
 import sys
 import traceback
 
+import stem.util.term
+
 import darc.typing as typing
-from darc.const import MANAGER, QUEUE_REQUESTS
+from darc.const import DEBUG, MANAGER, QUEUE_REQUESTS
 from darc.process import process
 from darc.proxy.i2p import _I2P_PROC
 from darc.proxy.tor import _TOR_CTRL, _TOR_PROC
@@ -54,14 +57,24 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
 
+    if DEBUG:
+        print(stem.util.term.format('Initialising...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
     for link in args.link:
+        if DEBUG:
+            print(stem.util.term.format(link, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
         QUEUE_REQUESTS.put(link)
 
     if args.file is not None:
         for path in args.file:
             with open(path) as file:
                 for line in file:
+                    if DEBUG:
+                        print(stem.util.term.format(line, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
                     QUEUE_REQUESTS.put(line.strip())
+
+    if DEBUG:
+        print(stem.util.term.format('-' * shutil.get_terminal_size().columns, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
     try:
         process()

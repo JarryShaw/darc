@@ -3,7 +3,11 @@ version: '3'
 services:
   darc:
     image: darc
-    build: .
+    build:
+      context: .
+      args:
+        # non-root user
+        DARC_USER: "darc"
     command: [ "--file", "/app/text/market.txt",
                "--file", "/app/text/i2p.txt",
                "--file", "/app/text/zeronet.txt",
@@ -34,12 +38,16 @@ services:
       TOR_PASS: "16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F"
       # Tor bootstrap retry
       TOR_RETRY: 10
+      # Tor bootstrap config
+      TOR_CFG: "{}"
       # I2P port
       I2P_PORT: 4444
       # I2P bootstrap retry
       I2P_RETRY: 10
       # I2P bootstrap wait
       I2P_WAIT: 90
+      # I2P bootstrap config
+      I2P_ARGS: ""
       # ZeroNet port
       ZERONET_PORT: 43110
       # ZeroNet bootstrap retry
@@ -48,6 +56,8 @@ services:
       ZERONET_PATH: "/usr/local/src/zeronet"
       # ZeroNet bootstrap wait
       ZERONET_WAIT: 90
+      # ZeroNet bootstrap config
+      ZERONET_ARGS: ""
       # Freenet port
       FREENET_PORT: 8888
       # Freenet bootstrap retry
@@ -56,6 +66,8 @@ services:
       FREENET_PATH: "/usr/local/src/freenet"
       # Freenet bootstrap wait
       FREENET_WAIT: 90
+      # Freenet bootstrap config
+      FREENET_ARGS: ""
       # time delta for caches in seconds
       TIME_CACHE: 600  # 1 hour
       # time to wait for selenium

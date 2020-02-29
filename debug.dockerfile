@@ -14,11 +14,13 @@ FROM ubuntu:bionic
 LABEL Name=darc Version=0.0.1
 #EXPOSE 9050
 
-# ARG DEBIAN_FRONTEND="noninteractive"
-ARG DEBIAN_FRONTEND="teletype"
+ARG DARC_USER
 ENV LANG="C.UTF-8" \
     LC_ALL="C.UTF-8" \
-    PYTHONIOENCODING="UTF-8"
+    PYTHONIOENCODING="UTF-8" \
+    DEBIAN_FRONTEND="teletype" \
+    DARC_USER="${DARC_USER}"
+    # DEBIAN_FRONTEND="noninteractive"
 
 # RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
 #  && apk add --update --no-cache \
@@ -62,8 +64,8 @@ RUN retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recomme
         oracle-java13-installer
 RUN retry apt-get install --yes \
         sudo \
- && adduser --disabled-password --gecos '' darc \
- && adduser darc sudo \
+ && adduser --disabled-password --gecos '' ${DARC_USER} \
+ && adduser ${DARC_USER} sudo \
  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 ## Tor

@@ -2,6 +2,7 @@
 """Defined constants."""
 
 import datetime
+import getpass
 import json
 import math
 import multiprocessing
@@ -32,6 +33,11 @@ FLAG_MP = bool(int(os.getenv('DARC_MULTIPROCESSING', '1')))
 FLAG_TH = bool(int(os.getenv('DARC_MULTITHREADING', '0')))
 if FLAG_MP and FLAG_TH:
     sys.exit('cannot enable multiprocessing and multithreading at the same time')
+
+# non-root user
+DARC_USER = os.getenv('DARC_USER', getpass.getuser())
+if DARC_USER == 'root':
+    sys.exit('please specify a non-root user as DARC_USER')
 
 # data storage
 PATH_DB = os.path.abspath(os.getenv('PATH_DATA', 'data'))
