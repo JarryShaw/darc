@@ -19,6 +19,7 @@ import darc.typing as typing
 from darc.const import (DARC_CPU, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS, QUEUE_REQUESTS,
                         QUEUE_SELENIUM, REBOOT, VERBOSE, getpid)
 from darc.crawl import crawler, loader
+from darc.error import render_error
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap, has_freenet
 from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, has_tor, renew_tor_session, tor_bootstrap
@@ -76,9 +77,9 @@ def _get_requests_links() -> typing.List[str]:
 
     link_pool = sorted(set(link_list))
     if VERBOSE:
-        print(stem.util.term.format('-*- LINK POOL -*-',
+        print(stem.util.term.format('-*- [REQUESTS] LINK POOL -*-',
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        pprint.pprint(sorted(link_pool))
+        print(render_error(pprint.pformat(sorted(link_pool)), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
         print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -105,7 +106,15 @@ def _get_selenium_links() -> typing.List[typing.Tuple[typing.Datetime, str]]:
 
     if link_list:
         random.shuffle(link_list)
-    return sorted(set(link_list))
+
+    link_pool = sorted(set(link_list))
+    if VERBOSE:
+        print(stem.util.term.format('-*- [SELENIUM] LINK POOL -*-',
+                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(render_error(pprint.pformat(sorted(link_pool)), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    return link_pool
 
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member

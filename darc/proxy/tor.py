@@ -69,7 +69,7 @@ _TOR_CONFIG.update(TOR_CFG)
 if VERBOSE:
     print(stem.util.term.format('-*- TOR PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    pprint.pprint(_TOR_CONFIG)
+    print(render_error(pprint.pformat(_TOR_CONFIG), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -120,7 +120,7 @@ def tor_bootstrap():
     if _TOR_BS_FLAG:
         return
 
-    print(stem.util.term.format('Bootstrapping Tor proxy...',
+    print(stem.util.term.format('-*- Tor Bootstrap -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(TOR_RETRY+1):
         try:
@@ -128,10 +128,10 @@ def tor_bootstrap():
             break
         except Exception as error:
             if DEBUG:
-                error = f'[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-            print(render_error(error, stem.util.term.Color.CYAN), end='', file=sys.stderr)  # pylint: disable=no-member
+                message = f'[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc()
+                print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 91, 'tor_bootstrap()')
+            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 127, 'tor_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member

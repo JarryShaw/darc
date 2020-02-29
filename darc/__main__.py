@@ -58,7 +58,7 @@ def main():
     args = parser.parse_args()
 
     if DEBUG:
-        print(stem.util.term.format('Initialising...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem.util.term.format('-*- Initialisation -*-', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
     for link in filter(lambda s: s.strip(), args.link):
         if DEBUG:

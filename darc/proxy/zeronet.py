@@ -44,7 +44,7 @@ _ZERONET_ARGS.extend(ZERONET_ARGS)
 if VERBOSE:
     print(stem.util.term.format('-*- ZERONET PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    pprint.pprint(_ZERONET_ARGS)
+    print(render_error(pprint.pformat(_ZERONET_ARGS), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -87,7 +87,7 @@ def zeronet_bootstrap():
     if _ZERONET_BS_FLAG:
         return
 
-    print(stem.util.term.format('Bootstrapping ZeroNet proxy...',
+    print(stem.util.term.format('-*- ZeroNet Bootstrap -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(ZERONET_RETRY+1):
         try:
@@ -95,10 +95,10 @@ def zeronet_bootstrap():
             break
         except Exception as error:
             if DEBUG:
-                error = f'[Error bootstraping ZeroNet proxy]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-            print(render_error(error, stem.util.term.Color.CYAN), end='', file=sys.stderr)  # pylint: disable=no-member
+                message = f'[Error bootstraping ZeroNet proxy]' + os.linesep + traceback.format_exc()
+                print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 68, 'zeronet_bootstrap()')
+            warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 94, 'zeronet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member

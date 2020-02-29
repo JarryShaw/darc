@@ -58,7 +58,7 @@ if VERBOSE:
         print(stem.util.term.format(f'unsupported system: {platform.system()}',
                                     stem.util.term.Color.RED))  # pylint: disable=no-member
     else:
-        pprint.pprint(_FREENET_ARGS)
+        print(render_error(pprint.pformat(_FREENET_ARGS), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -101,7 +101,7 @@ def freenet_bootstrap():
     if _FREENET_BS_FLAG:
         return
 
-    print(stem.util.term.format('Bootstrapping Freenet proxy...',
+    print(stem.util.term.format('-*- Freenet Bootstrap -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(FREENET_RETRY+1):
         try:
@@ -109,10 +109,10 @@ def freenet_bootstrap():
             break
         except Exception as error:
             if DEBUG:
-                error = f'[Error bootstraping Freenet proxy]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-            print(render_error(error, stem.util.term.Color.CYAN), end='', file=sys.stderr)  # pylint: disable=no-member
+                message = f'[Error bootstraping Freenet proxy]' + os.linesep + traceback.format_exc()
+                print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, FreenetBootstrapFailed, __file__, 64, 'freenet_bootstrap()')
+            warning = warnings.formatwarning(error, FreenetBootstrapFailed, __file__, 108, 'freenet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member

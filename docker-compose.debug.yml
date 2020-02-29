@@ -13,7 +13,7 @@ services:
       - 9050:1089
     command:
       # normal
-      - https://www.bing.com
+      - https://httpbin.org
       # Tor
       - https://www.nytimes3xbfgragh.onion
       # I2P

@@ -13,6 +13,8 @@ import sys
 
 import stem.util.term
 
+from darc.error import render_error
+
 # reboot mode?
 REBOOT = bool(int(os.getenv('DARC_REBOOT', '0')))
 
@@ -59,7 +61,7 @@ LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
 if VERBOSE:
     print(stem.util.term.format('-*- LINK WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    pprint.pprint(LINK_WHITE_LIST)
+    print(render_error(pprint.pformat(LINK_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -68,7 +70,7 @@ LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
 if VERBOSE:
     print(stem.util.term.format('-*- LINK BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    pprint.pprint(LINK_BLACK_LIST)
+    print(render_error(pprint.pformat(LINK_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -77,7 +79,7 @@ MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
 if VERBOSE:
     print(stem.util.term.format('-*- MIME WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    pprint.pprint(MIME_WHITE_LIST)
+    print(render_error(pprint.pformat(MIME_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -86,7 +88,7 @@ MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
 if VERBOSE:
     print(stem.util.term.format('-*- MIME BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    pprint.pprint(MIME_BLACK_LIST)
+    print(render_error(pprint.pformat(MIME_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 

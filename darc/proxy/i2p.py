@@ -73,7 +73,7 @@ if VERBOSE:
         print(stem.util.term.format(f'unsupported system: {platform.system()}',
                                     stem.util.term.Color.RED))  # pylint: disable=no-member
     else:
-        pprint.pprint(_I2P_ARGS)
+        print(render_error(pprint.pformat(_I2P_ARGS), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
@@ -116,7 +116,7 @@ def i2p_bootstrap():
     if _I2P_BS_FLAG:
         return
 
-    print(stem.util.term.format('Bootstrapping I2P proxy...',
+    print(stem.util.term.format('-*- I2P Bootstrap -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(I2P_RETRY+1):
         try:
@@ -124,10 +124,10 @@ def i2p_bootstrap():
             break
         except Exception as error:
             if DEBUG:
-                error = f'[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-            print(render_error(error, stem.util.term.Color.CYAN), end='', file=sys.stderr)  # pylint: disable=no-member
+                message = f'[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc()
+                print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 81, 'i2p_bootstrap()')
+            warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 123, 'i2p_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member

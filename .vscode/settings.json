@@ -30,6 +30,7 @@
         "noip",
         "parso",
         "pexpect",
+        "pformat",
         "posixpath",
         "prouter",
         "ptyprocess",
