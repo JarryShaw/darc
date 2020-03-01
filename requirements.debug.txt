@@ -15,6 +15,7 @@ chardet==3.0.4
 html5lib==1.0.1
 idna==2.9
 pysocks==1.7.1
+requests-futures==1.0.0
 requests[socks]==2.23.0
 selenium==3.141.0
 six==1.14.0

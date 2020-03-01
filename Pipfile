@@ -24,6 +24,7 @@ codecov = "*"
 [packages]
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}
 requests = {extras = ["socks"],version = "*"}
+requests-futures = "*"
 stem = "*"
 selenium = "*"
 typing-extensions = "*"

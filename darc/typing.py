@@ -11,6 +11,7 @@ import typing
 from typing import *
 
 import requests
+import requests_futures.sessions
 import selenium.common.exceptions
 import selenium.webdriver
 import selenium.webdriver.common.proxy
@@ -30,6 +31,9 @@ Response = typing.NewType('Response', requests.Response)
 
 # requests.Session
 Session = typing.NewType('Session', requests.Session)
+
+# requests_futures.sessions.FutureSession
+FutureSession = typing.NewType('FutureSession', requests_futures.sessions.FuturesSession)
 
 # queue.Queue
 Queue = typing.NewType('Queue', queue.Queue)

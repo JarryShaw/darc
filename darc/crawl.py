@@ -24,8 +24,8 @@ import darc.typing as typing
 from darc.const import QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY
 from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
-from darc.parse import (extract_links, get_sitemap, match_mime, match_proxy, read_robots,
-                        read_sitemap)
+from darc.parse import (check_robots, extract_links, get_content_type, get_sitemap, match_mime,
+                        match_proxy, read_robots, read_sitemap)
 from darc.proxy import LINK_MAP
 from darc.proxy.i2p import fetch_hosts
 from darc.save import (has_folder, has_html, has_raw, has_robots, has_sitemap, save_file,
@@ -34,12 +34,12 @@ from darc.sites import crawler_hook, loader_hook
 from darc.submit import submit_new_host, submit_requests, submit_selenium
 
 
-def request_session(link: Link) -> typing.Session:
+def request_session(link: Link, futures: bool = False) -> typing.Union[typing.Session, typing.FutureSession]:
     """Get requests session."""
     session, _ = LINK_MAP[link.proxy]
     if session is None:
         raise UnsupportedLink(link.url)
-    return session()
+    return session(futures=futures)
 
 
 def request_driver(link: Link) -> typing.Driver:
@@ -133,7 +133,7 @@ def crawler(url: str):
     link = parse_link(url)
     if match_proxy(link.proxy):
         print(render_error(f'[REQUESTS] Ignored proxy type from {link.url} ({link.proxy})',
-                           stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                           stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
         return
 
     try:
@@ -193,6 +193,11 @@ def crawler(url: str):
                 # submit data
                 submit_new_host(timestamp, link)
 
+            if not check_robots(link):
+                print(render_error(f'[REQUESTS] Robots disallowed link from {link.url}',
+                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                return
+
             with request_session(link) as session:
                 try:
                     # requests session hook
@@ -211,10 +216,10 @@ def crawler(url: str):
             save_headers(timestamp, link, response)
 
             # check content type
-            ct_type = response.headers.get('Content-Type', 'text/html').casefold().split(';', maxsplit=1)[0].strip()
+            ct_type = get_content_type(response)
             if ct_type not in ['text/html', 'application/xhtml+xml']:
                 print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
 
                 if match_mime(ct_type):
                     return
