@@ -28,6 +28,7 @@
         "miniconda",
         "myenv",
         "noip",
+        "nytimes",
         "parso",
         "pexpect",
         "pformat",
@@ -43,6 +44,7 @@
         "tsinghua",
         "tzdata",
         "wcwidth",
+        "xbfgragh",
         "xenial",
         "xvpfz",
         "xvzf"

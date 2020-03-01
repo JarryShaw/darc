@@ -112,10 +112,14 @@ def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
 
     # https://www.sitemaps.org/protocol.html
     for loc in soup.select('urlset > url > loc'):
-        temp_link = urllib.parse.urljoin(link, loc.text)
-        if match_link(temp_link):
+        link = urllib.parse.urljoin(link, loc.text)
+        if match_link(link):
             continue
-        link_list.append(temp_link)
+
+        link_obj = parse_link(link)
+        if match_proxy(link_obj.proxy):
+            continue
+        link_list.append(link)
     yield from set(link_list)
 
 
@@ -145,6 +149,8 @@ def extract_links(link: str, html: typing.Union[str, bytes], check: bool = False
         result_list = list()
         for item in temp_list:
             link_obj = parse_link(item)
+            if match_proxy(link_obj.proxy):
+                continue
 
             # get session
             session = session_map.get(link_obj.proxy)

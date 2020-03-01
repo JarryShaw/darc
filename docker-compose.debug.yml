@@ -96,7 +96,7 @@ services:
         "127\\.0\\.0\\.1:8888", "localhost:8888"
       ]'
       # link black list
-      LINK_BLACK_LIST: '[ "(.*\\.)?facebookcorewwwi\\.onion" ]'
+      LINK_BLACK_LIST: '[ "(.*\\.)?facebookcorewwwi\\.onion", "(.*\\.)?nytimes3xbfgragh\\.onion" ]'
       # content type white list
       MIME_WHITE_LIST: '[ "text/html", "application/xhtml+xml" ]'
       # content type black list
