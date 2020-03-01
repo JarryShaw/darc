@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Source saving."""
 
-import contextlib
 import dataclasses
 import datetime
 import glob
@@ -9,19 +8,13 @@ import json
 import os
 import pathlib
 import posixpath
-import threading
 
 import darc.typing as typing
-from darc.const import FLAG_MP, FLAG_TH, MANAGER, PATH_DB, PATH_LN, TIME_CACHE
+from darc.const import MANAGER, PATH_DB, PATH_LN, TIME_CACHE
 from darc.link import Link
 
 # lock for file I/O
-if FLAG_MP:
-    _SAVE_LOCK = MANAGER.Lock()  # pylint: disable=no-member
-elif FLAG_TH:
-    _SAVE_LOCK = threading.Lock()
-else:
-    _SAVE_LOCK = contextlib.nullcontext()
+_SAVE_LOCK = MANAGER.Lock()  # pylint: disable=no-member
 
 
 def has_folder(link: Link) -> typing.Optional[str]:  # pylint: disable=inconsistent-return-statements

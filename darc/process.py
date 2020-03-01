@@ -96,7 +96,7 @@ def _get_requests_links() -> typing.List[str]:
     return link_pool
 
 
-def _get_selenium_links() -> typing.List[typing.Tuple[typing.Datetime, str]]:
+def _get_selenium_links() -> typing.List[str]:
     """Fetch links from queue."""
     link_list = list()
     while True:
