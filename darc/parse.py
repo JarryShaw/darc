@@ -10,8 +10,23 @@ import urllib.robotparser
 import bs4
 
 import darc.typing as typing
-from darc.const import LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST, MIME_WHITE_LIST
+from darc.const import (LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST, MIME_WHITE_LIST,
+                        PROXY_BLACK_LIST, PROXY_WHITE_LIST)
 from darc.link import Link, parse_link
+
+
+def match_proxy(proxy: str) -> bool:
+    """Check if proxy in black list."""
+    # any matching white list
+    if proxy in PROXY_WHITE_LIST:
+        return False
+
+    # any matching black list
+    if proxy in PROXY_BLACK_LIST:
+        return True
+
+    # fallback
+    return False
 
 
 def match_link(link: str) -> bool:
@@ -106,7 +121,7 @@ def check_header(link: str) -> str:
     return 'null'
 
 
-def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[str]:
+def extract_links(link: str, html: typing.Union[str, bytes], check: bool = False) -> typing.Iterator[str]:
     """Extract links from HTML context."""
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
@@ -118,9 +133,10 @@ def extract_links(link: str, html: typing.Union[str, bytes]) -> typing.Iterator[
         if match_link(temp_link):
             continue
 
-        # # check content type
-        # ct_type = check_header(link)
-        # if match_mime(ct_type):
-        #     continue
+        if check:
+            # check content type
+            ct_type = check_header(link).split(';', maxsplit=1)[0].strip()
+            if match_mime(ct_type):
+                continue
         link_list.append(temp_link)
     yield from set(link_list)

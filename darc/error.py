@@ -34,6 +34,10 @@ class FreenetBootstrapFailed(Warning):
     """Freenet bootstrap process failed."""
 
 
+class APIRequestFailed(Warning):
+    """API submit failed."""
+
+
 class SiteNotFoundWarning(ImportWarning):
     """Site customisation not found."""
 

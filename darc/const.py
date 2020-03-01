@@ -92,6 +92,24 @@ if VERBOSE:
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
+# proxy type black list
+PROXY_BLACK_LIST = json.loads(os.getenv('PROXY_BLACK_LIST', '[]').casefold())
+if VERBOSE:
+    print(stem.util.term.format('-*- PROXY BLACK LIST -*-',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(PROXY_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
+# proxy type white list
+PROXY_WHITE_LIST = json.loads(os.getenv('PROXY_WHITE_LIST', '[]').casefold())
+if VERBOSE:
+    print(stem.util.term.format('-*- PROXY WHITE LIST -*-',
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(PROXY_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
 # time delta for caches in seconds
 _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))
 if math.isfinite(_TIME_CACHE):

@@ -24,12 +24,14 @@ import darc.typing as typing
 from darc.const import QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY
 from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
-from darc.parse import extract_links, get_sitemap, match_mime, read_robots, read_sitemap
+from darc.parse import (extract_links, get_sitemap, match_mime, match_proxy, read_robots,
+                        read_sitemap)
 from darc.proxy import LINK_MAP
 from darc.proxy.i2p import fetch_hosts
 from darc.save import (has_folder, has_html, has_raw, has_robots, has_sitemap, save_file,
                        save_headers, save_html, save_robots, save_sitemap)
 from darc.sites import crawler_hook, loader_hook
+from darc.submit import submit_new_host, submit_requests, submit_selenium
 
 
 def request_session(link: Link) -> typing.Session:
@@ -129,6 +131,11 @@ def fetch_sitemap(link: Link):
 def crawler(url: str):
     """Single requests crawler for a entry link."""
     link = parse_link(url)
+    if match_proxy(link.proxy):
+        print(render_error(f'[REQUESTS] Ignored proxy type from {link.url} ({link.proxy})',
+                           stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+        return
+
     try:
         # timestamp
         timestamp = datetime.datetime.now()
@@ -157,7 +164,7 @@ def crawler(url: str):
                 html = file.read()
 
             # add link to queue
-            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html, check=True)]  # pylint: disable=expression-not-assigned
 
         else:
 
@@ -183,6 +190,9 @@ def crawler(url: str):
                         error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
+                # submit data
+                submit_new_host(timestamp, link)
+
             with request_session(link) as session:
                 try:
                     # requests session hook
@@ -201,8 +211,8 @@ def crawler(url: str):
             save_headers(timestamp, link, response)
 
             # check content type
-            ct_type = response.headers.get('Content-Type', 'text/html').casefold()
-            if 'html' not in ct_type:
+            ct_type = response.headers.get('Content-Type', 'text/html').casefold().split(';', maxsplit=1)[0].strip()
+            if ct_type not in ['text/html', 'application/xhtml+xml']:
                 print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
 
@@ -215,6 +225,7 @@ def crawler(url: str):
                 except Exception as error:
                     print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                    QUEUE_REQUESTS.put(link.url)
                 return
 
             html = response.content
@@ -226,6 +237,9 @@ def crawler(url: str):
 
             # save HTML
             save_html(timestamp, link, html, raw=True)
+
+            # submit data
+            submit_requests(timestamp, link, response)
 
             # add link to queue
             [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
@@ -294,6 +308,9 @@ def loader(url: str):
 
             # save HTML
             save_html(timestamp, link, html)
+
+            # submit data
+            submit_selenium(timestamp, link)
 
             # add link to queue
             [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """I2P proxy."""
 
+import base64
 import getpass
 import io
 import os
@@ -20,7 +21,7 @@ import selenium
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DARC_USER, DEBUG, QUEUE_REQUESTS, VERBOSE
+from darc.const import DARC_USER, DEBUG, PATH_DB, QUEUE_REQUESTS, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
 from darc.link import Link, parse_link
 
@@ -131,6 +132,20 @@ def i2p_bootstrap():
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
+
+def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, typing.Union[str, typing.ByteString]]]:  # pylint: disable=inconsistent-return-statements
+    """Read ``hosts.txt``."""
+    path = os.path.join(link.base, 'hosts.txt')
+    if not os.path.isfile(path):
+        return
+    with open(path, 'rb') as file:
+        content = file.read()
+    data = dict(
+        path=os.path.relpath(path, PATH_DB),
+        data=base64.b64encode(content).decode(),
+    )
+    return data
 
 
 def has_i2p(link_pool: typing.Set[str]) -> bool:

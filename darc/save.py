@@ -12,7 +12,7 @@ import posixpath
 import threading
 
 import darc.typing as typing
-from darc.const import FLAG_MP, FLAG_TH, MANAGER, PATH_LN, TIME_CACHE
+from darc.const import FLAG_MP, FLAG_TH, MANAGER, PATH_DB, PATH_LN, TIME_CACHE
 from darc.link import Link
 
 # lock for file I/O
@@ -155,6 +155,7 @@ def save_sitemap(link: Link, text: str) -> str:
 def save_headers(time: typing.Datetime, link: Link, response: typing.Response) -> str:  # pylint: disable=redefined-outer-name
     """Save HTTP response headers."""
     metadata = dataclasses.asdict(link)
+    metadata['base'] = os.path.relpath(link.base, PATH_DB)
     del metadata['url_parse']
 
     data = {

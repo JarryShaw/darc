@@ -20,6 +20,7 @@ from darc.const import (DARC_CPU, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS, Q
                         QUEUE_SELENIUM, REBOOT, VERBOSE, getpid)
 from darc.crawl import crawler, loader
 from darc.error import render_error
+from darc.parse import match_proxy
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap, has_freenet
 from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, has_tor, renew_tor_session, tor_bootstrap
@@ -74,8 +75,17 @@ def _get_requests_links() -> typing.List[str]:
 
     if link_list:
         random.shuffle(link_list)
-
     link_pool = sorted(set(link_list))
+
+    if not _TOR_BS_FLAG and has_tor(link_pool) and not match_proxy('tor'):
+        tor_bootstrap()
+    if not _I2P_BS_FLAG and has_i2p(link_pool) and not match_proxy('i2p'):
+        i2p_bootstrap()
+    if not _ZERONET_BS_FLAG and has_zeronet(link_pool) and not match_proxy('zeronet'):
+        zeronet_bootstrap()
+    if not _FREENET_BS_FLAG and has_freenet(link_pool) and not match_proxy('freenet'):
+        freenet_bootstrap()
+
     if VERBOSE:
         print(stem.util.term.format('-*- [REQUESTS] LINK POOL -*-',
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -83,14 +93,6 @@ def _get_requests_links() -> typing.List[str]:
         print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
-    if not _TOR_BS_FLAG and has_tor(link_pool):
-        tor_bootstrap()
-    if not _I2P_BS_FLAG and has_i2p(link_pool):
-        i2p_bootstrap()
-    if not _ZERONET_BS_FLAG and has_zeronet(link_pool):
-        zeronet_bootstrap()
-    if not _FREENET_BS_FLAG and has_freenet(link_pool):
-        freenet_bootstrap()
     return link_pool
 
 
