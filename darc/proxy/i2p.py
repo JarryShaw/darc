@@ -157,6 +157,10 @@ def has_i2p(link_pool: typing.Set[str]) -> bool:
 
         if re.fullmatch(r'.*?\.i2p', host):
             return True
+        # c.f. https://geti2p.net/en/docs/api/i2ptunnel
+        if host in ['127.0.0.1:7657', '127.0.0.1:7658', '127.0.0.1:6668', '127.0.0.1:8998', '127.0.0.1:7659', '127.0.0.1:7660',  # pylint: disable=line-too-long
+                    'localhost:7657', 'localhost:7658', 'localhost:6668', 'localhost:8998', 'localhost:7659', 'localhost:7660']:  # pylint: disable=line-too-long
+            return True
     return False
 
 
