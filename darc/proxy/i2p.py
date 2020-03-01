@@ -17,7 +17,8 @@ import urllib.parse
 import warnings
 
 import requests
-import selenium
+import selenium.webdriver
+import selenium.webdriver.common.proxy
 import stem.util.term
 
 import darc.typing as typing
@@ -43,7 +44,7 @@ I2P_RETRY = int(os.getenv('I2P_RETRY', '3'))
 I2P_REQUESTS_PROXY = {
     # c.f. https://stackoverflow.com/a/42972942
     'http':  f'http://localhost:{I2P_PORT}',
-    'https': f'http://localhost:{I2P_PORT}'
+    'https': f'http://localhost:{I2P_PORT}',
 }
 I2P_SELENIUM_PROXY = selenium.webdriver.Proxy()
 I2P_SELENIUM_PROXY.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
@@ -158,8 +159,8 @@ def has_i2p(link_pool: typing.Set[str]) -> bool:
         if re.fullmatch(r'.*?\.i2p', host):
             return True
         # c.f. https://geti2p.net/en/docs/api/i2ptunnel
-        if host in ['127.0.0.1:7657', '127.0.0.1:7658', '127.0.0.1:6668', '127.0.0.1:8998', '127.0.0.1:7659', '127.0.0.1:7660',  # pylint: disable=line-too-long
-                    'localhost:7657', 'localhost:7658', 'localhost:6668', 'localhost:8998', 'localhost:7659', 'localhost:7660']:  # pylint: disable=line-too-long
+        if host in ['127.0.0.1:7657', '127.0.0.1:7658',
+                    'localhost:7657', 'localhost:7658']:
             return True
     return False
 

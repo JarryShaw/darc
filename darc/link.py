@@ -59,8 +59,8 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     elif re.fullmatch(r'.*?\.i2p', host):
         proxy_type = 'i2p'
     # c.f. https://geti2p.net/en/docs/api/i2ptunnel
-    elif host in ['127.0.0.1:7657', '127.0.0.1:7658', '127.0.0.1:6668', '127.0.0.1:8998', '127.0.0.1:7659', '127.0.0.1:7660',  # pylint: disable=line-too-long
-                  'localhost:7657', 'localhost:7658', 'localhost:6668', 'localhost:8998', 'localhost:7659', 'localhost:7660']:  # pylint: disable=line-too-long
+    elif host in ['127.0.0.1:7657', '127.0.0.1:7658',
+                  'localhost:7657', 'localhost:7658']:
         proxy_type = 'i2p'
     elif host in (f'127.0.0.1:{ZERONET_PORT}', f'localhost:{ZERONET_PORT}'):
         if parse.path == '/':

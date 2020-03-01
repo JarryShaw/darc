@@ -12,7 +12,8 @@ import traceback
 import urllib
 import warnings
 
-import selenium
+import selenium.webdriver
+import selenium.webdriver.common.proxy
 import stem.control
 import stem.process
 import stem.util.term
@@ -46,7 +47,7 @@ TOR_RETRY = int(os.getenv('TOR_RETRY', '3'))
 TOR_REQUESTS_PROXY = {
     # c.f. https://stackoverflow.com/a/42972942
     'http':  f'socks5h://localhost:{TOR_PORT}',
-    'https': f'socks5h://localhost:{TOR_PORT}'
+    'https': f'socks5h://localhost:{TOR_PORT}',
 }
 TOR_SELENIUM_PROXY = selenium.webdriver.Proxy()
 TOR_SELENIUM_PROXY.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
