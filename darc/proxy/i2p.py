@@ -25,6 +25,7 @@ import darc.typing as typing
 from darc.const import DARC_USER, DEBUG, PATH_DB, QUEUE_REQUESTS, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
 from darc.link import Link, parse_link
+from darc.parse import get_content_type
 
 __all__ = ['I2P_REQUESTS_PROXY', 'I2P_SELENIUM_PROXY']
 
@@ -217,13 +218,19 @@ def fetch_hosts(link: Link):
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
-        if response.ok:
-            save_hosts(hosts_link, response.text)
-            hosts_file = io.StringIO(response.text)
-        else:
+        if not response.ok:
             print(render_error(f'[HOSTS] Failed on {hosts_link.url} [{response.status_code}]',
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-            hosts_file = io.StringIO()
+            return
+
+        ct_type = get_content_type(response, 'text/text')
+        if ct_type not in ['text/text', 'text/plain']:
+            print(render_error(f'[HOSTS] Unresolved content type on {hosts_link.url} ({ct_type}',
+                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            return
+
+        save_hosts(hosts_link, response.text)
+        hosts_file = io.StringIO(response.text)
 
         print(f'[HOSTS] Subscribed {hosts_link.url}')
 

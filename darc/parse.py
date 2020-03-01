@@ -119,9 +119,9 @@ def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
     yield from set(link_list)
 
 
-def get_content_type(response: typing.Response) -> str:
+def get_content_type(response: typing.Response, default='text/html') -> str:
     """Get content type of response."""
-    return response.headers.get('Content-Type', 'text/html').casefold().split(';', maxsplit=1)[0].strip()
+    return response.headers.get('Content-Type', default).casefold().split(';', maxsplit=1)[0].strip()
 
 
 def extract_links(link: str, html: typing.Union[str, bytes], check: bool = False) -> typing.Iterator[str]:
@@ -165,7 +165,7 @@ def extract_links(link: str, html: typing.Union[str, bytes], check: bool = False
             except requests.RequestException:
                 continue
 
-            ct_type = get_content_type(response)
+            ct_type = get_content_type(response, 'text/html')
             if DEBUG:
                 print(f'[HEAD] Checked content type from {response.url} ({ct_type})')
             if match_mime(ct_type):

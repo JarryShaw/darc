@@ -73,14 +73,19 @@ def fetch_sitemap(link: Link):
                 return
 
         if response.ok:
-            robots_text = response.text
-            save_robots(robots_link, robots_text)
+            ct_type = get_content_type(response, 'text/text')
+            if ct_type not in ['text/text', 'text/plain']:
+                print(render_error(f'[ROBOTS] Unresolved content type on {robots_link.url} ({ct_type}',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                robots_text = ''
+            else:
+                robots_text = response.text
+                save_robots(robots_link, robots_text)
+                print(f'[ROBOTS] Checked {robots_link.url}')
         else:
             print(render_error(f'[ROBOTS] Failed on {robots_link.url} [{response.status_code}]',
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             robots_text = ''
-
-        print(f'[ROBOTS] Checked {robots_link.url}')
 
     sitemaps = read_robots(link.url, robots_text, host=link.host)
     for sitemap_link in sitemaps:
@@ -109,15 +114,19 @@ def fetch_sitemap(link: Link):
                 continue
 
             # check content type
-            ct_type = response.headers.get('Content-Type', 'text/xml').casefold()
+            ct_type = get_content_type(response, 'text/xml')
             if ct_type == 'application/gzip':
                 try:
                     sitemap_text = gzip.decompress(response.content).decode()
                 except UnicodeDecodeError:
                     sitemap_text = response.text
-            else:
+            elif ct_type in ['text/xml']:
                 sitemap_text = response.text
-            save_sitemap(sitemap_link, sitemap_text)
+                save_sitemap(sitemap_link, sitemap_text)
+            else:
+                print(render_error(f'[SITEMAP] Unresolved content type on {sitemap_link.url} ({ct_type}',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                continue
 
             print(f'[SITEMAP] Fetched {sitemap_link.url}')
 
@@ -216,7 +225,7 @@ def crawler(url: str):
             save_headers(timestamp, link, response)
 
             # check content type
-            ct_type = get_content_type(response)
+            ct_type = get_content_type(response, 'text/html')
             if ct_type not in ['text/html', 'application/xhtml+xml']:
                 print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
