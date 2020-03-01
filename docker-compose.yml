@@ -16,7 +16,7 @@ services:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
       # reboot mode
-      DARC_REBOOT: 1
+      DARC_REBOOT: 0
       # debug mode
       DARC_DEBUG: 0
       # verbose mode
