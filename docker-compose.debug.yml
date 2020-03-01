@@ -102,7 +102,7 @@ services:
       # proxy type white list
       PROXY_WHITE_LIST: '[ "i2p", "freenet", "zeronet" ]'
       # proxy type black list'
-      PROXY_BLACK_LIST: '[ "tor", "tor" ]'
+      PROXY_BLACK_LIST: '[ "tor" ]'
       # API retry times
       API_RETRY: 0
       # API URLs
