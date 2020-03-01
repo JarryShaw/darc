@@ -81,6 +81,10 @@ def read_robots(link: str, text: str, host: typing.Optional[str] = None) -> typi
 
 def check_robots(link: Link) -> bool:
     """Check if link is allowed in ``robots.txt``."""
+    # bypass robots for root path
+    if link.url_parse.path == '/':
+        return True
+
     robots = os.path.join(link.base, 'robots.txt')
     if os.path.isfile(robots):
         rp = urllib.robotparser.RobotFileParser()
