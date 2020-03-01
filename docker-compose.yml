@@ -21,6 +21,8 @@ services:
       DARC_DEBUG: 0
       # verbose mode
       DARC_VERBOSE: 1
+      # force mode (ignore robots.txt)
+      DARC_FORCE: 1
       # processes
       DARC_CPU: 10
       # multiprocessing

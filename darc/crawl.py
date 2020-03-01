@@ -21,7 +21,7 @@ import stem.util.term
 import urllib3
 
 import darc.typing as typing
-from darc.const import QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY
+from darc.const import FORCE, QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY
 from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
 from darc.parse import (check_robots, extract_links, get_content_type, get_sitemap, match_mime,
@@ -202,7 +202,7 @@ def crawler(url: str):
                 # submit data
                 submit_new_host(timestamp, link)
 
-            if not check_robots(link):
+            if not FORCE and not check_robots(link):
                 print(render_error(f'[REQUESTS] Robots disallowed link from {link.url}',
                                    stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
                 return
