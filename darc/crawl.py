@@ -120,7 +120,7 @@ def fetch_sitemap(link: Link):
                     sitemap_text = gzip.decompress(response.content).decode()
                 except UnicodeDecodeError:
                     sitemap_text = response.text
-            elif ct_type in ['text/xml']:
+            elif ct_type in ['text/xml', 'text/html']:
                 sitemap_text = response.text
                 save_sitemap(sitemap_link, sitemap_text)
             else:
