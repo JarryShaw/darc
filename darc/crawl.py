@@ -136,9 +136,6 @@ def crawler(url: str):
                 print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
 
-                if match_mime(ct_type):
-                    return
-
                 text = response.content
                 try:
                     save_file(timestamp, link, text)
@@ -147,6 +144,13 @@ def crawler(url: str):
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     #QUEUE_REQUESTS.put(link.url)
                     save_requests(link.url, single=True)
+
+                if match_mime(ct_type):
+                    return
+
+                # submit data
+                submit_requests(timestamp, link, response)
+
                 return
 
             html = response.content
