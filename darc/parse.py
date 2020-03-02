@@ -10,10 +10,12 @@ import urllib.robotparser
 
 import bs4
 import requests
+import stem.util.term
 
 import darc.typing as typing
 from darc.const import (DEBUG, LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST, MIME_WHITE_LIST,
                         PROXY_BLACK_LIST, PROXY_WHITE_LIST)
+from darc.error import render_error
 from darc.link import Link, parse_link
 
 
@@ -132,7 +134,14 @@ def _check(temp_list: typing.List[str]) -> typing.List[str]:
     for result in concurrent.futures.as_completed(result_list):
         try:
             response: typing.Response = result.result()
-        except requests.RequestException:
+        except requests.RequestException as error:
+            if error.response is None:
+                print(render_error(f'[HEAD] Checking failed <{error}>',
+                                   stem.util.term.Color.RED))  # pylint: disable=no-member
+                continue
+            print(render_error(f'[HEAD] Failed on {error.response.url} <{error}>',
+                               stem.util.term.Color.RED))  # pylint: disable=no-member
+            link_list.append(error.response.url)
             continue
 
         ct_type = get_content_type(response, 'text/html')
