@@ -8,6 +8,7 @@ import re
 import urllib.robotparser
 
 import bs4
+import magic
 import requests
 import stem.util.term
 
@@ -20,6 +21,9 @@ from darc.link import Link, parse_link, urljoin
 
 def match_proxy(proxy: str) -> bool:
     """Check if proxy in black list."""
+    if proxy == 'script':
+        return True
+
     # any matching white list
     if proxy in PROXY_WHITE_LIST:
         return False
@@ -139,7 +143,7 @@ def _check(temp_list: typing.List[str]) -> typing.List[str]:
                                stem.util.term.Color.RED))  # pylint: disable=no-member
             link_list.append(error.response.url)
             continue
-        ct_type = get_content_type(response, 'text/html')
+        ct_type = get_content_type(response)
 
         print(f'[HEAD] Checked content type from {response.url} ({ct_type})')
 
@@ -164,9 +168,15 @@ def read_sitemap(link: str, text: str, check: bool = CHECK) -> typing.Iterator[s
     yield from set(link_list)
 
 
-def get_content_type(response: typing.Response, default='text/html') -> str:
+def get_content_type(response: typing.Response) -> str:
     """Get content type of response."""
-    return response.headers.get('Content-Type', default).casefold().split(';', maxsplit=1)[0].strip()
+    ct_type = response.headers.get('Content-Type')
+    if ct_type is None:
+        try:
+            ct_type = magic.detect_from_content(response.content).mime_type
+        except Exception:
+            ct_type = '(null)'
+    return ct_type.casefold().split(';', maxsplit=1)[0].strip()
 
 
 def extract_links(link: str, html: typing.Union[str, bytes], check: bool = CHECK) -> typing.Iterator[str]:

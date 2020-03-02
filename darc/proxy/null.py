@@ -2,6 +2,8 @@
 """No proxy."""
 
 import gzip
+import multiprocessing
+import os
 import sys
 
 import requests
@@ -10,12 +12,23 @@ import stem.control
 import stem.process
 import stem.util.term
 
+from darc.const import PATH_MISC
 from darc.db import save_requests
 from darc.error import render_error
 from darc.link import Link, parse_link
 from darc.parse import get_content_type, get_sitemap, read_robots, read_sitemap, urljoin
 from darc.requests import request_session
 from darc.save import has_robots, has_sitemap, save_robots, save_sitemap
+
+PATH = os.path.join(PATH_MISC, 'invalid.txt')
+LOCK = multiprocessing.Lock()
+
+
+def save_invalid(link: Link):
+    """Save link with invalid scheme."""
+    with LOCK:
+        with open(PATH, 'a') as file:
+            print(link.url_parse.path, file=file)
 
 
 def fetch_sitemap(link: Link):
@@ -42,7 +55,7 @@ def fetch_sitemap(link: Link):
                 return
 
         if response.ok:
-            ct_type = get_content_type(response, 'text/text')
+            ct_type = get_content_type(response)
             if ct_type not in ['text/text', 'text/plain']:
                 print(render_error(f'[ROBOTS] Unresolved content type on {robots_link.url} ({ct_type}',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
@@ -84,7 +97,7 @@ def fetch_sitemap(link: Link):
                 continue
 
             # check content type
-            ct_type = get_content_type(response, 'text/xml')
+            ct_type = get_content_type(response)
             if ct_type == 'application/gzip':
                 try:
                     sitemap_text = gzip.decompress(response.content).decode()

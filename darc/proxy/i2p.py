@@ -192,7 +192,7 @@ def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterab
             continue
 
         link = line.split('=', maxsplit=1)[0]
-        temp_list.append(link)
+        temp_list.append(f'http://{link}')
 
     if check:
         link_list = _check(temp_list)
@@ -230,7 +230,7 @@ def fetch_hosts(link: Link):
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             return
 
-        ct_type = get_content_type(response, 'text/text')
+        ct_type = get_content_type(response)
         if ct_type not in ['text/text', 'text/plain']:
             print(render_error(f'[HOSTS] Unresolved content type on {hosts_link.url} ({ct_type}',
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member

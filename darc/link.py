@@ -18,6 +18,21 @@ except NotImplementedError:
     from pathlib import PurePosixPath as PosixPath
 
 
+def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',
+          encoding: typing.Optional[str] = None, errors: typing.Optional[str] = None) -> str:
+    """Wrapper function for ``urllib.parse.quote``."""
+    with contextlib.suppress():
+        return urllib.parse.quote(string, safe, encoding=encoding, errors=errors)
+    return string
+
+
+def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'replace') -> str:
+    """Wrapper function for ``urllib.parse.unquote``."""
+    with contextlib.suppress():
+        return urllib.parse.unquote(string, encoding=encoding, errors=errors)
+    return string
+
+
 def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = True) -> str:
     """Wrapper function for ``urllib.parse.urljoin``."""
     with contextlib.suppress(ValueError):
@@ -29,7 +44,7 @@ def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib
     """Wrapper function for ``urllib.parse.urlparse``."""
     with contextlib.suppress(ValueError):
         return urllib.parse.urlparse(url, scheme, allow_fragments=allow_fragments)
-    return urllib.parse.ParseResult(scheme=scheme, netloc=url, path='', params='', query='', fragment='')
+    return urllib.parse.ParseResult(scheme=scheme, netloc='', path=url, params='', query='', fragment='')
 
 
 @dataclasses.dataclass
@@ -72,6 +87,22 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     if host is None:
         hostname = '(null)'
         proxy_type = 'null'
+    # https://en.wikipedia.org/wiki/Data_URI_scheme
+    elif parse.scheme == 'data':
+        proxy_type = 'data'
+        hostname = 'data'
+    elif parse.scheme == 'javascript':
+        proxy_type = 'script'
+    elif parse.scheme == 'bitcoin':
+        proxy_type = 'bitcoin'
+    elif parse.scheme == 'ed2k':
+        proxy_type = 'ed2k'
+    elif parse.scheme == 'magnet':
+        proxy_type = 'magnet'
+    elif parse.scheme == 'mailto':
+        proxy_type = 'mail'
+    elif parse.scheme == 'irc':
+        proxy_type = 'irc'
     elif re.fullmatch(r'.*?\.onion', host):
         proxy_type = 'tor'
     elif re.fullmatch(r'.*?\.i2p', host):
@@ -94,6 +125,8 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         else:
             proxy_type = 'freenet'
             hostname = PosixPath(parse.path).parts[1]
+    elif parse.scheme not in ['http', 'https']:
+        proxy_type = parse.scheme
     else:
         proxy_type = 'null'
 

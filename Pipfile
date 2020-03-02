@@ -23,8 +23,10 @@ codecov = "*"
 
 [packages]
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}
-requests = {extras = ["socks"],version = "*"}
+file-magic = "*"
+python-datauri = "*"
 requests-futures = "*"
+requests = {extras = ["socks"],version = "*"}
 stem = "*"
 selenium = "*"
 typing-extensions = "*"

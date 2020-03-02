@@ -50,6 +50,7 @@ RUN set -x \
  && retry apt-get install --yes \
         gcc \
         g++ \
+        libmagic1 \
         make \
         software-properties-common \
         tar \

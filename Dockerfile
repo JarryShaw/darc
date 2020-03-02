@@ -25,6 +25,7 @@ RUN set -x \
  && retry apt-get install --yes --no-install-recommends \
         gcc \
         g++ \
+        libmagic1 \
         make \
         software-properties-common \
         tar \

@@ -23,6 +23,7 @@
         "inited",
         "isfinite",
         "jnlp",
+        "mailto",
         "mccabe",
         "mexit",
         "miniconda",

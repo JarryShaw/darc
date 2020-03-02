@@ -14,6 +14,7 @@ import stem.util.term
 import darc.typing as typing
 from darc.const import FLAG_MP, FLAG_TH, PATH_QR, PATH_QS, VERBOSE
 from darc.error import render_error
+from darc.link import quote, unquote
 from darc.parse import match_proxy
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap, has_freenet
 from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
@@ -36,10 +37,10 @@ def save_requests(entries: typing.Iterable[str], single: bool = False):
     with QR_LOCK:
         with open(PATH_QR, 'a') as file:
             if single:
-                print(entries, file=file)
+                print(quote(entries), file=file)
             else:
                 for link in entries:
-                    print(link, file=file)
+                    print(quote(link), file=file)
 
 
 def save_selenium(entries: typing.Iterable[str], single: bool = False):
@@ -47,10 +48,10 @@ def save_selenium(entries: typing.Iterable[str], single: bool = False):
     with QS_LOCK:
         with open(PATH_QS, 'a') as file:
             if single:
-                print(entries, file=file)
+                print(quote(entries), file=file)
             else:
                 for link in entries:
-                    print(link, file=file)
+                    print(quote(link), file=file)
 
 
 def load_requests() -> typing.List[str]:
@@ -62,7 +63,7 @@ def load_requests() -> typing.List[str]:
             for line in filter(None, map(lambda s: s.strip(), file)):
                 if line.startswith('#'):
                     continue
-                link_list.append(line.strip())
+                link_list.append(unquote(line.strip()))
 
         if link_list:
             random.shuffle(link_list)
@@ -97,7 +98,7 @@ def load_selenium() -> typing.List[str]:
             for line in filter(None, map(lambda s: s.strip(), file)):
                 if line.startswith('#'):
                     continue
-                link_list.append(line.strip())
+                link_list.append(unquote(line.strip()))
 
         if link_list:
             random.shuffle(link_list)

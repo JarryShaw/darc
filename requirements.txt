@@ -7,9 +7,11 @@ wheel==0.34.2
 beautifulsoup4[html5lib]==4.8.2
 certifi==2019.11.28
 chardet==3.0.4
+file-magic==0.4.0
 html5lib==1.0.1
 idna==2.9
 pysocks==1.7.1
+python-datauri==0.2.8
 requests-futures==1.0.0
 requests[socks]==2.23.0
 selenium==3.141.0

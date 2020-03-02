@@ -70,8 +70,10 @@ attrs = dict(
     # zip_safe,
     install_requires=[
         'beautifulsoup4[html5lib]',
-        'requests[socks]',
+        'file-magic',
+        'python-datauri',
         'requests-futures',
+        'requests[socks]',
         'selenium',
         'stem',
         'typing_extensions',

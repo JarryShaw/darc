@@ -51,7 +51,8 @@ if DARC_USER == 'root':
 
 # data storage
 PATH_DB = os.path.abspath(os.getenv('PATH_DATA', 'data'))
-os.makedirs(PATH_DB, exist_ok=True)
+PATH_MISC = os.path.join(PATH_DB, 'misc')
+os.makedirs(PATH_MISC, exist_ok=True)
 
 # link file mapping
 PATH_LN = os.path.join(PATH_DB, 'link.csv')

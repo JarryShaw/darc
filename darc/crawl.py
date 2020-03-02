@@ -23,8 +23,14 @@ from darc.error import render_error
 from darc.link import parse_link
 from darc.parse import (check_robots, extract_links, get_content_type, match_host, match_mime,
                         match_proxy)
+from darc.proxy.bitcoin import save_bitcoin
+from darc.proxy.data import save_data
+from darc.proxy.ed2k import save_ed2k
+from darc.proxy.magnet import save_magnet
+from darc.proxy.mail import save_mail
 from darc.proxy.i2p import fetch_hosts
-from darc.proxy.null import fetch_sitemap
+from darc.proxy.irc import save_irc
+from darc.proxy.null import fetch_sitemap, save_invalid
 from darc.requests import request_session
 from darc.save import has_folder, has_html, has_raw, save_file, save_headers, save_html
 from darc.selenium import request_driver
@@ -34,19 +40,53 @@ from darc.submit import submit_new_host, submit_requests, submit_selenium
 
 def crawler(url: str):
     """Single requests crawler for a entry link."""
-    link = parse_link(url)
-
-    if match_host(link.host):
-        print(render_error(f'[REQUESTS] Ignored hostname from {link.url} ({link.proxy})',
-                           stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
-        return
-
-    if match_proxy(link.proxy):
-        print(render_error(f'[REQUESTS] Ignored proxy type from {link.url} ({link.proxy})',
-                           stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
-        return
-
     try:
+        link = parse_link(url)
+
+        if match_proxy(link.proxy):
+            print(render_error(f'[REQUESTS] Ignored proxy type from {link.url} ({link.proxy})',
+                               stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+            return
+
+        # save bitcoin address
+        if link.proxy == 'bitcoin':
+            save_bitcoin(link)
+            return
+
+        # save ed2k link
+        if link.proxy == 'ed2k':
+            save_ed2k(link)
+            return
+
+        # save magnet link
+        if link.proxy == 'magnet':
+            save_magnet(link)
+            return
+
+        # save email address
+        if link.proxy == 'mail':
+            save_mail(link)
+            return
+
+        # save IRC address
+        if link.proxy == 'irc':
+            save_irc(link)
+            return
+
+        # save data URI
+        if link.proxy == 'data':
+            try:
+                save_data(link)
+            except ValueError as error:
+                print(render_error(f'[REQUESTS] Failed to save data URI from {link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            return
+
+        if match_host(link.host):
+            print(render_error(f'[REQUESTS] Ignored hostname from {link.url} ({link.proxy})',
+                               stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+            return
+
         # timestamp
         timestamp = datetime.datetime.now()
 
@@ -119,6 +159,7 @@ def crawler(url: str):
                 except requests.exceptions.InvalidSchema as error:
                     print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                    save_invalid(link)
                     return
                 except requests.RequestException as error:
                     print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
@@ -131,7 +172,7 @@ def crawler(url: str):
             save_headers(timestamp, link, response)
 
             # check content type
-            ct_type = get_content_type(response, 'text/html')
+            ct_type = get_content_type(response)
             if ct_type not in ['text/html', 'application/xhtml+xml']:
                 print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
@@ -142,8 +183,7 @@ def crawler(url: str):
                 except Exception as error:
                     print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    #QUEUE_REQUESTS.put(link.url)
-                    save_requests(link.url, single=True)
+                    return
 
                 if match_mime(ct_type):
                     return
@@ -184,16 +224,17 @@ def crawler(url: str):
 
             print(f'[REQUESTS] Requested {link.url}')
     except Exception:
-        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+        error = f'[Error from {url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-        #QUEUE_REQUESTS.put(link.url)
-        save_requests(link.url, single=True)
+        #QUEUE_REQUESTS.put(url)
+        save_requests(url, single=True)
 
 
 def loader(url: str):
     """Single selenium loader for a entry link."""
-    link = parse_link(url)
     try:
+        link = parse_link(url)
+
         # timestamp
         timestamp = datetime.datetime.now()
 
@@ -255,7 +296,7 @@ def loader(url: str):
 
             print(f'[SELENIUM] Loaded {link.url}')
     except Exception:
-        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+        error = f'[Error from {url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-        #QUEUE_SELENIUM.put(link.url)
-        save_selenium(link.url, single=True)
+        #QUEUE_SELENIUM.put(url)
+        save_selenium(url, single=True)

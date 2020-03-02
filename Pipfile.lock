@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ceab6815da56ef6d1ddf7c296bd061c81f47712081c5c2f6f2a4ff4dab0021cf"
+            "sha256": "f6cf0341211a94b93d2264b5fa4934f68c89b38c2bf5e740d74fd5aeadb00cc4"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -52,6 +52,14 @@
             ],
             "version": "==3.0.4"
         },
+        "file-magic": {
+            "hashes": [
+                "sha256:4dd1492b9a9ca57c272aaa9cc495cd65310115b2aec5503c7d047ad9bfae1035",
+                "sha256:8ea03da58cf4de5a69909c0e27746cf17fc903356a601967ab01577916a73aed"
+            ],
+            "index": "tuna",
+            "version": "==0.4.0"
+        },
         "html5lib": {
             "hashes": [
                 "sha256:20b159aa3badc9d5ee8f5c647e5efd02ed2a66ab8d354930bd9ff139fc1dc0a3",
@@ -73,6 +81,14 @@
                 "sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0"
             ],
             "version": "==1.7.1"
+        },
+        "python-datauri": {
+            "hashes": [
+                "sha256:5d6062ff85bc785a2230c40151d5aded80f1ce8652d5a31e3a64c78aa6e52a20",
+                "sha256:68e8699cf2754a66f185f486c8d4c73e7ee5304aa53253bad0434fdbbde3f0b7"
+            ],
+            "index": "tuna",
+            "version": "==0.2.8"
         },
         "requests": {
             "extras": [
@@ -253,6 +269,14 @@
             ],
             "version": "==4.4.2"
         },
+        "file-magic": {
+            "hashes": [
+                "sha256:4dd1492b9a9ca57c272aaa9cc495cd65310115b2aec5503c7d047ad9bfae1035",
+                "sha256:8ea03da58cf4de5a69909c0e27746cf17fc903356a601967ab01577916a73aed"
+            ],
+            "index": "tuna",
+            "version": "==0.4.0"
+        },
         "html5lib": {
             "hashes": [
                 "sha256:20b159aa3badc9d5ee8f5c647e5efd02ed2a66ab8d354930bd9ff139fc1dc0a3",
@@ -399,6 +423,14 @@
             "editable": true,
             "path": "."
         },
+        "python-datauri": {
+            "hashes": [
+                "sha256:5d6062ff85bc785a2230c40151d5aded80f1ce8652d5a31e3a64c78aa6e52a20",
+                "sha256:68e8699cf2754a66f185f486c8d4c73e7ee5304aa53253bad0434fdbbde3f0b7"
+            ],
+            "index": "tuna",
+            "version": "==0.2.8"
+        },
         "requests": {
             "extras": [
                 "socks"
@@ -409,6 +441,13 @@
             ],
             "index": "tuna",
             "version": "==2.23.0"
+        },
+        "requests-futures": {
+            "hashes": [
+                "sha256:35547502bf1958044716a03a2f47092a89efe8f9789ab0c4c528d9c9c30bc148"
+            ],
+            "index": "tuna",
+            "version": "==1.0.0"
         },
         "selenium": {
             "hashes": [

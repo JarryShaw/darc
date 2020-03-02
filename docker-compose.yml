@@ -81,7 +81,7 @@ services:
       # extract link pattern
       LINK_WHITE_LIST: '[
         ".*?\\.onion",
-        ".*?\\.i2p",
+        ".*?\\.i2p", "127\\.0\\.0\\.1:7657", "localhost:7657", "127\\.0\\.0\\.1:7658", "localhost:7658",
         "127\\.0\\.0\\.1:43110", "localhost:43110",
         "127\\.0\\.0\\.1:8888", "localhost:8888"
       ]'
@@ -94,7 +94,7 @@ services:
       # proxy type white list
       PROXY_WHITE_LIST: '[ "tor", "i2p", "freenet", "zeronet" ]'
       # proxy type black list
-      PROXY_BLACK_LIST: '[ "null" ]'
+      PROXY_BLACK_LIST: '[ "null", "data" ]'
       # API retry times
       API_RETRY: 10
       # API URLs
