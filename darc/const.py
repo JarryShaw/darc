@@ -5,7 +5,6 @@ import datetime
 import getpass
 import json
 import math
-import multiprocessing
 import os
 import pprint
 import shutil
@@ -133,9 +132,9 @@ del _SE_WAIT
 SE_EMPTY = '<html><head></head><body></body></html>'
 
 # link queue
-MANAGER = multiprocessing.Manager()
-QUEUE_REQUESTS = MANAGER.Queue()  # url
-QUEUE_SELENIUM = MANAGER.Queue()  # url
+#MANAGER = multiprocessing.Manager()
+#QUEUE_REQUESTS = MANAGER.Queue()  # url
+#QUEUE_SELENIUM = MANAGER.Queue()  # url
 
 
 def getpid() -> int:

@@ -22,10 +22,10 @@ import selenium.webdriver.common.proxy
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DARC_USER, DEBUG, PATH_DB, QUEUE_REQUESTS, VERBOSE
+from darc.const import DARC_USER, DEBUG, PATH_DB, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
 from darc.link import Link, parse_link
-from darc.parse import get_content_type
+from darc.parse import _check, get_content_type, match_link
 
 __all__ = ['I2P_REQUESTS_PROXY', 'I2P_SELENIUM_PROXY']
 
@@ -186,12 +186,23 @@ def save_hosts(link: Link, text: str) -> str:
     return path
 
 
-def read_hosts(text: typing.Iterable[str]) -> typing.Iterable[str]:
+def read_hosts(text: typing.Iterable[str], check: bool = True) -> typing.Iterable[str]:
     """Read `hosts.txt`."""
-    for line in filter(lambda s: s.strip(), text):
+    temp_list = list()
+    for line in filter(None, map(lambda s: s.strip(), text)):
         if line.startswith('#'):
             continue
-        yield line.split('=')[0]
+
+        link = line.split('=')[0]
+        if match_link(link):
+            continue
+        temp_list.append(link)
+
+    if check:
+        link_list = _check(temp_list)
+    else:
+        link_list = temp_list.copy()
+    yield from set(link_list)
 
 
 def fetch_hosts(link: Link):
@@ -234,5 +245,8 @@ def fetch_hosts(link: Link):
 
         print(f'[HOSTS] Subscribed {hosts_link.url}')
 
+    from darc.db import save_requests  # pylint: disable=import-outside-toplevel
+
     # add link to queue
-    [QUEUE_REQUESTS.put(url) for url in read_hosts(hosts_file)]  # pylint: disable=expression-not-assigned
+    #[QUEUE_REQUESTS.put(url) for url in read_hosts(hosts_file)]  # pylint: disable=expression-not-assigned
+    save_requests(read_hosts(hosts_file))

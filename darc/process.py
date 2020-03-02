@@ -3,10 +3,6 @@
 
 import multiprocessing
 import os
-import pprint
-import queue
-import random
-import shutil
 import signal
 import threading
 
@@ -16,15 +12,10 @@ import stem.process
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import (DARC_CPU, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS, QUEUE_REQUESTS,
-                        QUEUE_SELENIUM, REBOOT, VERBOSE, getpid)
+from darc.const import DARC_CPU, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS, REBOOT, getpid
 from darc.crawl import crawler, loader
-from darc.error import render_error
-from darc.parse import match_proxy
-from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap, has_freenet
-from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
-from darc.proxy.tor import _TOR_BS_FLAG, has_tor, renew_tor_session, tor_bootstrap
-from darc.proxy.zeronet import _ZERONET_BS_FLAG, has_zeronet, zeronet_bootstrap
+from darc.db import load_requests, load_selenium
+from darc.proxy.tor import renew_tor_session
 
 
 def _load_last_word():
@@ -32,32 +23,71 @@ def _load_last_word():
     with open(PATH_ID, 'w') as file:
         print(os.getpid(), file=file)
 
-    if os.path.isfile(PATH_QR):
-        with open(PATH_QR) as file:
-            for line in file:
-                QUEUE_REQUESTS.put(line.strip())
-        os.remove(PATH_QR)
+    # if os.path.isfile(PATH_QR):
+    #     with open(PATH_QR) as file:
+    #         for line in file:
+    #             QUEUE_REQUESTS.put(line.strip())
+    #     os.remove(PATH_QR)
 
-    if os.path.isfile(PATH_QS):
-        with open(PATH_QS) as file:
-            for line in file:
-                QUEUE_SELENIUM.put(line.strip())
-        os.remove(PATH_QS)
+    # if os.path.isfile(PATH_QS):
+    #     with open(PATH_QS) as file:
+    #         for line in file:
+    #             QUEUE_SELENIUM.put(line.strip())
+    #     os.remove(PATH_QS)
+
+    if os.path.isfile(f'{PATH_QR}.tmp'):
+        with open(f'{PATH_QR}.tmp') as file:
+            link_list = file.read()
+        with open(f'{PATH_QR}', 'a') as file:
+            print('# last words', file=file)
+            file.write(link_list)
+        os.remove(f'{PATH_QR}.tmp')
+
+    if os.path.isfile(f'{PATH_QS}.tmp'):
+        with open(f'{PATH_QS}.tmp') as file:
+            link_list = file.read()
+        with open(f'{PATH_QS}', 'a') as file:
+            print('# last words', file=file)
+            file.write(link_list)
+        os.remove(f'{PATH_QS}.tmp')
 
 
-def _dump_last_word():
+def _dump_last_word(errors: bool = False):
     """Dump data in queue."""
-    requests_links = _get_requests_links()
-    if requests_links:
-        with open(PATH_QR, 'w') as file:
-            for link in requests_links:
-                print(link, file=file)
+    # requests_links = _get_requests_links()
+    # if requests_links:
+    #     with open(PATH_QR, 'w') as file:
+    #         for link in requests_links:
+    #             print(link, file=file)
 
-    selenium_links = _get_selenium_links()
-    if selenium_links:
-        with open(PATH_QS, 'w') as file:
-            for link in selenium_links:
-                print(link, file=file)
+    # selenium_links = _get_selenium_links()
+    # if selenium_links:
+    #     with open(PATH_QS, 'w') as file:
+    #         for link in selenium_links:
+    #             print(link, file=file)
+
+    if errors:
+        if os.path.isfile(f'{PATH_QR}.tmp'):
+            with open(f'{PATH_QR}.tmp') as file:
+                link_list = file.read()
+            with open(f'{PATH_QR}', 'a') as file:
+                print('# last words', file=file)
+                file.write(link_list)
+            os.remove(f'{PATH_QR}.tmp')
+
+        if os.path.isfile(f'{PATH_QS}.tmp'):
+            with open(f'{PATH_QS}.tmp') as file:
+                link_list = file.read()
+            with open(f'{PATH_QS}', 'a') as file:
+                print('# last words', file=file)
+                file.write(link_list)
+            os.remove(f'{PATH_QS}.tmp')
+    else:
+        if os.path.isfile(f'{PATH_QR}.tmp'):
+            os.remove(f'{PATH_QR}.tmp')
+
+        if os.path.isfile(f'{PATH_QS}.tmp'):
+            os.remove(f'{PATH_QS}.tmp')
 
     if os.path.isfile(PATH_ID):
         os.remove(PATH_ID)
@@ -65,58 +95,58 @@ def _dump_last_word():
 
 def _get_requests_links() -> typing.List[str]:
     """Fetch links from queue."""
-    link_list = list()
-    while True:
-        try:
-            link = QUEUE_REQUESTS.get_nowait()
-        except queue.Empty:
-            break
-        link_list.append(link)
+    # link_list = list()
+    # while True:
+    #     try:
+    #         link = QUEUE_REQUESTS.get_nowait()
+    #     except queue.Empty:
+    #         break
+    #     link_list.append(link)
 
-    if link_list:
-        random.shuffle(link_list)
-    link_pool = sorted(set(link_list))
+    # if link_list:
+    #     random.shuffle(link_list)
+    # link_pool = sorted(set(link_list))
 
-    if not _TOR_BS_FLAG and has_tor(link_pool) and not match_proxy('tor'):
-        tor_bootstrap()
-    if not _I2P_BS_FLAG and has_i2p(link_pool) and not match_proxy('i2p'):
-        i2p_bootstrap()
-    if not _ZERONET_BS_FLAG and has_zeronet(link_pool) and not match_proxy('zeronet'):
-        zeronet_bootstrap()
-    if not _FREENET_BS_FLAG and has_freenet(link_pool) and not match_proxy('freenet'):
-        freenet_bootstrap()
+    # if not _TOR_BS_FLAG and has_tor(link_pool) and not match_proxy('tor'):
+    #     tor_bootstrap()
+    # if not _I2P_BS_FLAG and has_i2p(link_pool) and not match_proxy('i2p'):
+    #     i2p_bootstrap()
+    # if not _ZERONET_BS_FLAG and has_zeronet(link_pool) and not match_proxy('zeronet'):
+    #     zeronet_bootstrap()
+    # if not _FREENET_BS_FLAG and has_freenet(link_pool) and not match_proxy('freenet'):
+    #     freenet_bootstrap()
 
-    if VERBOSE:
-        print(stem.util.term.format('-*- [REQUESTS] LINK POOL -*-',
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(sorted(link_pool)), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    # if VERBOSE:
+    #     print(stem.util.term.format('-*- [REQUESTS] LINK POOL -*-',
+    #                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    #     print(render_error(pprint.pformat(sorted(link_pool)), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    #     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+    #                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
-    return link_pool
+    # return link_pool
 
 
 def _get_selenium_links() -> typing.List[str]:
     """Fetch links from queue."""
-    link_list = list()
-    while True:
-        try:
-            link = QUEUE_SELENIUM.get_nowait()
-        except queue.Empty:
-            break
-        link_list.append(link)
+    # link_list = list()
+    # while True:
+    #     try:
+    #         link = QUEUE_SELENIUM.get_nowait()
+    #     except queue.Empty:
+    #         break
+    #     link_list.append(link)
 
-    if link_list:
-        random.shuffle(link_list)
+    # if link_list:
+    #     random.shuffle(link_list)
 
-    link_pool = sorted(set(link_list))
-    if VERBOSE:
-        print(stem.util.term.format('-*- [SELENIUM] LINK POOL -*-',
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(sorted(link_pool)), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    return link_pool
+    # link_pool = sorted(set(link_list))
+    # if VERBOSE:
+    #     print(stem.util.term.format('-*- [SELENIUM] LINK POOL -*-',
+    #                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    #     print(render_error(pprint.pformat(sorted(link_pool)), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    #     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
+    #                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    # return link_pool
 
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
@@ -153,14 +183,16 @@ def process():
         with multiprocessing.Pool(processes=DARC_CPU) as pool:
             while True:
                 # requests crawler
-                link_pool = _get_requests_links()
+                #link_pool = _get_requests_links()
+                link_pool = load_requests()
                 if link_pool:
                     pool.map(crawler, link_pool)
                 else:
                     break
 
                 # selenium loader
-                link_pool = _get_selenium_links()
+                #link_pool = _get_selenium_links()
+                link_pool = load_selenium()
                 if link_pool:
                     if FLAG_MP:
                         pool.map(loader, link_pool)
@@ -183,7 +215,7 @@ def process():
 
                 # quit in reboot mode
                 if REBOOT:
-                    _dump_last_word()
+                    _dump_last_word(errors=True)
                     break
 
                 # renew Tor session

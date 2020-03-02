@@ -129,7 +129,8 @@ RUN set -x \
  && apt-get autoclean \
  && apt-get clean
 
-ENTRYPOINT [ "bash", "run.sh" ]
+ENTRYPOINT [ "python3", "-m", "darc" ]
+#ENTRYPOINT [ "bash", "/app/run.sh" ]
 CMD [ "--help" ]
 
 WORKDIR /app
@@ -137,7 +138,7 @@ COPY darc/ /app/darc/
 COPY LICENSE \
      MANIFEST.in \
      README.md \
-     run.sh \
+     extra/run.sh \
      setup.cfg \
      setup.py \
      test_darc.py /app/

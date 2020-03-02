@@ -105,12 +105,51 @@ def get_sitemap(link: str, text: str, host: typing.Optional[str] = None) -> typi
     return [parse_link(sitemap, host=host) for sitemap in sitemaps]
 
 
-def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
-    """Read sitemap."""
+def _check(temp_list: typing.List[str]) -> typing.List[str]:
+    """Check content and proxy type of links."""
+    from darc.crawl import request_session  # pylint: disable=import-outside-toplevel
+
+    session_map = dict()
+    result_list = list()
+    for item in temp_list:
+        link_obj = parse_link(item)
+        if match_proxy(link_obj.proxy):
+            continue
+
+        # get session
+        session = session_map.get(link_obj.proxy)
+        if session is None:
+            session = request_session(link_obj, futures=True)
+            session_map[link_obj.proxy] = session
+
+        result = session.head(item)
+        result_list.append(result)
+
+        if DEBUG:
+            print(f'[HEAD] Checking content type from {item}')
+
     link_list = list()
+    for result in concurrent.futures.as_completed(result_list):
+        try:
+            response: typing.Response = result.result()
+        except requests.RequestException:
+            continue
+
+        ct_type = get_content_type(response, 'text/html')
+        if DEBUG:
+            print(f'[HEAD] Checked content type from {response.url} ({ct_type})')
+        if match_mime(ct_type):
+            continue
+        link_list.append(response.url)
+    return link_list
+
+
+def read_sitemap(link: str, text: str, check: bool = True) -> typing.Iterator[str]:
+    """Read sitemap."""
     soup = bs4.BeautifulSoup(text, 'html5lib')
 
     # https://www.sitemaps.org/protocol.html
+    temp_list = list()
     for loc in soup.select('urlset > url > loc'):
         link = urllib.parse.urljoin(link, loc.text)
         if match_link(link):
@@ -119,7 +158,13 @@ def read_sitemap(link: str, text: str) -> typing.Iterator[str]:
         link_obj = parse_link(link)
         if match_proxy(link_obj.proxy):
             continue
-        link_list.append(link)
+        temp_list.append(link)
+
+    # check content / proxy type
+    if check:
+        link_list = _check(temp_list)
+    else:
+        link_list = temp_list.copy()
     yield from set(link_list)
 
 
@@ -128,7 +173,7 @@ def get_content_type(response: typing.Response, default='text/html') -> str:
     return response.headers.get('Content-Type', default).casefold().split(';', maxsplit=1)[0].strip()
 
 
-def extract_links(link: str, html: typing.Union[str, bytes], check: bool = False) -> typing.Iterator[str]:
+def extract_links(link: str, html: typing.Union[str, bytes], check: bool = True) -> typing.Iterator[str]:
     """Extract links from HTML context."""
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
@@ -141,42 +186,9 @@ def extract_links(link: str, html: typing.Union[str, bytes], check: bool = False
             continue
         temp_list.append(temp_link)
 
-    # check content type
+    # check content / proxy type
     if check:
-        from darc.crawl import request_session  # pylint: disable=import-outside-toplevel
-
-        session_map = dict()
-        result_list = list()
-        for item in temp_list:
-            link_obj = parse_link(item)
-            if match_proxy(link_obj.proxy):
-                continue
-
-            # get session
-            session = session_map.get(link_obj.proxy)
-            if session is None:
-                session = request_session(link_obj, futures=True)
-                session_map[link_obj.proxy] = session
-
-            result = session.head(item)
-            result_list.append(result)
-
-            if DEBUG:
-                print(f'[HEAD] Checking content type from {item}')
-
-        link_list = list()
-        for result in concurrent.futures.as_completed(result_list):
-            try:
-                response: typing.Response = result.result()
-            except requests.RequestException:
-                continue
-
-            ct_type = get_content_type(response, 'text/html')
-            if DEBUG:
-                print(f'[HEAD] Checked content type from {response.url} ({ct_type})')
-            if match_mime(ct_type):
-                continue
-            link_list.append(response.url)
+        link_list = _check(temp_list)
     else:
         link_list = temp_list.copy()
     yield from set(link_list)

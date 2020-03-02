@@ -5,16 +5,18 @@ import dataclasses
 import datetime
 import glob
 import json
+import multiprocessing
 import os
 import pathlib
 import posixpath
 
 import darc.typing as typing
-from darc.const import MANAGER, PATH_DB, PATH_LN, TIME_CACHE
+from darc.const import PATH_DB, PATH_LN, TIME_CACHE
 from darc.link import Link
 
 # lock for file I/O
-_SAVE_LOCK = MANAGER.Lock()  # pylint: disable=no-member
+#_SAVE_LOCK = MANAGER.Lock()  # pylint: disable=no-member
+_SAVE_LOCK = multiprocessing.Lock()
 
 
 def has_folder(link: Link) -> typing.Optional[str]:  # pylint: disable=inconsistent-return-statements

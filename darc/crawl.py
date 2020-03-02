@@ -21,7 +21,8 @@ import stem.util.term
 import urllib3
 
 import darc.typing as typing
-from darc.const import FORCE, QUEUE_REQUESTS, QUEUE_SELENIUM, SE_EMPTY
+from darc.const import FORCE, SE_EMPTY
+from darc.db import save_requests, save_selenium
 from darc.error import UnsupportedLink, render_error
 from darc.link import Link, parse_link
 from darc.parse import (check_robots, extract_links, get_content_type, get_sitemap, match_mime,
@@ -134,7 +135,8 @@ def fetch_sitemap(link: Link):
         sitemaps.extend(get_sitemap(sitemap_link.url, sitemap_text, host=link.host))
 
         # add link to queue
-        [QUEUE_REQUESTS.put(url) for url in read_sitemap(link.url, sitemap_text)]  # pylint: disable=expression-not-assigned
+        #[QUEUE_REQUESTS.put(url) for url in read_sitemap(link.url, sitemap_text)]  # pylint: disable=expression-not-assigned
+        save_requests(read_sitemap(link.url, sitemap_text))
 
 
 def crawler(url: str):
@@ -173,7 +175,11 @@ def crawler(url: str):
                 html = file.read()
 
             # add link to queue
-            [QUEUE_SELENIUM.put(href) for href in extract_links(link.url, html, check=True)]  # pylint: disable=expression-not-assigned
+            #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            save_requests(extract_links(link.url, html))
+
+            #QUEUE_SELENIUM.put(link.url)
+            save_selenium(link.url, single=True)
 
         else:
 
@@ -218,7 +224,8 @@ def crawler(url: str):
                 except requests.RequestException as error:
                     print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE_REQUESTS.put(link.url)
+                    #QUEUE_REQUESTS.put(link.url)
+                    save_requests(link.url, single=True)
                     return
 
             # save headers
@@ -239,14 +246,16 @@ def crawler(url: str):
                 except Exception as error:
                     print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE_REQUESTS.put(link.url)
+                    #QUEUE_REQUESTS.put(link.url)
+                    save_requests(link.url, single=True)
                 return
 
             html = response.content
             if not html:
                 print(render_error(f'[REQUESTS] Empty response from {link.url}',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                QUEUE_REQUESTS.put(link.url)
+                #QUEUE_REQUESTS.put(link.url)
+                save_requests(link.url, single=True)
                 return
 
             # save HTML
@@ -256,22 +265,26 @@ def crawler(url: str):
             submit_requests(timestamp, link, response)
 
             # add link to queue
-            [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            save_requests(extract_links(link.url, html))
 
             if not response.ok:
                 print(render_error(f'[REQUESTS] Failed on {link.url} [{response.status_code}]',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                QUEUE_REQUESTS.put(link.url)
+                #QUEUE_REQUESTS.put(link.url)
+                save_requests(link.url, single=True)
                 return
 
             # add link to queue
-            QUEUE_SELENIUM.put(link.url)
+            #QUEUE_SELENIUM.put(link.url)
+            save_selenium(link.url, single=True)
 
             print(f'[REQUESTS] Requested {link.url}')
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-        QUEUE_REQUESTS.put(link.url)
+        #QUEUE_REQUESTS.put(link.url)
+        save_requests(link.url, single=True)
 
 
 def loader(url: str):
@@ -289,7 +302,8 @@ def loader(url: str):
                 html = file.read()
 
             # add link to queue
-            [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            save_requests(extract_links(link.url, html))
 
         else:
 
@@ -303,12 +317,16 @@ def loader(url: str):
                 except urllib3.exceptions.HTTPError as error:
                     print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE_SELENIUM.put(link.url)
+                    #QUEUE_SELENIUM.put(link.url)
+                    save_selenium(link.url, single=True)
+
                     return
                 except selenium.common.exceptions.WebDriverException as error:
                     print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE_SELENIUM.put(link.url)
+                    #QUEUE_SELENIUM.put(link.url)
+                    save_selenium(link.url, single=True)
+
                     return
 
                 # get HTML source
@@ -317,7 +335,9 @@ def loader(url: str):
                 if html == SE_EMPTY:
                     print(render_error(f'[SELENIUM] Empty page from {link.url}',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    QUEUE_SELENIUM.put(link.url)
+                    #QUEUE_SELENIUM.put(link.url)
+                    save_selenium(link.url, single=True)
+
                     return
 
             # save HTML
@@ -327,10 +347,12 @@ def loader(url: str):
             submit_selenium(timestamp, link)
 
             # add link to queue
-            [QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
+            save_requests(extract_links(link.url, html))
 
             print(f'[SELENIUM] Loaded {link.url}')
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-        QUEUE_SELENIUM.put(link.url)
+        #QUEUE_SELENIUM.put(link.url)
+        save_selenium(link.url, single=True)

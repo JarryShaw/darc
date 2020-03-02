@@ -138,8 +138,8 @@ RUN set -x \
  && python3 -m pip install ipython
 #CMD ["python3", "-m", "darc"]
 
-#ENTRYPOINT [ "python3", "darc.py" ]
-ENTRYPOINT [ "bash", "run.sh" ]
+ENTRYPOINT [ "python3", "-m", "darc" ]
+#ENTRYPOINT [ "bash", "/app/extra/run.sh" ]
 CMD [ "--help" ]
 
 # Using pipenv:

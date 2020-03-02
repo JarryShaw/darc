@@ -34,7 +34,7 @@ services:
       # force mode (ignore robots.txt)
       DARC_FORCE: 0
       # processes
-      DARC_CPU: 10
+      DARC_CPU: 64
       # multiprocessing
       DARC_MULTIPROCESSING: 1
       # multithreading
