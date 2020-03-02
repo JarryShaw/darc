@@ -13,7 +13,6 @@ import shutil
 import subprocess
 import sys
 import traceback
-import urllib.parse
 import warnings
 
 import requests
@@ -24,8 +23,8 @@ import stem.util.term
 import darc.typing as typing
 from darc.const import CHECK, DARC_USER, DEBUG, PATH_DB, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
-from darc.link import Link, parse_link
-from darc.parse import _check, get_content_type, match_link
+from darc.link import Link, parse_link, urljoin, urlparse
+from darc.parse import _check, get_content_type
 
 __all__ = ['I2P_REQUESTS_PROXY', 'I2P_SELENIUM_PROXY']
 
@@ -69,7 +68,7 @@ else:
     _I2P_ARGS = ['i2prouter', 'start']
 _I2P_ARGS.extend(I2P_ARGS)
 
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- I2P PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     if _unsupported:
@@ -130,7 +129,7 @@ def i2p_bootstrap():
                 message = f'[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 123, 'i2p_bootstrap()')
+            warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 125, 'i2p_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -154,14 +153,13 @@ def has_i2p(link_pool: typing.Set[str]) -> bool:
     """Check if contain I2P links."""
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = urllib.parse.urlparse(link)
-        host = parse.netloc or parse.hostname
+        parse = urlparse(link)
 
-        if re.fullmatch(r'.*?\.i2p', host):
+        if re.fullmatch(r'.*?\.i2p', parse.netloc):
             return True
         # c.f. https://geti2p.net/en/docs/api/i2ptunnel
-        if host in ['127.0.0.1:7657', '127.0.0.1:7658',
-                    'localhost:7657', 'localhost:7658']:
+        if parse.netloc in ['127.0.0.1:7657', '127.0.0.1:7658',
+                            'localhost:7657', 'localhost:7658']:
             return True
     return False
 
@@ -193,9 +191,7 @@ def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterab
         if line.startswith('#'):
             continue
 
-        link = line.split('=')[0]
-        if match_link(link):
-            continue
+        link = line.split('=', maxsplit=1)[0]
         temp_list.append(link)
 
     if check:
@@ -218,7 +214,7 @@ def fetch_hosts(link: Link):
 
         from darc.requests import i2p_session  # pylint: disable=import-outside-toplevel
 
-        hosts_link = parse_link(urllib.parse.urljoin(link.url, '/hosts.txt'))
+        hosts_link = parse_link(urljoin(link.url, '/hosts.txt'))
         print(f'[HOSTS] Subscribing {hosts_link.url}')
 
         with i2p_session() as session:

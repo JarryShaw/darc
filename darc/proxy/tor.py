@@ -9,7 +9,6 @@ import re
 import shutil
 import sys
 import traceback
-import urllib
 import warnings
 
 import selenium.webdriver
@@ -19,8 +18,9 @@ import stem.process
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DEBUG, VERBOSE
+from darc.const import DEBUG
 from darc.error import TorBootstrapFailed, render_error
+from darc.link import urlparse
 
 __all__ = ['TOR_REQUESTS_PROXY', 'TOR_SELENIUM_PROXY']
 
@@ -67,7 +67,7 @@ _TOR_CONFIG = {
 }
 _TOR_CONFIG.update(TOR_CFG)
 
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- TOR PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(render_error(pprint.pformat(_TOR_CONFIG), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -132,7 +132,7 @@ def tor_bootstrap():
                 message = f'[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 127, 'tor_bootstrap()')
+            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 128, 'tor_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -142,9 +142,7 @@ def has_tor(link_pool: typing.Set[str]) -> bool:
     """Check if contain Tor links."""
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = urllib.parse.urlparse(link)
-        host = parse.netloc or parse.hostname
-
-        if re.fullmatch(r'.*?\.onion', host):
+        parse = urlparse(link)
+        if re.fullmatch(r'.*?\.onion', parse.netloc):
             return True
     return False

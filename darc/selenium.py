@@ -9,9 +9,20 @@ import selenium
 
 import darc.typing as typing
 from darc.const import DEBUG
-from darc.error import UnsupportedPlatform, UnsupportedProxy
+from darc.error import UnsupportedLink, UnsupportedPlatform, UnsupportedProxy
+from darc.link import Link
 from darc.proxy.i2p import I2P_PORT, I2P_SELENIUM_PROXY
 from darc.proxy.tor import TOR_PORT, TOR_SELENIUM_PROXY
+
+
+def request_driver(link: Link) -> typing.Driver:
+    """Get selenium driver."""
+    from darc.proxy import LINK_MAP  # pylint: disable=import-outside-toplevel
+
+    _, driver = LINK_MAP[link.proxy]
+    if driver is None:
+        raise UnsupportedLink(link.url)
+    return driver()
 
 
 def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefined-builtin

@@ -39,6 +39,7 @@ def _load_last_word():
         with open(f'{PATH_QR}.tmp') as file:
             link_list = file.read()
         with open(f'{PATH_QR}', 'a') as file:
+            print(file=file)
             print('# last words', file=file)
             file.write(link_list)
         os.remove(f'{PATH_QR}.tmp')
@@ -47,12 +48,13 @@ def _load_last_word():
         with open(f'{PATH_QS}.tmp') as file:
             link_list = file.read()
         with open(f'{PATH_QS}', 'a') as file:
+            print(file=file)
             print('# last words', file=file)
             file.write(link_list)
         os.remove(f'{PATH_QS}.tmp')
 
 
-def _dump_last_word(errors: bool = False):
+def _dump_last_word(errors: bool = True):
     """Dump data in queue."""
     # requests_links = _get_requests_links()
     # if requests_links:
@@ -125,6 +127,8 @@ def _get_requests_links() -> typing.List[str]:
 
     # return link_pool
 
+    return load_requests()
+
 
 def _get_selenium_links() -> typing.List[str]:
     """Fetch links from queue."""
@@ -148,6 +152,8 @@ def _get_selenium_links() -> typing.List[str]:
     #                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     # return link_pool
 
+    return load_selenium()
+
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
                     frame: typing.Optional[typing.FrameType] = None):  # pylint: disable=unused-argument
@@ -159,7 +165,7 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
     # keep records
-    _dump_last_word()
+    _dump_last_word(errors=True)
 
     try:
         strsignal = signal.strsignal(signum)
@@ -175,6 +181,7 @@ def process():
     signal.signal(signal.SIGTERM, _signal_handler)
     #signal.signal(signal.SIGKILL, _signal_handler)
 
+    print('Starting application...')
     try:
         # load remaining links
         _load_last_word()
@@ -183,16 +190,14 @@ def process():
         with multiprocessing.Pool(processes=DARC_CPU) as pool:
             while True:
                 # requests crawler
-                #link_pool = _get_requests_links()
-                link_pool = load_requests()
+                link_pool = _get_requests_links()
                 if link_pool:
                     pool.map(crawler, link_pool)
                 else:
                     break
 
                 # selenium loader
-                #link_pool = _get_selenium_links()
-                link_pool = load_selenium()
+                link_pool = _get_selenium_links()
                 if link_pool:
                     if FLAG_MP:
                         pool.map(loader, link_pool)
@@ -215,14 +220,14 @@ def process():
 
                 # quit in reboot mode
                 if REBOOT:
-                    _dump_last_word(errors=True)
+                    _dump_last_word(errors=False)
                     break
 
                 # renew Tor session
                 renew_tor_session()
-                print(stem.util.term.format('Starting next round...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+                print('Starting next round...')
     except BaseException:
-        print(stem.util.term.format('Keeping last words...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print('Keeping last words...')
         _dump_last_word()
         raise
-    print(stem.util.term.format('Gracefully existing...', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print('Gracefully existing...')

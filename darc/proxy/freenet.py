@@ -10,7 +10,6 @@ import shutil
 import subprocess
 import sys
 import traceback
-import urllib.parse
 import warnings
 
 import stem.util.term
@@ -18,6 +17,7 @@ import stem.util.term
 import darc.typing as typing
 from darc.const import DARC_USER, DEBUG, VERBOSE
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform, render_error
+from darc.link import urlparse
 
 # ZeroNet args
 FREENET_ARGS = shlex.split(os.getenv('FREENET_ARGS', ''))
@@ -51,7 +51,7 @@ else:
     _FREENET_ARGS = [os.path.join(FREENET_PATH, 'run.sh'), 'start']
 _FREENET_ARGS.extend(FREENET_ARGS)
 
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- FREENET PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     if _unsupported:
@@ -122,7 +122,7 @@ def has_freenet(link_pool: typing.Set[str]) -> bool:
     """Check if contain Freenet links."""
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = urllib.parse.urlparse(link)
+        parse = urlparse(link)
 
         if parse.netloc in (f'127.0.0.1:{FREENET_PORT}', f'localhost:{FREENET_PORT}'):
             return True

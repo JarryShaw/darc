@@ -7,8 +7,20 @@ import requests_futures.sessions
 
 import darc.typing as typing
 from darc.const import DARC_CPU
-from darc.proxy.tor import TOR_REQUESTS_PROXY
+from darc.error import UnsupportedLink
+from darc.link import Link
 from darc.proxy.i2p import I2P_REQUESTS_PROXY
+from darc.proxy.tor import TOR_REQUESTS_PROXY
+
+
+def request_session(link: Link, futures: bool = False) -> typing.Union[typing.Session, typing.FutureSession]:
+    """Get requests session."""
+    from darc.proxy import LINK_MAP  # pylint: disable=import-outside-toplevel
+
+    session, _ = LINK_MAP[link.proxy]
+    if session is None:
+        raise UnsupportedLink(link.url)
+    return session(futures=futures)
 
 
 def i2p_session(futures: bool = False) -> typing.Union[typing.Session, typing.FutureSession]:

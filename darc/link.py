@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """URL utilities."""
 
+import contextlib
 import dataclasses
 import hashlib
 import os
@@ -15,6 +16,20 @@ try:
     PosixPath(os.curdir)
 except NotImplementedError:
     from pathlib import PurePosixPath as PosixPath
+
+
+def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = True) -> str:
+    """Wrapper function for ``urllib.parse.urljoin``."""
+    with contextlib.suppress(ValueError):
+        return urllib.parse.urljoin(base, url, allow_fragments=allow_fragments)
+    return f'{base}/{url}'
+
+
+def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib.parse.ParseResult:
+    """Wrapper function for ``urllib.parse.urlparse``."""
+    with contextlib.suppress(ValueError):
+        return urllib.parse.urlparse(url, scheme, allow_fragments=allow_fragments)
+    return urllib.parse.ParseResult(scheme=scheme, netloc=url, path='', params='', query='', fragment='')
 
 
 @dataclasses.dataclass
@@ -49,12 +64,15 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     from darc.proxy.zeronet import ZERONET_PORT  # pylint: disable=import-outside-toplevel
 
     # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-    parse = urllib.parse.urlparse(link)
+    parse = urlparse(link)
     if host is None:
         host = parse.netloc or parse.hostname
 
     hostname = host
-    if re.fullmatch(r'.*?\.onion', host):
+    if host is None:
+        hostname = '(null)'
+        proxy_type = 'null'
+    elif re.fullmatch(r'.*?\.onion', host):
         proxy_type = 'tor'
     elif re.fullmatch(r'.*?\.i2p', host):
         proxy_type = 'i2p'
@@ -63,13 +81,15 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
                   'localhost:7657', 'localhost:7658']:
         proxy_type = 'i2p'
     elif host in (f'127.0.0.1:{ZERONET_PORT}', f'localhost:{ZERONET_PORT}'):
-        if parse.path == '/':
+        # not for root path
+        if parse.path in ['', '/']:
             proxy_type = 'null'
         else:
             proxy_type = 'zeronet'
             hostname = PosixPath(parse.path).parts[1]
     elif host in (f'127.0.0.1:{FREENET_PORT}', f'localhost:{FREENET_PORT}'):
-        if parse.path == '/':
+        # not for root path
+        if parse.path in ['', '/']:
             proxy_type = 'null'
         else:
             proxy_type = 'freenet'

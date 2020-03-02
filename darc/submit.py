@@ -15,10 +15,11 @@ import requests
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DEBUG, PATH_DB, VERBOSE
+from darc.const import DEBUG, PATH_DB
 from darc.error import APIRequestFailed, render_error
 from darc.link import Link
 from darc.proxy.i2p import get_hosts
+from darc.requests import null_session
 
 # type alias
 File = typing.Dict[str, typing.Union[str, typing.ByteString]]
@@ -35,7 +36,7 @@ API_NEW_HOST = os.getenv('API_NEW_HOST')
 API_REQUESTS = os.getenv('API_REQUESTS')
 API_SELENIUM = os.getenv('API_SELENIUM')
 
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- SUBMIT API -*-', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format(f'NEW HOST: {API_NEW_HOST}', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format(f'REQUESTS: {API_REQUESTS}', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -109,6 +110,12 @@ def get_html(link: Link, time: str) -> typing.Optional[File]:  # pylint: disable
     return data
 
 
+def submit_session() -> typing.Session:
+    """Get submit session."""
+    session = null_session()
+    return session
+
+
 def submit_new_host(time: typing.Datetime, link: Link):
     """Submit new host."""
     metadata = get_metadata(link)
@@ -139,14 +146,15 @@ def submit_new_host(time: typing.Datetime, link: Link):
     if API_NEW_HOST is None:
         return
 
-    for _ in range(API_RETRY+1):
-        try:
-            response = requests.post(API_NEW_HOST, json=data)
-            if response.ok:
-                break
-        except requests.RequestException as error:
-            warning = warnings.formatwarning(error, APIRequestFailed, __file__, 137, 'response = requests.post(API_NEW_HOST, json=data)')  # pylint: disable=line-too-long
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    with submit_session() as session:
+        for _ in range(API_RETRY+1):
+            try:
+                response = session.post(API_NEW_HOST, json=data)
+                if response.ok:
+                    break
+            except requests.RequestException as error:
+                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 152, 'response = requests.post(API_NEW_HOST, json=data)')  # pylint: disable=line-too-long
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
 def submit_requests(time: typing.Datetime, link: Link, response: typing.Response):
@@ -183,14 +191,15 @@ def submit_requests(time: typing.Datetime, link: Link, response: typing.Response
     if API_REQUESTS is None:
         return
 
-    for _ in range(API_RETRY+1):
-        try:
-            response = requests.post(API_REQUESTS, json=data)
-            if response.ok:
-                break
-        except requests.RequestException as error:
-            warning = warnings.formatwarning(error, APIRequestFailed, __file__, 181, 'response = requests.post(API_REQUESTS, json=data)')  # pylint: disable=line-too-long
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    with submit_session() as session:
+        for _ in range(API_RETRY+1):
+            try:
+                response = session.post(API_REQUESTS, json=data)
+                if response.ok:
+                    break
+            except requests.RequestException as error:
+                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 197, 'response = requests.post(API_REQUESTS, json=data)')  # pylint: disable=line-too-long
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
 def submit_selenium(time: typing.Datetime, link: Link):
@@ -221,11 +230,12 @@ def submit_selenium(time: typing.Datetime, link: Link):
     if API_SELENIUM is None:
         return
 
-    for _ in range(API_RETRY+1):
-        try:
-            response = requests.post(API_SELENIUM, json=data)
-            if response.ok:
-                break
-        except requests.RequestException as error:
-            warning = warnings.formatwarning(error, APIRequestFailed, __file__, 219, 'response = requests.post(API_SELENIUM, json=data)')  # pylint: disable=line-too-long
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    with submit_session() as session:
+        for _ in range(API_RETRY+1):
+            try:
+                response = session.post(API_SELENIUM, json=data)
+                if response.ok:
+                    break
+            except requests.RequestException as error:
+                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 236, 'response = requests.post(API_SELENIUM, json=data)')  # pylint: disable=line-too-long
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member

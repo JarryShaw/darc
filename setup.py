@@ -71,6 +71,7 @@ attrs = dict(
     install_requires=[
         'beautifulsoup4[html5lib]',
         'requests[socks]',
+        'requests-futures',
         'selenium',
         'stem',
         'typing_extensions',

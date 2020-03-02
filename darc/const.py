@@ -63,7 +63,7 @@ PATH_ID = os.path.join(PATH_DB, 'darc.pid')
 
 # extract link pattern
 LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- LINK WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(render_error(pprint.pformat(LINK_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -72,7 +72,7 @@ if VERBOSE:
 
 # link black list
 LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- LINK BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(render_error(pprint.pformat(LINK_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -81,7 +81,7 @@ if VERBOSE:
 
 # content type white list
 MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- MIME WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(render_error(pprint.pformat(MIME_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -90,7 +90,7 @@ if VERBOSE:
 
 # content type black list
 MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- MIME BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(render_error(pprint.pformat(MIME_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -99,7 +99,7 @@ if VERBOSE:
 
 # proxy type black list
 PROXY_BLACK_LIST = json.loads(os.getenv('PROXY_BLACK_LIST', '[]').casefold())
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- PROXY BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(render_error(pprint.pformat(PROXY_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -108,7 +108,7 @@ if VERBOSE:
 
 # proxy type white list
 PROXY_WHITE_LIST = json.loads(os.getenv('PROXY_WHITE_LIST', '[]').casefold())
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- PROXY WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(render_error(pprint.pformat(PROXY_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member

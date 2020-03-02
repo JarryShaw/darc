@@ -8,7 +8,6 @@ import shutil
 import subprocess
 import sys
 import traceback
-import urllib.parse
 import warnings
 
 import stem.util.term
@@ -16,6 +15,7 @@ import stem.util.term
 import darc.typing as typing
 from darc.const import DEBUG, VERBOSE
 from darc.error import ZeroNetBootstrapFailed, render_error
+from darc.link import urlparse
 from darc.proxy.tor import tor_bootstrap
 
 # ZeroNet args
@@ -41,7 +41,7 @@ _ZERONET_PROC = None
 _ZERONET_ARGS = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'main']
 _ZERONET_ARGS.extend(ZERONET_ARGS)
 
-if VERBOSE:
+if DEBUG:
     print(stem.util.term.format('-*- ZERONET PROXY -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(render_error(pprint.pformat(_ZERONET_ARGS), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -108,7 +108,7 @@ def has_zeronet(link_pool: typing.Set[str]) -> bool:
     """Check if contain ZeroNet links."""
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = urllib.parse.urlparse(link)
+        parse = urlparse(link)
 
         if parse.netloc in (f'127.0.0.1:{ZERONET_PORT}', f'localhost:{ZERONET_PORT}'):
             return True
