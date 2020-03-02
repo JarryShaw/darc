@@ -26,6 +26,9 @@ VERBOSE = bool(int(os.getenv('DARC_VERBOSE', '0'))) or DEBUG
 # force mode?
 FORCE = bool(int(os.getenv('DARC_FORCE', '0')))
 
+# check mode?
+CHECK = bool(int(os.getenv('DARC_CHECK', '0')))
+
 # root path
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CWD = os.path.realpath(os.curdir)

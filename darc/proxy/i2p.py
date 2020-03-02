@@ -22,7 +22,7 @@ import selenium.webdriver.common.proxy
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DARC_USER, DEBUG, PATH_DB, VERBOSE
+from darc.const import CHECK, DARC_USER, DEBUG, PATH_DB, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
 from darc.link import Link, parse_link
 from darc.parse import _check, get_content_type, match_link
@@ -186,7 +186,7 @@ def save_hosts(link: Link, text: str) -> str:
     return path
 
 
-def read_hosts(text: typing.Iterable[str], check: bool = True) -> typing.Iterable[str]:
+def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterable[str]:
     """Read `hosts.txt`."""
     temp_list = list()
     for line in filter(None, map(lambda s: s.strip(), text)):

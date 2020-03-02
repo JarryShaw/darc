@@ -13,8 +13,8 @@ import requests
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import (DEBUG, LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST, MIME_WHITE_LIST,
-                        PROXY_BLACK_LIST, PROXY_WHITE_LIST)
+from darc.const import (CHECK, DEBUG, LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST,
+                        MIME_WHITE_LIST, PROXY_BLACK_LIST, PROXY_WHITE_LIST)
 from darc.error import render_error
 from darc.link import Link, parse_link
 
@@ -153,7 +153,7 @@ def _check(temp_list: typing.List[str]) -> typing.List[str]:
     return link_list
 
 
-def read_sitemap(link: str, text: str, check: bool = True) -> typing.Iterator[str]:
+def read_sitemap(link: str, text: str, check: bool = CHECK) -> typing.Iterator[str]:
     """Read sitemap."""
     soup = bs4.BeautifulSoup(text, 'html5lib')
 
@@ -182,7 +182,7 @@ def get_content_type(response: typing.Response, default='text/html') -> str:
     return response.headers.get('Content-Type', default).casefold().split(';', maxsplit=1)[0].strip()
 
 
-def extract_links(link: str, html: typing.Union[str, bytes], check: bool = True) -> typing.Iterator[str]:
+def extract_links(link: str, html: typing.Union[str, bytes], check: bool = CHECK) -> typing.Iterator[str]:
     """Extract links from HTML context."""
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
