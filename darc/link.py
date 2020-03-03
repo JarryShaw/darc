@@ -84,11 +84,9 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         host = parse.netloc or parse.hostname
 
     hostname = host
-    if host is None:
-        hostname = '(null)'
-        proxy_type = 'null'
-    # https://en.wikipedia.org/wiki/Data_URI_scheme
-    elif parse.scheme == 'data':
+    # proxy type by scheme
+    if parse.scheme == 'data':
+        # https://en.wikipedia.org/wiki/Data_URI_scheme
         proxy_type = 'data'
         hostname = 'data'
     elif parse.scheme == 'javascript':
@@ -103,13 +101,19 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         proxy_type = 'mail'
     elif parse.scheme == 'irc':
         proxy_type = 'irc'
+    elif parse.scheme not in ['http', 'https']:
+        proxy_type = parse.scheme
+    # proxy type by hostname
+    elif host is None:
+        hostname = '(null)'
+        proxy_type = 'null'
     elif re.fullmatch(r'.*?\.onion', host):
         proxy_type = 'tor'
     elif re.fullmatch(r'.*?\.i2p', host):
         proxy_type = 'i2p'
-    # c.f. https://geti2p.net/en/docs/api/i2ptunnel
     elif host in ['127.0.0.1:7657', '127.0.0.1:7658',
                   'localhost:7657', 'localhost:7658']:
+        # c.f. https://geti2p.net/en/docs/api/i2ptunnel
         proxy_type = 'i2p'
     elif host in (f'127.0.0.1:{ZERONET_PORT}', f'localhost:{ZERONET_PORT}'):
         # not for root path
@@ -125,8 +129,7 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         else:
             proxy_type = 'freenet'
             hostname = PosixPath(parse.path).parts[1]
-    elif parse.scheme not in ['http', 'https']:
-        proxy_type = parse.scheme
+    # fallback
     else:
         proxy_type = 'null'
 
