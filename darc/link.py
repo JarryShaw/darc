@@ -83,7 +83,7 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     if host is None:
         host = parse.netloc or parse.hostname
 
-    hostname = host
+    hostname = host or '(null)'
     # proxy type by scheme
     if parse.scheme == 'data':
         # https://en.wikipedia.org/wiki/Data_URI_scheme
