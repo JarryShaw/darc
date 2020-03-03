@@ -131,13 +131,12 @@ def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]):
             try:
                 response = session.post(api, json=data)
                 if response.ok:
-                    break
+                    return
             except requests.RequestException as error:
                 warning = warnings.formatwarning(error, APIRequestFailed, __file__, 132,
                                                  f'[{domain.upper()}] response = requests.post(api, json=data)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-        else:
-            save_submit(domain, data)
+    save_submit(domain, data)
 
 
 def submit_new_host(time: typing.Datetime, link: Link):
