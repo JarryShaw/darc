@@ -23,6 +23,7 @@ from darc.requests import null_session
 
 # type alias
 File = typing.Dict[str, typing.Union[str, typing.ByteString]]
+Domain = typing.Union[typing.Literal['new_host'], typing.Literal['requests'], typing.Literal['selenium']]
 
 # retry times
 API_RETRY = int(os.getenv('API_RETRY', '3'))
@@ -110,10 +111,33 @@ def get_html(link: Link, time: str) -> typing.Optional[File]:  # pylint: disable
     return data
 
 
-def submit_session() -> typing.Session:
-    """Get submit session."""
-    session = null_session()
-    return session
+def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]):
+    """Save failed submit data."""
+    metadata = data['[metadata]']
+    name = metadata['name']
+    ts = data['Timestamp']
+
+    root = os.path.join(PATH_API, metadata['base'], domain)
+    os.makedirs(root, exist_ok=True)
+
+    with open(os.path.join(root, f'{name}_{ts}.json'), 'w') as file:
+        json.dump(data, file, indent=2)
+
+
+def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]):
+    """Submit data."""
+    with null_session() as session:
+        for _ in range(API_RETRY+1):
+            try:
+                response = session.post(api, json=data)
+                if response.ok:
+                    break
+            except requests.RequestException as error:
+                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 132,
+                                                 f'[{domain.upper()}] response = requests.post(api, json=data)')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+        else:
+            save_submit(domain, data)
 
 
 def submit_new_host(time: typing.Datetime, link: Link):
@@ -137,24 +161,12 @@ def submit_new_host(time: typing.Datetime, link: Link):
         print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
-    root = os.path.join(PATH_API, metadata['base'], 'new_host')
-    os.makedirs(root, exist_ok=True)
-
-    with open(os.path.join(root, f'{link.name}_{ts}.json'), 'w') as file:
-        json.dump(data, file, indent=2)
-
     if API_NEW_HOST is None:
+        save_submit('new_host', data)
         return
 
-    with submit_session() as session:
-        for _ in range(API_RETRY+1):
-            try:
-                response = session.post(API_NEW_HOST, json=data)
-                if response.ok:
-                    break
-            except requests.RequestException as error:
-                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 152, 'response = requests.post(API_NEW_HOST, json=data)')  # pylint: disable=line-too-long
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    # submit data
+    submit(API_NEW_HOST, 'new_host', data)
 
 
 def submit_requests(time: typing.Datetime, link: Link, response: typing.Response):
@@ -182,24 +194,12 @@ def submit_requests(time: typing.Datetime, link: Link, response: typing.Response
         print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
-    root = os.path.join(PATH_API, metadata['base'], 'requests')
-    os.makedirs(root, exist_ok=True)
-
-    with open(os.path.join(root, f'{link.name}_{ts}.json'), 'w') as file:
-        json.dump(data, file, indent=2)
-
     if API_REQUESTS is None:
+        save_submit('requests', data)
         return
 
-    with submit_session() as session:
-        for _ in range(API_RETRY+1):
-            try:
-                response = session.post(API_REQUESTS, json=data)
-                if response.ok:
-                    break
-            except requests.RequestException as error:
-                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 197, 'response = requests.post(API_REQUESTS, json=data)')  # pylint: disable=line-too-long
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    # submit data
+    submit(API_REQUESTS, 'requests', data)
 
 
 def submit_selenium(time: typing.Datetime, link: Link):
@@ -221,21 +221,9 @@ def submit_selenium(time: typing.Datetime, link: Link):
         print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
-    root = os.path.join(PATH_API, metadata['base'], 'selenium')
-    os.makedirs(root, exist_ok=True)
-
-    with open(os.path.join(root, f'{link.name}_{ts}.json'), 'w') as file:
-        json.dump(data, file, indent=2)
-
     if API_SELENIUM is None:
+        save_submit('selenium', data)
         return
 
-    with submit_session() as session:
-        for _ in range(API_RETRY+1):
-            try:
-                response = session.post(API_SELENIUM, json=data)
-                if response.ok:
-                    break
-            except requests.RequestException as error:
-                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 236, 'response = requests.post(API_SELENIUM, json=data)')  # pylint: disable=line-too-long
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    # submit data
+    submit(API_REQUESTS, 'selenium', data)
