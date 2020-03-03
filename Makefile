@@ -6,6 +6,17 @@ export PIPENV_VENV_IN_PROJECT=1
 
 commit: github-commit gitlab-commit
 
+reload:
+	git pull
+	sudo docker-compose stop
+	sudo docker-compose logs -t > logs/$(shell date +%Y-%m-%d-%H-%M-%S).log
+	sudo docker-compose build
+	sudo docker system prune --volumes -f
+	sudo docker-compose up -d
+
+logs:
+	sudo docker-compose logs -tf
+
 github-commit:
 	git add .
 	git commit -S -a
