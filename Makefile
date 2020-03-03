@@ -1,3 +1,5 @@
+.PHONY: logs
+
 include .env
 
 export CODECOV_TOKEN
