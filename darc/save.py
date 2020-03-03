@@ -93,7 +93,8 @@ def has_html(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pyli
 
 
 def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylint: disable=redefined-outer-name
-             raw: bool = False, data: bool = False, headers: bool = False) -> str:
+             raw: bool = False, data: bool = False,
+             headers: bool = False, screenshot: bool = False) -> str:
     """Sanitise link to path."""
     os.makedirs(link.base, exist_ok=True)
 
@@ -108,6 +109,8 @@ def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylin
         return f'{path}_{ts}.json'
     if data:
         return f'{path}_{ts}.dat'
+    if screenshot:
+        return f'{path}_{ts}.png'
     return f'{path}_{ts}.html'
 
 
@@ -147,7 +150,8 @@ def save_sitemap(link: Link, text: str) -> str:
     return path
 
 
-def save_headers(time: typing.Datetime, link: Link, response: typing.Response) -> str:  # pylint: disable=redefined-outer-name
+def save_headers(time: typing.Datetime, link: Link,
+                 response: typing.Response, session: typing.Session) -> str:  # pylint: disable=redefined-outer-name
     """Save HTTP response headers."""
     metadata = dataclasses.asdict(link)
     metadata['base'] = os.path.relpath(link.base, PATH_DB)
@@ -161,6 +165,7 @@ def save_headers(time: typing.Datetime, link: Link, response: typing.Response) -
         'Status-Code': response.status_code,
         'Reason': response.reason,
         'Cookies': response.cookies.get_dict(),
+        'Session': session.cookies.get_dict(),
         'Request': dict(response.request.headers),
         'Response': dict(response.headers),
     }

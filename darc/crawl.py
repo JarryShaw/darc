@@ -23,6 +23,7 @@ from darc.error import render_error
 from darc.link import parse_link
 from darc.parse import (check_robots, extract_links, get_content_type, match_host, match_mime,
                         match_proxy)
+from darc.save import sanitise
 from darc.proxy.bitcoin import save_bitcoin
 from darc.proxy.data import save_data
 from darc.proxy.ed2k import save_ed2k
@@ -168,44 +169,44 @@ def crawler(url: str):
                     save_requests(link.url, single=True)
                     return
 
-            # save headers
-            save_headers(timestamp, link, response)
+                # save headers
+                save_headers(timestamp, link, response, session)
 
-            # check content type
-            ct_type = get_content_type(response)
-            if ct_type not in ['text/html', 'application/xhtml+xml']:
-                print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
-                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                # check content type
+                ct_type = get_content_type(response)
+                if ct_type not in ['text/html', 'application/xhtml+xml']:
+                    print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
+                                       stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
 
-                text = response.content
-                try:
-                    save_file(timestamp, link, text)
-                except Exception as error:
-                    print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
+                    text = response.content
+                    try:
+                        save_file(timestamp, link, text)
+                    except Exception as error:
+                        print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
+                                           stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                        return
+
+                    if match_mime(ct_type):
+                        return
+
+                    # submit data
+                    submit_requests(timestamp, link, response, session)
+
+                    return
+
+                html = response.content
+                if not html:
+                    print(render_error(f'[REQUESTS] Empty response from {link.url}',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                    #QUEUE_REQUESTS.put(link.url)
+                    save_requests(link.url, single=True)
                     return
 
-                if match_mime(ct_type):
-                    return
+                # save HTML
+                save_html(timestamp, link, html, raw=True)
 
                 # submit data
-                submit_requests(timestamp, link, response)
-
-                return
-
-            html = response.content
-            if not html:
-                print(render_error(f'[REQUESTS] Empty response from {link.url}',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                #QUEUE_REQUESTS.put(link.url)
-                save_requests(link.url, single=True)
-                return
-
-            # save HTML
-            save_html(timestamp, link, html, raw=True)
-
-            # submit data
-            submit_requests(timestamp, link, response)
+                submit_requests(timestamp, link, response, session)
 
             # add link to queue
             #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
@@ -263,14 +264,12 @@ def loader(url: str):
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     #QUEUE_SELENIUM.put(link.url)
                     save_selenium(link.url, single=True)
-
                     return
                 except selenium.common.exceptions.WebDriverException as error:
                     print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     #QUEUE_SELENIUM.put(link.url)
                     save_selenium(link.url, single=True)
-
                     return
 
                 # get HTML source
@@ -281,11 +280,24 @@ def loader(url: str):
                                        stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     #QUEUE_SELENIUM.put(link.url)
                     save_selenium(link.url, single=True)
-
                     return
 
-            # save HTML
-            save_html(timestamp, link, html)
+                # save HTML
+                save_html(timestamp, link, html)
+
+                try:
+                    # get maximum height
+                    height = driver.execute_script('return document.body.scrollHeight')
+
+                    # resize window (with some magic numbers)
+                    driver.set_window_size(1000, height + 100)
+
+                    # take a full page screenshot
+                    path = sanitise(link, timestamp, screenshot=True)
+                    driver.save_screenshot(path)
+                except Exception as error:
+                    print(render_error(f'[SELENIUM] Fail to save screenshot from {link.url} <{error}>',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
 
             # submit data
             submit_selenium(timestamp, link)

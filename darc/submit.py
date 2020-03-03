@@ -90,6 +90,8 @@ def get_raw(link: Link, time: str) -> typing.Optional[File]:  # pylint: disable=
     path = os.path.join(link.base, f'{link.name}_{time}_raw.html')
     if not os.path.isfile(path):
         path = os.path.join(link.base, f'{link.name}_{time}.dat')
+    if not os.path.isfile(path):
+        return
     with open(path, 'rb') as file:
         content = file.read()
     data = dict(
@@ -102,6 +104,22 @@ def get_raw(link: Link, time: str) -> typing.Optional[File]:  # pylint: disable=
 def get_html(link: Link, time: str) -> typing.Optional[File]:  # pylint: disable=inconsistent-return-statements
     """Read HTML document."""
     path = os.path.join(link.base, f'{link.name}_{time}.html')
+    if not os.path.isfile(path):
+        return
+    with open(path, 'rb') as file:
+        content = file.read()
+    data = dict(
+        path=os.path.relpath(path, PATH_DB),
+        data=base64.b64encode(content).decode(),
+    )
+    return data
+
+
+def get_screenshot(link: Link, time: str) -> typing.Optional[File]:  # pylint: disable=inconsistent-return-statements
+    """Read screenshot picture."""
+    path = os.path.join(link.base, f'{link.name}_{time}.png')
+    if not os.path.isfile(path):
+        return
     with open(path, 'rb') as file:
         content = file.read()
     data = dict(
@@ -133,7 +151,7 @@ def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]):
                 if response.ok:
                     return
             except requests.RequestException as error:
-                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 132,
+                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 150,
                                                  f'[{domain.upper()}] response = requests.post(api, json=data)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     save_submit(domain, data)
@@ -168,7 +186,8 @@ def submit_new_host(time: typing.Datetime, link: Link):
     submit(API_NEW_HOST, 'new_host', data)
 
 
-def submit_requests(time: typing.Datetime, link: Link, response: typing.Response):
+def submit_requests(time: typing.Datetime, link: Link,
+                    response: typing.Response, session: typing.Session):
     """Submit requests data."""
     metadata = get_metadata(link)
     ts = time.isoformat()
@@ -181,6 +200,7 @@ def submit_requests(time: typing.Datetime, link: Link, response: typing.Response
         'Status-Code': response.status_code,
         'Reason': response.reason,
         'Cookies': response.cookies.get_dict(),
+        'Session': session.cookies.get_dict(),
         'Request': dict(response.request.headers),
         'Response': dict(response.headers),
         'Document': get_raw(link, ts),
@@ -211,6 +231,7 @@ def submit_selenium(time: typing.Datetime, link: Link):
         'Timestamp': ts,
         'URL': link.url,
         'Document': get_html(link, ts),
+        'Screenshot': get_screenshot(link, ts),
     }
 
     if DEBUG:

@@ -124,8 +124,12 @@ def from_requests():
             "Status-Code": ...,
             // response reason
             "Reason": ...,
-            // session cookies (if any)
+            // response cookies (if any)
             "Cookies": {
+                ...
+            },
+            // session cookies (if any)
+            "Session": {
                 ...
             },
             // request headers (if any)
@@ -136,6 +140,7 @@ def from_requests():
             "Response": {
                 ...
             },
+            // requested file (if not exists, then ``null``)
             "Document": {
                 // path of the file, relative path (to data root path ``PATH_DATA``) in container
                 //   - <proxy>/<scheme>/<host>/<name>_<timestamp>_raw.html
@@ -189,9 +194,18 @@ def from_selenium():
             "Timestamp": ...,
             // original URL
             "URL": ...,
+            // rendered HTML document (if not exists, then ``null``)
             "Document": {
                 // path of the file, relative path (to data root path ``PATH_DATA``) in container
                 //   - <proxy>/<scheme>/<host>/<name>_<timestamp>.html
+                "path": ...,
+                // content of the file (**base64** encoded)
+                "data": ...,
+            },
+            // web page screenshot (if not exists, then ``null``)
+            "Screenshot": {
+                // path of the file, relative path (to data root path ``PATH_DATA``) in container
+                //   - <proxy>/<scheme>/<host>/<name>_<timestamp>.png
                 "path": ...,
                 // content of the file (**base64** encoded)
                 "data": ...,
