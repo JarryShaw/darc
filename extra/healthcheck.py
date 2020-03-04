@@ -30,7 +30,7 @@ def healthcheck(file, interval):
                 subprocess.check_call(['docker-compose', '--file', file, 'up', '--detach'])
 
             # healthy / unhealthy
-            health = info['State']['Heath'].casefold()
+            health = info['State']['Health'].casefold()
             if health == 'unhealthy':
                 subprocess.check_call(['docker-compose', '--file', file, 'restart'])
         time.sleep(interval)
