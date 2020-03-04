@@ -27,7 +27,8 @@ VERBOSE = bool(int(os.getenv('DARC_VERBOSE', '0'))) or DEBUG
 FORCE = bool(int(os.getenv('DARC_FORCE', '0')))
 
 # check mode?
-CHECK = bool(int(os.getenv('DARC_CHECK', '0')))
+CHECK_NG = bool(int(os.getenv('DARC_CHECK_CONTENT_TYPE', '0')))
+CHECK = bool(int(os.getenv('DARC_CHECK', '0'))) or CHECK_NG
 
 # root path
 ROOT = os.path.dirname(os.path.abspath(__file__))

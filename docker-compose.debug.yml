@@ -33,8 +33,10 @@ services:
       DARC_VERBOSE: 1
       # force mode (ignore robots.txt)
       DARC_FORCE: 0
-      # check mode (check header before crawling)
+      # check mode (check proxy and hostname before crawling)
       DARC_CHECK: 1
+      # check mode (check content type before crawling)
+      DARC_CHECK_CONTENT_TYPE: 1
       # processes
       DARC_CPU: 64
       # multiprocessing
