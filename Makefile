@@ -23,7 +23,7 @@ healthcheck:
 	echo ------------- >> logs/healthcheck.log
 	echo $(shell date) >> logs/healthcheck.log
 	echo ------------- >> logs/healthcheck.log
-	sudo nohup pipenv run python extra/healthcheck.py >> logs/healthcheck.log
+	sudo nohup python3 extra/healthcheck.py >> logs/healthcheck.log &
 
 github-commit:
 	git add .
