@@ -106,52 +106,57 @@ def get_sitemap(link: str, text: str, host: typing.Optional[str] = None) -> typi
     return [parse_link(sitemap, host=host) for sitemap in sitemaps]
 
 
-def _check(temp_list: typing.List[str]) -> typing.List[str]:
+def _check_ng(temp_list: typing.List[str]) -> typing.List[str]:
     """Check content and proxy type of links."""
-    if CHECK_NG:
-        from darc.crawl import request_session  # pylint: disable=import-outside-toplevel
+    from darc.crawl import request_session  # pylint: disable=import-outside-toplevel
 
-        session_map = dict()
-        result_list = list()
-        for item in temp_list:
-            link = parse_link(item)
-            if match_host(link.host):
-                continue
-            if match_proxy(link.proxy):
-                continue
+    session_map = dict()
+    result_list = list()
+    for item in temp_list:
+        link = parse_link(item)
+        if match_host(link.host):
+            continue
+        if match_proxy(link.proxy):
+            continue
 
-            # get session
-            session = session_map.get(link.proxy)
-            if session is None:
-                session = request_session(link, futures=True)
-                session_map[link.proxy] = session
+        # get session
+        session = session_map.get(link.proxy)
+        if session is None:
+            session = request_session(link, futures=True)
+            session_map[link.proxy] = session
 
-            result = session.head(link.url)
-            result_list.append(result)
+        result = session.head(link.url)
+        result_list.append(result)
 
-            print(f'[HEAD] Checking content type from {link.url}')
+        print(f'[HEAD] Checking content type from {link.url}')
 
-        link_list = list()
-        for result in concurrent.futures.as_completed(result_list):
-            try:
-                response: typing.Response = result.result()
-            except requests.RequestException as error:
-                if error.response is None:
-                    print(render_error(f'[HEAD] Checking failed <{error}>',
-                                       stem.util.term.Color.RED))  # pylint: disable=no-member
-                    continue
-                print(render_error(f'[HEAD] Failed on {error.response.url} <{error}>',
+    link_list = list()
+    for result in concurrent.futures.as_completed(result_list):
+        try:
+            response: typing.Response = result.result()
+        except requests.RequestException as error:
+            if error.response is None:
+                print(render_error(f'[HEAD] Checking failed <{error}>',
                                    stem.util.term.Color.RED))  # pylint: disable=no-member
-                link_list.append(error.response.url)
                 continue
-            ct_type = get_content_type(response)
+            print(render_error(f'[HEAD] Failed on {error.response.url} <{error}>',
+                               stem.util.term.Color.RED))  # pylint: disable=no-member
+            link_list.append(error.response.url)
+            continue
+        ct_type = get_content_type(response)
 
-            print(f'[HEAD] Checked content type from {response.url} ({ct_type})')
+        print(f'[HEAD] Checked content type from {response.url} ({ct_type})')
 
-            if match_mime(ct_type):
-                continue
-            link_list.append(response.url)
-        return link_list
+        if match_mime(ct_type):
+            continue
+        link_list.append(response.url)
+    return link_list
+
+
+def _check(temp_list: typing.List[str]) -> typing.List[str]:
+    """Check hostname and proxy type of links."""
+    if CHECK_NG:
+        return _check_ng(temp_list)
 
     link_list = list()
     for item in temp_list:
