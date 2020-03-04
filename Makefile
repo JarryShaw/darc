@@ -19,6 +19,12 @@ reload:
 logs:
 	sudo docker-compose logs -tf
 
+healthcheck:
+	echo ------------- >> logs/healthcheck.log
+	echo $(shell date) >> logs/healthcheck.log
+	echo ------------- >> logs/healthcheck.log
+	nohup sudo pipenv run python extra/healthcheck.py >> logs/healthcheck.log
+
 github-commit:
 	git add .
 	git commit -S -a
