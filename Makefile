@@ -10,15 +10,19 @@ commit: github-commit gitlab-commit
 
 reload:
 	git pull
-	sudo kill $(shell ps axo pid=,command= | grep healthcheck.py | python3 -c "print(input().split()[0])") || true
+	$(MAKE) stop-healthcheck
 	sudo docker-compose stop
 	sudo docker-compose logs -t > logs/$(shell date +%Y-%m-%d-%H-%M-%S).log
 	sudo docker-compose build
 	sudo docker system prune --volumes -f
 	sudo docker-compose up -d
+	$(MAKE) healthcheck
 
 logs:
 	sudo docker-compose logs -tf
+
+stop-healthcheck:
+	sudo kill $(shell ps axo pid=,command= | grep healthcheck.py | python3 -c "print(input().split()[0])") || true
 
 healthcheck:
 	echo ------------- >> logs/healthcheck.log
