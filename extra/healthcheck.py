@@ -26,13 +26,16 @@ def healthcheck(file, interval):
             status = info['State']['Status'].casefold()
             if status == 'paused':
                 subprocess.check_call(['docker-compose', '--file', file, 'unpause'])
+                print(f'Unpaused container {container_id}', file=sys.stderr)
             if status == 'exited':
                 subprocess.check_call(['docker-compose', '--file', file, 'up', '--detach'])
+                print(f'Started container {container_id}', file=sys.stderr)
 
             # healthy / unhealthy
             health = info['State']['Health']['Status'].casefold()
             if health == 'unhealthy':
                 subprocess.check_call(['docker-compose', '--file', file, 'restart'])
+                print(f'Restarted container {container_id}', file=sys.stderr)
         time.sleep(interval)
 
 
