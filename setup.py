@@ -2,7 +2,7 @@
 """Darkweb crawler & search engine."""
 
 # version string
-__version__ = '0.1.0.dev0'
+__version__ = '0.1.0'
 
 # setup attributes
 attrs = dict(

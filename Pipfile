@@ -20,6 +20,9 @@ pylint = "*"
 ipython = "*"
 coverage = "*"
 codecov = "*"
+sphinx = "*"
+sphinxcontrib-napoleon = "*"
+doc8 = "*"
 
 [packages]
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}
