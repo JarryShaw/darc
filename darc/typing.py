@@ -32,8 +32,8 @@ Response = typing.NewType('Response', requests.Response)
 # requests.Session
 Session = typing.NewType('Session', requests.Session)
 
-# requests_futures.sessions.FutureSession
-FutureSession = typing.NewType('FutureSession', requests_futures.sessions.FuturesSession)
+# requests_futures.sessions.FuturesSession
+FuturesSession = typing.NewType('FuturesSession', requests_futures.sessions.FuturesSession)
 
 # queue.Queue
 Queue = typing.NewType('Queue', queue.Queue)

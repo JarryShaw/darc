@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 """This is a demo of API for communication between the
-``darc`` crawler and web UI. Assuming the web UI is
+:mod:`darc` crawler and web UI. Assuming the web UI is
 developed using ``Flask``.
 
-Terminology:
+Terminology
+===========
 
 A URL can be represented as following structure::
 
     ``<scheme>://<netloc>/<path>;<params>?<query>#<fragment>``
 
 c.f. ``urllib.parse.urlparse``.
-
-- host: a unique domain name, ``<netloc>``
 
 """
 
@@ -23,9 +22,9 @@ app = flask.Flask(__file__)
 
 @app.route('/api/new_host', methods=['POST'])
 def new_host():
-    """When a new host is discovered, the ``darc`` crawler will submit the host
-    information. Such includes ``robots.txt`` (if exists) and ``sitemap.xml``
-    (if any).
+    """When a new host is discovered, the :mod:`darc` crawler will submit the
+    host information. Such includes ``robots.txt`` (if exists) and
+    ``sitemap.xml`` (if any).
 
     Data format::
 

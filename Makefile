@@ -1,4 +1,4 @@
-.PHONY: logs
+.PHONY: logs docs
 
 include .env
 
@@ -192,3 +192,6 @@ push-github:
 push-gitlab:
 	git config remote.origin.url git@gitlab.sjtu.edu.cn:xiaojiawei/darc.git
 	git push
+
+docs:
+	pipenv run $(MAKE) -C docs html

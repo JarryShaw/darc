@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Selenium wrapper."""
+"""Selenium Wrapper
+======================
+
+The :mod:`darc.selenium` module wraps around the |selenium|_
+module, and provides some simple interface for the :mod:`darc`
+project.
+
+"""
 
 import getpass
 import platform
@@ -16,7 +23,22 @@ from darc.proxy.tor import TOR_PORT, TOR_SELENIUM_PROXY
 
 
 def request_driver(link: Link) -> typing.Driver:
-    """Get selenium driver."""
+    """Get selenium driver.
+
+    Args:
+        link: Link requesting for |Chrome|_.
+
+    Returns:
+        |Chrome|_: The web driver object with corresponding proxy settings.
+
+    Raises:
+        :exc:`UnsupportedLink`: If the proxy type of ``link``
+            if not specified in the :data:`~darc.proxy.LINK_MAP`.
+
+    See Also:
+        * :data:`darc.proxy.LINK_MAP`
+
+    """
     from darc.proxy import LINK_MAP  # pylint: disable=import-outside-toplevel
 
     _, driver = LINK_MAP[link.proxy]
@@ -26,7 +48,31 @@ def request_driver(link: Link) -> typing.Driver:
 
 
 def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefined-builtin
-    """Generate options."""
+    """Generate options.
+
+    Args:
+        type: Proxy type for options.
+
+    Returns:
+        |Options|_: The options for the web driver |Chrome|_.
+
+    Raises:
+        :exc:`UnsupportedPlatform`: If the operation system is **NOT**
+            macOS or Linux.
+        :exc:`UnsupportedProxy`: If the proxy type is **NOT**
+            ``null``, ``tor`` or ``i2p``.
+
+    See Also:
+        * :data:`darc.proxy.tor.TOR_PORT`
+        * :data:`darc.proxy.i2p.I2P_PORT`
+
+    References:
+        * https://peter.sh/experiments/chromium-command-line-switches/
+        * https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
+        * http://crbug.com/715363
+        * https://www.chromium.org/developers/design-documents/network-stack/socks-proxy
+
+    """
     _system = platform.system()
 
     # initiate options
@@ -66,7 +112,23 @@ def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefi
 
 
 def get_capabilities(type: str = 'null') -> dict:  # pylint: disable=redefined-builtin
-    """Generate desied capabilities."""
+    """Generate desied capabilities.
+
+    Args:
+        type: Proxy type for capabilities.
+
+    Returns:
+        The desied capabilities for the web driver |Chrome|_.
+
+    Raises:
+        :exc:`UnsupportedProxy`: If the proxy type is **NOT**
+            ``null``, ``tor`` or ``i2p``.
+
+    See Also:
+        * :data:`darc.proxy.tor.TOR_SELENIUM_PROXY`
+        * :data:`darc.proxy.i2p.I2P_SELENIUM_PROXY`
+
+    """
     # do not modify source dict
     capabilities = selenium.webdriver.DesiredCapabilities.CHROME.copy()
 
@@ -82,7 +144,16 @@ def get_capabilities(type: str = 'null') -> dict:  # pylint: disable=redefined-b
 
 
 def i2p_driver() -> typing.Driver:
-    """I2P (.i2p) driver."""
+    """I2P (.i2p) driver.
+
+    Returns:
+        |Chrome|_: The web driver object with I2P proxy settings.
+
+    See Also:
+        * :func:`darc.selenium.get_options`
+        * :func:`darc.selenium.get_capabilities`
+
+    """
     options = get_options('i2p')
     capabilities = get_capabilities('i2p')
 
@@ -93,7 +164,16 @@ def i2p_driver() -> typing.Driver:
 
 
 def tor_driver() -> typing.Driver:
-    """Tor (.onion) driver."""
+    """Tor (.onion) driver.
+
+    Returns:
+        |Chrome|_: The web driver object with Tor proxy settings.
+
+    See Also:
+        * :func:`darc.selenium.get_options`
+        * :func:`darc.selenium.get_capabilities`
+
+    """
     options = get_options('tor')
     capabilities = get_capabilities('tor')
 
@@ -104,7 +184,16 @@ def tor_driver() -> typing.Driver:
 
 
 def null_driver() -> typing.Driver:
-    """Normal driver."""
+    """No proxy driver.
+
+    Returns:
+        |Chrome|_: The web driver object with no proxy settings.
+
+    See Also:
+        * :func:`darc.selenium.get_options`
+        * :func:`darc.selenium.get_capabilities`
+
+    """
     options = get_options('null')
     capabilities = get_capabilities('null')
 

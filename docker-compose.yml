@@ -46,6 +46,8 @@ services:
       TOR_PASS: "16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F"
       # Tor bootstrap retry
       TOR_RETRY: 10
+      # Tor bootstrap wait
+      TOR_WAIT: 90
       # Tor bootstrap config
       TOR_CFG: "{}"
       # I2P port

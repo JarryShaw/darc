@@ -92,8 +92,8 @@ RUN set -x \
 #  && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 #  && dpkg-reconfigure -f noninteractive tzdata
 
-COPY driver/chromedriver_linux64-79.0.3945.36.zip \
-     browser/google-chrome-stable_current_amd64.deb /tmp/
+COPY vendor/chromedriver_linux64-79.0.3945.36.zip \
+     vendor/google-chrome-stable_current_amd64.deb /tmp/
 RUN set -x \
  ## ChromeDriver
  && unzip -d /usr/bin /tmp/chromedriver_linux64-79.0.3945.36.zip \

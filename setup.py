@@ -77,7 +77,12 @@ attrs = dict(
         'selenium',
         'stem',
         'typing_extensions',
-    ]
+    ],
+    entry_points={
+        'console_scripts': [
+            'darc = darc.__main__:main',
+        ]
+    },
 )
 
 try:

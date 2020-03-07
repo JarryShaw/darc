@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Web crawlers."""
+"""Web Crawlers
+==================
+
+The :mod:`darc.crawl` module provides two types of crawlers.
+
+* :func:`~darc.crawl.crawler` -- crawler powered by |requests|_
+* :func:`~darc.crawl.loader` -- crawler powered by |selenium|_
+
+"""
 
 import datetime
 import os
@@ -40,7 +48,67 @@ from darc.submit import submit_new_host, submit_requests, submit_selenium
 
 
 def crawler(url: str):
-    """Single requests crawler for a entry link."""
+    """Single |requests|_ crawler for a entry link.
+
+    Args:
+        url: URL to be crawled by |requests|_.
+
+    The function will first parse the URL using
+    :func:`~darc.link.parse_link`, and check if need to crawl the
+    URL (c.f. :data:`~darc.const.PROXY_WHITE_LIST`, :data:`~darc.const.PROXY_BLACK_LIST`
+    , :data:`~darc.const.LINK_WHITE_LIST` and :data:`~darc.const.LINK_BLACK_LIST`);
+    if true, then crawl the URL with |requests|_.
+
+    If the URL is from a brand new host, :mod:`darc` will first try
+    to fetch and save ``robots.txt`` and sitemaps of the host
+    (c.f. :func:`~darc.save.save_robots` and :func:`~darc.save.save_sitemap`),
+    and extract then save the links from sitemaps (c.f. :func:`~darc.parse.read_sitemap`)
+    into link database for future crawling (c.f. :func:`~darc.db.save_requests`).
+    Also, if the submission API is provided, :func:`~darc.submit.submit_new_host`
+    will be called and submit the documents just fetched.
+
+    .. seealso::
+
+        * :func:`darc.proxy.null.fetch_sitemap`
+
+    If ``robots.txt`` presented, and :data:`~darc.const.FORCE` is
+    ``False``, :mod:`darc` will check if allowed to crawl the URL.
+
+    .. note::
+
+        The root path (e.g. ``/`` in https://www.example.com/) will always
+        be crawled ignoring ``robots.txt``.
+
+    At this point, :mod:`darc` will call the customised hook function
+    from :mod:`darc.sites` to crawl and get the final response object.
+    :mod:`darc` will save the session cookies and header information,
+    using :func:`~darc.save.save_headers`.
+
+    .. note::
+
+        If :exc:`requests.exceptions.InvalidSchema` is raised, the link
+        will be saved by :func:`~darc.proxy.null.save_invalid`. Further
+        processing is dropped.
+
+    If the content type of response document is not ignored (c.f.
+    :data:`~darc.const.MIME_WHITE_LIST` and :data:`~darc.const.MIME_BLACK_LIST`),
+    :mod:`darc` will save the document using :func:`~darc.save.save_html` or
+    :func:`~darc.save.save_file` accordingly. And if the submission API
+    is provided, :func:`~darc.submit.submit_requests` will be called and
+    submit the document just fetched.
+
+    If the response document is HTML (``text/html`` and ``application/xhtml+xml``),
+    :func:`~darc.parse.extract_links` will be called then to extract
+    all possible links from the HTML document and save such links into
+    the database (c.f. :func:`~darc.db.save_requests`).
+
+    And if the response status code is between ``400`` and ``600``,
+    the URL will be saved back to the link database
+    (c.f. :func:`~darc.db.save_requests`). If **NOT**, the URL will
+    be saved into |selenium|_ link database to proceed next steps
+    (c.f. :func:`~darc.db.save_selenium`).
+
+    """
     try:
         link = parse_link(url)
 
@@ -232,7 +300,35 @@ def crawler(url: str):
 
 
 def loader(url: str):
-    """Single selenium loader for a entry link."""
+    """Single |selenium|_ loader for a entry link.
+
+    Args:
+        url: URL to be crawled by |requests|_.
+
+    The function will first parse the URL using :func:`~darc.link.parse_link`
+    and start loading the URL using |selenium|_ with Google Chrome.
+
+    At this point, :mod:`darc` will call the customised hook function
+    from :mod:`darc.sites` to load and return the original
+    |Chrome|_ object.
+
+    If successful, the rendered source HTML document will be saved
+    using :func:`~darc.save.save_html`, and a full-page screenshot
+    will be taken and saved.
+
+    .. seealso::
+
+       * :data:`darc.const.SE_EMPTY`
+       * :data:`darc.const.SE_WAIT`
+
+    If the submission API is provided, :func:`~darc.submit.submit_selenium`
+    will be called and submit the document just loaded.
+
+    Later, :func:`~darc.parse.extract_links` will be called then to
+    extract all possible links from the HTML document and save such
+    links into the |requests|_ database (c.f. :func:`~darc.db.save_requests`).
+
+    """
     try:
         link = parse_link(url)
 

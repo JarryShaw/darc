@@ -1,5 +1,31 @@
 # -*- coding: utf-8 -*-
-"""Link database."""
+"""Link Database
+===================
+
+The :mod:`darc` project utilises file system based database
+to provide tele-process communication.
+
+.. note::
+
+   In its first implementation, the :mod:`darc` project used
+   |Queue|_ to support such communication. However, as noticed
+   when runtime, the |Queue| object will be much affected by
+   the lack of memory.
+
+   .. |Queue| replace:: ``multiprocessing.Queue``
+   .. _Queue: https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue
+
+There will be two databases, both locate at root of the
+data storage path :data:`~darc.const.PATH_DB`:
+
+* the |requests|_ database -- ``queue_requests.txt``
+* the |selenium|_ database -- ``queue_selenium.txt``
+
+At runtime, after reading such database, :mod:`darc`
+will keep a backup of the database with ``.tmp`` suffix
+to its file extension.
+
+"""
 
 import contextlib
 import multiprocessing
@@ -33,7 +59,16 @@ else:
 
 
 def save_requests(entries: typing.Iterable[str], single: bool = False):
-    """Save link to requests database."""
+    """Save link to the |requests|_ database.
+
+    Args:
+        entries: Links to be added to the |requests|_ database.
+            It can be either an *iterable* of links, or a single
+            link string (if ``single`` set as ``True``).
+        single: Indicate if ``entries`` is an *iterable* of links
+            or a single link string.
+
+    """
     with QR_LOCK:
         with open(PATH_QR, 'a') as file:
             if single:
@@ -44,7 +79,16 @@ def save_requests(entries: typing.Iterable[str], single: bool = False):
 
 
 def save_selenium(entries: typing.Iterable[str], single: bool = False):
-    """Save link to selenium database."""
+    """Save link to the |selenium|_ database.
+
+    Args:
+        entries: Links to be added to the |selenium|_ database.
+            It can be either an *iterable* of links, or a single
+            link string (if ``single`` set as ``True``).
+        single: Indicate if ``entries`` is an *iterable* of links
+            or a single link string.
+
+    """
     with QS_LOCK:
         with open(PATH_QS, 'a') as file:
             if single:
@@ -55,7 +99,20 @@ def save_selenium(entries: typing.Iterable[str], single: bool = False):
 
 
 def load_requests() -> typing.List[str]:
-    """Load link from requests database."""
+    """Load link from the |requests|_ database.
+
+    After loading, :mod:`darc` will backup the original database
+    ``queue_requests.txt`` as ``queue_requests.txt.tmp`` and
+    empty the loaded database.
+
+    Returns:
+        List of loaded links from the |requests|_ database.
+
+    Note:
+        Lines start with ``#`` will be considered as comments.
+        Empty lines and comment lines will be ignored when loading.
+
+    """
     link_pool = list()
     if os.path.isfile(PATH_QR):
         link_list = list()
@@ -90,7 +147,20 @@ def load_requests() -> typing.List[str]:
 
 
 def load_selenium() -> typing.List[str]:
-    """Load link from selenium database."""
+    """Load link from the |selenium|_ database.
+
+    After loading, :mod:`darc` will backup the original database
+    ``queue_selenium.txt`` as ``queue_selenium.txt.tmp`` and
+    empty the loaded database.
+
+    Returns:
+        List of loaded links from the |selenium|_ database.
+
+    Note:
+        Lines start with ``#`` will be considered as comments.
+        Empty lines and comment lines will be ignored when loading.
+
+    """
     link_pool = list()
     if os.path.isfile(PATH_QS):
         link_list = list()

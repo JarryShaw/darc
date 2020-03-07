@@ -1,118 +1,62 @@
-darc package
-============
+Darkweb Crawler Project
+=======================
 
-Subpackages
------------
+:mod:`darc` is designed as a swiss-knife for darkweb crawling.
+It integrates |requests|_ to collect HTTP request and response
+information, such as cookies, header fields, etc. It also bundles
+|selenium|_ to provide a fully rendered web page and screenshot
+of such view.
 
 .. toctree::
 
+   darc.process
+   darc.crawl
+   darc.parse
+   darc.save
+   darc.submit
+   darc.db
+   darc.link
+   darc.requests
+   darc.selenium
    darc.proxy
    darc.sites
+   darc.const
+   darc.error
 
-Submodules
-----------
+As the websites can be sometimes irritating for their anti-robots
+verification, login requirements, etc., the :mod:`darc` project
+also privides hooks to customise crawling behaviours around both
+|requests|_ and |selenium|_.
 
-darc.const module
------------------
+.. seealso::
 
-.. automodule:: darc.const
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Such customisation, as called in the :mod:`darc` project, site
+   hooks, is site specific, user can set up your own hooks unto a
+   certain site, c.f. :mod:`darc.sites` for more information.
 
-darc.crawl module
------------------
+Still, since the network is a world full of mysteries and miracles,
+the speed of crawling will much depend on the response speed of
+the target website. To boost up, as well as meet the system capacity,
+the :mod:`darc` project introduced multiprocessing, multithreading
+and the fallback slowest single-threaded solutions when crawling.
 
-.. automodule:: darc.crawl
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. note::
 
-darc.db module
---------------
+   When rendering the target website using |selenium|_ powered by
+   the renown Google Chrome, it will require much memory to run.
+   Thus, the three solutions mentioned above would only toggle the
+   behaviour around the use of |selenium|_.
 
-.. automodule:: darc.db
-   :members:
-   :undoc-members:
-   :show-inheritance:
+To keep the :mod:`darc` project as it is a swiss-knife, only the
+main entrypoint function :func:`darc.process.process` is exported
+in global namespace (and renamed to :func:`darc.darc`), see below:
 
-darc.error module
------------------
+.. autofunction:: darc.darc
 
-.. automodule:: darc.error
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. |requests| replace:: ``requests``
+.. _requests: https://requests.readthedocs.io
+.. |selenium| replace:: ``selenium``
+.. _selenium: https://www.selenium.dev
 
-darc.link module
-----------------
-
-.. automodule:: darc.link
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-darc.parse module
------------------
-
-.. automodule:: darc.parse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-darc.process module
--------------------
-
-.. automodule:: darc.process
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-darc.requests module
---------------------
-
-.. automodule:: darc.requests
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-darc.save module
-----------------
-
-.. automodule:: darc.save
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-darc.selenium module
---------------------
-
-.. automodule:: darc.selenium
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-darc.submit module
-------------------
-
-.. automodule:: darc.submit
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-darc.typing module
-------------------
-
-.. automodule:: darc.typing
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: darc
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. |Chrome| replace:: ``selenium.webdriver.Chrome``
+.. _Chrome: https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver

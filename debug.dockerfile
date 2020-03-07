@@ -119,8 +119,8 @@ RUN set -x \
 
 # ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
 # ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
-COPY driver/chromedriver_linux64-79.0.3945.36.zip \
-     browser/google-chrome-stable_current_amd64.deb /tmp/
+COPY vendor/chromedriver_linux64-79.0.3945.36.zip \
+     vendor/google-chrome-stable_current_amd64.deb /tmp/
 RUN set -x \
  ## ChromeDriver
  && unzip -d /usr/bin /tmp/chromedriver_linux64-79.0.3945.36.zip \

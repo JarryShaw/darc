@@ -1,20 +1,10 @@
-darc.sites package
-==================
+Site Specific Customisation
+===========================
 
-Submodules
-----------
+.. toctree::
+   :caption: Contents:
 
-darc.sites.default module
--------------------------
-
-.. automodule:: darc.sites.default
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-Module contents
----------------
+   darc.sites.default
 
 .. automodule:: darc.sites
    :members:

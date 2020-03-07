@@ -143,7 +143,19 @@ SE_EMPTY = '<html><head></head><body></body></html>'
 
 
 def getpid() -> int:
-    """Get process ID."""
+    """Get process ID.
+
+    The process ID will be saved under the :data:`~darc.const.PATH_DB`
+    folder, in a file named ``darc.pid``. If no such file exists,
+    ``-1`` will be returned.
+
+    Returns:
+        The process ID.
+
+    See Also:
+        * :data:`darc.const.PATH_ID`
+
+    """
     if os.path.isfile(PATH_ID):
         with open(PATH_ID) as file:
             return int(file.read().strip())

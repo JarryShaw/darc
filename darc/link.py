@@ -1,5 +1,19 @@
 # -*- coding: utf-8 -*-
-"""URL utilities."""
+"""URL Utilities
+===================
+
+The :class:`~darc.link.Link` class is the key data structure
+of the :mod:`darc` project, it contains all information
+required to identify a URL's proxy type, hostname, path prefix
+when saving, etc.
+
+The :mod:`~darc.link` module also provides several wrapper
+function to the |urllib|_.
+
+.. |urllib| replace:: ``urllib.parse``
+.. _urllib: https://docs.python.org/3/library/urllib.parse.html
+
+"""
 
 import contextlib
 import dataclasses
@@ -20,28 +34,87 @@ except NotImplementedError:
 
 def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',
           encoding: typing.Optional[str] = None, errors: typing.Optional[str] = None) -> str:
-    """Wrapper function for ``urllib.parse.quote``."""
+    """Wrapper function for |quote|_.
+
+    Args:
+        string: string to be quoted
+        safe: charaters not to escape
+        encoding: string encoding
+        errors: encoding error handler
+
+    Returns:
+        The quoted string.
+
+    Note:
+        The function suppressed possible errors when calling
+        |quote|_. If any, it will return the original string.
+
+    """
     with contextlib.suppress():
         return urllib.parse.quote(string, safe, encoding=encoding, errors=errors)
     return string
 
 
 def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'replace') -> str:
-    """Wrapper function for ``urllib.parse.unquote``."""
+    """Wrapper function for |unquote|_.
+
+    Args:
+        string: string to be unquoted
+        encoding: string encoding
+        errors: encoding error handler
+
+    Returns:
+        The quoted string.
+
+    Note:
+        The function suppressed possible errors when calling
+        |unquote|_. If any, it will return the original string.
+
+    """
     with contextlib.suppress():
         return urllib.parse.unquote(string, encoding=encoding, errors=errors)
     return string
 
 
 def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = True) -> str:
-    """Wrapper function for ``urllib.parse.urljoin``."""
+    """Wrapper function for |urljoin|_.
+
+    Args:
+        base: base URL
+        url: URL to be joined
+        allow_fragments: if allow fragments
+
+    Returns:
+        The joined URL.
+
+    Note:
+        The function suppressed possible errors when calling
+        |urljoin|_. If any, it will return ``base/url`` directly.
+
+    """
     with contextlib.suppress(ValueError):
         return urllib.parse.urljoin(base, url, allow_fragments=allow_fragments)
     return f'{base}/{url}'
 
 
 def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib.parse.ParseResult:
-    """Wrapper function for ``urllib.parse.urlparse``."""
+    """Wrapper function for |urlparse|_.
+
+    Args:
+        url: URL to be parsed
+        scheme: URL scheme
+        allow_fragments: if allow fragments
+
+    Returns:
+        The parse result.
+
+    Note:
+        The function suppressed possible errors when calling
+        |urlparse|_. If any, it will return
+        ``urllib.parse.ParseResult(scheme=scheme, netloc='', path=url, params='', query='', fragment='')``
+        directly.
+
+    """
     with contextlib.suppress(ValueError):
         return urllib.parse.urlparse(url, scheme, allow_fragments=allow_fragments)
     return urllib.parse.ParseResult(scheme=scheme, netloc='', path=url, params='', query='', fragment='')
@@ -49,24 +122,44 @@ def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib
 
 @dataclasses.dataclass
 class Link:
-    """Parsed link."""
+    """Parsed link.
 
-    # original link
+    Args:
+        url: original link
+        proxy: proxy type
+        host: URL's hostname
+        base: base folder for saving files
+        name: hashed link for saving files
+        url_parse: parsed URL from |urlparse|_
+
+    Returns:
+        :class:`~darc.link.Link`: Parsed link object.
+
+    Note:
+        :class:`~darc.link.Link` is a dataclass_ object.
+        It is safely *hashable*, through ``hash(url)``.
+
+        .. _dataclass: https://www.python.org/dev/peps/pep-0557
+
+    """
+
+    #: original link
     url: str
-    # proxy type
+    #: proxy type
     proxy: str
 
-    # urllib.parse.urlparse
+    #: parsed URL from |urlparse|_
     url_parse: urllib.parse.ParseResult
 
-    # hostname / netloc
+    #: URL's hostname
     host: str
-    # base folder
+    #: base folder for saving files
     base: str
-    # hashed link
+    #: hashed link for saving files
     name: str
 
     def __hash__(self):
+        """Provide hash support to the :class:`~darc.link.Link` object."""
         return hash(self.url)
 
     def __str__(self):
@@ -74,7 +167,87 @@ class Link:
 
 
 def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
-    """Parse link."""
+    """Parse link.
+
+    Args:
+        link: link to be parsed
+        host: hostname of the link
+
+    Returns:
+        The parsed link object.
+
+    Note:
+        If ``host`` is provided, it will override the hostname
+        of the original ``link``.
+
+    The parsing process of proxy type is as follows:
+
+    0.  If ``host`` is ``None`` and the parse result from |urlparse|_
+        has no ``netloc`` (or hostname) specified, then set ``hostname``
+        as ``(null)``; else set it as is.
+    1.  If the scheme is ``data``, then the ``link`` is a data URI,
+        set ``hostname`` as ``data`` and ``proxy`` as ``data``.
+    2.  If the scheme is ``javascript``, then the link is some
+        JavaScript codes, set ``proxy`` as ``script``.
+    3.  If the scheme is ``bitcoin``, then the link is a Bitcoin
+        address, set ``proxy`` as ``bitcoin``.
+    4.  If the scheme is ``ed2k``, then the link is an ED2K magnet
+        link, set ``proxy`` as ``ed2k``.
+    5.  If the scheme is ``magnet``, then the link is a magnet
+        link, set ``proxy`` as ``magnet``.
+    6.  If the scheme is ``mailto``, then the link is an email
+        address, set ``proxy`` as ``mail``.
+    7.  If the scheme is ``irc``, then the link is an IRC
+        link, set ``proxy`` as ``irc``.
+    8.  If the scheme is **NOT** any of ``http`` or ``https``,
+        then set ``proxy`` to the scheme.
+    9.  If the host is ``None``, set ``hostname`` to ``(null)``,
+        set ``proxy`` to ``null``.
+    10. If the host is an onion (``.onion``) address,
+        set ``proxy`` to ``tor``.
+    11. If the host is an I2P (``.i2p``) address, or
+        any of ``localhost:7657`` and ``localhost:7658``,
+        set ``proxy`` to ``i2p``.
+    12. If the host is *localhost* on :data:`~darc.proxy.zeronet.ZERONET_PORT`,
+        and the path is not ``/``, i.e. **NOT** root path, set ``proxy``
+        to ``zeronet``; and set the first part of its path as ``hostname``.
+
+        Example:
+
+           For a ZeroNet address, e.g.
+           http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D,
+           :func:`~darc.link.parse_link` will parse the ``hostname`` as
+           ``1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D``.
+
+    13. If the host is *localhost* on :data:`~darc.proxy.freenet.FREENET_PORT`,
+        and the path is not ``/``, i.e. **NOT** root path, set ``proxy``
+        to ``freenet``; and set the first part of its path as ``hostname``.
+
+        Example:
+
+           For a Freenet address, e.g.
+           http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/,
+           :func:`~darc.link.parse_link` will parse the ``hostname`` as
+           ``USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE``.
+
+    14. If none of the cases above satisfied, the ``proxy`` will be set
+        as ``null``, marking it a plain normal link.
+
+    The ``base`` for parsed link :class:`~darc.link.Link` object is defined as
+
+    .. code::
+
+        <root>/<proxy>/<scheme>/<hostname>/
+
+    where ``root`` is :data:`~darc.const.PATH_DB`.
+
+    The ``name`` for parsed link :class:`~darc.link.Link` object is
+    the sha256 hash (c.f. |sha256|_) of the original ``link``.
+
+    .. |sha256| replace:: ``hashlib.sha256()``
+    .. _sha256: https://docs.python.org/3/library/hashlib.html#hashlib.sha256
+
+    """
     from darc.proxy.freenet import FREENET_PORT  # pylint: disable=import-outside-toplevel
     from darc.proxy.zeronet import ZERONET_PORT  # pylint: disable=import-outside-toplevel
 
@@ -84,25 +257,27 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         host = parse.netloc or parse.hostname
 
     hostname = host or '(null)'
+    scheme = parse.scheme.casefold()
+
     # proxy type by scheme
-    if parse.scheme == 'data':
+    if scheme == 'data':
         # https://en.wikipedia.org/wiki/Data_URI_scheme
         proxy_type = 'data'
-        hostname = 'data'
-    elif parse.scheme == 'javascript':
+        hostname = '(null)'
+    elif scheme == 'javascript':
         proxy_type = 'script'
-    elif parse.scheme == 'bitcoin':
+    elif scheme == 'bitcoin':
         proxy_type = 'bitcoin'
-    elif parse.scheme == 'ed2k':
+    elif scheme == 'ed2k':
         proxy_type = 'ed2k'
-    elif parse.scheme == 'magnet':
+    elif scheme == 'magnet':
         proxy_type = 'magnet'
-    elif parse.scheme == 'mailto':
+    elif scheme == 'mailto':
         proxy_type = 'mail'
-    elif parse.scheme == 'irc':
+    elif scheme == 'irc':
         proxy_type = 'irc'
-    elif parse.scheme not in ['http', 'https']:
-        proxy_type = parse.scheme
+    elif scheme not in ['http', 'https']:
+        proxy_type = scheme
     # proxy type by hostname
     elif host is None:
         hostname = '(null)'
@@ -134,7 +309,7 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         proxy_type = 'null'
 
     # <proxy>/<scheme>/<host>/<hash>-<timestamp>.html
-    base = os.path.join(PATH_DB, proxy_type, parse.scheme, hostname)
+    base = os.path.join(PATH_DB, proxy_type, scheme, hostname)
     name = hashlib.sha256(link.encode()).hexdigest()
 
     return Link(
