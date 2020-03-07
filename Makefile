@@ -58,7 +58,7 @@ gitlab-prep:
 	    Makefile \
 	    Pipfile \
 	    Pipfile.lock \
-	    README.md \
+	    README.rst \
 	    debug.dockerfile \
 	    docker-compose.debug.yml \
 	    docker-compose.yml \
