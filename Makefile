@@ -40,6 +40,7 @@ gitlab-prep:
 	cp -rf \
 	    browser \
 	    darc \
+	    docs \
 	    driver \
 	    extra \
 	    tbb \
