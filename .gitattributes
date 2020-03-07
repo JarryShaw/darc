@@ -1,3 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 vendor/jdk-13.0.2_linux-x64_bin.tar.gz filter=lfs diff=lfs merge=lfs -text
+vendor/google-chrome-stable_current_amd64.deb filter=lfs diff=lfs merge=lfs -text
