@@ -94,7 +94,8 @@ services:
       SE_WAIT: 60
       # extract link pattern
       LINK_WHITE_LIST: '[
-        ".*?\\.onion",
+        "(?!(.*\\.)?facebookcorewwwi).*\\.onion",
+        "(?!(.*\\.)?nytimes3xbfgragh).*\\.onion",
         ".*?\\.i2p",
         "127\\.0\\.0\\.1:43110", "localhost:43110",
         "127\\.0\\.0\\.1:8888", "localhost:8888"
