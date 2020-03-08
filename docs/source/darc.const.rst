@@ -13,7 +13,7 @@ General Configurations
    :type: bool
 
    If exit the program after first round, i.e. crawled all links from the
-   ``requests`` link database and loaded all links from the ``selenium``
+   |requests|_ link database and loaded all links from the |selenium|_
    link database.
 
    :default: ``False``
@@ -208,11 +208,11 @@ Web Crawlers
 .. data:: darc.const.SE_WAIT
    :type: float
 
-   Time to wait for ``selenium`` to finish loading pages.
+   Time to wait for |selenium|_ to finish loading pages.
 
    .. note::
 
-      Internally, ``selenium`` will wait for the browser to finish
+      Internally, |selenium|_ will wait for the browser to finish
       loading the pages before return (i.e. the web API event
       |event|_). However, some extra scripts may take more time
       running after the event.

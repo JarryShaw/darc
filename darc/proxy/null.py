@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""No proxy."""
+"""No Proxy
+===============
+
+The :mod:`darc.proxy.null` module contains the auxiliary functions
+around managing and processing normal websites with no proxy.
+
+"""
 
 import gzip
 import multiprocessing
@@ -25,14 +31,35 @@ LOCK = multiprocessing.Lock()
 
 
 def save_invalid(link: Link):
-    """Save link with invalid scheme."""
+    """Save link with invalid scheme.
+
+    The function will save link with invalid scheme to the file
+    as defined in :data:`~darc.proxy.null.PATH`.
+
+    Args:
+        link: Link object representing the link with invalid scheme.
+
+    """
     with LOCK:
         with open(PATH, 'a') as file:
             print(link.url_parse.path, file=file)
 
 
 def fetch_sitemap(link: Link):
-    """Fetch sitemap."""
+    """Fetch sitemap.
+
+    The function will first fetch the ``robots.txt``, then
+    fetch the sitemaps accordingly.
+
+    Args:
+        link: Link object to fetch for its sitemaps.
+
+    See Also:
+        * :func:`darc.parse.read_robots`
+        * :func:`darc.parse.read_sitemap`
+        * :func:`darc.parse.get_sitemap`
+
+    """
     robots_path = has_robots(link)
     if robots_path is not None:
 

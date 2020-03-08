@@ -11,11 +11,11 @@ of such view.
 
    darc.process
    darc.crawl
+   darc.link
    darc.parse
    darc.save
-   darc.submit
    darc.db
-   darc.link
+   darc.submit
    darc.requests
    darc.selenium
    darc.proxy

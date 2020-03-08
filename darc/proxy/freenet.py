@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Freenet proxy."""
+"""Freenet Proxy
+===================
+
+The :mod:`darc.proxy.freenet` module contains the auxiliary functions
+around managing and processing the Freenet proxy.
+
+"""
 
 import getpass
 import os
@@ -46,7 +52,7 @@ if getpass.getuser() == 'root':
         _FREENET_ARGS = ['su', '-', DARC_USER, os.path.join(FREENET_PATH, 'run.sh'), 'start']
     else:
         _unsupported = True
-        raise UnsupportedPlatform(f'unsupported system: {_system}')
+        _FREENET_ARGS = list()
 else:
     _FREENET_ARGS = [os.path.join(FREENET_PATH, 'run.sh'), 'start']
 _FREENET_ARGS.extend(FREENET_ARGS)
@@ -64,7 +70,20 @@ if DEBUG:
 
 
 def _freenet_bootstrap():
-    """Freenet bootstrap."""
+    """Freenet bootstrap.
+
+    The bootstrap arguments are defined as :data:`~darc.proxy.freenet._FREENET_ARGS`.
+
+    Raises:
+        subprocess.CalledProcessError: If the return code of :data:`~darc.proxy.freenet._FREENET_PROC` is non-zero.
+
+    See Also:
+        * :func:`darc.proxy.freenet.freenet_bootstrap`
+        * :data:`darc.proxy.freenet.BS_WAIT`
+        * :data:`darc.proxy.freenet._FREENET_BS_FLAG`
+        * :data:`darc.proxy.freenet._FREENET_PROC`
+
+    """
     global _FREENET_BS_FLAG, _FREENET_PROC
 
     # launch Freenet process
@@ -93,7 +112,26 @@ def _freenet_bootstrap():
 
 
 def freenet_bootstrap():
-    """Bootstrap wrapper for Freenet."""
+    """Bootstrap wrapper for Freenet.
+
+    The function will bootstrap the Freenet proxy. It will retry for
+    :data:`~darc.proxy.freenet.FREENET_RETRY` times in case of failure.
+
+    Also, it will **NOT** re-bootstrap the proxy as is guaranteed by
+    :data:`~darc.proxy.freenet._FREENET_BS_FLAG`.
+
+    Warns:
+        FreenetBootstrapFailed: If failed to bootstrap Freenet proxy.
+
+    Raises:
+        :exc:`UnsupportedPlatform`: If the system is not supported, i.e. not macOS or Linux.
+
+    See Also:
+        * :func:`darc.proxy.freenet._freenet_bootstrap`
+        * :data:`darc.proxy.freenet.FREENET_RETRY`
+        * :data:`darc.proxy.freenet._FREENET_BS_FLAG`
+
+    """
     if _unsupported:
         raise UnsupportedPlatform(f'unsupported system: {platform.system()}')
 
@@ -118,8 +156,21 @@ def freenet_bootstrap():
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def has_freenet(link_pool: typing.Set[str]) -> bool:
-    """Check if contain Freenet links."""
+def has_freenet(link_pool: typing.Iterable[str]) -> bool:
+    """Check if contain Freenet links.
+
+    Args:
+        link_pool: Link pool to check.
+
+    Returns:
+        If the link pool contains Freenet links.
+
+    See Also:
+        * :func:`darc.link.parse_link`
+        * :func:`darc.link.urlparse`
+        * :data:`darc.proxy.freenet.FREENET_PORT`
+
+    """
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
         parse = urlparse(link)

@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""I2P proxy."""
+"""I2P Proxy
+===============
+
+The :mod:`darc.proxy.i2p` module contains the auxiliary functions
+around managing and processing the I2P proxy.
+
+"""
 
 import base64
 import getpass
@@ -25,8 +31,6 @@ from darc.const import CHECK, DARC_USER, DEBUG, PATH_DB, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
 from darc.link import Link, parse_link, urljoin, urlparse
 from darc.parse import _check, get_content_type
-
-__all__ = ['I2P_REQUESTS_PROXY', 'I2P_SELENIUM_PROXY']
 
 # I2P args
 I2P_ARGS = shlex.split(os.getenv('I2P_ARGS', ''))
@@ -81,7 +85,20 @@ if DEBUG:
 
 
 def _i2p_bootstrap():
-    """I2P bootstrap."""
+    """I2P bootstrap.
+
+    The bootstrap arguments are defined as :data:`~darc.proxy.i2p._I2P_ARGS`.
+
+    Raises:
+        subprocess.CalledProcessError: If the return code of :data:`~darc.proxy.i2p._I2P_PROC` is non-zero.
+
+    See Also:
+        * :func:`darc.proxy.i2p.i2p_bootstrap`
+        * :data:`darc.proxy.i2p.BS_WAIT`
+        * :data:`darc.proxy.i2p._I2P_BS_FLAG`
+        * :data:`darc.proxy.i2p._I2P_PROC`
+
+    """
     global _I2P_BS_FLAG, _I2P_PROC
 
     # launch I2P process
@@ -110,7 +127,26 @@ def _i2p_bootstrap():
 
 
 def i2p_bootstrap():
-    """Bootstrap wrapper for I2P."""
+    """Bootstrap wrapper for I2P.
+
+    The function will bootstrap the I2P proxy. It will retry for
+    :data:`~darc.proxy.i2p.I2P_RETRY` times in case of failure.
+
+    Also, it will **NOT** re-bootstrap the proxy as is guaranteed by
+    :data:`~darc.proxy.i2p._I2P_BS_FLAG`.
+
+    Warns:
+        I2PBootstrapFailed: If failed to bootstrap I2P proxy.
+
+    Raises:
+        :exc:`UnsupportedPlatform`: If the system is not supported, i.e. not macOS or Linux.
+
+    See Also:
+        * :func:`darc.proxy.i2p._i2p_bootstrap`
+        * :data:`darc.proxy.i2p.I2P_RETRY`
+        * :data:`darc.proxy.i2p._I2P_BS_FLAG`
+
+    """
     if _unsupported:
         raise UnsupportedPlatform(f'unsupported system: {platform.system()}')
 
@@ -136,7 +172,25 @@ def i2p_bootstrap():
 
 
 def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, typing.Union[str, typing.ByteString]]]:  # pylint: disable=inconsistent-return-statements
-    """Read ``hosts.txt``."""
+    """Read ``hosts.txt``.
+
+    Args:
+        link: Link object to read ``hosts.txt``.
+
+    Returns:
+        * If ``hosts.txt`` exists, return the data from ``hosts.txt``.
+
+          * ``path`` -- relative path from ``hosts.txt`` to root of data storage
+            :data:`~darc.const.PATH_DB`, ``<proxy>/<scheme>/<hostname>/hosts.txt``
+          * ``data`` -- *base64* encoded content of ``hosts.txt``
+
+        * If not, return ``None``.
+
+    See Also:
+        * :func:`darc.submit.submit_new_host`
+        * :func:`darc.proxy.i2p.save_hosts`
+
+    """
     path = os.path.join(link.base, 'hosts.txt')
     if not os.path.isfile(path):
         return
@@ -150,7 +204,19 @@ def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, typing.Union[str, 
 
 
 def has_i2p(link_pool: typing.Set[str]) -> bool:
-    """Check if contain I2P links."""
+    """Check if contain I2P links.
+
+    Args:
+        link_pool: Link pool to check.
+
+    Returns:
+        If the link pool contains I2P links.
+
+    See Also:
+        * :func:`darc.link.parse_link`
+        * :func:`darc.link.urlparse`
+
+    """
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
         parse = urlparse(link)
@@ -165,14 +231,37 @@ def has_i2p(link_pool: typing.Set[str]) -> bool:
 
 
 def has_hosts(link: Link) -> typing.Optional[str]:
-    """Check if hosts.txt already exists."""
+    """Check if ``hosts.txt`` already exists.
+
+    Args:
+        link: Link object to check if ``hosts.txt`` already exists.
+
+    Returns:
+        * If ``hosts.txt`` exists, return the path to ``hosts.txt``,
+          i.e. ``<root>/<proxy>/<scheme>/<hostname>/hosts.txt``.
+        * If not, return ``None``.
+
+    """
     # <proxy>/<scheme>/<host>/hosts.txt
     path = os.path.join(link.base, 'hosts.txt')
     return path if os.path.isfile(path) else None
 
 
 def save_hosts(link: Link, text: str) -> str:
-    """Save `hosts.txt`."""
+    """Save ``hosts.txt``.
+
+    Args:
+        link: Link object of ``hosts.txt``.
+        text: Content of ``hosts.txt``.
+
+    Returns:
+        Saved path to ``hosts.txt``, i.e.
+        ``<root>/<proxy>/<scheme>/<hostname>/hosts.txt``.
+
+    See Also:
+        * :func:`darc.save.sanitise`
+
+    """
     path = os.path.join(link.base, 'hosts.txt')
 
     root = os.path.split(path)[0]
@@ -185,7 +274,17 @@ def save_hosts(link: Link, text: str) -> str:
 
 
 def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterable[str]:
-    """Read `hosts.txt`."""
+    """Read ``hosts.txt``.
+
+    Args:
+        text: Content of ``hosts.txt``.
+        check: If perform checks on extracted links,
+            default to :data:`~darc.const.CHECK`.
+
+    Returns:
+        List of links extracted.
+
+    """
     temp_list = list()
     for line in filter(None, map(lambda s: s.strip(), text)):
         if line.startswith('#'):
@@ -202,7 +301,12 @@ def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterab
 
 
 def fetch_hosts(link: Link):
-    """Fetch `hosts.txt`."""
+    """Fetch ``hosts.txt``.
+
+    Args:
+        link: Link object to fetch for its ``hosts.txt``.
+
+    """
     hosts_path = has_hosts(link)
     if hosts_path is not None:
 

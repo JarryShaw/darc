@@ -4,7 +4,7 @@
    :show-inheritance:
 
 .. data:: darc.db.QR_LOCK
-   :value: multiprocessing.Lock()
+   :type: multiprocessing.Lock
 
    I/O lock for the |requests|_ database ``_queue_requests.txt``.
 
@@ -13,7 +13,7 @@
       * :func:`darc.db.save_requests`
 
 .. data:: darc.db.QS_LOCK
-   :value: multiprocessing.Lock() | threading.Lock() | contextlib.nullcontext()
+   :type: Union[multiprocessing.Lock, threading.Lock, contextlib.nullcontext]
 
    I/O lock for the |selenium|_ database ``_queue_selenium.txt``.
 

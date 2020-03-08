@@ -256,9 +256,6 @@ General Configurations
 
    :default: current login user (c.f. |getuser|_)
 
-   .. |getuser| replace:: :func:`getpass.getuser`
-   .. _getuser: https://docs.python.org/3/library/getpass.html#getpass.getuser
-
 Data Storage
 ------------
 
@@ -519,7 +516,7 @@ I2P Proxy Configuration
 
       If not provided, there will be **NO** timeouts.
 
-.. data:: I2P_ARG
+.. data:: I2P_ARGS
    :type: str (shell)
 
    I2P bootstrap arguments for ``i2prouter start``.
@@ -533,9 +530,6 @@ I2P Proxy Configuration
 
       The command will be run as :data:`DARC_USER`, if current
       user (c.f. |getuser|_) is *root*.
-
-   .. |split| replace:: ``shlex.split``
-   .. _split: https://docs.python.org/3/library/shlex.html#shlex.split
 
 ZeroNet Proxy Configuration
 ---------------------------
@@ -572,7 +566,7 @@ ZeroNet Proxy Configuration
 
    :default: ``/usr/local/src/zeronet``
 
-.. data:: ZERONET_ARG
+.. data:: ZERONET_ARGS
    :type: str (shell)
 
    ZeroNet bootstrap arguments for ``ZeroNet.sh main``.
@@ -592,7 +586,7 @@ Freenet Proxy Configuration
 
    Port for Freenet proxy connection.
 
-   :default: ``4444``
+   :default: ``8888``
 
 .. data:: FREENET_RETRY
    :type: int
@@ -619,7 +613,7 @@ Freenet Proxy Configuration
 
    :default: ``/usr/local/src/freenet``
 
-.. data:: FREENET_ARG
+.. data:: FREENET_ARGS
    :type: str (shell)
 
    Freenet bootstrap arguments for ``run.sh start``.
@@ -640,3 +634,9 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. |split| replace:: ``shlex.split``
+.. _split: https://docs.python.org/3/library/shlex.html#shlex.split
+
+.. |getuser| replace:: :func:`getpass.getuser`
+.. _getuser: https://docs.python.org/3/library/getpass.html#getpass.getuser

@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""ZeroNet proxy."""
+"""ZeroNet Proxy
+====================
+
+The :mod:`darc.proxy.zeronet` module contains the auxiliary functions
+around managing and processing the ZeroNet proxy.
+
+"""
 
 import os
 import pprint
@@ -50,7 +56,20 @@ if DEBUG:
 
 
 def _zeronet_bootstrap():
-    """ZeroNet bootstrap."""
+    """ZeroNet bootstrap.
+
+    The bootstrap arguments are defined as :data:`~darc.proxy.zeronet._ZERONET_ARGS`.
+
+    Raises:
+        subprocess.CalledProcessError: If the return code of :data:`~darc.proxy.zeronet._ZERONET_PROC` is non-zero.
+
+    See Also:
+        * :func:`darc.proxy.zeronet.zeronet_bootstrap`
+        * :data:`darc.proxy.zeronet.BS_WAIT`
+        * :data:`darc.proxy.zeronet._ZERONET_BS_FLAG`
+        * :data:`darc.proxy.zeronet._ZERONET_PROC`
+
+    """
     global _ZERONET_BS_FLAG, _ZERONET_PROC
 
     # launch Tor first
@@ -82,7 +101,26 @@ def _zeronet_bootstrap():
 
 
 def zeronet_bootstrap():
-    """Bootstrap wrapper for ZeroNet."""
+    """Bootstrap wrapper for ZeroNet.
+
+    The function will bootstrap the ZeroNet proxy. It will retry for
+    :data:`~darc.proxy.zeronet.ZERONET_RETRY` times in case of failure.
+
+    Also, it will **NOT** re-bootstrap the proxy as is guaranteed by
+    :data:`~darc.proxy.zeronet._ZERONET_BS_FLAG`.
+
+    Warns:
+        ZeroNetBootstrapFailed: If failed to bootstrap ZeroNet proxy.
+
+    Raises:
+        :exc:`UnsupportedPlatform`: If the system is not supported, i.e. not macOS or Linux.
+
+    See Also:
+        * :func:`darc.proxy.zeronet._zeronet_bootstrap`
+        * :data:`darc.proxy.zeronet.ZERONET_RETRY`
+        * :data:`darc.proxy.zeronet._ZERONET_BS_FLAG`
+
+    """
     # don't re-bootstrap
     if _ZERONET_BS_FLAG:
         return
@@ -105,7 +143,20 @@ def zeronet_bootstrap():
 
 
 def has_zeronet(link_pool: typing.Set[str]) -> bool:
-    """Check if contain ZeroNet links."""
+    """Check if contain ZeroNet links.
+
+    Args:
+        link_pool: Link pool to check.
+
+    Returns:
+        If the link pool contains ZeroNet links.
+
+    See Also:
+        * :func:`darc.link.parse_link`
+        * :func:`darc.link.urlparse`
+        * :data:`darc.proxy.zeronet.ZERONET_PORT`
+
+    """
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
         parse = urlparse(link)

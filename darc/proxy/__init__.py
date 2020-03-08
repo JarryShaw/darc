@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Proxy utilities."""
+"""Proxy Utilities
+=====================
+
+The :mod:`darc.proxy` module provides various proxy support
+to the :mod:`darc` project.
+
+"""
 
 import collections
 

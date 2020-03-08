@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Tor proxy."""
+"""Tor Proxy
+===============
+
+The :mod:`darc.proxy.tor` module contains the auxiliary functions
+around managing and processing the Tor proxy.
+
+"""
 
 import getpass
 import json
@@ -21,8 +27,6 @@ import darc.typing as typing
 from darc.const import DEBUG
 from darc.error import TorBootstrapFailed, render_error
 from darc.link import urlparse
-
-__all__ = ['TOR_REQUESTS_PROXY', 'TOR_SELENIUM_PROXY']
 
 # Tor configs
 TOR_CFG = json.loads(os.getenv('TOR_CFG', '{}'))
@@ -83,7 +87,12 @@ def renew_tor_session():
 
 
 def print_bootstrap_lines(line: str):
-    """Print Tor bootstrap lines."""
+    """Print Tor bootstrap lines.
+
+    Args:
+        line: Tor bootstrap line.
+
+    """
     if DEBUG:
         print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
         return
@@ -93,7 +102,23 @@ def print_bootstrap_lines(line: str):
 
 
 def _tor_bootstrap():
-    """Tor bootstrap."""
+    """Tor bootstrap.
+
+    The bootstrap configuration is defined as
+    :data:`~darc.proxy.tor._TOR_CONFIG`.
+
+    If :data:`~darc.proxy.tor.TOR_PASS` not provided,
+    the function will request for it.
+
+    See Also:
+        * :func:`darc.proxy.tor.tor_bootstrap`
+        * :data:`darc.proxy.tor.BS_WAIT`
+        * :data:`darc.proxy.tor.TOR_PASS`
+        * :data:`darc.proxy.tor._TOR_BS_FLAG`
+        * :data:`darc.proxy.tor._TOR_PROC`
+        * :data:`darc.proxy.tor._TOR_CTRL`
+
+    """
     global _TOR_BS_FLAG, _TOR_CTRL, _TOR_PROC, TOR_PASS
 
     # launch Tor process
@@ -116,7 +141,23 @@ def _tor_bootstrap():
 
 
 def tor_bootstrap():
-    """Bootstrap wrapper for Tor."""
+    """Bootstrap wrapper for Tor.
+
+    The function will bootstrap the Tor proxy. It will retry for
+    :data:`~darc.proxy.tor.TOR_RETRY` times in case of failure.
+
+    Also, it will **NOT** re-bootstrap the proxy as is guaranteed by
+    :data:`~darc.proxy.tor._TOR_BS_FLAG`.
+
+    Warns:
+        TorBootstrapFailed: If failed to bootstrap Tor proxy.
+
+    See Also:
+        * :func:`darc.proxy.tor._tor_bootstrap`
+        * :data:`darc.proxy.tor.TOR_RETRY`
+        * :data:`darc.proxy.tor._TOR_BS_FLAG`
+
+    """
     # don't re-bootstrap
     if _TOR_BS_FLAG:
         return
@@ -139,7 +180,19 @@ def tor_bootstrap():
 
 
 def has_tor(link_pool: typing.Set[str]) -> bool:
-    """Check if contain Tor links."""
+    """Check if contain Tor links.
+
+    Args:
+        link_pool: Link pool to check.
+
+    Returns:
+        If the link pool contains Tor links.
+
+    See Also:
+        * :func:`darc.link.parse_link`
+        * :func:`darc.link.urlparse`
+
+    """
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
         parse = urlparse(link)

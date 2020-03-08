@@ -4,7 +4,7 @@
    :show-inheritance:
 
 .. data:: darc.save._SAVE_LOCK
-   :value: multiprocessing.Lock()
+   :type: multiprocessing.Lock
 
    I/O lock for saving link hash database ``link.csv``.
 
