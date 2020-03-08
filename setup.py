@@ -6,7 +6,7 @@ __version__ = '0.1.0'
 
 # setup attributes
 attrs = dict(
-    name='darc',
+    name='python-darc',
     version=__version__,
     description='Darkweb crawler & search engine.',
     long_description=__doc__,
@@ -16,7 +16,12 @@ attrs = dict(
     maintainer_email='jarryshaw@icloud.com',
     url='https://github.com/JarryShaw/darc',
     download_url='https://github.com/JarryShaw/darc/archive/v%s.tar.gz' % __version__,
-    py_modules=['darc'],
+    # py_modules
+    packages=[
+        'darc',
+        'darc.proxy',
+        'darc.sites'
+    ],
     # scripts
     # ext_modules
     classifiers=[
@@ -96,9 +101,9 @@ try:
         # include_dirs
         # password
         # fullname
-        long_description_content_type='text/markdown',
+        long_description_content_type='text/x-rst',
         python_requires='>=3.8',
-        zip_safe=True,
+        # zip_safe=True,
     ))
 except ImportError:
     from distutils.core import setup
