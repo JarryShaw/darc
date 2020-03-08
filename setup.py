@@ -6,7 +6,7 @@ __version__ = '0.1.0'
 
 # setup attributes
 attrs = dict(
-    name='python-darc',
+    name='darc',
     version=__version__,
     description='Darkweb crawler & search engine.',
     long_description=__doc__,
