@@ -1,6 +1,10 @@
 ``darc`` - Darkweb Crawler Project
 ==================================
 
+.. image:: https://readthedocs.org/projects/darc/badge/?version=latest
+:target: https://darc.jarryshaw.me/en/latest/?badge=latest
+:alt: Documentation Status
+
 ``darc`` is designed as a swiss-knife for darkweb crawling.
 It integrates ``requests`` to collect HTTP request and response
 information, such as cookies, header fields, etc. It also bundles
@@ -102,7 +106,7 @@ Installation
 
 .. code:: shell
 
-   pip install darc
+   pip install python-darc
 
 Please make sure you have Google Chrome and corresponding version of Chrome
 Driver installed on your system.

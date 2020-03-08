@@ -153,7 +153,7 @@ The :mod:`darc` project provides a simple CLI::
 
 It can also be called through module entrypoint::
 
-   python -m darc ...
+   python -m python-darc ...
 
 .. note::
 
