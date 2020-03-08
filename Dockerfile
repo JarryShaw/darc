@@ -138,7 +138,7 @@ WORKDIR /app
 COPY darc/ /app/darc/
 COPY LICENSE \
      MANIFEST.in \
-     README.md \
+     README.rst \
      extra/run.sh \
      setup.cfg \
      setup.py \
