@@ -13,7 +13,6 @@ lists.
 import concurrent.futures
 import io
 import os
-import re
 import urllib.robotparser
 
 import bs4
@@ -22,8 +21,8 @@ import requests
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import (CHECK, CHECK_NG, LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST, MIME_WHITE_LIST,
-                        PROXY_BLACK_LIST, PROXY_WHITE_LIST)
+from darc.const import (CHECK, CHECK_NG, LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST,
+                        MIME_WHITE_LIST, PROXY_BLACK_LIST, PROXY_WHITE_LIST)
 from darc.error import render_error
 from darc.link import Link, parse_link, urljoin
 
@@ -84,11 +83,11 @@ def match_host(host: str) -> bool:
         return True
 
     # any matching white list
-    if any(re.fullmatch(pattern, host, re.IGNORECASE) is not None for pattern in LINK_WHITE_LIST):
+    if any(pattern.fullmatch(host) is not None for pattern in LINK_WHITE_LIST):
         return False
 
     # any matching black list
-    if any(re.fullmatch(pattern, host, re.IGNORECASE) is not None for pattern in LINK_BLACK_LIST):
+    if any(pattern.fullmatch(host) is not None for pattern in LINK_BLACK_LIST):
         return True
 
     # fallback
@@ -110,11 +109,11 @@ def match_mime(mime: str) -> bool:
 
     """
     # any matching white list
-    if any(re.fullmatch(pattern, mime, re.IGNORECASE) is not None for pattern in MIME_WHITE_LIST):
+    if any(pattern.fullmatch(mime) is not None for pattern in MIME_WHITE_LIST):
         return False
 
     # any matching black list
-    if any(re.fullmatch(pattern, mime, re.IGNORECASE) is not None for pattern in MIME_BLACK_LIST):
+    if any(pattern.fullmatch(mime) is not None for pattern in MIME_BLACK_LIST):
         return True
 
     # fallback

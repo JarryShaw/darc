@@ -25,7 +25,7 @@ def _exit():
         """Wrapper caller."""
         if target is None:
             return
-        with contextlib.suppress():
+        with contextlib.suppress(BaseException):
             getattr(target, function)()
 
     # close link queue

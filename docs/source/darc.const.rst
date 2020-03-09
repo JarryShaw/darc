@@ -236,7 +236,7 @@ White / Black Lists
 -------------------
 
 .. data:: darc.const.LINK_WHITE_LIST
-   :type: List[str]
+   :type: List[re.Pattern]
 
    White list of hostnames should be crawled.
 
@@ -248,7 +248,7 @@ White / Black Lists
       Regular expressions are supported.
 
 .. data:: darc.const.LINK_BLACK_LIST
-   :type: List[str]
+   :type: List[re.Pattern]
 
    Black list of hostnames should be crawled.
 
@@ -260,7 +260,7 @@ White / Black Lists
       Regular expressions are supported.
 
 .. data:: darc.const.MIME_WHITE_LIST
-   :type: List[str]
+   :type: List[re.Pattern]
 
    White list of content types should be crawled.
 
@@ -272,7 +272,7 @@ White / Black Lists
       Regular expressions are supported.
 
 .. data:: darc.const.MIME_BLACK_LIST
-   :type: List[str]
+   :type: List[re.Pattern]
 
    Black list of content types should be crawled.
 
@@ -293,7 +293,7 @@ White / Black Lists
 
    .. note::
 
-      Regular expressions are supported.
+      The proxy types are **case insensitive**.
 
 .. data:: darc.const.PROXY_BLACK_LIST
    :type: List[str]
@@ -305,7 +305,7 @@ White / Black Lists
 
    .. note::
 
-      Regular expressions are supported.
+      The proxy types are **case insensitive**.
 
 .. |requests| replace:: ``requests``
 .. _requests: https://requests.readthedocs.io

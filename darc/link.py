@@ -50,7 +50,7 @@ def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',
         |quote|_. If any, it will return the original string.
 
     """
-    with contextlib.suppress():
+    with contextlib.suppress(Exception):
         return urllib.parse.quote(string, safe, encoding=encoding, errors=errors)
     return string
 
@@ -71,7 +71,7 @@ def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'repla
         |unquote|_. If any, it will return the original string.
 
     """
-    with contextlib.suppress():
+    with contextlib.suppress(Exception):
         return urllib.parse.unquote(string, encoding=encoding, errors=errors)
     return string
 

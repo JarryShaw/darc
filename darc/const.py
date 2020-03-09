@@ -7,6 +7,7 @@ import json
 import math
 import os
 import pprint
+import re
 import shutil
 import sys
 
@@ -64,58 +65,64 @@ PATH_QS = os.path.join(PATH_DB, '_queue_selenium.txt')
 PATH_ID = os.path.join(PATH_DB, 'darc.pid')
 
 # extract link pattern
-LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
+_LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
 if DEBUG:
     print(stem.util.term.format('-*- LINK WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(LINK_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_LINK_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+LINK_WHITE_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_WHITE_LIST]
 
 # link black list
-LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
+_LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
 if DEBUG:
     print(stem.util.term.format('-*- LINK BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(LINK_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_LINK_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+LINK_BLACK_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_BLACK_LIST]
 
 # content type white list
-MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
+_MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
 if DEBUG:
     print(stem.util.term.format('-*- MIME WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(MIME_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_MIME_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+MIME_WHITE_LIST = [re.compile(mime, re.IGNORECASE) for mime in _MIME_WHITE_LIST]
 
 # content type black list
-MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
+_MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
 if DEBUG:
     print(stem.util.term.format('-*- MIME BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(MIME_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_MIME_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+MIME_BLACK_LIST = [re.compile(mime, re.IGNORECASE) for mime in _MIME_BLACK_LIST]
 
 # proxy type black list
-PROXY_BLACK_LIST = json.loads(os.getenv('PROXY_BLACK_LIST', '[]').casefold())
+_PROXY_BLACK_LIST = json.loads(os.getenv('PROXY_BLACK_LIST', '[]').casefold())
 if DEBUG:
     print(stem.util.term.format('-*- PROXY BLACK LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(PROXY_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_PROXY_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+PROXY_BLACK_LIST = [proxy.casefold() for proxy in _PROXY_BLACK_LIST]
 
 # proxy type white list
-PROXY_WHITE_LIST = json.loads(os.getenv('PROXY_WHITE_LIST', '[]').casefold())
+_PROXY_WHITE_LIST = json.loads(os.getenv('PROXY_WHITE_LIST', '[]').casefold())
 if DEBUG:
     print(stem.util.term.format('-*- PROXY WHITE LIST -*-',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(PROXY_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_PROXY_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+PROXY_WHITE_LIST = [proxy.casefold() for proxy in _PROXY_WHITE_LIST]
 
 # time delta for caches in seconds
 _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))

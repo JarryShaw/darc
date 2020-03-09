@@ -9,12 +9,14 @@ The :mod:`darc.crawl` module provides two types of crawlers.
 
 """
 
+import contextlib
 import datetime
 import os
 import shutil
 import sys
 import traceback
 
+import magic
 import requests
 import selenium.common.exceptions
 import selenium.webdriver
@@ -31,17 +33,16 @@ from darc.error import render_error
 from darc.link import parse_link
 from darc.parse import (check_robots, extract_links, get_content_type, match_host, match_mime,
                         match_proxy)
-from darc.save import sanitise
 from darc.proxy.bitcoin import save_bitcoin
 from darc.proxy.data import save_data
 from darc.proxy.ed2k import save_ed2k
+from darc.proxy.i2p import fetch_hosts, read_hosts
+from darc.proxy.irc import save_irc
 from darc.proxy.magnet import save_magnet
 from darc.proxy.mail import save_mail
-from darc.proxy.i2p import fetch_hosts
-from darc.proxy.irc import save_irc
 from darc.proxy.null import fetch_sitemap, save_invalid
 from darc.requests import request_session
-from darc.save import has_folder, has_html, has_raw, save_file, save_headers, save_html
+from darc.save import has_folder, has_html, has_raw, sanitise, save_file, save_headers, save_html
 from darc.selenium import request_driver
 from darc.sites import crawler_hook, loader_hook
 from darc.submit import submit_new_host, submit_requests, submit_selenium
@@ -178,7 +179,23 @@ def crawler(url: str):
                     error = f'[Error loading hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                     print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
-            print(stem.util.term.format(f'[REQUESTS] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+            ext = os.path.splitext(path)[1]
+            if ext == '.dat':
+                print(stem.util.term.format(f'[REQUESTS] Cached generic file from {link.url}',
+                                            stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+
+                # probably hosts.txt
+                if link.proxy == 'i2p':
+                    with contextlib.suppress(Exception):
+                        ct_type = magic.detect_from_filename(path).mime_type
+                        if ct_type in ['text/plain', 'text/text']:
+                            with open(path) as hosts_file:
+                                save_requests(read_hosts(hosts_file))
+
+                return
+
+            print(stem.util.term.format(f'[REQUESTS] Cached HTML document from {link.url}',
+                                        stem.util.term.Color.YELLOW))  # pylint: disable=no-member
             with open(path, 'rb') as file:
                 html = file.read()
 
@@ -248,11 +265,16 @@ def crawler(url: str):
 
                     text = response.content
                     try:
-                        save_file(timestamp, link, text)
+                        path = save_file(timestamp, link, text)
                     except Exception as error:
                         print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
                                            stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                         return
+
+                    # probably hosts.txt
+                    if link.proxy == 'i2p' and ct_type in ['text/plain', 'text/text']:
+                        with open(path) as hosts_file:
+                            save_requests(read_hosts(hosts_file))
 
                     if match_mime(ct_type):
                         return

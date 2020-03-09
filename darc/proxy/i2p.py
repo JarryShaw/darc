@@ -83,6 +83,9 @@ if DEBUG:
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
+# I2P link regular expression
+I2P_REGEX = re.compile(r'.*\.i2p', re.IGNORECASE)
+
 
 def _i2p_bootstrap():
     """I2P bootstrap.
@@ -291,6 +294,8 @@ def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterab
             continue
 
         link = line.split('=', maxsplit=1)[0]
+        if I2P_REGEX.fullmatch(link) is None:
+            continue
         temp_list.append(f'http://{link}')
 
     if check:

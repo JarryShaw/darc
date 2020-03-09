@@ -362,7 +362,7 @@ White / Black Lists
 
    .. note::
 
-      Regular expressions are supported.
+      The proxy types are **case insensitive**.
 
 .. data:: PROXY_BLACK_LIST
    :type: List[str] (json)
@@ -373,7 +373,7 @@ White / Black Lists
 
    .. note::
 
-      Regular expressions are supported.
+      The proxy types are **case insensitive**.
 
 .. note::
 

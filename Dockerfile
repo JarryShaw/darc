@@ -1,6 +1,7 @@
 FROM ubuntu:bionic
 
-LABEL Name=darc Version=0.1.0
+LABEL Name=darc \
+      Version=0.1.1
 
 STOPSIGNAL SIGINT
 HEALTHCHECK --interval=1h --timeout=1m \
