@@ -38,12 +38,9 @@ github-commit:
 gitlab-prep:
 	find gitlab -depth 1 | grep -v '.git' | xargs rm -rf
 	cp -rf \
-	    browser \
 	    darc \
 	    docs \
-	    driver \
 	    extra \
-	    tbb \
 	    text \
 		vendor \
 	    .coveragerc \
