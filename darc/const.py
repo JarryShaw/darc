@@ -84,6 +84,9 @@ if DEBUG:
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 LINK_BLACK_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_BLACK_LIST]
 
+# link fallback value
+LINK_FALLBACK = bool(int(os.getenv('LINK_FALLBACK', '0')))
+
 # content type white list
 _MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
 if DEBUG:
@@ -104,6 +107,9 @@ if DEBUG:
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 MIME_BLACK_LIST = [re.compile(mime, re.IGNORECASE) for mime in _MIME_BLACK_LIST]
 
+# content type fallback value
+MIME_FALLBACK = bool(int(os.getenv('MIME_FALLBACK', '0')))
+
 # proxy type black list
 _PROXY_BLACK_LIST = json.loads(os.getenv('PROXY_BLACK_LIST', '[]').casefold())
 if DEBUG:
@@ -123,6 +129,9 @@ if DEBUG:
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 PROXY_WHITE_LIST = [proxy.casefold() for proxy in _PROXY_WHITE_LIST]
+
+# proxy type fallback value
+PROXY_FALLBACK = bool(int(os.getenv('PROXY_FALLBACK', '0')))
 
 # time delta for caches in seconds
 _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))

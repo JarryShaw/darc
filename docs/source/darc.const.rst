@@ -259,6 +259,14 @@ White / Black Lists
 
       Regular expressions are supported.
 
+.. data:: darc.const.LINK_FALLBACK
+   :type: bool
+
+   Fallback value for :func:`~darc.parse.match_host`.
+
+   :default: ``False``
+   :environ: :data:`LINK_FALLBACK`
+
 .. data:: darc.const.MIME_WHITE_LIST
    :type: List[re.Pattern]
 
@@ -283,6 +291,14 @@ White / Black Lists
 
       Regular expressions are supported.
 
+.. data:: darc.const.MIME_FALLBACK
+   :type: bool
+
+   Fallback value for :func:`~darc.parse.match_mime`.
+
+   :default: ``False``
+   :environ: :data:`MIME_FALLBACK`
+
 .. data:: darc.const.PROXY_WHITE_LIST
    :type: List[str]
 
@@ -306,6 +322,14 @@ White / Black Lists
    .. note::
 
       The proxy types are **case insensitive**.
+
+.. data:: darc.const.PROXY_FALLBACK
+   :type: bool
+
+   Fallback value for :func:`~darc.parse.match_proxy`.
+
+   :default: ``False``
+   :environ: :data:`PROXY_FALLBACK`
 
 .. |requests| replace:: ``requests``
 .. _requests: https://requests.readthedocs.io

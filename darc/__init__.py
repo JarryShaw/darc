@@ -37,4 +37,4 @@ and the fallback slowest single-threaded solutions when crawling.
 from darc.process import process as darc  # pylint: disable=unused-import
 
 __all__ = ['darc']
-__version__ = '0.1.1'
+__version__ = '0.1.2'

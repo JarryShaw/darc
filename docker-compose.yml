@@ -92,14 +92,20 @@ services:
       ]'
       # link black list
       LINK_BLACK_LIST: '[ "(.*\\.)?facebookcorewwwi\\.onion", "(.*\\.)?nytimes3xbfgragh\\.onion" ]'
+      # link fallback flag
+      LINK_FALLBACK: 1
       # content type white list
       MIME_WHITE_LIST: '[ "text/html", "application/xhtml+xml" ]'
       # content type black list
       MIME_BLACK_LIST: '[ "text/css", "application/javascript", "text/json" ]'
+      # content type fallback flag
+      MIME_FALLBACK: 0
       # proxy type white list
       PROXY_WHITE_LIST: '[ "tor", "i2p", "freenet", "zeronet" ]'
       # proxy type black list
       PROXY_BLACK_LIST: '[ "null", "data" ]'
+      # proxy type fallback flag
+      PROXY_FALLBACK: 0
       # API retry times
       API_RETRY: 10
       # API URLs

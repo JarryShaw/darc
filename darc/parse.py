@@ -21,8 +21,9 @@ import requests
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import (CHECK, CHECK_NG, LINK_BLACK_LIST, LINK_WHITE_LIST, MIME_BLACK_LIST,
-                        MIME_WHITE_LIST, PROXY_BLACK_LIST, PROXY_WHITE_LIST)
+from darc.const import (CHECK, CHECK_NG, LINK_BLACK_LIST, LINK_FALLBACK, LINK_WHITE_LIST,
+                        MIME_BLACK_LIST, MIME_FALLBACK, MIME_WHITE_LIST, PROXY_BLACK_LIST,
+                        PROXY_FALLBACK, PROXY_WHITE_LIST)
 from darc.error import render_error
 from darc.link import Link, parse_link, urljoin
 
@@ -43,6 +44,7 @@ def match_proxy(proxy: str) -> bool:
     See Also:
         * :data:`darc.const.PROXY_WHITE_LIST`
         * :data:`darc.const.PROXY_BLACK_LIST`
+        * :data:`darc.const.PROXY_FALLBACK`
 
     """
     if proxy == 'script':
@@ -57,7 +59,7 @@ def match_proxy(proxy: str) -> bool:
         return True
 
     # fallback
-    return False
+    return PROXY_FALLBACK
 
 
 def match_host(host: str) -> bool:
@@ -76,6 +78,7 @@ def match_host(host: str) -> bool:
     See Also:
         * :data:`darc.const.LINK_WHITE_LIST`
         * :data:`darc.const.LINK_BLACK_LIST`
+        * :data:`darc.const.LINK_FALLBACK`
 
     """
     # invalid hostname
@@ -91,7 +94,7 @@ def match_host(host: str) -> bool:
         return True
 
     # fallback
-    return False
+    return LINK_FALLBACK
 
 
 def match_mime(mime: str) -> bool:
@@ -106,6 +109,7 @@ def match_mime(mime: str) -> bool:
     See Also:
         * :data:`darc.const.MIME_WHITE_LIST`
         * :data:`darc.const.MIME_BLACK_LIST`
+        * :data:`darc.const.MIME_FALLBACK`
 
     """
     # any matching white list
@@ -117,7 +121,7 @@ def match_mime(mime: str) -> bool:
         return True
 
     # fallback
-    return False
+    return MIME_FALLBACK
 
 
 def read_robots(link: str, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:

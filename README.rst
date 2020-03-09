@@ -96,9 +96,15 @@ Installation
 
 **NOTE:**
 
-   ``darc`` supports Python all versions above and includes **3.8**.
-   Currently, it only supports and is tested on Linux (Ubuntu 18.04)
-   and macOS (Catalina).
+   ``darc`` supports Python all versions above and includes **3.6**.
+   Currently, it only supports and is tested on Linux (*Ubuntu 18.04*)
+   and macOS (*Catalina*).
+
+   When installing in Python versions below **3.8**, ``darc`` will
+   use |walrus|_ to compile itself for backport compatibility.
+
+   .. |walrus| replace:: ``walrus``
+   .. _walrus: https://github.com/pybpc/walrus
 
 .. code:: shell
 

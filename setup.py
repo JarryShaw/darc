@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """Darkweb crawler & search engine."""
 
+import sys
+import subprocess
+
 # version string
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 # setup attributes
 attrs = dict(
@@ -31,6 +34,8 @@ attrs = dict(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Software Development',
@@ -88,10 +93,18 @@ attrs = dict(
             'darc = darc.__main__:main',
         ]
     },
+    extras_require={
+        # version compatibility
+        ':python_version < "3.8"': ['python-walrus'],
+        ':python_version < "3.7"': ['dataclasses'],
+    },
 )
 
 try:
     from setuptools import setup
+    from setuptools.command.build_py import build_py
+
+    version_info = sys.version_info[:2]
 
     attrs.update(dict(
         include_package_data=True,
@@ -102,11 +115,26 @@ try:
         # password
         # fullname
         long_description_content_type='text/x-rst',
-        python_requires='>=3.8',
+        python_requires='>=3.6',
         # zip_safe=True,
     ))
 except ImportError:
     from distutils.core import setup
+    from distutils.command.build_py import build_py
+
+
+class build(build_py):
+    """Add on-build backport code conversion."""
+
+    def run(self):
+        if version_info < (3, 8):
+            subprocess.check_call(
+                ['walrus', '--no-archive', 'darc']
+            )
+        build_py.run(self)
+
 
 # set-up script for pip distribution
-setup(**attrs)
+setup(cmdclass={
+    'build_py': build,
+}, **attrs)

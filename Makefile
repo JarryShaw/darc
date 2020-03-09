@@ -135,7 +135,7 @@ update:
 dist: clean-pypi pypi-setup pypi-upload
 
 pypi-setup:
-	pipenv run python setup.py test sdist bdist_wheel
+	pipenv run python setup.py sdist bdist_wheel --python-tag='cp38'
 
 pypi-upload:
 	twine check dist/* || true
