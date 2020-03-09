@@ -18,8 +18,13 @@ def healthcheck(file, interval):
 
     while True:
         for container_id in container_id_list:
-            inspect = subprocess.check_output(['docker', 'container', 'inspect',
-                                               container_id], encoding='utf-8').strip()
+            try:
+                inspect = subprocess.check_output(['docker', 'container', 'inspect',
+                                                   container_id], encoding='utf-8').strip()
+            except subprocess.CalledProcessError:
+                container_id_list = subprocess.check_output(['docker-compose', '--file', file,
+                                                             'ps', '--quiet'], encoding='utf-8').strip().split()
+                continue
             info = json.loads(inspect)[0]
 
             # running / paused / exited
