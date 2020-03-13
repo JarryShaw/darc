@@ -1,7 +1,7 @@
 Darkweb Crawler Project
 =======================
 
-:mod:`darc` is designed as a swiss-knife for darkweb crawling.
+:mod:`darc` is designed as a swiss army knife for darkweb crawling.
 It integrates |requests|_ to collect HTTP request and response
 information, such as cookies, header fields, etc. It also bundles
 |selenium|_ to provide a fully rendered web page and screenshot
@@ -47,7 +47,7 @@ and the fallback slowest single-threaded solutions when crawling.
    Thus, the three solutions mentioned above would only toggle the
    behaviour around the use of |selenium|_.
 
-To keep the :mod:`darc` project as it is a swiss-knife, only the
+To keep the :mod:`darc` project as it is a swiss army knife, only the
 main entrypoint function :func:`darc.process.process` is exported
 in global namespace (and renamed to :func:`darc.darc`), see below:
 

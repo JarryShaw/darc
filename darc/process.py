@@ -240,6 +240,7 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
     # keep records
     _dump_last_word(errors=True)
 
+    # signal.strsignal added in 3.8
     try:
         strsignal = signal.strsignal(signum)
     except Exception:

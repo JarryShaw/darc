@@ -11,12 +11,12 @@ schemes extracted to the data storage path
 
 """
 
-import datetime
 import mimetypes
 import os
 
 import datauri
 
+from darc._compat import datetime
 from darc.const import PATH_MISC
 from darc.link import Link
 
@@ -36,7 +36,7 @@ def save_data(link: Link):
     """
     data = datauri.DataURI(link.url)
     ext = mimetypes.guess_extension(data.mimetype) or '.dat'
-    ts = datetime.datetime.now().isoformat()
+    ts = datetime.now().isoformat()
 
     path = os.path.join(PATH, f'{link.name}_{ts}{ext}')
     with open(path, 'wb') as file:

@@ -27,7 +27,6 @@ to its file extension.
 
 """
 
-import contextlib
 import multiprocessing
 import os
 import pprint
@@ -38,6 +37,7 @@ import threading
 import stem.util.term
 
 import darc.typing as typing
+from darc._compat import nullcontext
 from darc.const import FLAG_MP, FLAG_TH, PATH_QR, PATH_QS, VERBOSE
 from darc.error import render_error
 from darc.link import quote, unquote
@@ -55,7 +55,7 @@ if FLAG_MP:
 elif FLAG_TH:
     QS_LOCK = threading.Lock()
 else:
-    QS_LOCK = contextlib.nullcontext()
+    QS_LOCK = nullcontext()
 
 
 def save_requests(entries: typing.Iterable[str], single: bool = False):

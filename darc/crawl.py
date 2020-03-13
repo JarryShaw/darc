@@ -10,7 +10,6 @@ The :mod:`darc.crawl` module provides two types of crawlers.
 """
 
 import contextlib
-import datetime
 import os
 import shutil
 import sys
@@ -27,6 +26,7 @@ import stem.process
 import stem.util.term
 import urllib3
 
+from darc._compat import datetime
 from darc.const import FORCE, SE_EMPTY
 from darc.db import save_requests, save_selenium
 from darc.error import render_error
@@ -158,7 +158,7 @@ def crawler(url: str):
             return
 
         # timestamp
-        timestamp = datetime.datetime.now()
+        timestamp = datetime.now()
 
         path = has_raw(timestamp, link)
         if path is not None:
@@ -355,7 +355,7 @@ def loader(url: str):
         link = parse_link(url)
 
         # timestamp
-        timestamp = datetime.datetime.now()
+        timestamp = datetime.now()
 
         path = has_html(timestamp, link)
         if path is not None:

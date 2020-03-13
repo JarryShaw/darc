@@ -47,7 +47,6 @@ is typically as following::
 """
 
 import dataclasses
-import datetime
 import glob
 import json
 import multiprocessing
@@ -56,6 +55,7 @@ import pathlib
 import posixpath
 
 import darc.typing as typing
+from darc._compat import datetime
 from darc.const import PATH_DB, PATH_LN, TIME_CACHE
 from darc.link import Link
 
@@ -148,7 +148,7 @@ def has_raw(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pylin
 
     for item in glob_list:
         item_date = item.stem.split('_')[1]
-        date = datetime.datetime.fromisoformat(item_date)
+        date = datetime.fromisoformat(item_date)
         if time - date <= TIME_CACHE:
             return item
     return None
@@ -187,7 +187,7 @@ def has_html(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pyli
 
     for item in glob_list:
         item_date = item.stem.split('_')[1]
-        date = datetime.datetime.fromisoformat(item_date)
+        date = datetime.fromisoformat(item_date)
         if time - date <= TIME_CACHE:
             return item
     return None
@@ -200,7 +200,7 @@ def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylin
 
     Args:
         link: Link object to sanitise the path
-        time (datetime.datetime): Timestamp for the path.
+        time (datetime): Timestamp for the path.
         raw: If this is a raw HTML document from |requests|_.
         data: If this is a generic content type document.
         headers: If this is response headers from |requests|_.
@@ -227,7 +227,7 @@ def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylin
 
     path = os.path.join(link.base, link.name)
     if time is None:
-        time = datetime.datetime.now()
+        time = datetime.now()
     ts = time.isoformat()
 
     if raw:
@@ -325,7 +325,7 @@ def save_headers(time: typing.Datetime, link: Link,
     """Save HTTP response headers.
 
     Args:
-        time (datetime.datetime): Timestamp of response.
+        time (datetime): Timestamp of response.
         link: Link object of response.
         response (|Response|_): Response object to be saved.
         session (|Session|_): Session object of response.
@@ -399,7 +399,7 @@ def save_html(time: typing.Datetime, link: Link, html: typing.Union[str, bytes],
     """Save response.
 
     Args:
-        time (datetime.datetime): Timestamp of HTML document.
+        time (datetime): Timestamp of HTML document.
         link: Link object of original URL.
         html: Content of HTML document.
         raw: If is fetched from |requests|_.
@@ -439,7 +439,7 @@ def save_file(time: typing.Datetime, link: Link, content: bytes) -> str:
     file standard path to the relative path as in the URL.
 
     Args:
-        time (datetime.datetime): Timestamp of generic file.
+        time (datetime): Timestamp of generic file.
         link: Link object of original URL.
         content: Content of generic file.
 

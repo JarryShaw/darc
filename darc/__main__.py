@@ -52,7 +52,7 @@ def _exit():
 def get_parser() -> typing.ArgumentParser:
     """Argument parser."""
     parser = argparse.ArgumentParser('darc',
-                                     description='darkweb swiss knife crawler')
+                                     description='the darkweb crawling swiss army knife')
 
     parser.add_argument('-f', '--file', action='append', help='read links from file')
     parser.add_argument('link', nargs=argparse.REMAINDER, help='links to craw')

@@ -1,7 +1,7 @@
 ``darc`` - Darkweb Crawler Project
 ==================================
 
-``darc`` is designed as a swiss-knife for darkweb crawling.
+``darc`` is designed as a swiss army knife for darkweb crawling.
 It integrates ``requests`` to collect HTTP request and response
 information, such as cookies, header fields, etc. It also bundles
 ``selenium`` to provide a fully rendered web page and screenshot
@@ -124,7 +124,7 @@ The ``darc`` project provides a simple CLI::
 
    usage: darc [-h] [-f FILE] ...
 
-   darkweb swiss knife crawler
+   the darkweb crawling swiss army knife
 
    positional arguments:
      link                  links to craw

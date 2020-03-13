@@ -41,6 +41,7 @@
         "ptyprocess",
         "pygments",
         "pysocks",
+        "rstcheck",
         "signum",
         "tbselenium",
         "tmpfs",

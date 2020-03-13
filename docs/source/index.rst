@@ -11,7 +11,7 @@
 
    darc
 
-:mod:`darc` is designed as a swiss-knife for darkweb crawling.
+:mod:`darc` is designed as a swiss army knife for darkweb crawling.
 It integrates |requests|_ to collect HTTP request and response
 information, such as cookies, header fields, etc. It also bundles
 |selenium|_ to provide a fully rendered web page and screenshot
@@ -148,7 +148,7 @@ The :mod:`darc` project provides a simple CLI::
 
    usage: darc [-h] [-f FILE] ...
 
-   darkweb swiss knife crawler
+   the darkweb knife crawling swiss army knife
 
    positional arguments:
      link                  links to craw

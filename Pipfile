@@ -23,6 +23,7 @@ codecov = "*"
 sphinx = "*"
 sphinxcontrib-napoleon = "*"
 doc8 = "*"
+rstcheck = "*"
 
 [packages]
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}

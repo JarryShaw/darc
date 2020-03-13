@@ -13,7 +13,6 @@ lists.
 import concurrent.futures
 import io
 import os
-import urllib.robotparser
 
 import bs4
 import magic
@@ -21,6 +20,7 @@ import requests
 import stem.util.term
 
 import darc.typing as typing
+from darc._compat import RobotFileParser
 from darc.const import (CHECK, CHECK_NG, LINK_BLACK_LIST, LINK_FALLBACK, LINK_WHITE_LIST,
                         MIME_BLACK_LIST, MIME_FALLBACK, MIME_WHITE_LIST, PROXY_BLACK_LIST,
                         PROXY_FALLBACK, PROXY_WHITE_LIST)
@@ -144,7 +144,7 @@ def read_robots(link: str, text: str, host: typing.Optional[str] = None) -> typi
         .. [*] https://www.sitemaps.org/protocol.html#submit_robots
 
     """
-    rp = urllib.robotparser.RobotFileParser()
+    rp = RobotFileParser()
     with io.StringIO(text) as file:
         rp.parse(file)
 
@@ -173,7 +173,7 @@ def check_robots(link: Link) -> bool:
 
     robots = os.path.join(link.base, 'robots.txt')
     if os.path.isfile(robots):
-        rp = urllib.robotparser.RobotFileParser()
+        rp = RobotFileParser()
         with open(robots) as file:
             rp.parse(file)
         return rp.can_fetch(requests.utils.default_user_agent(), link.url)
