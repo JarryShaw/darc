@@ -11,6 +11,7 @@
 
    darc
    demo
+   docker
 
 :mod:`darc` is designed as a swiss army knife for darkweb crawling.
 It integrates |requests|_ to collect HTTP request and response
@@ -139,7 +140,7 @@ Please make sure you have Google Chrome and corresponding version of Chrome
 Driver installed on your system.
 
 However, the :mod:`darc` project is shipped with Docker and Compose support.
-Please see the project root for relevant files and more information.
+Please see ::doc:`/docker`  for more information.
 
 -----
 Usage
@@ -167,6 +168,8 @@ It can also be called through module entrypoint::
    The link files can contain **comment** lines, which should start with ``#``.
    Empty lines and comment lines will be ignored when loading.
 
+.. _configuration:
+
 -------------
 Configuration
 -------------
@@ -177,39 +180,41 @@ environment variables.
 General Configurations
 ----------------------
 
-.. data:: DARC_REBOOT
-   :type: bool (int)
+.. envvar:: DARC_REBOOT
+
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    If exit the program after first round, i.e. crawled all links from the
    |requests|_ link database and loaded all links from the |selenium|_
    link database.
 
-   :default: ``0``
+.. envvar:: DARC_DEBUG
 
-.. data:: DARC_DEBUG
-   :type: bool (int)
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    If run the program in debugging mode.
 
-   :default: ``0``
+.. envvar:: DARC_VERBOSE
 
-.. data:: DARC_VERBOSE
-   :type: bool (int)
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    If run the program in verbose mode. If :data:`DARC_DEBUG` is ``True``,
    then the verbose mode will be always enabled.
 
-   :default: ``0``
+.. envvar:: DARC_FORCE
 
-.. data:: DARC_FORCE
-   :type: bool (int)
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    If ignore ``robots.txt`` rules when crawling (c.f. :func:`~darc.crawl.crawler`).
 
-   :default: ``0``
+.. envvar:: DARC_CHECK
 
-.. data:: DARC_CHECK
-   :type: bool (int)
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    If check proxy and hostname before crawling (when calling
    :func:`~darc.parse.extract_links`, :func:`~darc.parse.read_sitemap`
@@ -218,60 +223,58 @@ General Configurations
    If :data:`DARC_CHECK_CONTENT_TYPE` is ``True``, then this environment
    variable will be always set as ``True``.
 
-   :default: ``0``
+.. envvar:: DARC_CHECK_CONTENT_TYPE
 
-.. data:: DARC_CHECK_CONTENT_TYPE
-   :type: bool (int)
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    If check content type through ``HEAD`` requests before crawling
    (when calling :func:`~darc.parse.extract_links`,
    :func:`~darc.parse.read_sitemap` and :func:`~darc.proxy.i2p.read_hosts`).
 
-   :default: ``0``
+.. envvar:: DARC_CPU
 
-.. data:: DARC_CPU
-   :type: int
+   :type: ``int``
+   :default: ``None``
 
    Number of concurrent processes. If not provided, then the number of
    system CPUs will be used.
 
-   :default: ``None``
+.. envvar:: DARC_MULTIPROCESSING
 
-.. data:: DARC_MULTIPROCESSING
-   :type: bool (int)
+   :type: ``bool`` (``int``)
+   :default: ``1``
 
    If enable *multiprocessing* support.
 
-   :default: ``1``
+.. envvar:: DARC_MULTITHREADING
 
-.. data:: DARC_MULTITHREADING
-   :type: bool (int)
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    If enable *multithreading* support.
 
-   :default: ``0``
+.. note::
 
-   .. note::
+   :data:`DARC_MULTIPROCESSING` and :data:`DARC_MULTITHREADING` can
+   **NOT** be toggled at the same time.
 
-      :data:`DARC_MULTIPROCESSING` and :data:`DARC_MULTITHREADING` can
-      **NOT** be toggled at the same time.
+.. envvar:: DARC_USER
 
-.. data:: DARC_USER
-   :type: str
+   :type: ``str``
+   :default: current login user (c.f. |getuser|_)
 
    *Non-root* user for proxies.
-
-   :default: current login user (c.f. |getuser|_)
 
 Data Storage
 ------------
 
-.. data:: PATH_DATA
-   :type: str (path)
+.. envvar:: PATH_DATA
+
+   :type: ``str`` (path)
+   :default: ``data``
 
    Path to data storage.
-
-   :default: ``data``
 
    .. seealso::
 
@@ -280,8 +283,10 @@ Data Storage
 Web Crawlers
 ------------
 
-.. data:: TIME_CACHE
-   :type: float
+.. envvar:: TIME_CACHE
+
+   :type: ``float``
+   :default: ``60``
 
    Time delta for caches in seconds.
 
@@ -294,10 +299,10 @@ Web Crawlers
       If :data:`TIME_CACHE` is ``None`` then caching will be marked
       as *forever*.
 
-   :default: ``60``
+.. envvar:: SE_WAIT
 
-.. data:: SE_WAIT
-   :type: float
+   :type: ``float``
+   :default: ``60``
 
    Time to wait for |selenium|_ to finish loading pages.
 
@@ -311,89 +316,94 @@ Web Crawlers
    .. |event| replace:: ``DOMContentLoaded``
    .. _event: https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event
 
-   :default: ``60``
-
 White / Black Lists
 -------------------
 
-.. data:: LINK_WHITE_LIST
-   :type: List[str] (json)
+.. envvar:: LINK_WHITE_LIST
+
+   :type: ``List[str]`` (JSON)
+   :default: ``[]``
 
    White list of hostnames should be crawled.
 
-   :default: ``[]``
-
    .. note::
 
       Regular expressions are supported.
 
-.. data:: LINK_BLACK_LIST
-   :type: List[str] (json)
+.. envvar:: LINK_BLACK_LIST
+
+   :type: ``List[str]`` (JSON)
+   :default: ``[]``
 
    Black list of hostnames should be crawled.
 
-   :default: ``[]``
-
    .. note::
 
       Regular expressions are supported.
 
-.. data:: LINK_FALLBACK
-   :type: bool (int)
+.. envvar:: LINK_FALLBACK
+
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    Fallback value for :func:`~darc.parse.match_host`.
 
-.. data:: MIME_WHITE_LIST
-   :type: List[str] (json)
+.. envvar:: MIME_WHITE_LIST
+
+   :type: ``List[str]`` (JSON)
+   :default: ``[]``
 
    White list of content types should be crawled.
 
-   :default: ``[]``
-
    .. note::
 
       Regular expressions are supported.
 
-.. data:: MIME_BLACK_LIST
-   :type: List[str] (json)
+.. envvar:: MIME_BLACK_LIST
+
+   :type: ``List[str]`` (JSON)
+   :default: ``[]``
 
    Black list of content types should be crawled.
 
-   :default: ``[]``
-
    .. note::
 
       Regular expressions are supported.
 
-.. data:: MIME_FALLBACK
-   :type: bool (int)
+.. envvar:: MIME_FALLBACK
+
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    Fallback value for :func:`~darc.parse.match_mime`.
 
-.. data:: PROXY_WHITE_LIST
-   :type: List[str] (json)
+.. envvar:: PROXY_WHITE_LIST
+
+   :type: ``List[str]`` (JSON)
+   :default: ``[]``
 
    White list of proxy types should be crawled.
 
-   :default: ``[]``
 
    .. note::
 
       The proxy types are **case insensitive**.
 
-.. data:: PROXY_BLACK_LIST
-   :type: List[str] (json)
+.. envvar:: PROXY_BLACK_LIST
+
+   :type: ``List[str]`` (JSON)
+   :default: ``[]``
 
    Black list of proxy types should be crawled.
 
-   :default: ``[]``
-
    .. note::
 
       The proxy types are **case insensitive**.
 
-.. data:: PROXY_FALLBACK
-   :type: bool (int)
+.. envvar:: PROXY_FALLBACK
+
+   :type: ``bool`` (``int``)
+   :default: ``0``
 
    Fallback value for :func:`~darc.parse.match_proxy`.
 
@@ -408,33 +418,33 @@ White / Black Lists
 Data Submission
 ---------------
 
-.. data:: API_RETRY
-   :type: int
+.. envvar:: API_RETRY
+
+   :type: ``int``
+   :default: ``3``
 
    Retry times for API submission when failure.
 
-   :default: ``3``
+.. envvar:: API_NEW_HOST
 
-.. data:: API_NEW_HOST
-   :type: str
+   :type: ``str``
+   :default: ``None``
 
    API URL for :func:`~darc.submit.submit_new_host`.
 
-   :default: ``None``
+.. envvar:: API_REQUESTS
 
-.. data:: API_REQUESTS
-   :type: str
+   :type: ``str``
+   :default: ``None``
 
    API URL for :func:`~darc.submit.submit_requests`.
 
-   :default: ``None``
+.. envvar:: API_SELENIUM
 
-.. data:: API_SELENIUM
-   :type: str
+   :type: ``str``
+   :default: ``None``
 
    API URL for :func:`~darc.submit.submit_selenium`.
-
-   :default: ``None``
 
 .. note::
 
@@ -446,65 +456,65 @@ Data Submission
 Tor Proxy Configuration
 -----------------------
 
-.. data:: TOR_PORT
-   :type: int
+.. envvar:: TOR_PORT
+
+   :type: ``int``
+   :default: ``9050``
 
    Port for Tor proxy connection.
 
-   :default: ``9050``
+.. envvar:: TOR_CTRL
 
-.. data:: TOR_CTRL
-   :type: int
+   :type: ``int``
+   :default: ``9051``
 
    Port for Tor controller connection.
 
-   :default: ``9051``
+.. envvar:: TOR_STEM
 
-.. data:: TOR_STEM
-   :type: bool (int)
+   :type: ``bool`` (``int``)
+   :default: ``1``
 
    If manage the Tor proxy through |stem|_.
 
    .. |stem| replace:: ``stem``
    .. _stem: https://stem.torproject.org
 
-   :default: ``1``
+.. envvar:: TOR_PASS
 
-.. data:: TOR_PASS
-   :type: str
+   :type: ``str``
+   :default: ``None``
 
    Tor controller authentication token.
-
-   :default: ``None``
 
    .. note::
 
       If not provided, it will be requested at runtime.
 
-.. data:: TOR_RETRY
-   :type: int
+.. envvar:: TOR_RETRY
+
+   :type: ``int``
+   :default: ``3``
 
    Retry times for Tor bootstrap when failure.
 
-   :default: ``3``
+.. envvar:: TOR_WAIT
 
-.. data:: TOR_WAIT
-   :type: float
+   :type: ``float``
+   :default: ``90``
 
    Time after which the attempt to start Tor is aborted.
-
-   :default: ``90``
 
    .. note::
 
       If not provided, there will be **NO** timeouts.
 
-.. data:: TOR_CFG
-   :type: Dict[str, Any] (json)
+.. envvar:: TOR_CFG
+
+   :type: ``Dict[str, Any]`` (JSON)
+   :default: ``{}``
 
    Tor bootstrap configuration for :func:`stem.process.launch_tor_with_config`.
-
-   :default: ``{}``
 
    .. note::
 
@@ -513,40 +523,40 @@ Tor Proxy Configuration
 I2P Proxy Configuration
 -----------------------
 
-.. data:: I2P_PORT
-   :type: int
+.. envvar:: I2P_PORT
+
+   :type: ``int``
+   :default: ``4444``
 
    Port for I2P proxy connection.
 
-   :default: ``4444``
+.. envvar:: I2P_RETRY
 
-.. data:: I2P_RETRY
-   :type: int
+   :type: ``int``
+   :default: ``3``
 
    Retry times for I2P bootstrap when failure.
 
-   :default: ``3``
+.. envvar:: I2P_WAIT
 
-.. data:: I2P_WAIT
-   :type: float
+   :type: ``float``
+   :default: ``90``
 
    Time after which the attempt to start I2P is aborted.
-
-   :default: ``90``
 
    .. note::
 
       If not provided, there will be **NO** timeouts.
 
-.. data:: I2P_ARGS
-   :type: str (shell)
+.. envvar:: I2P_ARGS
+
+   :type: ``str`` (Shell)
+   :default: ``''``
 
    I2P bootstrap arguments for ``i2prouter start``.
 
    If provided, it should be parsed as command
    line arguments (c.f. |split|_).
-
-   :default: ``''``
 
    .. note::
 
@@ -556,44 +566,44 @@ I2P Proxy Configuration
 ZeroNet Proxy Configuration
 ---------------------------
 
-.. data:: ZERONET_PORT
-   :type: int
+.. envvar:: ZERONET_PORT
+
+   :type: ``int``
+   :default: ``4444``
 
    Port for ZeroNet proxy connection.
 
-   :default: ``4444``
+.. envvar:: ZERONET_RETRY
 
-.. data:: ZERONET_RETRY
-   :type: int
+   :type: ``int``
+   :default: ``3``
 
    Retry times for ZeroNet bootstrap when failure.
 
-   :default: ``3``
+.. envvar:: ZERONET_WAIT
 
-.. data:: ZERONET_WAIT
-   :type: float
+   :type: ``float``
+   :default: ``90``
 
    Time after which the attempt to start ZeroNet is aborted.
-
-   :default: ``90``
 
    .. note::
 
       If not provided, there will be **NO** timeouts.
 
-.. data:: ZERONET_PATH
-   :type: str (path)
+.. envvar:: ZERONET_PATH
+
+   :type: ``str`` (path)
+   :default: ``/usr/local/src/zeronet``
 
    Path to the ZeroNet project.
 
-   :default: ``/usr/local/src/zeronet``
+.. envvar:: ZERONET_ARGS
 
-.. data:: ZERONET_ARGS
-   :type: str (shell)
+   :type: ``str`` (Shell)
+   :default: ``''``
 
    ZeroNet bootstrap arguments for ``ZeroNet.sh main``.
-
-   :default: ``''``
 
    .. note::
 
@@ -603,47 +613,47 @@ ZeroNet Proxy Configuration
 Freenet Proxy Configuration
 ---------------------------
 
-.. data:: FREENET_PORT
-   :type: int
+.. envvar:: FREENET_PORT
+
+   :type: ``int``
+   :default: ``8888``
 
    Port for Freenet proxy connection.
 
-   :default: ``8888``
+.. envvar:: FREENET_RETRY
 
-.. data:: FREENET_RETRY
-   :type: int
+   :type: ``int``
+   :default: ``3``
 
    Retry times for Freenet bootstrap when failure.
 
-   :default: ``3``
+.. envvar:: FREENET_WAIT
 
-.. data:: FREENET_WAIT
-   :type: float
+   :type: ``float``
+   :default: ``90``
 
    Time after which the attempt to start Freenet is aborted.
-
-   :default: ``90``
 
    .. note::
 
       If not provided, there will be **NO** timeouts.
 
-.. data:: FREENET_PATH
-   :type: str (path)
+.. envvar:: FREENET_PATH
+
+   :type: ``str`` (path)
+   :default: ``/usr/local/src/freenet``
 
    Path to the Freenet project.
 
-   :default: ``/usr/local/src/freenet``
+.. envvar:: FREENET_ARGS
 
-.. data:: FREENET_ARGS
-   :type: str (shell)
+   :type: ``str`` (Shell)
+   :default: ``''``
 
    Freenet bootstrap arguments for ``run.sh start``.
 
    If provided, it should be parsed as command
    line arguments (c.f. |split|_).
-
-   :default: ``''``
 
    .. note::
 

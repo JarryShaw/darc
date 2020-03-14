@@ -10,6 +10,7 @@ The :mod:`darc.crawl` module provides two types of crawlers.
 """
 
 import contextlib
+import math
 import os
 import shutil
 import sys
@@ -338,6 +339,17 @@ def loader(url: str):
     using :func:`~darc.save.save_html`, and a full-page screenshot
     will be taken and saved.
 
+    .. note::
+
+       When taking full-page screenshot, :func:`~darc.crawl.loader` will
+       use :javascript:`document.body.scrollHeight` to get the total
+       height of web page. If the page height is *less than* **1,000 pixels**,
+       then :mod:`darc` will by default set the height as **1,000 pixels**.
+
+       Later :mod:`darc` will tell |selenium|_ to resize the window (in
+       *headless* mode) to **1,024 pixels** in width and **110%** of the
+       page height in height, and take a *PNG* screenshot.
+
     .. seealso::
 
        * :data:`darc.const.SE_EMPTY`
@@ -408,7 +420,9 @@ def loader(url: str):
                     height = driver.execute_script('return document.body.scrollHeight')
 
                     # resize window (with some magic numbers)
-                    driver.set_window_size(1000, height + 100)
+                    if height < 1000:
+                        height = 1000
+                    driver.set_window_size(1024, math.ceil(height * 1.1))
 
                     # take a full page screenshot
                     path = sanitise(link, timestamp, screenshot=True)

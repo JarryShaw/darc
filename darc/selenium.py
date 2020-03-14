@@ -67,10 +67,17 @@ def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefi
         * :data:`darc.proxy.i2p.I2P_PORT`
 
     References:
-        * https://peter.sh/experiments/chromium-command-line-switches/
-        * https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
-        * http://crbug.com/715363
-        * https://www.chromium.org/developers/design-documents/network-stack/socks-proxy
+        * `Google Chrome command line switches <https://peter.sh/experiments/chromium-command-line-switches/>`__
+        * Disable sandbox (``--no-sandbox``) when running as ``root`` user
+
+          - https://crbug.com/638180
+          - https://stackoverflow.com/a/50642913/7218152
+
+        * Disable usage of ``/dev/shm``
+
+          - http://crbug.com/715363
+
+        * `Using Socks proxy <https://www.chromium.org/developers/design-documents/network-stack/socks-proxy>`__
 
     """
     _system = platform.system()

@@ -17,7 +17,7 @@ General Configurations
    link database.
 
    :default: ``False``
-   :environ: :data:`DARC_REBOOT`
+   :environ: :envvar:`DARC_REBOOT`
 
 .. data:: darc.const.DEBUG
    :type: bool
@@ -25,7 +25,7 @@ General Configurations
    If run the program in debugging mode.
 
    :default: ``False``
-   :environ: :data:`DARC_DEBUG`
+   :environ: :envvar:`DARC_DEBUG`
 
 .. data:: darc.const.VERBOSE
    :type: bool
@@ -34,7 +34,7 @@ General Configurations
    then the verbose mode will be always enabled.
 
    :default: ``False``
-   :environ: :data:`DARC_VERBOSE`
+   :environ: :envvar:`DARC_VERBOSE`
 
 .. data:: darc.const.FORCE
    :type: bool
@@ -42,7 +42,7 @@ General Configurations
    If ignore ``robots.txt`` rules when crawling (c.f. :func:`~darc.crawl.crawler`).
 
    :default: ``False``
-   :environ: :data:`DARC_FORCE`
+   :environ: :envvar:`DARC_FORCE`
 
 .. data:: darc.const.CHECK
    :type: bool
@@ -55,7 +55,7 @@ General Configurations
    variable will be always set as ``True``.
 
    :default: ``False``
-   :environ: :data:`DARC_CHECK`
+   :environ: :envvar:`DARC_CHECK`
 
 .. data:: darc.const.CHECK_NG
    :type: bool
@@ -65,7 +65,7 @@ General Configurations
    :func:`~darc.parse.read_sitemap` and :func:`~darc.proxy.i2p.read_hosts`).
 
    :default: ``False``
-   :environ: :data:`DARC_CHECK_CONTENT_TYPE`
+   :environ: :envvar:`DARC_CHECK_CONTENT_TYPE`
 
 .. data:: darc.const.ROOT
    :type: str
@@ -84,7 +84,7 @@ General Configurations
    system CPUs will be used.
 
    :default: ``None``
-   :environ: :data:`DARC_CPU`
+   :environ: :envvar:`DARC_CPU`
 
 .. data:: darc.const.FLAG_MP
    :type: bool
@@ -92,7 +92,7 @@ General Configurations
    If enable *multiprocessing* support.
 
    :default: ``True``
-   :environ: :data:`DARC_MULTIPROCESSING`
+   :environ: :envvar:`DARC_MULTIPROCESSING`
 
 .. data:: darc.const.FLAG_TH
    :type: bool
@@ -100,7 +100,7 @@ General Configurations
    If enable *multithreading* support.
 
    :default: ``False``
-   :environ: :data:`DARC_MULTITHREADING`
+   :environ: :envvar:`DARC_MULTITHREADING`
 
    .. note::
 
@@ -113,7 +113,7 @@ General Configurations
    *Non-root* user for proxies.
 
    :default: current login user (c.f. |getuser|_)
-   :environ: :data:`DARC_USER`
+   :environ: :envvar:`DARC_USER`
 
    .. |getuser| replace:: :func:`getpass.getuser`
    .. _getuser: https://docs.python.org/3/library/getpass.html#getpass.getuser
@@ -127,7 +127,7 @@ Data Storage
    Path to data storage.
 
    :default: ``data``
-   :environ: :data:`PATH_DATA`
+   :environ: :envvar:`PATH_DATA`
 
    .. seealso::
 
@@ -203,7 +203,7 @@ Web Crawlers
       will be marked as *forever*.
 
    :default: ``60``
-   :environ: :data:`TIME_CACHE`
+   :environ: :envvar:`TIME_CACHE`
 
 .. data:: darc.const.SE_WAIT
    :type: float
@@ -221,7 +221,7 @@ Web Crawlers
    .. _event: https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event
 
    :default: ``60``
-   :environ: :data:`SE_WAIT`
+   :environ: :envvar:`SE_WAIT`
 
 .. data:: darc.const.SE_EMPTY
    :value: '<html><head></head><body></body></html>'
@@ -241,7 +241,7 @@ White / Black Lists
    White list of hostnames should be crawled.
 
    :default: ``[]``
-   :environ: :data:`LINK_WHITE_LIST`
+   :environ: :envvar:`LINK_WHITE_LIST`
 
    .. note::
 
@@ -253,7 +253,7 @@ White / Black Lists
    Black list of hostnames should be crawled.
 
    :default: ``[]``
-   :environ: :data:`LINK_BLACK_LIST`
+   :environ: :envvar:`LINK_BLACK_LIST`
 
    .. note::
 
@@ -265,7 +265,7 @@ White / Black Lists
    Fallback value for :func:`~darc.parse.match_host`.
 
    :default: ``False``
-   :environ: :data:`LINK_FALLBACK`
+   :environ: :envvar:`LINK_FALLBACK`
 
 .. data:: darc.const.MIME_WHITE_LIST
    :type: List[re.Pattern]
@@ -273,7 +273,7 @@ White / Black Lists
    White list of content types should be crawled.
 
    :default: ``[]``
-   :environ: :data:`MIME_WHITE_LIST`
+   :environ: :envvar:`MIME_WHITE_LIST`
 
    .. note::
 
@@ -285,7 +285,7 @@ White / Black Lists
    Black list of content types should be crawled.
 
    :default: ``[]``
-   :environ: :data:`MIME_BLACK_LIST`
+   :environ: :envvar:`MIME_BLACK_LIST`
 
    .. note::
 
@@ -297,7 +297,7 @@ White / Black Lists
    Fallback value for :func:`~darc.parse.match_mime`.
 
    :default: ``False``
-   :environ: :data:`MIME_FALLBACK`
+   :environ: :envvar:`MIME_FALLBACK`
 
 .. data:: darc.const.PROXY_WHITE_LIST
    :type: List[str]
@@ -305,7 +305,7 @@ White / Black Lists
    White list of proxy types should be crawled.
 
    :default: ``[]``
-   :environ: :data:`PROXY_WHITE_LIST`
+   :environ: :envvar:`PROXY_WHITE_LIST`
 
    .. note::
 
@@ -317,7 +317,7 @@ White / Black Lists
    Black list of proxy types should be crawled.
 
    :default: ``[]``
-   :environ: :data:`PROXY_BLACK_LIST`
+   :environ: :envvar:`PROXY_BLACK_LIST`
 
    .. note::
 
@@ -329,7 +329,7 @@ White / Black Lists
    Fallback value for :func:`~darc.parse.match_proxy`.
 
    :default: ``False``
-   :environ: :data:`PROXY_FALLBACK`
+   :environ: :envvar:`PROXY_FALLBACK`
 
 .. |requests| replace:: ``requests``
 .. _requests: https://requests.readthedocs.io
