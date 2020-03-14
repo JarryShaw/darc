@@ -16,6 +16,10 @@ General Configurations
    |requests|_ link database and loaded all links from the |selenium|_
    link database.
 
+   This can be useful especially when the capacity is limited and you wish
+   to save some space before continuing next round. See
+   :doc:`Docker integration </docker>` for more information.
+
    :default: ``False``
    :environ: :envvar:`DARC_REBOOT`
 
