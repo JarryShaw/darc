@@ -1,6 +1,6 @@
 .PHONY: logs docs
 
-include .env
+-include .env
 
 export CODECOV_TOKEN
 export PIPENV_VERBOSITY=-1
