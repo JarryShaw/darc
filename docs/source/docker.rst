@@ -96,7 +96,7 @@ image. Environment variables can be set as described in the
 .. note::
 
    Should you wish to run :mod:`darc` in reboot mode, i.e. set
-   :envvar:`DARC_REBOOT` and/or :data:`~darc.const.DARC_REBOOT`
+   :envvar:`DARC_REBOOT` and/or :data:`~darc.const.REBOOT`
    as ``True``, you may wish to change the entrypoint to
 
    .. code:: shell
