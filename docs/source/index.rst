@@ -10,6 +10,7 @@
    :maxdepth: 4
 
    darc
+   demo
 
 :mod:`darc` is designed as a swiss army knife for darkweb crawling.
 It integrates |requests|_ to collect HTTP request and response

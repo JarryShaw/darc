@@ -61,3 +61,9 @@
    and :data:`~darc.submit.API_SELENIUM` is ``None``, the corresponding
    submit function will save the JSON data in the path
    specified by :data:`~darc.submit.PATH_API`.
+
+.. seealso::
+
+   The :mod:`darc` provides a demo on how to implement a :mod:`darc`-compliant
+   web backend for the data submission module. See the :doc:`demo </demo>` page
+   for more information.

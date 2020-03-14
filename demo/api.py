@@ -1,18 +1,4 @@
 # -*- coding: utf-8 -*-
-"""This is a demo of API for communication between the
-:mod:`darc` crawler and web UI. Assuming the web UI is
-developed using ``Flask``.
-
-Terminology
-===========
-
-A URL can be represented as following structure::
-
-    ``<scheme>://<netloc>/<path>;<params>?<query>#<fragment>``
-
-c.f. ``urllib.parse.urlparse``.
-
-"""
 
 import flask  # pylint: disable=import-error
 
