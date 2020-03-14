@@ -31,6 +31,11 @@ FORCE = bool(int(os.getenv('DARC_FORCE', '0')))
 CHECK_NG = bool(int(os.getenv('DARC_CHECK_CONTENT_TYPE', '0')))
 CHECK = bool(int(os.getenv('DARC_CHECK', '0'))) or CHECK_NG
 
+# save mode?
+_SAVE = bool(int(os.getenv('DARC_SAVE', '0')))
+SAVE_REQUESTS = bool(int(os.getenv('DARC_SAVE_REQUESTS', '0'))) or _SAVE
+SAVE_SELENIUM = bool(int(os.getenv('DARC_SAVE_SELENIUM', '0'))) or _SAVE
+
 # root path
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CWD = os.path.realpath(os.curdir)

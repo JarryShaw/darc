@@ -27,6 +27,12 @@ services:
       DARC_CHECK: 1
       # check mode (check content type before crawling)
       DARC_CHECK_CONTENT_TYPE: 0
+      # save mode
+      DARC_SAVE: 0
+      # save mode (for requests)
+      DAVE_SAVE_REQUESTS: 0
+      # save mode (for selenium)
+      DAVE_SAVE_SELENIUM: 0
       # processes
       DARC_CPU: 16
       # multiprocessing

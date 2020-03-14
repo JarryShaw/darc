@@ -287,6 +287,44 @@ Data Storage
 Web Crawlers
 ------------
 
+.. envvar:: DARC_SAVE
+
+   :type: ``bool`` (``int``)
+   :default: ``0``
+
+   If save processed link back to database.
+
+   .. note::
+
+      If :envvar:`DARC_SAVE` is ``True``, then :envvar:`DARC_SAVE_REQUESTS`
+      and :envvar:`DARC_SAVE_SELENIUM` will be forced to be ``True``.
+
+   .. seealso::
+
+      See :mod:`darc.db` for more information about link database.
+
+.. envvar:: DARC_SAVE_REQUESTS
+
+   :type: ``bool`` (``int``)
+   :default: ``0``
+
+   If save :func:`~darc.crawl.crawler` crawled link back to |requests|_ database.
+
+   .. seealso::
+
+      See :mod:`darc.db` for more information about link database.
+
+.. envvar:: DARC_SAVE_SELENIUM
+
+   :type: ``bool`` (``int``)
+   :default: ``0``
+
+   If save :func:`~darc.crawl.loader` crawled link back to |selenium|_ database.
+
+   .. seealso::
+
+      See :mod:`darc.db` for more information about link database.
+
 .. envvar:: TIME_CACHE
 
    :type: ``float``

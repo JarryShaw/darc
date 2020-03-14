@@ -28,7 +28,7 @@ import stem.util.term
 import urllib3
 
 from darc._compat import datetime
-from darc.const import FORCE, SE_EMPTY
+from darc.const import FORCE, SAVE_REQUESTS, SAVE_SELENIUM, SE_EMPTY
 from darc.db import save_requests, save_selenium
 from darc.error import render_error
 from darc.link import parse_link
@@ -314,6 +314,9 @@ def crawler(url: str):
             #QUEUE_SELENIUM.put(link.url)
             save_selenium(link.url, single=True)
 
+            if SAVE_REQUESTS:
+                save_requests(link.url, single=True)
+
             print(f'[REQUESTS] Requested {link.url}')
     except Exception:
         error = f'[Error from {url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
@@ -437,6 +440,9 @@ def loader(url: str):
             # add link to queue
             #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
             save_requests(extract_links(link.url, html))
+
+            if SAVE_SELENIUM:
+                save_selenium(link.url, single=True)
 
             print(f'[SELENIUM] Loaded {link.url}')
     except Exception:
