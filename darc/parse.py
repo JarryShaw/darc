@@ -50,13 +50,13 @@ def match_proxy(proxy: str) -> bool:
     if proxy == 'script':
         return True
 
-    # any matching white list
-    if proxy in PROXY_WHITE_LIST:
-        return False
-
     # any matching black list
     if proxy in PROXY_BLACK_LIST:
         return True
+
+    # any matching white list
+    if proxy in PROXY_WHITE_LIST:
+        return False
 
     # fallback
     return PROXY_FALLBACK
@@ -85,13 +85,13 @@ def match_host(host: str) -> bool:
     if host is None:
         return True
 
-    # any matching white list
-    if any(pattern.fullmatch(host) is not None for pattern in LINK_WHITE_LIST):
-        return False
-
     # any matching black list
     if any(pattern.fullmatch(host) is not None for pattern in LINK_BLACK_LIST):
         return True
+
+    # any matching white list
+    if any(pattern.fullmatch(host) is not None for pattern in LINK_WHITE_LIST):
+        return False
 
     # fallback
     return LINK_FALLBACK
@@ -112,13 +112,13 @@ def match_mime(mime: str) -> bool:
         * :data:`darc.const.MIME_FALLBACK`
 
     """
-    # any matching white list
-    if any(pattern.fullmatch(mime) is not None for pattern in MIME_WHITE_LIST):
-        return False
-
     # any matching black list
     if any(pattern.fullmatch(mime) is not None for pattern in MIME_BLACK_LIST):
         return True
+
+    # any matching white list
+    if any(pattern.fullmatch(mime) is not None for pattern in MIME_WHITE_LIST):
+        return False
 
     # fallback
     return MIME_FALLBACK
