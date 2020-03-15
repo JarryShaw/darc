@@ -38,10 +38,10 @@ import stem.util.term
 
 import darc.typing as typing
 from darc._compat import nullcontext
-from darc.const import FLAG_MP, FLAG_TH, PATH_QR, PATH_QS, VERBOSE
+from darc.const import CHECK, FLAG_MP, FLAG_TH, PATH_QR, PATH_QS, VERBOSE
 from darc.error import render_error
 from darc.link import quote, unquote
-from darc.parse import match_proxy
+from darc.parse import _check, match_proxy
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap, has_freenet
 from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, has_tor, tor_bootstrap
@@ -98,12 +98,16 @@ def save_selenium(entries: typing.Iterable[str], single: bool = False):
                     print(quote(link), file=file)
 
 
-def load_requests() -> typing.List[str]:
+def load_requests(check: bool = CHECK) -> typing.List[str]:
     """Load link from the |requests|_ database.
 
     After loading, :mod:`darc` will backup the original database
     ``queue_requests.txt`` as ``queue_requests.txt.tmp`` and
     empty the loaded database.
+
+    Args:
+        check: If perform checks on loaded links,
+            default to :data:`~darc.const.CHECK`.
 
     Returns:
         List of loaded links from the |requests|_ database.
@@ -126,6 +130,9 @@ def load_requests() -> typing.List[str]:
             random.shuffle(link_list)
         link_pool = sorted(set(link_list))
 
+        if check:
+            link_pool = _check(link_pool)
+
         if not _TOR_BS_FLAG and has_tor(link_pool) and not match_proxy('tor'):
             tor_bootstrap()
         if not _I2P_BS_FLAG and has_i2p(link_pool) and not match_proxy('i2p'):
@@ -146,12 +153,16 @@ def load_requests() -> typing.List[str]:
     return link_pool
 
 
-def load_selenium() -> typing.List[str]:
+def load_selenium(check: bool = CHECK) -> typing.List[str]:
     """Load link from the |selenium|_ database.
 
     After loading, :mod:`darc` will backup the original database
     ``queue_selenium.txt`` as ``queue_selenium.txt.tmp`` and
     empty the loaded database.
+
+    Args:
+        check: If perform checks on loaded links,
+            default to :data:`~darc.const.CHECK`.
 
     Returns:
         List of loaded links from the |selenium|_ database.
@@ -173,6 +184,9 @@ def load_selenium() -> typing.List[str]:
         if link_list:
             random.shuffle(link_list)
         link_pool = sorted(set(link_list))
+
+        if check:
+            link_pool = _check(link_pool)
         os.rename(PATH_QS, f'{PATH_QS}.tmp')
 
     if VERBOSE:
