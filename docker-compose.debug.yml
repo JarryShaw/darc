@@ -111,7 +111,7 @@ services:
       # link black list
       LINK_BLACK_LIST: '[ "(.*\\.)?facebookcorewwwi\\.onion", "(.*\\.)?nytimes3xbfgragh\\.onion" ]'
       # link fallback flag
-      LINK_FALLBACK: 1
+      LINK_FALLBACK: 0
       # content type white list
       MIME_WHITE_LIST: '[ "text/html", "application/xhtml+xml" ]'
       # content type black list
