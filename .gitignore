@@ -1,4 +1,6 @@
 
+*.bak.*
+
 .env
 .venv
 

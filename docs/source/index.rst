@@ -270,6 +270,22 @@ General Configurations
 
    *Non-root* user for proxies.
 
+.. envvar:: DARC_MAX_POOL
+
+   :type: ``int``
+   :default: ``1_000``
+
+   Maximum number of links loaded from the database.
+
+   .. note::
+
+      If is an infinit ``inf``, no limit will be applied.
+
+   .. seealso::
+
+      * :func:`darc.db.load_requests`
+      * :func:`darc.db.load_selenium`
+
 Data Storage
 ------------
 

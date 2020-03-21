@@ -27,6 +27,18 @@
       * :data:`darc.const.FLAG_MP`
       * :data:`darc.const.FLAG_TH`
 
+.. data:: darc.db.MAX_POOL
+   :type: int
+
+   :default: ``1_000``
+   :environ: :envvar:`DARC_MAX_POOL`
+
+   Maximum number of links loading from the database.
+
+   .. note::
+
+      If is an infinit ``inf``, no limit will be applied.
+
 .. |requests| replace:: ``requests``
 .. _requests: https://requests.readthedocs.io
 .. |selenium| replace:: ``selenium``

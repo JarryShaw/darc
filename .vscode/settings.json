@@ -26,6 +26,7 @@
         "idna",
         "inited",
         "isfinite",
+        "isinf",
         "jnlp",
         "mailto",
         "mccabe",

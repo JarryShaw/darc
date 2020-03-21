@@ -44,6 +44,8 @@ services:
       DARC_WAIT: 60
       # data storage
       PATH_DATA: "data"
+      # max pool
+      DARC_MAX_POOL: 1_000
       # Tor proxy & control port
       TOR_PORT: 9050
       TOR_CTRL: 9051

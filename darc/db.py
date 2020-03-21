@@ -27,6 +27,7 @@ to its file extension.
 
 """
 
+import math
 import multiprocessing
 import os
 import pprint
@@ -46,6 +47,11 @@ from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap, has_freenet
 from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, has_tor, tor_bootstrap
 from darc.proxy.zeronet import _ZERONET_BS_FLAG, has_zeronet, zeronet_bootstrap
+
+# max pool
+MAX_POOL = float(os.getenv('DARC_MAX_POOL', '1_000'))
+if math.isfinite(MAX_POOL):
+    MAX_POOL = math.floor(MAX_POOL)
 
 # database I/O lock
 QR_LOCK = multiprocessing.Lock()
@@ -116,15 +122,30 @@ def load_requests(check: bool = CHECK) -> typing.List[str]:
         Lines start with ``#`` will be considered as comments.
         Empty lines and comment lines will be ignored when loading.
 
+        At runtime, the function will load links with maximum number
+        at :data:`~darc.db.MAX_POOL` to limit the memory usage.
+
     """
     link_pool = list()
     if os.path.isfile(PATH_QR):
+        overflow = False
         link_list = list()
         with open(PATH_QR) as file:
+            index = 0
             for line in filter(None, map(lambda s: s.strip(), file)):
                 if line.startswith('#'):
                     continue
                 link_list.append(unquote(line.strip()))
+
+                index += 1
+                if index >= MAX_POOL:
+                    overflow = True
+                    break
+
+            if overflow:
+                with open(f'{PATH_QR}.save', 'w') as temp_file:
+                    for line in filter(None, map(lambda s: s.strip(), file)):
+                        print(line, file=temp_file)
 
         if link_list:
             random.shuffle(link_list)
@@ -142,6 +163,9 @@ def load_requests(check: bool = CHECK) -> typing.List[str]:
         if not _FREENET_BS_FLAG and has_freenet(link_pool) and not match_proxy('freenet'):
             freenet_bootstrap()
         os.rename(PATH_QR, f'{PATH_QR}.tmp')
+
+        if overflow:
+            os.rename(f'{PATH_QR}.save', PATH_QR)
 
     if VERBOSE:
         print(stem.util.term.format('-*- [REQUESTS] LINK POOL -*-',
@@ -171,15 +195,30 @@ def load_selenium(check: bool = CHECK) -> typing.List[str]:
         Lines start with ``#`` will be considered as comments.
         Empty lines and comment lines will be ignored when loading.
 
+        At runtime, the function will load links with maximum number
+        at :data:`~darc.db.MAX_POOL` to limit the memory usage.
+
     """
     link_pool = list()
     if os.path.isfile(PATH_QS):
+        overflow = False
         link_list = list()
         with open(PATH_QS) as file:
+            index = 0
             for line in filter(None, map(lambda s: s.strip(), file)):
                 if line.startswith('#'):
                     continue
                 link_list.append(unquote(line.strip()))
+
+                index += 1
+                if index >= MAX_POOL:
+                    overflow = True
+                    break
+
+            if overflow:
+                with open(f'{PATH_QS}.save', 'w') as temp_file:
+                    for line in filter(None, map(lambda s: s.strip(), file)):
+                        print(line, file=temp_file)
 
         if link_list:
             random.shuffle(link_list)
@@ -188,6 +227,9 @@ def load_selenium(check: bool = CHECK) -> typing.List[str]:
         if check:
             link_pool = _check(link_pool)
         os.rename(PATH_QS, f'{PATH_QS}.tmp')
+
+        if overflow:
+            os.rename(f'{PATH_QS}.save', PATH_QS)
 
     if VERBOSE:
         print(stem.util.term.format('-*- [SELENIUM] LINK POOL -*-',
