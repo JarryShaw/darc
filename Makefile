@@ -39,6 +39,7 @@ gitlab-prep:
 	find gitlab -depth 1 | grep -v '.git' | xargs rm -rf
 	cp -rf \
 	    darc \
+		docker \
 	    docs \
 	    extra \
 	    text \
