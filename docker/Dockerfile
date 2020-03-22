@@ -24,7 +24,6 @@ RUN set -x \
  && apt-get install --yes --no-install-recommends \
         apt-utils \
  && apt-get install --yes --no-install-recommends \
-        curl \
         gcc \
         g++ \
         libmagic1 \
@@ -32,6 +31,7 @@ RUN set -x \
         software-properties-common \
         tar \
         unzip \
+        wget \
         zlib1g-dev \
  && add-apt-repository ppa:deadsnakes/ppa --yes \
  && add-apt-repository ppa:linuxuprising/java --yes \
@@ -44,7 +44,7 @@ RUN apt-get update \
         python3-wheel \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
 RUN mkdir -p /var/cache/oracle-jdk13-installer/ \
- && curl --output /var/cache/oracle-jdk13-installer/jdk-13.0.2_linux-x64_bin.tar.gz \
+ && wget -O /var/cache/oracle-jdk13-installer/jdk-13.0.2_linux-x64_bin.tar.gz \
         https://github.com/JarryShaw/darc/raw/master/vendor/jdk-13.0.2_linux-x64_bin.tar.gz
 RUN pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
@@ -99,7 +99,7 @@ RUN set -x \
 
 COPY vendor/chromedriver_linux64-79.0.3945.36.zip /tmp/
      #vendor/google-chrome-stable_current_amd64.deb /tmp/
-RUN curl --output /tmp/google-chrome-stable_current_amd64.deb \
+RUN wget -O /tmp/google-chrome-stable_current_amd64.deb \
         https://github.com/JarryShaw/darc/raw/master/vendor/google-chrome-stable_current_amd64.deb
 RUN set -x \
  ## ChromeDriver
