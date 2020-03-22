@@ -116,6 +116,14 @@ Driver installed on your system.
 However, the ``darc`` project is shipped with Docker and Compose support.
 Please see the project root for relevant files and more information.
 
+Or, you may refer to and/or install from the `Docker Hub`_ repository:
+
+.. code:: shell
+
+   docker pull jsnbzh/darc[:TAGNAME]
+
+.. _Docker Hub: https://hub.docker.com/r/jsnbzh/darc
+
 -----
 Usage
 -----

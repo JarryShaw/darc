@@ -57,21 +57,21 @@ def _load_last_word():
     #     os.remove(PATH_QS)
 
     if os.path.isfile(f'{PATH_QR}.tmp'):
-        with open(f'{PATH_QR}.tmp') as file:
-            link_list = file.read()
-        with open(f'{PATH_QR}', 'a') as file:
-            print(file=file)
-            print('# last words', file=file)
-            file.write(link_list)
+        with open(f'{PATH_QR}.tmp') as file_temp:
+            with open(f'{PATH_QR}', 'a') as file:
+                print(file=file)
+                print('# last words', file=file)
+                for line in file_temp:
+                    print(line, file=file)
         os.remove(f'{PATH_QR}.tmp')
 
     if os.path.isfile(f'{PATH_QS}.tmp'):
-        with open(f'{PATH_QS}.tmp') as file:
-            link_list = file.read()
-        with open(f'{PATH_QS}', 'a') as file:
-            print(file=file)
-            print('# last words', file=file)
-            file.write(link_list)
+        with open(f'{PATH_QS}.tmp') as file_temp:
+            with open(f'{PATH_QS}', 'a') as file:
+                print(file=file)
+                print('# last words', file=file)
+                for line in file_temp:
+                    print(line, file=file)
         os.remove(f'{PATH_QS}.tmp')
 
 
@@ -112,19 +112,21 @@ def _dump_last_word(errors: bool = True):
 
     if errors:
         if os.path.isfile(f'{PATH_QR}.tmp'):
-            with open(f'{PATH_QR}.tmp') as file:
-                link_list = file.read()
-            with open(f'{PATH_QR}', 'a') as file:
-                print('# last words', file=file)
-                file.write(link_list)
+            with open(f'{PATH_QR}.tmp') as file_temp:
+                with open(f'{PATH_QR}', 'a') as file:
+                    print(file=file)
+                    print('# last words', file=file)
+                    for line in file_temp:
+                        print(line, file=file)
             os.remove(f'{PATH_QR}.tmp')
 
         if os.path.isfile(f'{PATH_QS}.tmp'):
-            with open(f'{PATH_QS}.tmp') as file:
-                link_list = file.read()
-            with open(f'{PATH_QS}', 'a') as file:
-                print('# last words', file=file)
-                file.write(link_list)
+            with open(f'{PATH_QS}.tmp') as file_temp:
+                with open(f'{PATH_QS}', 'a') as file:
+                    print(file=file)
+                    print('# last words', file=file)
+                    for line in file_temp:
+                        print(line, file=file)
             os.remove(f'{PATH_QS}.tmp')
     else:
         if os.path.isfile(f'{PATH_QR}.tmp'):

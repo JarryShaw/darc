@@ -7,7 +7,7 @@
 ==================================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    darc
    demo
@@ -140,7 +140,15 @@ Please make sure you have Google Chrome and corresponding version of Chrome
 Driver installed on your system.
 
 However, the :mod:`darc` project is shipped with Docker and Compose support.
-Please see ::doc:`/docker`  for more information.
+Please see :doc:`/docker`  for more information.
+
+Or, you may refer to and/or install from the `Docker Hub`_ repository:
+
+.. code:: shell
+
+   docker pull jsnbzh/darc[:TAGNAME]
+
+.. _Docker Hub: https://hub.docker.com/r/jsnbzh/darc
 
 -----
 Usage

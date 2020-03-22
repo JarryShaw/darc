@@ -12,7 +12,7 @@
 FROM ubuntu:bionic
 
 LABEL Name=darc \
-      Version=0.1.8
+      Version=0.1.9
 #EXPOSE 9050
 
 STOPSIGNAL SIGINT
@@ -68,6 +68,7 @@ RUN apt-get update \
         python3-setuptools \
         python3-wheel \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
+# workaround for Git LFS as Docker Hub not supporting yet
 RUN mkdir -p /var/cache/oracle-jdk13-installer/ \
  && wget -O /var/cache/oracle-jdk13-installer/jdk-13.0.2_linux-x64_bin.tar.gz \
         https://github.com/JarryShaw/darc/raw/master/vendor/jdk-13.0.2_linux-x64_bin.tar.gz
@@ -126,6 +127,7 @@ RUN set -x \
 # ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
 COPY vendor/chromedriver_linux64-79.0.3945.36.zip /tmp/
      #vendor/google-chrome-stable_current_amd64.deb /tmp/
+# workaround for Git LFS as Docker Hub not supporting yet
 RUN wget -O /tmp/google-chrome-stable_current_amd64.deb \
         https://github.com/JarryShaw/darc/raw/master/vendor/google-chrome-stable_current_amd64.deb
 RUN set -x \

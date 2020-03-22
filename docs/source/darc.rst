@@ -1,3 +1,5 @@
+.. module:: darc
+
 Darkweb Crawler Project
 =======================
 

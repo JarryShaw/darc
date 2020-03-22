@@ -2,8 +2,16 @@ Docker Integration
 ==================
 
 The :mod:`darc` project is integrated with Docker and
-Compose. Though not published to Docker Hub, you can
+Compose. Though published to `Docker Hub`_, you can
 still build by yourself.
+
+.. _Docker Hub: https://hub.docker.com/r/jsnbzh/darc
+
+.. important::
+
+   The ``debug`` image contains miscellaneous documents,
+   i.e. whole repository in it; and pre-installed some
+   useful tools for debugging, such as IPython, etc.
 
 The Docker image is based on `Ubuntu Bionic`_ (18.04 LTS),
 setting up all Python dependencies for the :mod:`darc`
