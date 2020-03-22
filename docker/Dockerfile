@@ -17,13 +17,14 @@ ENV LANG="C.UTF-8" \
 
 COPY extra/retry.sh /usr/local/bin/retry
 COPY extra/install.py /usr/local/bin/pty-install
-COPY vendor/jdk-13.0.2_linux-x64_bin.tar.gz /var/cache/oracle-jdk13-installer/
+#COPY vendor/jdk-13.0.2_linux-x64_bin.tar.gz /var/cache/oracle-jdk13-installer/
 
 RUN set -x \
  && apt-get update \
  && apt-get install --yes --no-install-recommends \
         apt-utils \
  && apt-get install --yes --no-install-recommends \
+        curl \
         gcc \
         g++ \
         libmagic1 \
@@ -42,6 +43,8 @@ RUN apt-get update \
         python3-setuptools \
         python3-wheel \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
+RUN curl --output /var/cache/oracle-jdk13-installer/ \
+        https://github.com/JarryShaw/darc/raw/master/vendor/jdk-13.0.2_linux-x64_bin.tar.gz
 RUN pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
  && pty-install --stdin 'yes' apt-get install --yes \
@@ -93,8 +96,10 @@ RUN set -x \
 #  && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 #  && dpkg-reconfigure -f noninteractive tzdata
 
-COPY vendor/chromedriver_linux64-79.0.3945.36.zip \
-     vendor/google-chrome-stable_current_amd64.deb /tmp/
+COPY vendor/chromedriver_linux64-79.0.3945.36.zip /tmp/
+     #vendor/google-chrome-stable_current_amd64.deb /tmp/
+RUN curl --output /tmp/google-chrome-stable_current_amd64.deb \
+        https://github.com/JarryShaw/darc/raw/master/vendor/google-chrome-stable_current_amd64.deb
 RUN set -x \
  ## ChromeDriver
  && unzip -d /usr/bin /tmp/chromedriver_linux64-79.0.3945.36.zip \
