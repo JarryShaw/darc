@@ -5,7 +5,7 @@ import sys
 import subprocess
 
 # version string
-__version__ = '0.1.9'
+__version__ = '0.2.0'
 
 # setup attributes
 attrs = dict(
@@ -28,7 +28,7 @@ attrs = dict(
     # scripts
     # ext_modules
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',

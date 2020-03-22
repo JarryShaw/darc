@@ -362,7 +362,10 @@ def save_headers(time: typing.Datetime, link: Link,
             },
             "Response": {
                 "...": "..."
-            }
+            },
+            "History": [
+                {"...": "..."}
+            ]
         }
 
     See Also:
@@ -385,6 +388,15 @@ def save_headers(time: typing.Datetime, link: Link,
         'Session': session.cookies.get_dict(),
         'Request': dict(response.request.headers),
         'Response': dict(response.headers),
+        'History': [{
+            'URL': history.url,
+            'Method': history.request.method,
+            'Status-Code': history.status_code,
+            'Reason': history.reason,
+            'Cookies': history.cookies.get_dict(),
+            'Request': dict(history.request.headers),
+            'Response': dict(history.headers),
+        } for history in response.history],
     }
 
     path = sanitise(link, time, headers=True)

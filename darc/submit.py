@@ -488,7 +488,12 @@ def submit_requests(time: typing.Datetime, link: Link,
                 "path": ...,
                 // content of the file (**base64** encoded)
                 "data": ...,
-            }
+            },
+            // redirection history (if any)
+            "History": [
+                // same record data as the original response
+                {"...": "..."}
+            ]
         }
 
     See Also:
@@ -515,6 +520,15 @@ def submit_requests(time: typing.Datetime, link: Link,
         'Request': dict(response.request.headers),
         'Response': dict(response.headers),
         'Document': get_raw(link, ts),
+        'History': [{
+            'URL': history.url,
+            'Method': history.request.method,
+            'Status-Code': history.status_code,
+            'Reason': history.reason,
+            'Cookies': history.cookies.get_dict(),
+            'Request': dict(history.request.headers),
+            'Response': dict(history.headers),
+        } for history in response.history],
     }
 
     if DEBUG:

@@ -134,7 +134,12 @@ def from_requests():
                 "path": ...,
                 // content of the file (**base64** encoded)
                 "data": ...,
-            }
+            },
+            // redirection history (if any)
+            "History": [
+                // same records as the original response
+                {"...": "..."}
+            ]
         }
 
     """

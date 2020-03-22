@@ -240,7 +240,7 @@ def _check_ng(temp_list: typing.List[str]) -> typing.List[str]:
             session = request_session(link, futures=True)
             session_map[link.proxy] = session
 
-        result = session.head(link.url)
+        result = session.head(link.url, allow_redirects=True)
         result_list.append(result)
 
         print(f'[HEAD] Checking content type from {link.url}')

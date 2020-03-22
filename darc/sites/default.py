@@ -28,7 +28,7 @@ def crawler(session: typing.Session, link: Link) -> typing.Response:
         * :func:`darc.crawl.crawler`
 
     """
-    response = session.get(link.url)
+    response = session.get(link.url, allow_redirects=True)
     return response
 
 
