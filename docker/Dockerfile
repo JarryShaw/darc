@@ -43,7 +43,7 @@ RUN apt-get update \
         python3-setuptools \
         python3-wheel \
  && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
-RUN curl --output /var/cache/oracle-jdk13-installer/ \
+RUN curl --output /var/cache/oracle-jdk13-installer/jdk-13.0.2_linux-x64_bin.tar.gz \
         https://github.com/JarryShaw/darc/raw/master/vendor/jdk-13.0.2_linux-x64_bin.tar.gz
 RUN pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
