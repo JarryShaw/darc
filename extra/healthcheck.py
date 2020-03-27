@@ -9,6 +9,17 @@ import sys
 import time
 
 
+def timestamp(container_id):
+    """Get timestamp from last line."""
+    line = subprocess.check_output(['docker', '--timestamps', '--tail=1', container_id],
+                                   encoding='utf-8').strip().split()
+    ts = line.split()[0]
+
+    # YYYY-mm-ddTHH:MM:SS.fffffffffZ
+    pt = time.strptime(ts.split('.')[0], r'%Y-%m-%dT%H:%M:%S')
+    return time.mktime(pt)
+
+
 def healthcheck(file, interval):
     """Health check."""
     container_id_list = subprocess.check_output(['docker-compose', '--file', file,
@@ -16,6 +27,7 @@ def healthcheck(file, interval):
     if not container_id_list:
         return
 
+    ts_dict = dict()
     while True:
         for container_id in container_id_list:
             try:
@@ -41,6 +53,15 @@ def healthcheck(file, interval):
             if health == 'unhealthy':
                 subprocess.check_call(['docker-compose', '--file', file, 'restart'])
                 print(f'Restarted container {container_id}', file=sys.stderr)
+
+            # active / inactive
+            last_ts = ts_dict.get(container_id)
+            then_ts = timestamp(container_id)
+            if last_ts is not None:
+                if then_ts - last_ts < interval / 3:
+                    subprocess.check_call(['docker-compose', '--file', file, 'restart'])
+                    print(f'Restarted container {container_id}', file=sys.stderr)
+            ts_dict[container_id] = then_ts
         time.sleep(interval)
 
 
