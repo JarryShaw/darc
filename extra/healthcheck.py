@@ -3,6 +3,7 @@
 """Health check running container."""
 
 import argparse
+import contextlib
 import json
 import os
 import subprocess
@@ -10,10 +11,24 @@ import sys
 import time
 
 
+def check_call(*args, **kwargs):
+    """Wraps :func:`subprocess.check_call`."""
+    while True:
+        with contextlib.suppress(subprocess.CalledProcessError):
+            return subprocess.check_call(*args, **kwargs)
+
+
+def check_output(*args, **kwargs):
+    """Wraps :func:`subprocess.check_output`."""
+    while True:
+        with contextlib.suppress(subprocess.CalledProcessError):
+            return subprocess.check_output(*args, **kwargs)
+
+
 def timestamp(container_id):
     """Get timestamp from last line."""
-    line = subprocess.check_output(['docker', '--timestamps', '--tail=1', container_id],
-                                   encoding='utf-8').strip().split()
+    line = check_output(['docker', 'logs', '--timestamps', '--tail=1', container_id],
+                        encoding='utf-8').strip().split()
     ts = line.split()[0]
 
     # YYYY-mm-ddTHH:MM:SS.fffffffffZ
@@ -23,8 +38,8 @@ def timestamp(container_id):
 
 def healthcheck(file, interval):
     """Health check."""
-    container_id_list = subprocess.check_output(['docker-compose', '--file', file,
-                                                 'ps', '--quiet'], encoding='utf-8').strip().split()
+    container_id_list = check_output(['docker-compose', '--file', file, 'ps', '--quiet'],
+                                     encoding='utf-8').strip().split()
     if not container_id_list:
         return
 
@@ -32,27 +47,27 @@ def healthcheck(file, interval):
     while True:
         for container_id in container_id_list:
             try:
-                inspect = subprocess.check_output(['docker', 'container', 'inspect',
-                                                   container_id], encoding='utf-8').strip()
+                inspect = subprocess.check_output(['docker', 'container', 'inspect', container_id],
+                                                  encoding='utf-8').strip()
             except subprocess.CalledProcessError:
-                container_id_list = subprocess.check_output(['docker-compose', '--file', file,
-                                                             'ps', '--quiet'], encoding='utf-8').strip().split()
+                container_id_list = check_output(['docker-compose', '--file', file, 'ps', '--quiet'],
+                                                 encoding='utf-8').strip().split()
                 continue
             info = json.loads(inspect)[0]
 
             # running / paused / exited
             status = info['State']['Status'].casefold()
             if status == 'paused':
-                subprocess.check_call(['docker-compose', '--file', file, 'unpause'])
+                check_call(['docker-compose', '--file', file, 'unpause'])
                 print(f'Unpaused container {container_id}', file=sys.stderr)
             if status == 'exited':
-                subprocess.check_call(['docker-compose', '--file', file, 'up', '--detach'])
+                check_call(['docker-compose', '--file', file, 'up', '--detach'])
                 print(f'Started container {container_id}', file=sys.stderr)
 
             # healthy / unhealthy
             health = info['State']['Health']['Status'].casefold()
             if health == 'unhealthy':
-                subprocess.check_call(['docker-compose', '--file', file, 'restart'])
+                check_call(['docker-compose', '--file', file, 'restart'])
                 print(f'Restarted container {container_id}', file=sys.stderr)
 
             # active / inactive
@@ -60,7 +75,7 @@ def healthcheck(file, interval):
             then_ts = timestamp(container_id)
             if last_ts is not None:
                 if then_ts - last_ts < interval / 3:
-                    subprocess.check_call(['docker-compose', '--file', file, 'restart'])
+                    check_call(['docker-compose', '--file', file, 'restart'])
                     print(f'Restarted container {container_id}', file=sys.stderr)
             ts_dict[container_id] = then_ts
         time.sleep(interval)
