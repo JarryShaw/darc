@@ -28,7 +28,7 @@ def check_output(*args, **kwargs):
 def timestamp(container_id):
     """Get timestamp from last line."""
     line = check_output(['docker', 'logs', '--timestamps', '--tail=1', container_id],
-                        encoding='utf-8').strip()
+                        encoding='utf-8', stderr=subprocess.STDOUT).strip()
     ts = line.split()[0]
 
     # YYYY-mm-ddTHH:MM:SS.fffffffffZ
