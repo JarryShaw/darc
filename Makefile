@@ -12,17 +12,31 @@ reload:
 	git pull
 	$(MAKE) stop-healthcheck
 	sudo docker-compose stop
+	$(MAKE) uniq
 	sudo docker-compose logs -t > logs/$(shell date +%Y-%m-%d-%H-%M-%S).log
 	sudo docker-compose build
 	sudo docker system prune --volumes -f
 	sudo docker-compose up -d
 	$(MAKE) healthcheck
 
+uniq: uniq-requests uniq-selenium
+
+uniq-requests:
+	cat data/_queue_requests.txt | sort | uniq > data/_queue_requests.txt.uniq || true
+	mv data/_queue_requests.txt.uniq data/_queue_requests.txt || true
+	rm -f data/_queue_requests.txt.tmp
+
+uniq-selenium:
+	cat data/_queue_selenium.txt | sort | uniq > data/_queue_selenium.txt.uniq || true
+	mv data/_queue_selenium.txt.uniq data/_queue_selenium.txt || true
+	rm -f data/_queue_selenium.txt.tmp
+
 logs:
 	sudo docker-compose logs -tf
 
 stop-healthcheck:
-	sudo kill $(shell ps axo pid=,command= | grep healthcheck.py | python3 -c "print(input().split()[0])") || true
+	sudo kill -2 $(shell ps axo pid=,command= | grep healthcheck.py | python3 -c "print(input().split()[0])") || true
+	sudo kill -9 $(shell ps axo pid=,command= | grep healthcheck.py | python3 -c "print(input().split()[0])") || true
 
 healthcheck:
 	echo ------------- >> logs/healthcheck.log
