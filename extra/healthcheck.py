@@ -74,7 +74,7 @@ def healthcheck(file, interval):
             last_ts = ts_dict.get(container_id)
             then_ts = timestamp(container_id)
             if last_ts is not None:
-                if then_ts - last_ts < interval / 3:
+                if then_ts - last_ts < interval:
                     check_call(['docker-compose', '--file', file, 'restart'])
                     print(f'Restarted container {container_id}', file=sys.stderr)
             ts_dict[container_id] = then_ts
