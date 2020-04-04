@@ -89,7 +89,7 @@ services:
       # Freenet bootstrap config
       FREENET_ARGS: ""
       # time delta for caches in seconds
-      TIME_CACHE: 864_000  # 10 days
+      TIME_CACHE: 2_592_000  # 30 days
       # time to wait for selenium
       SE_WAIT: 5
       # extract link pattern
