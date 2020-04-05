@@ -33,7 +33,6 @@ def upload(file, path, host, user):
     check_call(['docker-compose', '--file', file, 'pause'])
     with contextlib.suppress(subprocess.CalledProcessError):
         subprocess.check_call(['bash', SCPT], env=os.environ.update(dict(
-            PATH_API=path_api,
             HOST=host,
             USER=user,
         )), cwd=path)
