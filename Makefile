@@ -10,14 +10,14 @@ commit: github-commit gitlab-commit
 
 reload:
 	git pull
-	$(MAKE) stop-healthcheck
+	$(MAKE) stop-healthcheck stop-upload
 	sudo docker-compose stop
 	$(MAKE) uniq
 	sudo docker-compose logs -t > logs/$(shell date +%Y-%m-%d-%H-%M-%S).log
 	sudo docker-compose build
 	sudo docker system prune --volumes -f
 	sudo docker-compose up -d
-	$(MAKE) healthcheck
+	$(MAKE) upload healthcheck
 
 uniq: uniq-requests uniq-selenium
 
@@ -43,6 +43,16 @@ healthcheck:
 	echo $(shell date) >> logs/healthcheck.log
 	echo ------------- >> logs/healthcheck.log
 	sudo nohup python3 extra/healthcheck.py >> logs/healthcheck.log &
+
+stop-upload:
+	sudo kill -2 $(shell ps axo pid=,command= | grep upload.py | python3 -c "print(input().split()[0])") || true
+	sudo kill -9 $(shell ps axo pid=,command= | grep upload.py | python3 -c "print(input().split()[0])") || true
+
+upload:
+	echo ------------- >> logs/upload.log
+	echo $(shell date) >> logs/upload.log
+	echo ------------- >> logs/upload.log
+	sudo nohup python3 extra/upload.py --host ${HOST} --user ${USER} >> logs/upload.log &
 
 github-commit:
 	git add .

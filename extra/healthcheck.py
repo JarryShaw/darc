@@ -58,17 +58,19 @@ def healthcheck(file, interval):
             # running / paused / exited
             status = info['State']['Status'].casefold()
             if status == 'paused':
-                check_call(['docker-compose', '--file', file, 'unpause'])
-                print(f'Unpaused container {container_id}', file=sys.stderr)
+                # uploading...
+                continue
+                # check_call(['docker-compose', '--file', file, 'unpause'])
+                # print(f'Unpaused container {container_id}')
             if status == 'exited':
                 check_call(['docker-compose', '--file', file, 'up', '--detach'])
-                print(f'Started container {container_id}', file=sys.stderr)
+                print(f'Started container {container_id}')
 
             # healthy / unhealthy
             health = info['State']['Health']['Status'].casefold()
             if health == 'unhealthy':
                 check_call(['docker-compose', '--file', file, 'restart'])
-                print(f'Restarted container {container_id}', file=sys.stderr)
+                print(f'Restarted container {container_id}')
 
             # active / inactive
             last_ts = ts_dict.get(container_id)
@@ -76,7 +78,7 @@ def healthcheck(file, interval):
             if last_ts is not None:
                 if then_ts - last_ts < interval:
                     check_call(['docker-compose', '--file', file, 'restart'])
-                    print(f'Restarted container {container_id}', file=sys.stderr)
+                    print(f'Restarted container {container_id}')
             ts_dict[container_id] = then_ts
         time.sleep(interval)
 
@@ -103,7 +105,14 @@ def main():
     if args.interval <= 0:
         parser.error('invalid interval')
 
-    return healthcheck(args.file, args.interval)
+    while True:
+        try:
+            healthcheck(args.file, args.interval)
+        except KeyboardInterrupt:
+            break
+        except Exception:
+            time.sleep(args.interval)
+    return 0
 
 
 if __name__ == "__main__":
