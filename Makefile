@@ -12,7 +12,7 @@ reload:
 	git pull
 	$(MAKE) stop-healthcheck stop-upload
 	sudo docker-compose stop
-	$(MAKE) uniq
+	#$(MAKE) uniq
 	sudo docker-compose logs -t > logs/$(shell date +%Y-%m-%d-%H-%M-%S).log
 	sudo docker-compose build
 	sudo docker system prune --volumes -f
