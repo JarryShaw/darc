@@ -42,7 +42,7 @@ healthcheck:
 	echo ------------- >> logs/healthcheck.log
 	echo $(shell date) >> logs/healthcheck.log
 	echo ------------- >> logs/healthcheck.log
-	sudo nohup python3 extra/healthcheck.py --interval 600 >> logs/healthcheck.log &
+	sudo nohup python3 extra/healthcheck.py --interval 3600 >> logs/healthcheck.log &
 
 stop-upload:
 	sudo kill -2 $(shell ps axo pid=,command= | grep upload.py | python3 -c "print(input().split()[0])") || true
