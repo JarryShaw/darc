@@ -52,7 +52,7 @@ upload:
 	echo ------------- >> logs/upload.log
 	echo $(shell date) >> logs/upload.log
 	echo ------------- >> logs/upload.log
-	sudo nohup python3 extra/upload.py --host ${HOST} --user ${USER} >> logs/upload.log &
+	sudo nohup python3 extra/upload.py --host ${HOST} --user ${USER} --interval 86400 >> logs/upload.log &
 
 github-commit:
 	git add .
