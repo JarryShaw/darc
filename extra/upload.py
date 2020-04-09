@@ -4,6 +4,7 @@
 
 import argparse
 import contextlib
+import datetime
 import os
 import shutil
 import subprocess
@@ -28,7 +29,7 @@ def upload(file, path, host, user):
     path_api = os.path.join(path, 'api')
     if not os.path.isdir(path_api):
         return
-    print('Archiving & uploading APi submission files...')
+    print(f'[{datetime.datetime.now().isoformat()}] Archiving & uploading APi submission files...')
 
     check_call(['docker-compose', '--file', file, 'pause'])
     with contextlib.suppress(subprocess.CalledProcessError):
@@ -38,6 +39,8 @@ def upload(file, path, host, user):
         )), cwd=path)
     os.makedirs(path_api, exist_ok=True)
     check_call(['docker-compose', '--file', file, 'unpause'])
+
+    print(f'[{datetime.datetime.now().isoformat()}] Uploaded APi submission files...')
 
 
 def get_parser():

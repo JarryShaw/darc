@@ -4,6 +4,7 @@
 
 import argparse
 import contextlib
+import datetime
 import json
 import os
 import subprocess
@@ -61,16 +62,16 @@ def healthcheck(file, interval):
                 # uploading...
                 continue
                 # check_call(['docker-compose', '--file', file, 'unpause'])
-                # print(f'Unpaused container {container_id}')
+                # print(f'[{datetime.datetime.now().isoformat()}] Unpaused container {container_id}')
             if status == 'exited':
                 check_call(['docker-compose', '--file', file, 'up', '--detach'])
-                print(f'Started container {container_id}')
+                print(f'[{datetime.datetime.now().isoformat()}] Started container {container_id}')
 
             # healthy / unhealthy
             health = info['State']['Health']['Status'].casefold()
             if health == 'unhealthy':
                 check_call(['docker-compose', '--file', file, 'restart'])
-                print(f'Restarted container {container_id}')
+                print(f'[{datetime.datetime.now().isoformat()}] Restarted container {container_id}')
 
             # active / inactive
             last_ts = ts_dict.get(container_id)
@@ -78,7 +79,7 @@ def healthcheck(file, interval):
             if last_ts is not None:
                 if then_ts - last_ts < interval:
                     check_call(['docker-compose', '--file', file, 'restart'])
-                    print(f'Restarted container {container_id}')
+                    print(f'[{datetime.datetime.now().isoformat()}] Restarted container {container_id}')
             ts_dict[container_id] = then_ts
         time.sleep(interval)
 
