@@ -159,7 +159,7 @@ The :mod:`darc` project provides a simple CLI::
 
    usage: darc [-h] [-f FILE] ...
 
-   the darkweb knife crawling swiss army knife
+   the darkweb crawling swiss army knife
 
    positional arguments:
      link                  links to craw
