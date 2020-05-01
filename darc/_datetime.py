@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#:  pylint: disable=no-else-raise
 """Fast implementation of the datetime type."""
 
 from datetime import datetime as _datetime
@@ -115,7 +116,7 @@ class datetime(_datetime):
     def fromisoformat(cls, date_string):
         """Construct a datetime from the output of datetime.isoformat()."""
         if hasattr(_datetime, 'fromisoformat'):
-            return cls.fromisoformat(date_string)
+            return _datetime.fromisoformat(date_string)
 
         if not isinstance(date_string, str):
             raise TypeError('fromisoformat: argument must be str')

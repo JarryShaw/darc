@@ -1,3 +1,4 @@
+# pylint: disable=import-outside-toplevel,bad-continuation,bad-whitespace,compare-to-empty-string
 """ robotparser.py
 
     Copyright (C) 2000  Bastian Kleineidam
