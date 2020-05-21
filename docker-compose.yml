@@ -2,7 +2,7 @@ version: '3'
 
 services:
   darc:
-    image: darc
+    image: jsnbzh/darc:latest
     build:
       context: .
       args:
