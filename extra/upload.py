@@ -74,15 +74,20 @@ def main():
     if args.interval <= 0:
         parser.error('invalid interval')
 
-    # sleep before first round
-    time.sleep(args.interval)
-
     os.makedirs('logs', exist_ok=True)
     if os.path.isfile('logs/upload.log'):
         os.rename('logs/upload.log', f'logs/upload-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
 
     with open('logs/upload.log', 'wt', buffering=1) as file:
+        date = datetime.datetime.now().ctime()
+        print('-' * len(date), file=file)
+        print(date, file=file)
+        print('-' * len(date), file=file)
+
         with contextlib.redirect_stdout(file), contextlib.redirect_stderr(file):
+            # sleep before first round
+            time.sleep(args.interval)
+
             while True:
                 try:
                     with contextlib.suppress(Exception):

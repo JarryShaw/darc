@@ -113,6 +113,11 @@ def main():
         os.rename('logs/healthcheck.log', f'logs/healthcheck-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
 
     with open('logs/healthcheck.log', 'wt', buffering=1) as file:
+        date = datetime.datetime.now().ctime()
+        print('-' * len(date), file=file)
+        print(date, file=file)
+        print('-' * len(date), file=file)
+
         with contextlib.redirect_stdout(file), contextlib.redirect_stderr(file):
             while True:
                 try:
