@@ -14,7 +14,7 @@ reload:
 	sudo docker-compose stop
 	#$(MAKE) uniq
 	sudo docker-compose logs -t > logs/$(shell date +%Y-%m-%d-%H-%M-%S).log
-	sudo docker-compose build
+	#sudo docker-compose build
 	sudo docker system prune --volumes -f
 	sudo docker-compose up -d
 	$(MAKE) upload healthcheck
