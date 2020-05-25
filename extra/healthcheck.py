@@ -66,6 +66,7 @@ def healthcheck(file, interval):
                 # check_call(['docker-compose', '--file', file, 'unpause'])
                 # print(f'[{datetime.datetime.now().isoformat()}] Unpaused container {container_id}')
             if status == 'exited':
+                check_call(['docker', 'system', 'prune', '--volumes', '-f'])
                 check_call(['docker-compose', '--file', file, 'up', '--detach'])
                 print(f'[{datetime.datetime.now().isoformat()}] Started container {container_id}')
 
