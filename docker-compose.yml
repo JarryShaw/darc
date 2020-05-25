@@ -3,11 +3,11 @@ version: '3'
 services:
   darc:
     image: jsnbzh/darc:latest
-    build:
-      context: .
-      args:
-        # non-root user
-        DARC_USER: "darc"
+    #build:
+    #  context: .
+    #  args:
+    #    # non-root user
+    #    DARC_USER: "darc"
     entrypoint: [ "bash", "/app/run.sh" ]
     command: [ "--file", "/app/text/market.txt",
                "--file", "/app/text/top-20k.txt",
@@ -126,7 +126,3 @@ services:
       - ./text:/app/text
       - ./extra:/app/extra
       - /data/darc:/app/data
-      # - ./cache:/app/cache
-      # ## change timezone
-      # - /etc:/etc
-      # - /usr/share/zoneinfo:/usr/share/zoneinfo
