@@ -19,9 +19,10 @@ SCPT = os.path.join(ROOT, 'upload.sh')
 
 def check_call(*args, **kwargs):
     """Wraps :func:`subprocess.check_call`."""
-    while True:
+    for _ in range(3):
         with contextlib.suppress(subprocess.CalledProcessError):
             return subprocess.check_call(*args, **kwargs)
+        time.sleep(60)
 
 
 def upload(file, path, host, user):
@@ -76,13 +77,19 @@ def main():
     # sleep before first round
     time.sleep(args.interval)
 
-    while True:
-        try:
-            with contextlib.suppress(Exception):
-                upload(args.file, args.path, args.host, args.user)
-        except KeyboardInterrupt:
-            break
-        time.sleep(args.interval)
+    os.makedirs('logs', exist_ok=True)
+    if os.path.isfile('logs/upload.log'):
+        os.rename('logs/upload.log', f'logs/upload-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
+
+    with open('logs/upload.log', 'wt', buffering=1) as file:
+        with contextlib.redirect_stdout(file), contextlib.redirect_stderr(file):
+            while True:
+                try:
+                    with contextlib.suppress(Exception):
+                        upload(args.file, args.path, args.host, args.user)
+                except KeyboardInterrupt:
+                    break
+                time.sleep(args.interval)
     return 0
 
 

@@ -14,16 +14,18 @@ import time
 
 def check_call(*args, **kwargs):
     """Wraps :func:`subprocess.check_call`."""
-    while True:
+    for _ in range(3):
         with contextlib.suppress(subprocess.CalledProcessError):
             return subprocess.check_call(*args, **kwargs)
+        time.sleep(60)
 
 
 def check_output(*args, **kwargs):
     """Wraps :func:`subprocess.check_output`."""
-    while True:
+    for _ in range(3):
         with contextlib.suppress(subprocess.CalledProcessError):
             return subprocess.check_output(*args, **kwargs)
+        time.sleep(60)
 
 
 def timestamp(container_id):
@@ -106,13 +108,19 @@ def main():
     if args.interval <= 0:
         parser.error('invalid interval')
 
-    while True:
-        try:
-            healthcheck(args.file, args.interval)
-        except KeyboardInterrupt:
-            break
-        except Exception:
-            time.sleep(args.interval)
+    os.makedirs('logs', exist_ok=True)
+    if os.path.isfile('logs/healthcheck.log'):
+        os.rename('logs/healthcheck.log', f'logs/healthcheck-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
+
+    with open('logs/healthcheck.log', 'wt', buffering=1) as file:
+        with contextlib.redirect_stdout(file), contextlib.redirect_stderr(file):
+            while True:
+                try:
+                    healthcheck(args.file, args.interval)
+                except KeyboardInterrupt:
+                    break
+                except Exception:
+                    time.sleep(args.interval)
     return 0
 
 
