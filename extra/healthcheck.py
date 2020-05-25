@@ -73,7 +73,11 @@ def healthcheck(file, interval):
             # healthy / unhealthy
             health = info['State']['Health']['Status'].casefold()
             if health == 'unhealthy':
-                check_call(['docker-compose', '--file', file, 'restart'])
+                check_call(['docker', 'stop', container_id])
+                check_call(['docker', 'system', 'prune', '--volumes', '-f'])
+                check_call(['docker-compose', '--file', file, 'up', '--detach'])
+
+                #check_call(['docker-compose', '--file', file, 'restart'])
                 print(f'[{datetime.datetime.now().isoformat()}] Restarted container {container_id}')
 
             # active / inactive
@@ -81,7 +85,11 @@ def healthcheck(file, interval):
             then_ts = timestamp(container_id)
             if last_ts is not None:
                 if then_ts - last_ts < interval:
-                    check_call(['docker-compose', '--file', file, 'restart'])
+                    check_call(['docker', 'stop', container_id])
+                    check_call(['docker', 'system', 'prune', '--volumes', '-f'])
+                    check_call(['docker-compose', '--file', file, 'up', '--detach'])
+
+                    #check_call(['docker-compose', '--file', file, 'restart'])
                     print(f'[{datetime.datetime.now().isoformat()}] Restarted container {container_id}')
             ts_dict[container_id] = then_ts
         time.sleep(interval)
