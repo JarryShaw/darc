@@ -36,7 +36,8 @@ logs:
 
 stop-healthcheck:
 	sudo kill -2 $(shell ps axo pid=,command= | grep healthcheck.py | python3 -c "print(input().split()[0])") || true
-	sudo kill -9 $(shell ps axo pid=,command= | grep healthcheck.py | python3 -c "print(input().split()[0])") || true
+	sudo kill -2 $(shell ps axo pid=,command= | grep healthcheck.py | python3 -c "print(input().split()[0])") || true
+	sudo kill $(shell ps axo pid=,command= | grep healthcheck.py | python3 -c "print(input().split()[0])") || true
 
 healthcheck:
 	#echo ------------- >> logs/healthcheck.log
