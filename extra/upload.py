@@ -19,10 +19,16 @@ SCPT = os.path.join(ROOT, 'upload.sh')
 
 def check_call(*args, **kwargs):
     """Wraps :func:`subprocess.check_call`."""
-    for _ in range(3):
-        with contextlib.suppress(subprocess.CalledProcessError):
-            return subprocess.check_call(*args, **kwargs)
-        time.sleep(60)
+    with open('logs/upload.log', 'wt', buffering=1) as file:
+        if 'stdout' not in kwargs:
+            kwargs['stdout'] = file
+        if 'stderr' not in kwargs:
+            kwargs['stderr'] = subprocess.STDOUT
+
+        for _ in range(3):
+            with contextlib.suppress(subprocess.CalledProcessError):
+                return subprocess.check_call(*args, **kwargs)
+            time.sleep(60)
 
 
 def upload(file, path, host, user):
@@ -33,11 +39,12 @@ def upload(file, path, host, user):
     print(f'[{datetime.datetime.now().isoformat()}] Archiving & uploading APi submission files...')
 
     check_call(['docker-compose', '--file', file, 'pause'])
-    with contextlib.suppress(subprocess.CalledProcessError):
-        subprocess.check_call(['bash', SCPT], env=os.environ.update(dict(
-            HOST=host,
-            USER=user,
-        )), cwd=path)
+    with open('logs/upload.log', 'wt', buffering=1) as log_file:
+        with contextlib.suppress(subprocess.CalledProcessError):
+            subprocess.check_call(['bash', SCPT], env=os.environ.update(dict(
+                HOST=host,
+                USER=user,
+            )), cwd=path, stdout=log_file, stderr=subprocess.STDOUT)
     os.makedirs(path_api, exist_ok=True)
     check_call(['docker-compose', '--file', file, 'unpause'])
 

@@ -14,10 +14,16 @@ import time
 
 def check_call(*args, **kwargs):
     """Wraps :func:`subprocess.check_call`."""
-    for _ in range(3):
-        with contextlib.suppress(subprocess.CalledProcessError):
-            return subprocess.check_call(*args, **kwargs)
-        time.sleep(60)
+    with open('logs/upload.log', 'wt', buffering=1) as file:
+        if 'stdout' not in kwargs:
+            kwargs['stdout'] = file
+        if 'stderr' not in kwargs:
+            kwargs['stderr'] = subprocess.STDOUT
+
+        for _ in range(3):
+            with contextlib.suppress(subprocess.CalledProcessError):
+                return subprocess.check_call(*args, **kwargs)
+            time.sleep(60)
 
 
 def check_output(*args, **kwargs):
