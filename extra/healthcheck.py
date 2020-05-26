@@ -66,6 +66,9 @@ def healthcheck(file, interval):
                 # check_call(['docker-compose', '--file', file, 'unpause'])
                 # print(f'[{datetime.datetime.now().isoformat()}] Unpaused container {container_id}')
             if status == 'exited':
+                with open(f'logs/{time.strftime(r"%Y-%m-%d-%H-%M-%S")}.log', 'wb') as log_file:
+                    check_call(['docker', 'logs', '-t', '--details', container_id],
+                               stdout=log_file, stderr=subprocess.STDOUT)
                 check_call(['docker', 'system', 'prune', '--volumes', '-f'])
                 check_call(['docker-compose', '--file', file, 'up', '--detach'])
                 print(f'[{datetime.datetime.now().isoformat()}] Started container {container_id}')
@@ -86,6 +89,9 @@ def healthcheck(file, interval):
             if last_ts is not None:
                 if then_ts - last_ts < interval:
                     check_call(['docker', 'stop', container_id])
+                    with open(f'logs/{time.strftime(r"%Y-%m-%d-%H-%M-%S")}.log', 'wb') as log_file:
+                        check_call(['docker', 'logs', '-t', '--details', container_id],
+                                   stdout=log_file, stderr=subprocess.STDOUT)
                     check_call(['docker', 'system', 'prune', '--volumes', '-f'])
                     check_call(['docker-compose', '--file', file, 'up', '--detach'])
 
