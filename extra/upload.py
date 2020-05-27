@@ -92,8 +92,8 @@ def main():
         print('-' * len(date), file=file)
 
         with contextlib.redirect_stdout(file), contextlib.redirect_stderr(file):
-            # sleep before first round
-            time.sleep(args.interval)
+            ## sleep before first round
+            #time.sleep(args.interval)
 
             while True:
                 try:
