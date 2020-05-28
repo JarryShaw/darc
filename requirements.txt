@@ -15,7 +15,7 @@ python-datauri==0.2.8
 requests-futures==1.0.0
 requests[socks]==2.23.0
 selenium==3.141.0
-six==1.14.0
+six==1.15.0
 soupsieve==2.0
 stem==1.8.0
 typing-extensions==3.7.4.1
