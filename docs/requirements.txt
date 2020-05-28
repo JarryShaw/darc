@@ -10,7 +10,7 @@ MarkupSafe==1.1.1
 packaging==20.4
 pyparsing==2.4.7
 six==1.15.0
-Pygments==2.5.2
+Pygments==2.6.1
 requests==2.22.0
 certifi==2019.11.28
 chardet==3.0.4
