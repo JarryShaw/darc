@@ -23,6 +23,6 @@ selenium==3.141.0
 six==1.15.0
 soupsieve==2.0.1
 stem==1.8.0
-typing-extensions==3.7.4.1
+typing-extensions==3.7.4.2
 urllib3==1.25.9
 webencodings==0.5.1
