@@ -4,13 +4,13 @@
 --extra-index-url https://pypi.org/simple
 
 # Python packages
-pip==20.0.2
-setuptools==46.0.0
+pip==20.1.1
+setuptools==46.4.0
 wheel==0.34.2
 
 # Python dependencies
-beautifulsoup4[html5lib]==4.8.2
-certifi==2019.11.28
+beautifulsoup4[html5lib]==4.9.1
+certifi==2020.4.5.1
 chardet==3.0.4
 file-magic==0.4.0
 html5lib==1.0.1
@@ -20,9 +20,9 @@ python-datauri==0.2.8
 requests-futures==1.0.0
 requests[socks]==2.23.0
 selenium==3.141.0
-six==1.14.0
-soupsieve==2.0
+six==1.15.0
+soupsieve==2.0.1
 stem==1.8.0
-typing-extensions==3.7.4.1
-urllib3==1.25.8
+typing-extensions==3.7.4.2
+urllib3==1.25.9
 webencodings==0.5.1
