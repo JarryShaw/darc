@@ -18,7 +18,7 @@ idna==2.9
 urllib3==1.25.9
 setuptools==46.4.0
 snowballstemmer==2.0.0
-sphinxcontrib-applehelp==1.0.1
+sphinxcontrib-applehelp==1.0.2
 sphinxcontrib-devhelp==1.0.1
 sphinxcontrib-htmlhelp==1.0.2
 sphinxcontrib-jsmath==1.0.1
