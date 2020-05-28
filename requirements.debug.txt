@@ -4,7 +4,7 @@
 --extra-index-url https://pypi.org/simple
 
 # Python packages
-pip==20.0.2
+pip==20.1.1
 setuptools==46.4.0
 wheel==0.34.2
 
