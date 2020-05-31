@@ -3,11 +3,11 @@ version: '3'
 services:
   darc:
     image: jsnbzh/darc:latest
-    #build:
-    #  context: .
-    #  args:
-    #    # non-root user
-    #    DARC_USER: "darc"
+    build:
+      context: .
+      args:
+        # non-root user
+        DARC_USER: "darc"
     entrypoint: [ "bash", "/app/run.sh" ]
     command: [ "--file", "/app/text/market.txt",
                "--file", "/app/text/top-20k.txt",

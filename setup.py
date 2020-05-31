@@ -5,7 +5,7 @@ import sys
 import subprocess
 
 # version string
-__version__ = '0.2.1'
+__version__ = '0.2.1.post1'
 
 # setup attributes
 attrs = dict(
@@ -30,7 +30,7 @@ attrs = dict(
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
@@ -46,7 +46,7 @@ attrs = dict(
     # script_name
     # script_args
     # options
-    license='MIT License',
+    license='BSD 3-Clause License',
     keywords=[
         'darkweb',
         'crawler',
