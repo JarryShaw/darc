@@ -36,7 +36,8 @@ ENV LANG="C.UTF-8" \
 
 COPY extra/retry.sh /usr/local/bin/retry
 COPY extra/install.py /usr/local/bin/pty-install
-COPY vendor/jdk-13.0.2_linux-x64_bin.tar.gz /var/cache/oracle-jdk13-installer/
+# see https://www.oracle.com/cn/java/technologies/javase-downloads.html for archive downloads
+COPY vendor/jdk-11.0.7_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
 
 RUN set -x \
  && retry apt-get update \
@@ -70,7 +71,8 @@ RUN retry apt-get update \
 RUN retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
  && retry pty-install --stdin 'yes' apt-get install --yes \
-        oracle-java13-installer
+        oracle-java11-installer-local
+# see https://launchpad.net/~linuxuprising/+archive/ubuntu/java/+packages for available versions
 RUN retry apt-get install --yes \
         sudo \
  && adduser --disabled-password --gecos '' ${DARC_USER} \
