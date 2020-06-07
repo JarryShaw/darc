@@ -82,6 +82,7 @@ attrs = dict(
         'beautifulsoup4[html5lib]',
         'file-magic',
         'python-datauri',
+        'redis[hiredis]',
         'requests-futures',
         'requests[socks]',
         'selenium',

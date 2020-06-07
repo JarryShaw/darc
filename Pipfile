@@ -29,6 +29,7 @@ rstcheck = "*"
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}
 file-magic = "*"
 python-datauri = "*"
+redis = {extras = ['hiredis'],version = "*"}
 requests-futures = "*"
 requests = {extras = ["socks"],version = "*"}
 stem = "*"

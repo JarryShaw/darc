@@ -9,6 +9,9 @@ services:
       args:
         # non-root user
         DARC_USER: "darc"
+    container_name: darc
+    depends_on:
+      - redis
     ports:
       - 9050:1089
     command:
@@ -26,7 +29,7 @@ services:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
       # reboot mode
-      DARC_REBOOT: 1
+      DARC_REBOOT: 0
       # debug mode
       DARC_DEBUG: 1
       # verbose mode
@@ -53,6 +56,8 @@ services:
       DARC_WAIT: 60
       # data storage
       PATH_DATA: "data"
+      # Redis URL
+      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
       # max pool
       DARC_MAX_POOL: 1
       # Tor proxy & control port
@@ -131,8 +136,27 @@ services:
       #API_REQUESTS: 'https://example.com/api/requests'
       #API_SELENIUM: 'https://example.com/api/selenium'
     restart: "on-failure"
+    networks:
+      - darc
     volumes:
       # - ./cache:/app/cache
       - ./extra:/app/extra
       - ./data:/app/data
       - ./text:/app/text
+  redis:
+    image: redis:darc
+    container_name: redis
+    build:
+      context: .
+      dockerfile: extra/redis.dockerfile
+    expose:
+      - 6379
+    networks:
+      - darc
+    volumes:
+      - ./data/redis:/data
+
+# network settings
+networks:
+  darc:
+    driver: bridge
