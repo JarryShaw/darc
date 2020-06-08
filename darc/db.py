@@ -187,6 +187,15 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
     if check:
         link_pool = _check(link_pool)
 
+    if not match_proxy('tor') and not _TOR_BS_FLAG and has_tor(link_pool):
+        tor_bootstrap()
+    if not match_proxy('i2p') and not _I2P_BS_FLAG and has_i2p(link_pool):
+        i2p_bootstrap()
+    if not match_proxy('zeronet') and not _ZERONET_BS_FLAG and has_zeronet(link_pool):
+        zeronet_bootstrap()
+    if not match_proxy('freenet') and not _FREENET_BS_FLAG and has_freenet(link_pool):
+        freenet_bootstrap()
+
     if VERBOSE:
         print(stem.util.term.format('-*- [SELENIUM] LINK POOL -*-',
                                     stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
