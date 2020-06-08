@@ -15,7 +15,7 @@ reload:
 	sudo docker-compose stop
 	sudo docker-compose logs -t > logs/$(shell date +%Y-%m-%d-%H-%M-%S).log
 	sudo docker system prune --volumes -f
-	sudo docker-compose up -d
+	sudo docker-compose up -d --build
 	sudo systemctl start darc-upload
 	sudo systemctl start darc-healthcheck
 
