@@ -10,14 +10,14 @@ commit: github-commit gitlab-commit
 
 reload:
 	git pull
-	$(MAKE) stop-healthcheck stop-upload
+	sudo systemctl stop darc-upload
+	sudo systemctl stop darc-healthcheck
 	sudo docker-compose stop
-	#$(MAKE) uniq
 	sudo docker-compose logs -t > logs/$(shell date +%Y-%m-%d-%H-%M-%S).log
-	#sudo docker-compose build
 	sudo docker system prune --volumes -f
 	sudo docker-compose up -d
-	$(MAKE) upload healthcheck
+	sudo systemctl start darc-upload
+	sudo systemctl start darc-healthcheck
 
 uniq: uniq-requests uniq-selenium
 
@@ -43,7 +43,7 @@ healthcheck:
 	#echo ------------- >> logs/healthcheck.log
 	#echo $(shell date) >> logs/healthcheck.log
 	#echo ------------- >> logs/healthcheck.log
-	sudo nohup python3 extra/healthcheck.py --interval 3600 >> logs/healthcheck.log 2>&1 &
+	sudo nohup python3 extra/healthcheck.py --interval 3600 darc >> logs/healthcheck.log 2>&1 &
 
 stop-upload:
 	sudo kill -2 $(shell ps axo pid=,command= | grep upload.py | python3 -c "print(input().split()[0])") || true
@@ -54,6 +54,18 @@ upload:
 	#echo $(shell date) >> logs/upload.log
 	#echo ------------- >> logs/upload.log
 	sudo nohup python3 extra/upload.py --host ${HOST} --user ${USER} --interval 86400 >> logs/upload.log 2>&1 &
+
+upload-service:
+	sudo ln -sf $(shell pwd)/extra/upload.service /etc/systemd/system/darc-upload.service
+	sudo systemctl daemon-reload
+	sudo systemctl enable darc-upload.service
+	sudo systemctl restart darc-upload.service
+
+healthcheck-service:
+	sudo ln -sf $(shell pwd)/extra/healthcheck.service /etc/systemd/system/darc-healthcheck.service
+	sudo systemctl daemon-reload
+	sudo systemctl enable darc-healthcheck.service
+	sudo systemctl restart darc-healthcheck.service
 
 github-commit:
 	git add .

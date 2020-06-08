@@ -1,0 +1,13 @@
+[Unit]
+Description=Healthcheck Service
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/darc
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin"
+ExecStart=/usr/bin/python3 /root/darc/extra/healthcheck.py --file /root/darc/docker-compose.yml --interval 3600 darc
+
+[Install]
+WantedBy=multi-user.target

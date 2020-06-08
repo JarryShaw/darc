@@ -58,6 +58,7 @@
         "rstcheck",
         "shuf",
         "signum",
+        "systemd",
         "tbselenium",
         "tmpfs",
         "toctree",

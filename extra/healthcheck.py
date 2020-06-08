@@ -45,10 +45,12 @@ def timestamp(container_id):
     return time.mktime(pt)
 
 
-def healthcheck(file, interval):
+def healthcheck(file, interval, *services):
     """Health check."""
-    container_id_list = check_output(['docker-compose', '--file', file, 'ps', '--quiet'],
-                                     encoding='utf-8').strip().split()
+    ps_args = ['docker-compose', '--file', file, 'ps', '--quiet']
+    ps_args.extend(services)
+
+    container_id_list = check_output(ps_args, encoding='utf-8').strip().split()
     if not container_id_list:
         return
 
@@ -59,8 +61,7 @@ def healthcheck(file, interval):
                 inspect = subprocess.check_output(['docker', 'container', 'inspect', container_id],
                                                   encoding='utf-8').strip()
             except subprocess.CalledProcessError:
-                container_id_list = check_output(['docker-compose', '--file', file, 'ps', '--quiet'],
-                                                 encoding='utf-8').strip().split()
+                container_id_list = check_output(ps_args, encoding='utf-8').strip().split()
                 continue
             info = json.loads(inspect)[0]
 
@@ -114,6 +115,7 @@ def get_parser():
 
     parser.add_argument('-f', '--file', default='docker-compose.yml', help='path to compose file')
     parser.add_argument('-i', '--interval', default='3600', type=float, help='interval (in seconds) of health check')
+    parser.add_argument('services', nargs=argparse.REMAINDER, help='name of services')
 
     return parser
 
@@ -142,7 +144,7 @@ def main():
         with contextlib.redirect_stdout(file), contextlib.redirect_stderr(file):
             while True:
                 try:
-                    healthcheck(args.file, args.interval)
+                    healthcheck(args.file, args.interval, *args.services)
                 except KeyboardInterrupt:
                     break
                 except Exception:

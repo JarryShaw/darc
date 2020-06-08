@@ -1,0 +1,13 @@
+[Unit]
+Description=Upload Service
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/darc
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin"
+ExecStart=/usr/bin/python3 /root/darc/extra/upload.py --file /root/darc/docker-compose.yml --host ftp://202.120.1.153:21 --user darkcrawler:zft13917331612 --interval 86400
+
+[Install]
+WantedBy=multi-user.target
