@@ -75,6 +75,9 @@ def save_requests(entries: typing.Iterable[Link], single: bool = False,
         mapping = {
             pickle.dumps(link): score for link in entries
         }
+
+    if not mapping:
+        return
     redis.zadd('queue_requests', mapping, nx=nx, xx=xx)
 
 
@@ -106,6 +109,9 @@ def save_selenium(entries: typing.Iterable[Link], single: bool = False,
         mapping = {
             pickle.dumps(link): score for link in entries
         }
+
+    if not mapping:
+        return
     redis.zadd('queue_selenium', mapping, nx=nx, xx=xx)
 
 
