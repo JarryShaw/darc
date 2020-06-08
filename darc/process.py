@@ -11,6 +11,7 @@ import multiprocessing
 import os
 import signal
 import threading
+import time
 
 import stem
 import stem.control
@@ -18,212 +19,28 @@ import stem.process
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DARC_CPU, FLAG_MP, FLAG_TH, PATH_ID, PATH_QR, PATH_QS, REBOOT, getpid
+from darc._compat import nullcontext, strsignal
+from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, PATH_ID, REBOOT, getpid
 from darc.crawl import crawler, loader
 from darc.db import load_requests, load_selenium
 from darc.proxy.tor import renew_tor_session
 
-
-def _load_last_word():
-    """Load data to queue.
-
-    The function will copy the backup of the |requests|_ database
-    ``_queue_requests.txt.tmp`` (if exists) and the backup of the
-    |selenium|_ database ``_queue_selenium.txt.tmp`` (if exists)
-    to the corresponding database.
-
-    The function will also save the process ID to the ``darc.pid``
-    PID file.
-
-    See Also:
-        * :func:`darc.const.getpid`
-        * :func:`darc.db.load_requests`
-        * :func:`darc.db.load_selenium`
-
-    """
-    with open(PATH_ID, 'w') as file:
-        print(os.getpid(), file=file)
-
-    # if os.path.isfile(PATH_QR):
-    #     with open(PATH_QR) as file:
-    #         for line in file:
-    #             QUEUE_REQUESTS.put(line.strip())
-    #     os.remove(PATH_QR)
-
-    # if os.path.isfile(PATH_QS):
-    #     with open(PATH_QS) as file:
-    #         for line in file:
-    #             QUEUE_SELENIUM.put(line.strip())
-    #     os.remove(PATH_QS)
-
-    if os.path.isfile(f'{PATH_QR}.tmp'):
-        with open(f'{PATH_QR}.tmp') as file_temp:
-            with open(f'{PATH_QR}', 'a') as file:
-                print(file=file)
-                print('# last words', file=file)
-                for line in file_temp:
-                    print(line, file=file)
-        os.remove(f'{PATH_QR}.tmp')
-
-    if os.path.isfile(f'{PATH_QS}.tmp'):
-        with open(f'{PATH_QS}.tmp') as file_temp:
-            with open(f'{PATH_QS}', 'a') as file:
-                print(file=file)
-                print('# last words', file=file)
-                for line in file_temp:
-                    print(line, file=file)
-        os.remove(f'{PATH_QS}.tmp')
-
-
-def _dump_last_word(errors: bool = True):
-    """Dump data in queue.
-
-    Args:
-        errors: If the function is called upon error raised.
-
-    The function will remove the backup of the |requests|_ database
-    ``_queue_requests.txt.tmp`` (if exists) and the backup of the
-    |selenium|_ database ``_queue_selenium.txt.tmp`` (if exists).
-
-    If ``errors`` is ``True``, the function will copy the backup of
-    the |requests|_ database ``_queue_requests.txt.tmp`` (if exists)
-    and the backup of the |selenium|_ database ``_queue_selenium.txt.tmp``
-    (if exists) to the corresponding database.
-
-    The function will also remove the PID file ``darc.pid``
-
-    See Also:
-        * :func:`darc.const.getpid`
-        * :func:`darc.db.save_requests`
-        * :func:`darc.db.save_selenium`
-
-    """
-    # requests_links = _get_requests_links()
-    # if requests_links:
-    #     with open(PATH_QR, 'w') as file:
-    #         for link in requests_links:
-    #             print(link, file=file)
-
-    # selenium_links = _get_selenium_links()
-    # if selenium_links:
-    #     with open(PATH_QS, 'w') as file:
-    #         for link in selenium_links:
-    #             print(link, file=file)
-
-    if errors:
-        if os.path.isfile(f'{PATH_QR}.tmp'):
-            with open(f'{PATH_QR}.tmp') as file_temp:
-                with open(f'{PATH_QR}', 'a') as file:
-                    print(file=file)
-                    print('# last words', file=file)
-                    for line in file_temp:
-                        print(line, file=file)
-            os.remove(f'{PATH_QR}.tmp')
-
-        if os.path.isfile(f'{PATH_QS}.tmp'):
-            with open(f'{PATH_QS}.tmp') as file_temp:
-                with open(f'{PATH_QS}', 'a') as file:
-                    print(file=file)
-                    print('# last words', file=file)
-                    for line in file_temp:
-                        print(line, file=file)
-            os.remove(f'{PATH_QS}.tmp')
-    else:
-        if os.path.isfile(f'{PATH_QR}.tmp'):
-            os.remove(f'{PATH_QR}.tmp')
-
-        if os.path.isfile(f'{PATH_QS}.tmp'):
-            os.remove(f'{PATH_QS}.tmp')
-
-    if os.path.isfile(PATH_ID):
-        os.remove(PATH_ID)
-
-
-def _get_requests_links() -> typing.List[str]:
-    """Fetch links from queue.
-
-    Returns:
-        List of links from the |requests|_ database.
-
-    .. deprecated:: 0.1.0
-       Use :func:`darc.db.load_requests` instead.
-
-    """
-    # link_list = list()
-    # while True:
-    #     try:
-    #         link = QUEUE_REQUESTS.get_nowait()
-    #     except queue.Empty:
-    #         break
-    #     link_list.append(link)
-
-    # if link_list:
-    #     random.shuffle(link_list)
-    # link_pool = sorted(set(link_list))
-
-    # if not _TOR_BS_FLAG and has_tor(link_pool) and not match_proxy('tor'):
-    #     tor_bootstrap()
-    # if not _I2P_BS_FLAG and has_i2p(link_pool) and not match_proxy('i2p'):
-    #     i2p_bootstrap()
-    # if not _ZERONET_BS_FLAG and has_zeronet(link_pool) and not match_proxy('zeronet'):
-    #     zeronet_bootstrap()
-    # if not _FREENET_BS_FLAG and has_freenet(link_pool) and not match_proxy('freenet'):
-    #     freenet_bootstrap()
-
-    # if VERBOSE:
-    #     print(stem.util.term.format('-*- [REQUESTS] LINK POOL -*-',
-    #                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    #     print(render_error(pprint.pformat(sorted(link_pool)), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    #     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-    #                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-
-    # return link_pool
-
-    return load_requests()
-
-
-def _get_selenium_links() -> typing.List[str]:
-    """Fetch links from queue.
-
-    Returns:
-        List of links from the |selenium|_ database.
-
-    .. deprecated:: 0.1.0
-       Use :func:`darc.db.load_selenium` instead.
-
-    """
-    # link_list = list()
-    # while True:
-    #     try:
-    #         link = QUEUE_SELENIUM.get_nowait()
-    #     except queue.Empty:
-    #         break
-    #     link_list.append(link)
-
-    # if link_list:
-    #     random.shuffle(link_list)
-
-    # link_pool = sorted(set(link_list))
-    # if VERBOSE:
-    #     print(stem.util.term.format('-*- [SELENIUM] LINK POOL -*-',
-    #                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    #     print(render_error(pprint.pformat(sorted(link_pool)), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    #     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-    #                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    # return link_pool
-
-    return load_selenium()
+#: multiprocessing.Process: Crawler process from :func:`~darc.crawl.crawler`.
+PROC_CRAWLER = None
+#: multiprocessing.Process: Loader process from :func:`~darc.crawl.loader`.
+PROC_LOADER = None
 
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
                     frame: typing.Optional[typing.FrameType] = None):  # pylint: disable=unused-argument
     """Signal handler.
 
-    The function will call :func:`~darc.process._dump_last_word`
-    to keep a decent death.
-
     If the current process is not the main process, the function
     shall do nothing.
+
+    Otherwise, the function will *kill* and *join* the child
+    processes of :data:`~darc.process.PROC_CRAWLER` and
+    :data:`~darc.process.PROC_LOADER`.
 
     Args:
         signum: The signal to handle.
@@ -236,19 +53,86 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
     if os.getpid() != getpid():
         return
 
-    print(stem.util.term.format('Keeping last words...',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    PROC_CRAWLER.kill()
+    PROC_LOADER.kill()
 
-    # keep records
-    _dump_last_word(errors=True)
+    PROC_CRAWLER.join()
+    PROC_LOADER.join()
 
-    # signal.strsignal added in 3.8
+    if os.path.isfile(PATH_ID):
+        os.remove(PATH_ID)
+
     try:
-        strsignal = signal.strsignal(signum)
+        sig = strsignal(signum) or signum
     except Exception:
-        strsignal = signum
-    print(stem.util.term.format(f'Exit with signal: {strsignal} <{frame}>',
+        sig = signum
+    print(stem.util.term.format(f'[DARC] Exit with signal: {sig} <{frame}>',
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
+
+def process_crawler():
+    """A child process to run the :func:`~darc.crawl.crawler` process."""
+    # start mainloop
+    with multiprocessing.Pool(processes=DARC_CPU) as pool:
+        while True:
+            # requests crawler
+            link_pool = load_requests()
+            if not link_pool:
+                if DARC_WAIT is not None:
+                    time.sleep(DARC_WAIT)
+                continue
+            pool.map(crawler, link_pool)
+
+            # quit in reboot mode
+            if REBOOT:
+                break
+
+            # renew Tor session
+            renew_tor_session()
+            print('[CRAWLER] Starting next round...')
+
+
+def process_loader():
+    """A child process to run the :func:`~darc.crawl.loader` process."""
+    if FLAG_MP:
+        pool = multiprocessing.Pool(processes=DARC_CPU)
+    else:
+        pool = nullcontext()
+
+    with pool:
+        while True:
+            # selenium loader
+            link_pool = load_selenium()
+            if not link_pool:
+                if DARC_WAIT is not None:
+                    time.sleep(DARC_WAIT)
+                continue
+
+            if FLAG_MP:
+                pool.map(loader, link_pool)
+            elif FLAG_TH and DARC_CPU:
+                while link_pool:
+                    thread_list = list()
+                    for _ in range(DARC_CPU):
+                        try:
+                            item = link_pool.pop()
+                        except IndexError:
+                            break
+                        thread = threading.Thread(target=loader, args=(item,))
+                        thread_list.append(thread)
+                        thread.start()
+                    for thread in thread_list:
+                        thread.join()
+            else:
+                [loader(item) for item in link_pool]  # pylint: disable=expression-not-assigned
+
+            # quit in reboot mode
+            if REBOOT:
+                break
+
+            # renew Tor session
+            renew_tor_session()
+            print('[LOADER] Starting next round...')
 
 
 def process():
@@ -315,10 +199,9 @@ def process():
        be saved into |selenium|_ link database to proceed next steps
        (c.f. :func:`~darc.db.save_selenium`).
 
-    2. :func:`~darc.process.process`: after the obtained URLs have all been
-       crawled, :mod:`darc` will obtain URLs from the |selenium|_ link database
-       (c.f. :func:`~darc.db.load_selenium`), and feed such URLs to
-       :func:`~darc.crawl.loader`.
+    2. :func:`~darc.process.process`: in the meanwhile, :mod:`darc` will
+       obtain URLs from the |selenium|_ link database (c.f. :func:`~darc.db.load_selenium`),
+       and feed such URLs to :func:`~darc.crawl.loader`.
 
        .. note::
 
@@ -352,57 +235,19 @@ def process():
     another round.
 
     """
+    global PROC_CRAWLER, PROC_LOADER
+
     #signal.signal(signal.SIGINT, _signal_handler)
     signal.signal(signal.SIGTERM, _signal_handler)
     #signal.signal(signal.SIGKILL, _signal_handler)
 
-    print('Starting application...')
-    try:
-        # load remaining links
-        _load_last_word()
+    print('[DARC] Starting application...')
+    PROC_CRAWLER = multiprocessing.Process(target=process_crawler)
+    PROC_LOADER = multiprocessing.Process(target=process_loader)
 
-        # start mainloop
-        with multiprocessing.Pool(processes=DARC_CPU) as pool:
-            while True:
-                # requests crawler
-                link_pool = _get_requests_links()
-                if link_pool:
-                    pool.map(crawler, link_pool)
-                else:
-                    break
+    PROC_CRAWLER.start()
+    PROC_LOADER.start()
 
-                # selenium loader
-                link_pool = _get_selenium_links()
-                if link_pool:
-                    if FLAG_MP:
-                        pool.map(loader, link_pool)
-                    elif FLAG_TH and DARC_CPU:
-                        thread_list = list()
-                        for _ in range(DARC_CPU):
-                            try:
-                                item = link_pool.pop()
-                            except KeyError:
-                                break
-                            thread = threading.Thread(target=loader, args=(item,))
-                            thread_list.append(thread)
-                            thread.start()
-                        for thread in thread_list:
-                            thread.join()
-                    else:
-                        [loader(item) for item in link_pool]  # pylint: disable=expression-not-assigned
-                else:
-                    break
-
-                # quit in reboot mode
-                if REBOOT:
-                    _dump_last_word(errors=False)
-                    break
-
-                # renew Tor session
-                renew_tor_session()
-                print('Starting next round...')
-    except BaseException:
-        print('Keeping last words...')
-        _dump_last_word()
-        raise
-    print('Gracefully existing...')
+    PROC_CRAWLER.join()
+    PROC_LOADER.join()
+    print('[DARC] Gracefully existing...')

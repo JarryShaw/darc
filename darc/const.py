@@ -11,6 +11,7 @@ import re
 import shutil
 import sys
 
+import redis
 import stem.util.term
 
 from darc.error import render_error
@@ -157,10 +158,16 @@ del _SE_WAIT
 # selenium empty page
 SE_EMPTY = '<html><head></head><body></body></html>'
 
-# link queue
-#MANAGER = multiprocessing.Manager()
-#QUEUE_REQUESTS = MANAGER.Queue()  # url
-#QUEUE_SELENIUM = MANAGER.Queue()  # url
+# Redis client
+REDIS = redis.Redis.from_url(os.getenv('REDIS_URL', 'redis://127.0.0.1'))
+
+# selenium wait time
+_DARC_WAIT = float(os.getenv('DARC_WAIT', '60'))
+if math.isfinite(_DARC_WAIT):
+    DARC_WAIT = _DARC_WAIT
+else:
+    DARC_WAIT = None
+del _DARC_WAIT
 
 
 def getpid() -> int:

@@ -23,7 +23,7 @@ import stem.util.term
 import darc.typing as typing
 from darc.const import DARC_USER, DEBUG, VERBOSE
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform, render_error
-from darc.link import urlparse
+from darc.link import Link
 
 # ZeroNet args
 FREENET_ARGS = shlex.split(os.getenv('FREENET_ARGS', ''))
@@ -147,7 +147,7 @@ def freenet_bootstrap():
             break
         except Exception as error:
             if DEBUG:
-                message = f'[Error bootstraping Freenet proxy]' + os.linesep + traceback.format_exc()
+                message = '[Error bootstraping Freenet proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
             warning = warnings.formatwarning(error, FreenetBootstrapFailed, __file__, 108, 'freenet_bootstrap()')
@@ -156,7 +156,7 @@ def freenet_bootstrap():
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def has_freenet(link_pool: typing.Iterable[str]) -> bool:
+def has_freenet(link_pool: typing.Iterable[Link]) -> bool:
     """Check if contain Freenet links.
 
     Args:
@@ -173,7 +173,7 @@ def has_freenet(link_pool: typing.Iterable[str]) -> bool:
     """
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = urlparse(link)
+        parse = link.url_parse
 
         if parse.netloc in (f'127.0.0.1:{FREENET_PORT}', f'localhost:{FREENET_PORT}'):
             return True

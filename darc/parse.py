@@ -124,7 +124,7 @@ def match_mime(mime: str) -> bool:
     return MIME_FALLBACK
 
 
-def read_robots(link: str, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
+def read_robots(link: Link, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
     """Read ``robots.txt`` to fetch link to sitemaps.
 
     Args:
@@ -150,8 +150,8 @@ def read_robots(link: str, text: str, host: typing.Optional[str] = None) -> typi
 
     sitemaps = rp.site_maps()
     if sitemaps is None:
-        return [parse_link(urljoin(link, '/sitemap.xml'))]
-    return [parse_link(urljoin(link, sitemap), host=host) for sitemap in sitemaps]
+        return [parse_link(urljoin(link.url, '/sitemap.xml'))]
+    return [parse_link(urljoin(link.url, sitemap), host=host) for sitemap in sitemaps]
 
 
 def check_robots(link: Link) -> bool:
@@ -180,7 +180,7 @@ def check_robots(link: Link) -> bool:
     return True
 
 
-def get_sitemap(link: str, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
+def get_sitemap(link: Link, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
     """Fetch link to other sitemaps from a sitemap.
 
     Args:
@@ -204,11 +204,11 @@ def get_sitemap(link: str, text: str, host: typing.Optional[str] = None) -> typi
 
     # https://www.sitemaps.org/protocol.html#index
     for loc in soup.select('sitemapindex > sitemap > loc'):
-        sitemaps.append(urljoin(link, loc.text))
+        sitemaps.append(urljoin(link.url, loc.text))
     return [parse_link(sitemap, host=host) for sitemap in sitemaps]
 
 
-def _check_ng(temp_list: typing.List[str]) -> typing.List[str]:
+def _check_ng(temp_list: typing.List[Link]) -> typing.List[Link]:
     """Check content type of links through ``HEAD`` requests.
 
     Args:
@@ -227,8 +227,7 @@ def _check_ng(temp_list: typing.List[str]) -> typing.List[str]:
 
     session_map = dict()
     result_list = list()
-    for item in temp_list:
-        link = parse_link(item)
+    for link in temp_list:
         if match_host(link.host):
             continue
         if match_proxy(link.proxy):
@@ -264,11 +263,12 @@ def _check_ng(temp_list: typing.List[str]) -> typing.List[str]:
 
         if match_mime(ct_type):
             continue
-        link_list.append(response.url)
+        temp_link = parse_link(response.request.url)
+        link_list.append(temp_link)
     return link_list
 
 
-def _check(temp_list: typing.List[str]) -> typing.List[str]:
+def _check(temp_list: typing.List[Link]) -> typing.List[Link]:
     """Check hostname and proxy type of links.
 
     Args:
@@ -291,17 +291,16 @@ def _check(temp_list: typing.List[str]) -> typing.List[str]:
         return _check_ng(temp_list)
 
     link_list = list()
-    for item in temp_list:
-        link = parse_link(item)
+    for link in temp_list:
         if match_host(link.host):
             continue
         if match_proxy(link.proxy):
             continue
-        link_list.append(link.url)
+        link_list.append(link)
     return link_list
 
 
-def read_sitemap(link: str, text: str, check: bool = CHECK) -> typing.Iterator[str]:
+def read_sitemap(link: Link, text: str, check: bool = CHECK) -> typing.Iterator[Link]:
     """Read sitemap.
 
     Args:
@@ -321,7 +320,7 @@ def read_sitemap(link: str, text: str, check: bool = CHECK) -> typing.Iterator[s
     soup = bs4.BeautifulSoup(text, 'html5lib')
 
     # https://www.sitemaps.org/protocol.html
-    temp_list = [urljoin(link, loc.text) for loc in soup.select('urlset > url > loc')]
+    temp_list = [parse_link(urljoin(link.url, loc.text), host=link.host) for loc in soup.select('urlset > url > loc')]
 
     # check content / proxy type
     if check:
@@ -360,7 +359,7 @@ def get_content_type(response: typing.Response) -> str:
     return ct_type.casefold().split(';', maxsplit=1)[0].strip()
 
 
-def extract_links(link: str, html: typing.Union[str, bytes], check: bool = CHECK) -> typing.Iterator[str]:
+def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHECK) -> typing.Iterator[Link]:
     """Extract links from HTML document.
 
     Args:
@@ -383,7 +382,8 @@ def extract_links(link: str, html: typing.Union[str, bytes], check: bool = CHECK
     for child in soup.find_all(lambda tag: tag.has_attr('href') or tag.has_attr('src')):
         if (href := child.get('href', child.get('src'))) is None:
             continue
-        temp_list.append(urljoin(link, href))
+        temp_link = parse_link(urljoin(link.url, href))
+        temp_list.append(temp_link)
 
     # check content / proxy type
     if check:

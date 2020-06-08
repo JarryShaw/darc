@@ -17,6 +17,7 @@ function to the |urllib|_.
 
 import contextlib
 import dataclasses
+import functools
 import hashlib
 import os
 import re
@@ -121,6 +122,7 @@ def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib
 
 
 @dataclasses.dataclass
+@functools.total_ordering
 class Link:
     """Parsed link.
 
@@ -164,6 +166,16 @@ class Link:
 
     def __str__(self):
         return self.url
+
+    def __eq__(self, value):
+        if isinstance(value, Link):
+            return self.url == value.url
+        return False
+
+    def __lt__(self, value):
+        if isinstance(value, Link):
+            return self.url < value.url
+        raise TypeError(f"'<' not supported between instances of 'Link' and {type(value).__name__!r}")
 
 
 def parse_link(link: str, host: typing.Optional[str] = None) -> Link:

@@ -29,7 +29,7 @@ import stem.util.term
 import darc.typing as typing
 from darc.const import CHECK, DARC_USER, DEBUG, PATH_DB, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
-from darc.link import Link, parse_link, urljoin, urlparse
+from darc.link import Link, parse_link, urljoin
 from darc.parse import _check, get_content_type
 
 # I2P args
@@ -165,7 +165,7 @@ def i2p_bootstrap():
             break
         except Exception as error:
             if DEBUG:
-                message = f'[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc()
+                message = '[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
             warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 125, 'i2p_bootstrap()')
@@ -206,7 +206,7 @@ def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, typing.Union[str, 
     return data
 
 
-def has_i2p(link_pool: typing.Set[str]) -> bool:
+def has_i2p(link_pool: typing.Set[Link]) -> bool:
     """Check if contain I2P links.
 
     Args:
@@ -222,7 +222,7 @@ def has_i2p(link_pool: typing.Set[str]) -> bool:
     """
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = urlparse(link)
+        parse = link.url_parse
 
         if re.fullmatch(r'.*?\.i2p', parse.netloc):
             return True
@@ -276,7 +276,7 @@ def save_hosts(link: Link, text: str) -> str:
     return path
 
 
-def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterable[str]:
+def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterable[Link]:
     """Read ``hosts.txt``.
 
     Args:
@@ -296,7 +296,7 @@ def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterab
         link = line.split('=', maxsplit=1)[0]
         if I2P_REGEX.fullmatch(link) is None:
             continue
-        temp_list.append(f'http://{link}')
+        temp_list.append(parse_link(f'http://{link}'))
 
     if check:
         link_list = _check(temp_list)

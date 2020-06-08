@@ -1,7 +1,10 @@
 {
     "cSpell.words": [
+        "AQACAAE",
+        "DFOC",
         "Ffacebookcorewwwi",
         "GIFs",
+        "IHAV",
         "Kleineidam",
         "LINKDB",
         "NEWNYM",
@@ -10,6 +13,7 @@
         "SCPT",
         "URL's",
         "Unpaused",
+        "WCILB",
         "asdict",
         "certifi",
         "cgroup",
@@ -66,11 +70,14 @@
         "undoc",
         "unpause",
         "urlunparse",
+        "uzja",
         "wcwidth",
         "xbfgragh",
         "xenial",
         "xvpfz",
-        "xvzf"
+        "xvzf",
+        "zadd",
+        "zrangebyscore"
     ],
     "python.pythonPath": ".venv/bin/python",
     "restructuredtext.confPath": "${workspaceFolder}/docs/conf.py"

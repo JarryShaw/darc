@@ -21,7 +21,7 @@ import stem.util.term
 import darc.typing as typing
 from darc.const import DEBUG, VERBOSE
 from darc.error import ZeroNetBootstrapFailed, render_error
-from darc.link import urlparse
+from darc.link import Link
 from darc.proxy.tor import tor_bootstrap
 
 # ZeroNet args
@@ -133,7 +133,7 @@ def zeronet_bootstrap():
             break
         except Exception as error:
             if DEBUG:
-                message = f'[Error bootstraping ZeroNet proxy]' + os.linesep + traceback.format_exc()
+                message = '[Error bootstraping ZeroNet proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
             warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 94, 'zeronet_bootstrap()')
@@ -142,7 +142,7 @@ def zeronet_bootstrap():
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def has_zeronet(link_pool: typing.Set[str]) -> bool:
+def has_zeronet(link_pool: typing.Set[Link]) -> bool:
     """Check if contain ZeroNet links.
 
     Args:
@@ -159,7 +159,7 @@ def has_zeronet(link_pool: typing.Set[str]) -> bool:
     """
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = urlparse(link)
+        parse = link.url_parse
 
         if parse.netloc in (f'127.0.0.1:{ZERONET_PORT}', f'localhost:{ZERONET_PORT}'):
             return True

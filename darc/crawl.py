@@ -9,14 +9,12 @@ The :mod:`darc.crawl` module provides two types of crawlers.
 
 """
 
-import contextlib
 import math
 import os
 import shutil
 import sys
 import traceback
 
-import magic
 import requests
 import selenium.common.exceptions
 import selenium.webdriver
@@ -28,10 +26,10 @@ import stem.util.term
 import urllib3
 
 from darc._compat import datetime
-from darc.const import FORCE, SAVE_REQUESTS, SAVE_SELENIUM, SE_EMPTY
+from darc.const import FORCE, SE_EMPTY
 from darc.db import save_requests, save_selenium
 from darc.error import render_error
-from darc.link import parse_link
+from darc.link import Link
 from darc.parse import (check_robots, extract_links, get_content_type, match_host, match_mime,
                         match_proxy)
 from darc.proxy.bitcoin import save_bitcoin
@@ -43,17 +41,17 @@ from darc.proxy.magnet import save_magnet
 from darc.proxy.mail import save_mail
 from darc.proxy.null import fetch_sitemap, save_invalid
 from darc.requests import request_session
-from darc.save import has_folder, has_html, has_raw, sanitise, save_file, save_headers, save_html
+from darc.save import has_folder, sanitise, save_file, save_headers, save_html
 from darc.selenium import request_driver
 from darc.sites import crawler_hook, loader_hook
 from darc.submit import submit_new_host, submit_requests, submit_selenium
 
 
-def crawler(url: str):
+def crawler(link: Link):
     """Single |requests|_ crawler for a entry link.
 
     Args:
-        url: URL to be crawled by |requests|_.
+        link: URL to be crawled by |requests|_.
 
     The function will first parse the URL using
     :func:`~darc.link.parse_link`, and check if need to crawl the
@@ -111,9 +109,8 @@ def crawler(url: str):
     (c.f. :func:`~darc.db.save_selenium`).
 
     """
+    print(f'[REQUESTS] Requesting {link.url}')
     try:
-        link = parse_link(url)
-
         if match_proxy(link.proxy):
             print(render_error(f'[REQUESTS] Ignored proxy type from {link.url} ({link.proxy})',
                                stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
@@ -161,175 +158,116 @@ def crawler(url: str):
         # timestamp
         timestamp = datetime.now()
 
-        path = has_raw(timestamp, link)
-        if path is not None:
+        # if it's a new host
+        new_host = has_folder(link) is None
 
+        if new_host:
             if link.proxy not in ('zeronet', 'freenet'):
-                # load sitemap.xml
+                # fetch sitemap.xml
                 try:
                     fetch_sitemap(link)
                 except Exception:
-                    error = f'[Error loading sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                    error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                     print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
-            # load hosts.txt
             if link.proxy == 'i2p':
+                # fetch hosts.txt
                 try:
                     fetch_hosts(link)
                 except Exception:
-                    error = f'[Error loading hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                    error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                     print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
 
-            ext = os.path.splitext(path)[1]
-            if ext == '.dat':
-                print(stem.util.term.format(f'[REQUESTS] Cached generic file from {link.url}',
-                                            stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+            # submit data
+            submit_new_host(timestamp, link)
+
+        if not FORCE and not check_robots(link):
+            print(render_error(f'[REQUESTS] Robots disallowed link from {link.url}',
+                               stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+            return
+
+        with request_session(link) as session:
+            try:
+                # requests session hook
+                response = crawler_hook(link, session)
+            except requests.exceptions.InvalidSchema as error:
+                print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                save_invalid(link)
+                return
+            except requests.RequestException as error:
+                print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                save_requests(link.url, single=True)
+                return
+
+            # save headers
+            save_headers(timestamp, link, response, session)
+
+            # check content type
+            ct_type = get_content_type(response)
+            if ct_type not in ['text/html', 'application/xhtml+xml']:
+                print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
+                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+
+                text = response.content
+                try:
+                    path = save_file(timestamp, link, text)
+                except Exception as error:
+                    print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
+                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                    return
 
                 # probably hosts.txt
-                if link.proxy == 'i2p':
-                    with contextlib.suppress(Exception):
-                        ct_type = magic.detect_from_filename(path).mime_type
-                        if ct_type in ['text/plain', 'text/text']:
-                            with open(path) as hosts_file:
-                                save_requests(read_hosts(hosts_file))
+                if link.proxy == 'i2p' and ct_type in ['text/plain', 'text/text']:
+                    with open(path) as hosts_file:
+                        save_requests(read_hosts(hosts_file))
 
-                return
-
-            print(stem.util.term.format(f'[REQUESTS] Cached HTML document from {link.url}',
-                                        stem.util.term.Color.YELLOW))  # pylint: disable=no-member
-            with open(path, 'rb') as file:
-                html = file.read()
-
-            # add link to queue
-            #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
-            save_requests(extract_links(link.url, html))
-
-            #QUEUE_SELENIUM.put(link.url)
-            save_selenium(link.url, single=True)
-
-        else:
-
-            # if it's a new host
-            new_host = has_folder(link) is None
-
-            print(f'[REQUESTS] Requesting {link.url}')
-
-            if new_host:
-                if link.proxy not in ('zeronet', 'freenet'):
-                    # fetch sitemap.xml
-                    try:
-                        fetch_sitemap(link)
-                    except Exception:
-                        error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-
-                if link.proxy == 'i2p':
-                    # fetch hosts.txt
-                    try:
-                        fetch_hosts(link)
-                    except Exception:
-                        error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-
-                # submit data
-                submit_new_host(timestamp, link)
-
-            if not FORCE and not check_robots(link):
-                print(render_error(f'[REQUESTS] Robots disallowed link from {link.url}',
-                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
-                return
-
-            with request_session(link) as session:
-                try:
-                    # requests session hook
-                    response = crawler_hook(link, session)
-                except requests.exceptions.InvalidSchema as error:
-                    print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    save_invalid(link)
+                if match_mime(ct_type):
                     return
-                except requests.RequestException as error:
-                    print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    #QUEUE_REQUESTS.put(link.url)
-                    save_requests(link.url, single=True)
-                    return
-
-                # save headers
-                save_headers(timestamp, link, response, session)
-
-                # check content type
-                ct_type = get_content_type(response)
-                if ct_type not in ['text/html', 'application/xhtml+xml']:
-                    print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
-                                       stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
-
-                    text = response.content
-                    try:
-                        path = save_file(timestamp, link, text)
-                    except Exception as error:
-                        print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
-                                           stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                        return
-
-                    # probably hosts.txt
-                    if link.proxy == 'i2p' and ct_type in ['text/plain', 'text/text']:
-                        with open(path) as hosts_file:
-                            save_requests(read_hosts(hosts_file))
-
-                    if match_mime(ct_type):
-                        return
-
-                    # submit data
-                    submit_requests(timestamp, link, response, session)
-
-                    return
-
-                html = response.content
-                if not html:
-                    print(render_error(f'[REQUESTS] Empty response from {link.url}',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    #QUEUE_REQUESTS.put(link.url)
-                    save_requests(link.url, single=True)
-                    return
-
-                # save HTML
-                save_html(timestamp, link, html, raw=True)
 
                 # submit data
                 submit_requests(timestamp, link, response, session)
 
+                return
+
+            html = response.content
+            if not html:
+                print(render_error(f'[REQUESTS] Empty response from {link.url}',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                save_requests(link.url, single=True)
+                return
+
+            # save HTML
+            save_html(timestamp, link, html, raw=True)
+
+            # submit data
+            submit_requests(timestamp, link, response, session)
+
             # add link to queue
-            #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
-            save_requests(extract_links(link.url, html))
+            save_requests(extract_links(link, html), score=0)
 
             if not response.ok:
                 print(render_error(f'[REQUESTS] Failed on {link.url} [{response.status_code}]',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                #QUEUE_REQUESTS.put(link.url)
                 save_requests(link.url, single=True)
                 return
 
             # add link to queue
-            #QUEUE_SELENIUM.put(link.url)
-            save_selenium(link.url, single=True)
-
-            if SAVE_REQUESTS:
-                save_requests(link.url, single=True)
-
-            print(f'[REQUESTS] Requested {link.url}')
+            save_selenium(link, single=True, score=0, nx=True)
+            save_requests(link, single=True)
     except Exception:
-        error = f'[Error from {url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-        #QUEUE_REQUESTS.put(url)
-        save_requests(url, single=True)
+        save_requests(link, single=True)
+    print(f'[REQUESTS] Requested {link.url}')
 
 
-def loader(url: str):
+def loader(link: Link):
     """Single |selenium|_ loader for a entry link.
 
     Args:
-        url: URL to be crawled by |requests|_.
+        Link: URL to be crawled by |requests|_.
 
     The function will first parse the URL using :func:`~darc.link.parse_link`
     and start loading the URL using |selenium|_ with Google Chrome.
@@ -366,87 +304,63 @@ def loader(url: str):
     links into the |requests|_ database (c.f. :func:`~darc.db.save_requests`).
 
     """
+    print(f'[SELENIUM] Loading {link.url}')
     try:
-        link = parse_link(url)
-
         # timestamp
         timestamp = datetime.now()
 
-        path = has_html(timestamp, link)
-        if path is not None:
+        # retrieve source from Chrome
+        with request_driver(link) as driver:
+            try:
+                # selenium driver hook
+                driver = loader_hook(link, driver)
+            except urllib3.exceptions.HTTPError as error:
+                print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                save_selenium(link, single=True)
+                return
+            except selenium.common.exceptions.WebDriverException as error:
+                print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                save_selenium(link, single=True)
+                return
 
-            print(stem.util.term.format(f'[SELENIUM] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
-            with open(path, 'rb') as file:
-                html = file.read()
+            # get HTML source
+            html = driver.page_source
 
-            # add link to queue
-            #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
-            save_requests(extract_links(link.url, html))
+            if html == SE_EMPTY:
+                print(render_error(f'[SELENIUM] Empty page from {link.url}',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                save_selenium(link, single=True)
+                return
 
-        else:
+            # save HTML
+            save_html(timestamp, link, html)
 
-            print(f'[SELENIUM] Loading {link.url}')
+            try:
+                # get maximum height
+                height = driver.execute_script('return document.body.scrollHeight')
 
-            # retrieve source from Chrome
-            with request_driver(link) as driver:
-                try:
-                    # selenium driver hook
-                    driver = loader_hook(link, driver)
-                except urllib3.exceptions.HTTPError as error:
-                    print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    #QUEUE_SELENIUM.put(link.url)
-                    save_selenium(link.url, single=True)
-                    return
-                except selenium.common.exceptions.WebDriverException as error:
-                    print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    #QUEUE_SELENIUM.put(link.url)
-                    save_selenium(link.url, single=True)
-                    return
+                # resize window (with some magic numbers)
+                if height < 1000:
+                    height = 1000
+                driver.set_window_size(1024, math.ceil(height * 1.1))
 
-                # get HTML source
-                html = driver.page_source
-
-                if html == SE_EMPTY:
-                    print(render_error(f'[SELENIUM] Empty page from {link.url}',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    #QUEUE_SELENIUM.put(link.url)
-                    save_selenium(link.url, single=True)
-                    return
-
-                # save HTML
-                save_html(timestamp, link, html)
-
-                try:
-                    # get maximum height
-                    height = driver.execute_script('return document.body.scrollHeight')
-
-                    # resize window (with some magic numbers)
-                    if height < 1000:
-                        height = 1000
-                    driver.set_window_size(1024, math.ceil(height * 1.1))
-
-                    # take a full page screenshot
-                    path = sanitise(link, timestamp, screenshot=True)
-                    driver.save_screenshot(path)
-                except Exception as error:
-                    print(render_error(f'[SELENIUM] Fail to save screenshot from {link.url} <{error}>',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                # take a full page screenshot
+                path = sanitise(link, timestamp, screenshot=True)
+                driver.save_screenshot(path)
+            except Exception as error:
+                print(render_error(f'[SELENIUM] Fail to save screenshot from {link.url} <{error}>',
+                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
 
             # submit data
             submit_selenium(timestamp, link)
 
             # add link to queue
-            #[QUEUE_REQUESTS.put(href) for href in extract_links(link.url, html)]  # pylint: disable=expression-not-assigned
-            save_requests(extract_links(link.url, html))
-
-            if SAVE_SELENIUM:
-                save_selenium(link.url, single=True)
-
-            print(f'[SELENIUM] Loaded {link.url}')
+            save_requests(extract_links(link, html), score=0, nx=True)
+            save_selenium(link, single=True)
     except Exception:
-        error = f'[Error from {url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-        #QUEUE_SELENIUM.put(url)
-        save_selenium(url, single=True)
+        save_selenium(link, single=True)
+    print(f'[SELENIUM] Loaded {link.url}')

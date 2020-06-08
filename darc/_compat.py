@@ -7,6 +7,7 @@ __all__ = [
     'nullcontext',
     'RobotFileParser',
     'datetime',
+    'strsignal',
 ]
 
 version = sys.version_info[:2]
@@ -48,3 +49,16 @@ if version >= (3, 7):
     from datetime import datetime
 else:
     from _datetime import datetime
+
+# signal.strsignal added in 3.8
+if version >= (3, 8):
+    from signal import strsignal
+else:
+    import contextlib
+    import signal
+
+    def strsignal(signalnum):
+        """Return the system description of the given signal."""
+        with contextlib.suppress(ValueError):
+            sig = signal.Signals(signalnum)  # pylint: disable=no-member
+            return f'{sig.name}: {sig.value}'

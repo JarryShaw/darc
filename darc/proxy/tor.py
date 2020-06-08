@@ -26,7 +26,7 @@ import stem.util.term
 import darc.typing as typing
 from darc.const import DEBUG
 from darc.error import TorBootstrapFailed, render_error
-from darc.link import urlparse
+from darc.link import Link
 
 # Tor configs
 TOR_CFG = json.loads(os.getenv('TOR_CFG', '{}'))
@@ -170,7 +170,7 @@ def tor_bootstrap():
             break
         except Exception as error:
             if DEBUG:
-                message = f'[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc()
+                message = '[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
             warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 128, 'tor_bootstrap()')
@@ -179,7 +179,7 @@ def tor_bootstrap():
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def has_tor(link_pool: typing.Set[str]) -> bool:
+def has_tor(link_pool: typing.Set[Link]) -> bool:
     """Check if contain Tor links.
 
     Args:
@@ -195,7 +195,7 @@ def has_tor(link_pool: typing.Set[str]) -> bool:
     """
     for link in link_pool:
         # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = urlparse(link)
+        parse = link.url_parse
         if re.fullmatch(r'.*?\.onion', parse.netloc):
             return True
     return False

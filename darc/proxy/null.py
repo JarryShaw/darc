@@ -42,7 +42,7 @@ def save_invalid(link: Link):
     """
     with LOCK:
         with open(PATH, 'a') as file:
-            print(link.url_parse.path, file=file)
+            print(link.url, file=file)
 
 
 def fetch_sitemap(link: Link):
@@ -96,7 +96,7 @@ def fetch_sitemap(link: Link):
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             robots_text = ''
 
-    sitemaps = read_robots(link.url, robots_text, host=link.host)
+    sitemaps = read_robots(link, robots_text, host=link.host)
     for sitemap_link in sitemaps:
         sitemap_path = has_sitemap(sitemap_link)
         if sitemap_path is not None:
@@ -141,8 +141,7 @@ def fetch_sitemap(link: Link):
             print(f'[SITEMAP] Fetched {sitemap_link.url}')
 
         # get more sitemaps
-        sitemaps.extend(get_sitemap(sitemap_link.url, sitemap_text, host=link.host))
+        sitemaps.extend(get_sitemap(sitemap_link, sitemap_text, host=link.host))
 
         # add link to queue
-        #[QUEUE_REQUESTS.put(url) for url in read_sitemap(link.url, sitemap_text)]  # pylint: disable=expression-not-assigned
-        save_requests(read_sitemap(link.url, sitemap_text))
+        save_requests(read_sitemap(link, sitemap_text))

@@ -3,6 +3,7 @@
 
 import argparse
 import contextlib
+import os
 import shutil
 import sys
 import traceback
@@ -10,8 +11,9 @@ import traceback
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DEBUG
+from darc.const import DEBUG, PATH_LN, REDIS
 from darc.db import save_requests
+from darc.link import parse_link
 from darc.process import process
 from darc.proxy.freenet import _FREENET_PROC
 from darc.proxy.i2p import _I2P_PROC
@@ -68,11 +70,14 @@ def main():
     if DEBUG:
         print(stem.util.term.format('-*- Initialisation -*-', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
+        # nuke the db
+        REDIS.delete('queue_requests')
+        REDIS.delete('queue_selenium')
+
     link_list = list()
     for link in filter(None, map(lambda s: s.strip(), args.link)):
         if DEBUG:
             print(stem.util.term.format(link, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        #QUEUE_REQUESTS.put(link)
         link_list.append(link)
 
     if args.file is not None:
@@ -87,10 +92,15 @@ def main():
                     link_list.append(line)
 
     # write to database
-    save_requests(link_list)
+    save_requests((parse_link(link) for link in link_list), score=0, nx=True)
 
     if DEBUG:
         print(stem.util.term.format('-' * shutil.get_terminal_size().columns, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
+    # init link file
+    if not os.path.isfile(PATH_LN):
+        with open(PATH_LN, 'w') as file:
+            print('proxy,scheme,host,hash,link', file=file)
 
     try:
         process()

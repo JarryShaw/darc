@@ -78,10 +78,9 @@ The general process of :mod:`darc` can be described as following:
    be saved into |selenium|_ link database to proceed next steps
    (c.f. :func:`~darc.db.save_selenium`).
 
-2. :func:`~darc.process.process`: after the obtained URLs have all been
-   crawled, :mod:`darc` will obtain URLs from the |selenium|_ link database
-   (c.f. :func:`~darc.db.load_selenium`), and feed such URLs to
-   :func:`~darc.crawl.loader`.
+2. :func:`~darc.process.process`: in the meanwhile, :mod:`darc` will obtain URLs
+   from the |selenium|_ link database (c.f. :func:`~darc.db.load_selenium`), and
+   feed such URLs to :func:`~darc.crawl.loader`.
 
    .. note::
 
@@ -139,6 +138,14 @@ Installation
 
 Please make sure you have Google Chrome and corresponding version of Chrome
 Driver installed on your system.
+
+.. important::
+
+   Starting from version **0.3.0**, we introduced `Redis`_ for the task
+   queue database backend. Please make sure you have it installed, configured,
+   and running when using the ``darc`` project.
+
+   .. _Redis: https://redis.io
 
 However, the :mod:`darc` project is shipped with Docker and Compose support.
 Please see :doc:`/docker`  for more information.
@@ -298,6 +305,13 @@ General Configurations
 Data Storage
 ------------
 
+.. envvar:: REDIS_URL
+
+   :type: ``str`` (url)
+   :default: ``redis://127.0.0.1``
+
+   URL to the Redis database.
+
 .. envvar:: PATH_DATA
 
    :type: ``str`` (path)
@@ -311,6 +325,14 @@ Data Storage
 
 Web Crawlers
 ------------
+
+.. envvar:: DARC_WAIT
+
+   :type: ``float``
+   :default: ``60``
+
+   Time interval between each round when the |requests|_ and/or
+   |selenium|_ database are empty.
 
 .. envvar:: DARC_SAVE
 

@@ -57,7 +57,7 @@ import posixpath
 import darc.typing as typing
 from darc._compat import datetime
 from darc.const import PATH_DB, PATH_LN, TIME_CACHE
-from darc.link import Link
+from darc.link import Link, quote
 
 # lock for file I/O
 #_SAVE_LOCK = MANAGER.Lock()  # pylint: disable=no-member
@@ -262,7 +262,8 @@ def save_link(link: Link):
     """
     with _SAVE_LOCK:
         with open(PATH_LN, 'a') as file:
-            print(f'{link.proxy} {link.url_parse.scheme} {os.path.split(link.base)[1]} {link.name} {link}', file=file)
+            print(f'{link.proxy},{link.url_parse.scheme},{os.path.split(link.base)[1]},'
+                  f'{link.name},{quote(link)}', file=file)
 
 
 def save_robots(link: Link, text: str) -> str:

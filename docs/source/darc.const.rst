@@ -125,6 +125,14 @@ General Configurations
 Data Storage
 ------------
 
+.. data:: darc.const.REDIS
+   :type: redis.Redis
+
+   URL to the Redis database.
+
+   :default: ``redis://127.0.0.1``
+   :environ: :envvar:`REDIS_URL`
+
 .. data:: darc.const.PATH_DB
    :type: str
 
@@ -191,6 +199,15 @@ Data Storage
 
 Web Crawlers
 ------------
+
+.. data:: darc.const.DARC_WAIT
+   :type: Optional[float]
+
+   Time interval between each round when the |requests|_ and/or
+   |selenium|_ database are empty.
+
+   :default: ``60``
+   :environ: :envvar:`DARC_WAIT`
 
 .. data:: darc.const.SAVE
    :type: bool
