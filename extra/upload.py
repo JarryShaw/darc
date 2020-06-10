@@ -19,7 +19,7 @@ SCPT = os.path.join(ROOT, 'upload.sh')
 
 def check_call(*args, **kwargs):
     """Wraps :func:`subprocess.check_call`."""
-    with open('logs/upload.log', 'wt', buffering=1) as file:
+    with open('logs/upload.log', 'at', buffering=1) as file:
         if 'stdout' not in kwargs:
             kwargs['stdout'] = file
         if 'stderr' not in kwargs:
@@ -85,7 +85,7 @@ def main():
     if os.path.isfile('logs/upload.log'):
         os.rename('logs/upload.log', f'logs/upload-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
 
-    with open('logs/upload.log', 'wt', buffering=1) as file:
+    with open('logs/upload.log', 'at', buffering=1) as file:
         date = datetime.datetime.now().ctime()
         print('-' * len(date), file=file)
         print(date, file=file)

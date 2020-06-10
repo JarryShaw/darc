@@ -14,7 +14,7 @@ import time
 
 def check_call(*args, **kwargs):
     """Wraps :func:`subprocess.check_call`."""
-    with open('logs/upload.log', 'wt', buffering=1) as file:
+    with open('logs/healthcheck.log', 'at', buffering=1) as file:
         if 'stdout' not in kwargs:
             kwargs['stdout'] = file
         if 'stderr' not in kwargs:
@@ -135,7 +135,7 @@ def main():
     if os.path.isfile('logs/healthcheck.log'):
         os.rename('logs/healthcheck.log', f'logs/healthcheck-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
 
-    with open('logs/healthcheck.log', 'wt', buffering=1) as file:
+    with open('logs/healthcheck.log', 'at', buffering=1) as file:
         date = datetime.datetime.now().ctime()
         print('-' * len(date), file=file)
         print(date, file=file)
