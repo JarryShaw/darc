@@ -39,7 +39,7 @@ def upload(file, path, host, user):
     print(f'[{datetime.datetime.now().isoformat()}] Archiving & uploading APi submission files...')
 
     check_call(['docker-compose', '--file', file, 'pause'])
-    with open('logs/upload.log', 'wt', buffering=1) as log_file:
+    with open('logs/upload.log', 'at', buffering=1) as log_file:
         with contextlib.suppress(subprocess.CalledProcessError):
             subprocess.check_call(['bash', SCPT], env=os.environ.update(dict(
                 HOST=host,
