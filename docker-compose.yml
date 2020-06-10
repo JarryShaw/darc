@@ -143,6 +143,7 @@ services:
       - darc
     volumes:
       - /data/darc/redis:/data
+    restart: "always"
 
 # network settings
 networks:
