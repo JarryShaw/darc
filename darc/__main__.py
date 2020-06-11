@@ -53,8 +53,14 @@ def _exit():
 
 def get_parser() -> typing.ArgumentParser:
     """Argument parser."""
+    from darc import __version__  # pylint: disable=import-outside-toplevel
+
     parser = argparse.ArgumentParser('darc',
                                      description='the darkweb crawling swiss army knife')
+    parser.add_argument('-v', '--version', action='version', version=__version__)
+
+    parser.add_argument('-t', '--type', action='store', required=True,
+                        choices=['crawler', 'loader'], help='type of worker process')
 
     parser.add_argument('-f', '--file', action='append', help='read links from file')
     parser.add_argument('link', nargs=argparse.REMAINDER, help='links to craw')
@@ -103,7 +109,7 @@ def main():
             print('proxy,scheme,host,hash,link', file=file)
 
     try:
-        process()
+        process(args.type)
     except BaseException:
         traceback.print_exc()
     _exit()

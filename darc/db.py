@@ -27,6 +27,8 @@ to its file extension.
 
 """
 
+import math
+import os
 import pickle
 import pprint
 import shutil
@@ -45,6 +47,11 @@ from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap, has_freenet
 from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, has_tor, tor_bootstrap
 from darc.proxy.zeronet import _ZERONET_BS_FLAG, has_zeronet, zeronet_bootstrap
+
+# max pool
+MAX_POOL = float(os.getenv('DARC_MAX_POOL', '1_000'))
+if math.isfinite(MAX_POOL):
+    MAX_POOL = math.floor(MAX_POOL)
 
 
 def save_requests(entries: typing.Iterable[Link], single: bool = False,
@@ -131,13 +138,16 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
 
     """
     if TIME_CACHE is None:
-        max_score = time.time()
+        max_score = new_score = time.time()
     else:
         max_score = time.time() - TIME_CACHE.total_seconds()
+        new_score = time.time() + TIME_CACHE.total_seconds()
 
-    link_pool = [
-        pickle.loads(link) for link in redis.zrangebyscore('queue_requests', min=0, max=max_score)
-    ]
+    with redis.lock('lock_queue_requests'):
+        link_pool = [pickle.loads(link) for link in redis.zrangebyscore('queue_requests', min=0, max=max_score,
+                                                                        start=0, num=MAX_POOL)]
+        save_requests(link_pool, score=new_score)  # force update records
+
     if check:
         link_pool = _check(link_pool)
 
@@ -177,13 +187,16 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
 
     """
     if TIME_CACHE is None:
-        max_score = time.time()
+        max_score = new_score = time.time()
     else:
         max_score = time.time() - TIME_CACHE.total_seconds()
+        new_score = time.time() + TIME_CACHE.total_seconds()
 
-    link_pool = [
-        pickle.loads(link) for link in redis.zrangebyscore('queue_selenium', min=0, max=max_score)
-    ]
+    with redis.lock('lock_queue_selenium'):
+        link_pool = [pickle.loads(link) for link in redis.zrangebyscore('queue_selenium', min=0, max=max_score,
+                                                                        start=0, num=MAX_POOL)]
+        save_selenium(link_pool, score=new_score)  # force update records
+
     if check:
         link_pool = _check(link_pool)
 

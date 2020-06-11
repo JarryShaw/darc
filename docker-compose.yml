@@ -1,21 +1,24 @@
 version: '3'
 
 services:
-  darc:
+  crawler:
     image: jsnbzh/darc:latest
-    build:
+    build: &build
       context: .
       args:
         # non-root user
         DARC_USER: "darc"
-    container_name: darc
-    entrypoint: [ "bash", "/app/run.sh" ]
-    command: [ "--file", "/app/text/market.txt",
+    container_name: crawler
+    #entrypoint: [ "bash", "/app/run.sh" ]
+    command: [ "--type", "crawler",
+               "--file", "/app/text/market.txt",
                "--file", "/app/text/top-20k.txt",
                "--file", "/app/text/i2p.txt",
                "--file", "/app/text/zeronet.txt",
                "--file", "/app/text/freenet.txt" ]
-    environment:
+    depends_on: &depends_on
+      - redis
+    environment: &environment
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
       # reboot mode
@@ -125,12 +128,30 @@ services:
       #API_REQUESTS: 'https://example.com/api/requests'
       #API_SELENIUM: 'https://example.com/api/selenium'
     restart: "always"
-    networks:
+    networks: &networks
       - darc
-    volumes:
+    volumes: &volumes
       - ./text:/app/text
       - ./extra:/app/extra
       - /data/darc:/app/data
+
+  loader:
+    image: jsnbzh/darc:latest
+    build: *build
+    container_name: loader
+    #entrypoint: [ "bash", "/app/run.sh" ]
+    command: [ "--type", "loader",
+               "--file", "/app/text/market.txt",
+               "--file", "/app/text/top-20k.txt",
+               "--file", "/app/text/i2p.txt",
+               "--file", "/app/text/zeronet.txt",
+               "--file", "/app/text/freenet.txt" ]
+    depends_on: *depends_on
+    environment: *environment
+    restart: "always"
+    networks: *networks
+    volumes: *volumes
+
   redis:
     image: redis:darc
     build:
@@ -139,11 +160,10 @@ services:
     container_name: redis
     expose:
       - 6379
-    networks:
-      - darc
+    restart: "always"
+    networks: *networks
     volumes:
       - /data/darc/redis:/data
-    restart: "always"
 
 # network settings
 networks:

@@ -23,6 +23,17 @@ SITEMAP = collections.defaultdict(lambda: 'default', {
 })
 
 
+def register(domain: str, module: str):
+    """Register new site map.
+
+    Args:
+        domain: Domain name (case insensitive).
+        module: Full qualified module name.
+
+    """
+    SITEMAP[domain.casefold()] = module
+
+
 def _get_spec(link: Link) -> typing.ModuleType:
     """Load spec if any.
 
@@ -44,7 +55,10 @@ def _get_spec(link: Link) -> typing.ModuleType:
     """
     spec = SITEMAP[link.host.casefold()]
     try:
-        return importlib.import_module(f'darc.sites.{spec}')
+        try:
+            return importlib.import_module(f'darc.sites.{spec}')
+        except ImportError:
+            return importlib.import_module(spec)
     except ImportError:
         warnings.warn(f'site customisation not found: {spec}', SiteNotFoundWarning)
         return importlib.import_module(f'darc.sites.default')

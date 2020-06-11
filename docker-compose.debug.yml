@@ -1,20 +1,21 @@
 version: '3'
 
 services:
-  darc:
+  crawler:
     image: jsnbzh/darc:debug
-    build:
+    build: &build
       context: .
       dockerfile: debug.dockerfile
       args:
         # non-root user
         DARC_USER: "darc"
-    container_name: darc
-    depends_on:
+    container_name: crawler
+    depends_on: &depends_on
       - redis
-    ports:
-      - 9050:1089
+    #ports: &ports
+    #  - 9050:1089
     command:
+      - --type=crawler
       # normal
       - https://httpbin.org
       # Tor
@@ -25,7 +26,7 @@ services:
       - http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D
       # Freenet
       - http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/
-    environment:
+    environment: &environment
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
       # reboot mode
@@ -136,13 +137,37 @@ services:
       #API_REQUESTS: 'https://example.com/api/requests'
       #API_SELENIUM: 'https://example.com/api/selenium'
     restart: "on-failure"
-    networks:
+    networks: &networks
       - darc
-    volumes:
+    volumes: &volumes
       # - ./cache:/app/cache
       - ./extra:/app/extra
       - ./data:/app/data
       - ./text:/app/text
+
+  loader:
+    image: jsnbzh/darc:debug
+    build: *build
+    container_name: loader
+    depends_on: *depends_on
+    #ports: *ports
+    command:
+      - --type=loader
+      # normal
+      - https://httpbin.org
+      # Tor
+      - https://www.nytimes3xbfgragh.onion
+      # I2P
+      - http://zzz.i2p
+      # ZeroNet
+      - http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D
+      # Freenet
+      - http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/
+    environment: *environment
+    restart: "on-failure"
+    networks: *networks
+    volumes: *volumes
+
   redis:
     image: redis:darc
     container_name: redis
@@ -151,11 +176,10 @@ services:
       dockerfile: extra/redis.dockerfile
     expose:
       - 6379
-    networks:
-      - darc
+    restart: "always"
+    networks: *networks
     volumes:
       - ./data/redis:/data
-    restart: "always"
 
 # network settings
 networks:

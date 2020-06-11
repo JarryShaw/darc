@@ -21,3 +21,16 @@ LINK_MAP: typing.LinkMap = collections.defaultdict(
         i2p=(i2p_session, i2p_driver),
     )
 )
+
+
+def register(proxy: str, session: typing.Callable[[], typing.Session],
+                   driver: typing.Callable[[], typing.Driver]):
+    """Register new proxy type.
+
+    Args:
+        proxy: Proxy type.
+        session: Session factory function.
+        driver: Driver factory function.
+
+    """
+    LINK_MAP[proxy] = (session, driver)

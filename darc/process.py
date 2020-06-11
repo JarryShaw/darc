@@ -25,11 +25,6 @@ from darc.crawl import crawler, loader
 from darc.db import load_requests, load_selenium
 from darc.proxy.tor import renew_tor_session
 
-#: multiprocessing.Process: Crawler process from :func:`~darc.crawl.crawler`.
-PROC_CRAWLER = None
-#: multiprocessing.Process: Loader process from :func:`~darc.crawl.loader`.
-PROC_LOADER = None
-
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
                     frame: typing.Optional[typing.FrameType] = None):  # pylint: disable=unused-argument
@@ -37,10 +32,6 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
 
     If the current process is not the main process, the function
     shall do nothing.
-
-    Otherwise, the function will *kill* and *join* the child
-    processes of :data:`~darc.process.PROC_CRAWLER` and
-    :data:`~darc.process.PROC_LOADER`.
 
     Args:
         signum: The signal to handle.
@@ -52,12 +43,6 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
     """
     if os.getpid() != getpid():
         return
-
-    PROC_CRAWLER.kill()
-    PROC_LOADER.kill()
-
-    PROC_CRAWLER.join()
-    PROC_LOADER.join()
 
     if os.path.isfile(PATH_ID):
         os.remove(PATH_ID)
@@ -71,7 +56,9 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
 
 
 def process_crawler():
-    """A child process to run the :func:`~darc.crawl.crawler` process."""
+    """A worker to run the :func:`~darc.crawl.crawler` process."""
+    print('[CRAWLER] Starting first round...')
+
     # start mainloop
     with multiprocessing.Pool(processes=DARC_CPU) as pool:
         while True:
@@ -93,12 +80,13 @@ def process_crawler():
 
 
 def process_loader():
-    """A child process to run the :func:`~darc.crawl.loader` process."""
+    """A worker to run the :func:`~darc.crawl.loader` process."""
     if FLAG_MP:
         pool = multiprocessing.Pool(processes=DARC_CPU)
     else:
         pool = nullcontext()
 
+    print('[LOADER] Starting first round...')
     with pool:
         while True:
             # selenium loader
@@ -135,11 +123,17 @@ def process_loader():
             print('[LOADER] Starting next round...')
 
 
-def process():
+def process(worker: typing.Literal['crawler', 'loader']):
     """Main process.
 
     The function will register :func:`~darc.process._signal_handler` for ``SIGTERM``,
     and start the main process of the :mod:`darc` darkweb crawlers.
+
+    Args:
+        worker: Worker process type.
+
+    Raises:
+        ValueError: If ``worker`` is not a valid value.
 
     The general process can be described as following:
 
@@ -235,19 +229,17 @@ def process():
     another round.
 
     """
-    global PROC_CRAWLER, PROC_LOADER
-
     #signal.signal(signal.SIGINT, _signal_handler)
     signal.signal(signal.SIGTERM, _signal_handler)
     #signal.signal(signal.SIGKILL, _signal_handler)
 
-    print('[DARC] Starting application...')
-    PROC_CRAWLER = multiprocessing.Process(target=process_crawler)
-    PROC_LOADER = multiprocessing.Process(target=process_loader)
+    print(f'[DARC] Starting {worker}...')
 
-    PROC_CRAWLER.start()
-    PROC_LOADER.start()
+    if worker == 'crawler':
+        process_crawler()
+    elif worker == 'loader':
+        process_loader()
+    else:
+        raise ValueError(f'invalid worker type: {worker!r}')
 
-    PROC_CRAWLER.join()
-    PROC_LOADER.join()
-    print('[DARC] Gracefully existing...')
+    print(f'[DARC] Gracefully existing {worker}...')

@@ -80,6 +80,6 @@
         "zadd",
         "zrangebyscore"
     ],
-    "python.pythonPath": ".venv/bin/python",
+    "python.pythonPath": "/Users/jarryshaw/GitHub/darc/.venv/bin/python3.8",
     "restructuredtext.confPath": "${workspaceFolder}/docs/conf.py"
 }
