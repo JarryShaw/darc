@@ -48,6 +48,9 @@ from darc.proxy.i2p import _I2P_BS_FLAG, has_i2p, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, has_tor, tor_bootstrap
 from darc.proxy.zeronet import _ZERONET_BS_FLAG, has_zeronet, zeronet_bootstrap
 
+# bulk size
+BULK_SIZE = int(os.getenv('DARC_BULK_SIZE', '100'))
+
 # max pool
 MAX_POOL = float(os.getenv('DARC_MAX_POOL', '1_000'))
 if math.isfinite(MAX_POOL):
@@ -71,20 +74,22 @@ def save_requests(entries: typing.Iterable[Link], single: bool = False,
             already exist. New elements will not be added.
 
     """
+    if not entries:
+        return
     if score is None:
         score = time.time()
 
-    if single:
-        mapping = {
-            pickle.dumps(entries): score,
-        }
-    else:
-        mapping = {
-            pickle.dumps(link): score for link in entries
-        }
-
-    if not mapping:
+    if not single:
+        for i in range(0, len(entries), BULK_SIZE):
+            mapping = {
+                pickle.dumps(link): score for link in entries[i:i + BULK_SIZE]
+            }
+            redis.zadd('queue_requests', mapping, nx=nx, xx=xx)
         return
+
+    mapping = {
+        pickle.dumps(entries): score,
+    }
     redis.zadd('queue_requests', mapping, nx=nx, xx=xx)
 
 
@@ -105,20 +110,22 @@ def save_selenium(entries: typing.Iterable[Link], single: bool = False,
             already exist. New elements will not be added.
 
     """
+    if not entries:
+        return
     if score is None:
         score = time.time()
 
-    if single:
-        mapping = {
-            pickle.dumps(entries): score,
-        }
-    else:
-        mapping = {
-            pickle.dumps(link): score for link in entries
-        }
-
-    if not mapping:
+    if not single:
+        for i in range(0, len(entries), BULK_SIZE):
+            mapping = {
+                pickle.dumps(link): score for link in entries[i:i + BULK_SIZE]
+            }
+            redis.zadd('queue_selenium', mapping, nx=nx, xx=xx)
         return
+
+    mapping = {
+        pickle.dumps(entries): score,
+    }
     redis.zadd('queue_selenium', mapping, nx=nx, xx=xx)
 
 
@@ -137,16 +144,19 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
         at :data:`~darc.db.MAX_POOL` to limit the memory usage.
 
     """
+    now = time.time()
     if TIME_CACHE is None:
-        max_score = new_score = time.time()
+        max_score = now
     else:
-        max_score = time.time() - TIME_CACHE.total_seconds()
-        new_score = time.time() + TIME_CACHE.total_seconds()
+        sec_delta = TIME_CACHE.total_seconds()
+        max_score = now - sec_delta
 
     with redis.lock('lock_queue_requests'):
         link_pool = [pickle.loads(link) for link in redis.zrangebyscore('queue_requests', min=0, max=max_score,
                                                                         start=0, num=MAX_POOL)]
-        save_requests(link_pool, score=new_score)  # force update records
+        if TIME_CACHE is not None:
+            new_score = now + sec_delta
+            save_requests(link_pool, score=new_score)  # force update records
 
     if check:
         link_pool = _check(link_pool)
@@ -186,16 +196,19 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
         at :data:`~darc.db.MAX_POOL` to limit the memory usage.
 
     """
+    now = time.time()
     if TIME_CACHE is None:
-        max_score = new_score = time.time()
+        max_score = now
     else:
-        max_score = time.time() - TIME_CACHE.total_seconds()
-        new_score = time.time() + TIME_CACHE.total_seconds()
+        sec_delta = TIME_CACHE.total_seconds()
+        max_score = now - sec_delta
 
     with redis.lock('lock_queue_selenium'):
         link_pool = [pickle.loads(link) for link in redis.zrangebyscore('queue_selenium', min=0, max=max_score,
                                                                         start=0, num=MAX_POOL)]
-        save_selenium(link_pool, score=new_score)  # force update records
+        if TIME_CACHE is not None:
+            new_score = now + sec_delta
+            save_selenium(link_pool, score=new_score)  # force update records
 
     if check:
         link_pool = _check(link_pool)

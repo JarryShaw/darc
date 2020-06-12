@@ -255,7 +255,6 @@ def crawler(link: Link):
 
             # add link to queue
             save_selenium(link, single=True, score=0, nx=True)
-            save_requests(link, single=True)
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
@@ -358,7 +357,6 @@ def loader(link: Link):
 
             # add link to queue
             save_requests(extract_links(link, html), score=0, nx=True)
-            save_selenium(link, single=True)
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
