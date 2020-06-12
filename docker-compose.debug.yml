@@ -54,7 +54,7 @@ services:
       # multithreading
       DARC_MULTITHREADING: 0
       # time lapse
-      DARC_WAIT: 60
+      DARC_WAIT: 5
       # data storage
       PATH_DATA: "data"
       # Redis URL

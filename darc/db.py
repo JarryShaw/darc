@@ -57,7 +57,7 @@ if math.isfinite(MAX_POOL):
     MAX_POOL = math.floor(MAX_POOL)
 
 
-def save_requests(entries: typing.Iterable[Link], single: bool = False,
+def save_requests(entries: typing.List[Link], single: bool = False,
                   score=None, nx=False, xx=False):
     """Save link to the |requests|_ database.
 
@@ -93,7 +93,7 @@ def save_requests(entries: typing.Iterable[Link], single: bool = False,
     redis.zadd('queue_requests', mapping, nx=nx, xx=xx)
 
 
-def save_selenium(entries: typing.Iterable[Link], single: bool = False,
+def save_selenium(entries: typing.List[Link], single: bool = False,
                   score=None, nx=False, xx=False):
     """Save link to the |selenium|_ database.
 

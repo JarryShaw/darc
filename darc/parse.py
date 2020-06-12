@@ -359,7 +359,7 @@ def get_content_type(response: typing.Response) -> str:
     return ct_type.casefold().split(';', maxsplit=1)[0].strip()
 
 
-def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHECK) -> typing.Iterator[Link]:
+def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHECK) -> typing.List[Link]:
     """Extract links from HTML document.
 
     Args:
@@ -369,7 +369,7 @@ def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHEC
             default to :data:`~darc.const.CHECK`.
 
     Returns:
-        An iterator of extracted links.
+        List of extracted links.
 
     See Also:
         * :func:`darc.parse._check`
@@ -390,4 +390,4 @@ def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHEC
         link_list = _check(temp_list)
     else:
         link_list = temp_list.copy()
-    yield from set(link_list)
+    return list(set(link_list))

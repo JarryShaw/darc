@@ -98,7 +98,8 @@ def main():
                     link_list.append(line)
 
     # write to database
-    save_requests((parse_link(link) for link in link_list), score=0, nx=True)
+    link_pool = [parse_link(link) for link in link_list]
+    save_requests(link_pool, score=0, nx=True)
 
     if DEBUG:
         print(stem.util.term.format('-' * shutil.get_terminal_size().columns, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
