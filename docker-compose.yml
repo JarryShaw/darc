@@ -140,6 +140,7 @@ services:
     build: *build
     container_name: loader
     #entrypoint: [ "bash", "/app/run.sh" ]
+    command: [ "--type", "crawler" ]
     depends_on: *depends_on
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
