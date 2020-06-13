@@ -22,7 +22,7 @@ copyright = '2020, Jarry Shaw'
 author = 'Jarry Shaw'
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.1'
+release = '0.5.0rc1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,19 +34,32 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.intersphinx',
     'sphinx.ext.autodoc', 'sphinx.ext.autodoc.typehints',
-    'sphinxcontrib.napoleon'
+    'sphinxcontrib.napoleon',
+    'sphinx.ext.todo',
 ]
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
+
+    'peewee': ('http://docs.peewee-orm.com/en/latest/', None),
+    'pymysql': ('https://pymysql.readthedocs.io/en/latest/', None),
     'requests': ('https://requests.readthedocs.io/en/latest/', None),
     'selenium': ('https://www.selenium.dev/selenium/docs/api/py/', None),
     'stem': ('https://stem.torproject.org/', None),
 }
 
+autodoc_default_options = {
+    'members': True,
+    'member-order': 'groupwise',
+    'special-members': '__init__',
+    'undoc-members': True,
+    'exclude-members': '__weakref__, _abc_impl, _unbound_fields, _wtforms_meta, _meta, _schema',
+    'ignore-module-all': True,
+    'private-members': True,
+}
 autodoc_typehints = 'description'
 # autodoc_member_order = 'bysource'
-autodoc_member_order = 'alphabetic'
+# autodoc_member_order = 'alphabetic'
 
 # Napoleon settings
 napoleon_google_docstring = True
@@ -62,6 +75,10 @@ napoleon_use_param = True
 napoleon_use_rtype = True
 napoleon_use_keyword = True
 napoleon_custom_sections = None
+
+manpages_url = 'https://linux.die.net/man/{section}/{page}'
+
+do_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -83,3 +100,25 @@ html_theme = 'alabaster'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+# -- Customised hooks --------------------------------------------------------
+
+
+def maybe_skip_member(app, what: str, name: str, obj: object, skip: bool, options: dict):
+    if name == '_abc_impl':
+        return True
+    if name == '__init__':
+        if '__create_fn__' in obj.__qualname__:
+            return True
+    return skip
+
+
+def remove_module_docstring(app, what: str, name: str, obj: object, options: dict, lines: list):
+    if what == "module" and "darc" in name:
+        lines.clear()
+
+
+def setup(app):
+    #app.connect("autodoc-process-docstring", remove_module_docstring)
+    app.connect('autodoc-skip-member', maybe_skip_member)

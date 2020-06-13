@@ -11,14 +11,13 @@ addresses extracted to the data storage file
 
 """
 
-import multiprocessing
 import os
 
-from darc.const import PATH_MISC
+from darc.const import PATH_MISC, get_lock
 from darc.link import Link
 
 PATH = os.path.join(PATH_MISC, 'bitcoin.txt')
-LOCK = multiprocessing.Lock()
+LOCK = get_lock()
 
 
 def save_bitcoin(link: Link):

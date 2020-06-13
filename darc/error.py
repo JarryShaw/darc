@@ -7,6 +7,7 @@ multi-line error messages with |term|_ colours.
 
 The :mod:`darc` project provides following custom exceptions:
 
+* :exc:`~darc.error.LinkNoReturn`
 * :exc:`~darc.error.UnsupportedLink`
 * :exc:`~darc.error.UnsupportedPlatform`
 * :exc:`~darc.error.UnsupportedProxy`
@@ -19,12 +20,18 @@ The :mod:`darc` project provides following custom exceptions:
 * :exc:`~darc.error.FreenetBootstrapFailed`
 * :exc:`~darc.error.APIRequestFailed`
 * :exc:`~darc.error.SiteNotFoundWarning`
+* :exc:`~darc.error.LockWarning`
+* :exc:`~darc.error.TorRenewFailed`
 
 """
 
 import stem.util.term
 
 import darc.typing as typing
+
+
+class LinkNoReturn(Exception):
+    """The link has no return value from the hooks."""
 
 
 class UnsupportedLink(Exception):
@@ -41,6 +48,10 @@ class UnsupportedProxy(Exception):
 
 class TorBootstrapFailed(Warning):
     """Tor bootstrap process failed."""
+
+
+class TorRenewFailed(Warning):
+    """Tor renew request failed."""
 
 
 class I2PBootstrapFailed(Warning):
@@ -61,6 +72,10 @@ class APIRequestFailed(Warning):
 
 class SiteNotFoundWarning(ImportWarning):
     """Site customisation not found."""
+
+
+class LockWarning(Warning):
+    """Failed to acquire Redis lock."""
 
 
 def render_error(message: str, colour: typing.Color) -> str:

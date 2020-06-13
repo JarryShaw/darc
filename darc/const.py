@@ -5,15 +5,19 @@ import datetime
 import getpass
 import json
 import math
+import multiprocessing
 import os
 import pprint
 import re
 import shutil
 import sys
+import threading
 
 import redis
 import stem.util.term
 
+import darc.typing as typing
+from darc._compat import nullcontext
 from darc.error import render_error
 
 # reboot mode?
@@ -64,8 +68,6 @@ os.makedirs(PATH_MISC, exist_ok=True)
 
 # link file mapping
 PATH_LN = os.path.join(PATH_DB, 'link.csv')
-PATH_QR = os.path.join(PATH_DB, '_queue_requests.txt')
-PATH_QS = os.path.join(PATH_DB, '_queue_selenium.txt')
 
 # PID file
 PATH_ID = os.path.join(PATH_DB, 'darc.pid')
@@ -188,3 +190,18 @@ def getpid() -> int:
         with open(PATH_ID) as file:
             return int(file.read().strip())
     return -1
+
+
+def get_lock() -> typing.Union[multiprocessing.Lock, threading.Lock, nullcontext]:
+    """Get a lock.
+
+    Returns:
+        Lock context based on :data:`~darc.const.FLAG_MP`
+        and :data:`~darc.const.FLAG_TH`.
+
+    """
+    if FLAG_MP:
+        return multiprocessing.Lock()
+    if FLAG_TH:
+        return threading.Lock()
+    return nullcontext()

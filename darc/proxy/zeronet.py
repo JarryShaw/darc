@@ -18,10 +18,8 @@ import warnings
 
 import stem.util.term
 
-import darc.typing as typing
 from darc.const import DEBUG, VERBOSE
 from darc.error import ZeroNetBootstrapFailed, render_error
-from darc.link import Link
 from darc.proxy.tor import tor_bootstrap
 
 # ZeroNet args
@@ -39,8 +37,11 @@ ZERONET_RETRY = int(os.getenv('ZERONET_RETRY', '3'))
 # ZeroNet project path
 ZERONET_PATH = os.getenv('ZERONET_PATH', '/usr/local/src/zeronet')
 
+# manage ZeroNet through darc?
+_MNG_ZERONET = bool(int(os.getenv('DARC_ZERONET', '1')))
+
 # ZeroNet bootstrapped flag
-_ZERONET_BS_FLAG = False
+_ZERONET_BS_FLAG = not _MNG_ZERONET
 # ZeroNet daemon process
 _ZERONET_PROC = None
 # ZeroNet bootstrap args
@@ -136,31 +137,7 @@ def zeronet_bootstrap():
                 message = '[Error bootstraping ZeroNet proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 94, 'zeronet_bootstrap()')
+            warning = warnings.formatwarning(error, ZeroNetBootstrapFailed, __file__, 133, 'zeronet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-
-
-def has_zeronet(link_pool: typing.Set[Link]) -> bool:
-    """Check if contain ZeroNet links.
-
-    Args:
-        link_pool: Link pool to check.
-
-    Returns:
-        If the link pool contains ZeroNet links.
-
-    See Also:
-        * :func:`darc.link.parse_link`
-        * :func:`darc.link.urlparse`
-        * :data:`darc.proxy.zeronet.ZERONET_PORT`
-
-    """
-    for link in link_pool:
-        # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = link.url_parse
-
-        if parse.netloc in (f'127.0.0.1:{ZERONET_PORT}', f'localhost:{ZERONET_PORT}'):
-            return True
-    return False

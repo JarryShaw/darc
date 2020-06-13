@@ -19,6 +19,17 @@ from darc.proxy.i2p import I2P_REQUESTS_PROXY
 from darc.proxy.tor import TOR_REQUESTS_PROXY
 
 
+def default_user_agent(name: str = 'python-darc', proxy: typing.Optional[str] = None) -> str:
+    """Generates the default user agent."""
+    from darc import __version__  # pylint: disable=import-outside-toplevel
+
+    if proxy is None:
+        ua = f'{name}/{__version__}'
+    else:
+        ua = f'{name}/{__version__} ({proxy} Proxy)'
+    return ua
+
+
 def request_session(link: Link, futures: bool = False) -> typing.Union[typing.Session, typing.FuturesSession]:
     """Get requests session.
 
@@ -39,10 +50,11 @@ def request_session(link: Link, futures: bool = False) -> typing.Union[typing.Se
     """
     from darc.proxy import LINK_MAP  # pylint: disable=import-outside-toplevel
 
-    session, _ = LINK_MAP[link.proxy]
-    if session is None:
+    factory, _ = LINK_MAP[link.proxy]
+    if factory is None:
         raise UnsupportedLink(link.url)
-    return session(futures=futures)
+
+    return factory(futures=futures)
 
 
 def i2p_session(futures: bool = False) -> typing.Union[typing.Session, typing.FuturesSession]:
@@ -62,6 +74,8 @@ def i2p_session(futures: bool = False) -> typing.Union[typing.Session, typing.Fu
         session = requests_futures.sessions.FuturesSession(max_workers=DARC_CPU)
     else:
         session = requests.Session()
+
+    session.headers['User-Agent'] = default_user_agent(proxy='I2P')
     session.proxies.update(I2P_REQUESTS_PROXY)
     return session
 
@@ -83,6 +97,8 @@ def tor_session(futures: bool = False) -> typing.Union[typing.Session, typing.Fu
         session = requests_futures.sessions.FuturesSession(max_workers=DARC_CPU)
     else:
         session = requests.Session()
+
+    session.headers['User-Agent'] = default_user_agent(proxy='Tor')
     session.proxies.update(TOR_REQUESTS_PROXY)
     return session
 
@@ -101,4 +117,6 @@ def null_session(futures: bool = False) -> typing.Union[typing.Session, typing.F
         session = requests_futures.sessions.FuturesSession(max_workers=DARC_CPU)
     else:
         session = requests.Session()
+
+    session.headers['User-Agent'] = default_user_agent()
     return session

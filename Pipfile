@@ -24,6 +24,9 @@ sphinx = "*"
 sphinxcontrib-napoleon = "*"
 doc8 = "*"
 rstcheck = "*"
+Flask = "*"
+peewee = "*"
+PyMySQL = {version = "*",extras = ["rsa"]}
 
 [packages]
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}

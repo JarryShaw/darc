@@ -30,9 +30,6 @@ def _exit():
         with contextlib.suppress(BaseException):
             getattr(target, function)()
 
-    # close link queue
-    #caller(MANAGER, 'shutdown')
-
     # close Tor processes
     caller(_TOR_CTRL, 'close')
     caller(_TOR_PROC, 'kill')
@@ -77,6 +74,7 @@ def main():
         print(stem.util.term.format('-*- Initialisation -*-', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
         # nuke the db
+        REDIS.delete('queue_hostname')
         REDIS.delete('queue_requests')
         REDIS.delete('queue_selenium')
 
@@ -94,7 +92,6 @@ def main():
                         continue
                     if DEBUG:
                         print(stem.util.term.format(line, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-                    #QUEUE_REQUESTS.put(line)
                     link_list.append(line)
 
     # write to database

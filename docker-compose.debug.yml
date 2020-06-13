@@ -16,6 +16,10 @@ services:
     #  - 9050:1089
     command:
       - --type=crawler
+      # invalid
+      - foo://bar.boo
+      # mail
+      - mailto:jarryshaw@icloud.com
       # normal
       - https://httpbin.org
       # Tor
@@ -26,7 +30,7 @@ services:
       - http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D
       # Freenet
       - http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/
-    environment: &environment
+    environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
       # reboot mode
@@ -153,17 +157,116 @@ services:
     #ports: *ports
     command:
       - --type=loader
-      # normal
-      - https://httpbin.org
-      # Tor
-      - https://www.nytimes3xbfgragh.onion
-      # I2P
-      - http://zzz.i2p
-      # ZeroNet
-      - http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D
-      # Freenet
-      - http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/
-    environment: *environment
+    environment:
+      ## [PYTHON] force the stdout and stderr streams to be unbuffered
+      PYTHONUNBUFFERED: 1
+      # reboot mode
+      DARC_REBOOT: 0
+      # debug mode
+      DARC_DEBUG: 1
+      # verbose mode
+      DARC_VERBOSE: 1
+      # force mode (ignore robots.txt)
+      DARC_FORCE: 0
+      # check mode (check proxy and hostname before crawling)
+      DARC_CHECK: 1
+      # check mode (check content type before crawling)
+      DARC_CHECK_CONTENT_TYPE: 1
+      # save mode
+      DARC_SAVE: 0
+      # save mode (for requests)
+      DAVE_SAVE_REQUESTS: 0
+      # save mode (for selenium)
+      DAVE_SAVE_SELENIUM: 0
+      # processes
+      DARC_CPU: 8
+      # multiprocessing
+      DARC_MULTIPROCESSING: 0
+      # multithreading
+      DARC_MULTITHREADING: 0
+      # time lapse
+      DARC_WAIT: 5
+      # data storage
+      PATH_DATA: "data"
+      # Redis URL
+      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      # max pool
+      DARC_MAX_POOL: 1
+      # Tor proxy & control port
+      TOR_PORT: 9050
+      TOR_CTRL: 9051
+      # Tor management method
+      TOR_STEM: 1
+      # Tor authentication
+      TOR_PASS: "16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F"
+      # Tor bootstrap retry
+      TOR_RETRY: 0
+      # Tor bootstrap config
+      TOR_CFG: "{}"
+      # Tor bootstrap wait
+      TOR_WAIT: 90
+      # I2P port
+      I2P_PORT: 4444
+      # I2P bootstrap retry
+      I2P_RETRY: 0
+      # I2P bootstrap wait
+      I2P_WAIT: 90
+      # I2P bootstrap config
+      I2P_ARGS: ""
+      # ZeroNet port
+      ZERONET_PORT: 43110
+      # ZeroNet bootstrap retry
+      ZERONET_RETRY: 0
+      # ZeroNet project path
+      ZERONET_PATH: "/usr/local/src/zeronet"
+      # ZeroNet bootstrap wait
+      ZERONET_WAIT: 90
+      # ZeroNet bootstrap config
+      ZERONET_ARGS: ""
+      # Freenet port
+      FREENET_PORT: 8888
+      # Freenet bootstrap retry
+      FREENET_RETRY: 0
+      # Freenet project path
+      FREENET_PATH: "/usr/local/src/freenet"
+      # Freenet bootstrap wait
+      FREENET_WAIT: 90
+      # Freenet bootstrap config
+      FREENET_ARGS: ""
+      # time delta for caches in seconds
+      TIME_CACHE: 600
+      # time to wait for selenium
+      SE_WAIT: 60
+      # extract link pattern
+      LINK_WHITE_LIST: '[
+        "(?!(.*\\.)?facebookcorewwwi).*\\.onion",
+        "(?!(.*\\.)?nytimes3xbfgragh).*\\.onion",
+        ".*?\\.i2p",
+        "127\\.0\\.0\\.1:43110", "localhost:43110",
+        "127\\.0\\.0\\.1:8888", "localhost:8888"
+      ]'
+      # link black list
+      LINK_BLACK_LIST: '[ "(.*\\.)?facebookcorewwwi\\.onion", "(.*\\.)?nytimes3xbfgragh\\.onion" ]'
+      # link fallback flag
+      LINK_FALLBACK: 0
+      # content type white list
+      MIME_WHITE_LIST: '[ "text/html", "application/xhtml+xml" ]'
+      # content type black list
+      MIME_BLACK_LIST: '[ "text/css", "application/javascript", "text/json" ]'
+      # content type fallback flag
+      MIME_FALLBACK: 0
+      # proxy type white list
+      PROXY_WHITE_LIST: '[ "i2p", "freenet", "zeronet" ]'
+      # proxy type black list'
+      PROXY_BLACK_LIST: '[ "tor" ]'
+      # proxy type fallback flag
+      PROXY_FALLBACK: 0
+      # API retry times
+      API_RETRY: 0
+      # API URLs
+      #API_NEW_HOST: 'https://example.com/api/new_host'
+      #API_REQUESTS: 'https://example.com/api/requests'
+      #API_SELENIUM: 'https://example.com/api/selenium'
     restart: "on-failure"
     networks: *networks
     volumes: *volumes

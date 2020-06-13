@@ -19,6 +19,16 @@ from darc.error import SiteNotFoundWarning
 from darc.link import Link
 
 SITEMAP = collections.defaultdict(lambda: 'default', {
+    # misc/special links
+    '(data)': 'data',
+    '(script)': 'script',
+    '(bitcoin)': 'bitcoin',
+    '(ed2k)': 'ed2k',
+    '(magnet)': 'magnet',
+    '(mail)': 'mail',
+    '(tel)': 'tel',
+    '(irc)': 'irc',
+
     # 'www.sample.com': 'sample',  # darc.sites.sample
 })
 
@@ -61,7 +71,7 @@ def _get_spec(link: Link) -> typing.ModuleType:
             return importlib.import_module(spec)
     except ImportError:
         warnings.warn(f'site customisation not found: {spec}', SiteNotFoundWarning)
-        return importlib.import_module(f'darc.sites.default')
+        return importlib.import_module('darc.sites.default')
 
 
 def crawler_hook(link: Link, session: typing.Session) -> typing.Response:

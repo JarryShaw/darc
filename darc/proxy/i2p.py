@@ -9,7 +9,6 @@ around managing and processing the I2P proxy.
 
 import base64
 import getpass
-import io
 import os
 import platform
 import pprint
@@ -55,8 +54,11 @@ I2P_SELENIUM_PROXY.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
 I2P_SELENIUM_PROXY.http_proxy = f'http://localhost:{I2P_PORT}'
 I2P_SELENIUM_PROXY.ssl_proxy = f'http://localhost:{I2P_PORT}'
 
+# manage I2P through darc?
+_MNG_I2P = bool(int(os.getenv('DARC_I2P', '1')))
+
 # I2P bootstrapped flag
-_I2P_BS_FLAG = False
+_I2P_BS_FLAG = not _MNG_I2P
 # I2P daemon process
 _I2P_PROC = None
 # I2P bootstrap args
@@ -168,7 +170,7 @@ def i2p_bootstrap():
                 message = '[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 125, 'i2p_bootstrap()')
+            warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 166, 'i2p_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -206,34 +208,7 @@ def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, typing.Union[str, 
     return data
 
 
-def has_i2p(link_pool: typing.Set[Link]) -> bool:
-    """Check if contain I2P links.
-
-    Args:
-        link_pool: Link pool to check.
-
-    Returns:
-        If the link pool contains I2P links.
-
-    See Also:
-        * :func:`darc.link.parse_link`
-        * :func:`darc.link.urlparse`
-
-    """
-    for link in link_pool:
-        # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = link.url_parse
-
-        if re.fullmatch(r'.*?\.i2p', parse.netloc):
-            return True
-        # c.f. https://geti2p.net/en/docs/api/i2ptunnel
-        if parse.netloc in ['127.0.0.1:7657', '127.0.0.1:7658',
-                            'localhost:7657', 'localhost:7658']:
-            return True
-    return False
-
-
-def has_hosts(link: Link) -> typing.Optional[str]:
+def have_hosts(link: Link) -> typing.Optional[str]:
     """Check if ``hosts.txt`` already exists.
 
     Args:
@@ -276,7 +251,7 @@ def save_hosts(link: Link, text: str) -> str:
     return path
 
 
-def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterable[Link]:
+def read_hosts(text: str, check: bool = CHECK) -> typing.List[Link]:
     """Read ``hosts.txt``.
 
     Args:
@@ -289,7 +264,7 @@ def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterab
 
     """
     temp_list = list()
-    for line in filter(None, map(lambda s: s.strip(), text)):
+    for line in filter(None, map(lambda s: s.strip(), text.splitlines())):
         if line.startswith('#'):
             continue
 
@@ -299,10 +274,8 @@ def read_hosts(text: typing.Iterable[str], check: bool = CHECK) -> typing.Iterab
         temp_list.append(parse_link(f'http://{link}'))
 
     if check:
-        link_list = _check(temp_list)
-    else:
-        link_list = temp_list.copy()
-    yield from set(link_list)
+        return _check(temp_list)
+    return temp_list
 
 
 def fetch_hosts(link: Link):
@@ -311,13 +284,17 @@ def fetch_hosts(link: Link):
     Args:
         link: Link object to fetch for its ``hosts.txt``.
 
+    Returns:
+        Content of the ``hosts.txt`` file.
+
     """
-    hosts_path = has_hosts(link)
+    hosts_path = have_hosts(link)
     if hosts_path is not None:
 
-        print(stem.util.term.format(f'[HOSTS] Cached {link.url}',
-                                    stem.util.term.Color.YELLOW))  # pylint: disable=no-member
-        hosts_file = open(hosts_path)
+        print(stem.util.term.format(f'[HOSTS] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+
+        with open(hosts_path) as hosts_file:
+            hosts_text = hosts_file.read()
 
     else:
 
@@ -345,13 +322,12 @@ def fetch_hosts(link: Link):
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             return
 
-        save_hosts(hosts_link, response.text)
-        hosts_file = io.StringIO(response.text)
+        hosts_text = response.text
+        save_hosts(hosts_link, hosts_text)
 
         print(f'[HOSTS] Subscribed {hosts_link.url}')
 
     from darc.db import save_requests  # pylint: disable=import-outside-toplevel
 
     # add link to queue
-    #[QUEUE_REQUESTS.put(url) for url in read_hosts(hosts_file)]  # pylint: disable=expression-not-assigned
-    save_requests(read_hosts(hosts_file))
+    save_requests(read_hosts(hosts_text))

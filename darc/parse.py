@@ -11,7 +11,6 @@ lists.
 """
 
 import concurrent.futures
-import io
 import os
 
 import bs4
@@ -124,36 +123,6 @@ def match_mime(mime: str) -> bool:
     return MIME_FALLBACK
 
 
-def read_robots(link: Link, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
-    """Read ``robots.txt`` to fetch link to sitemaps.
-
-    Args:
-        link: Original link to ``robots.txt``.
-        text: Content of ``robots.txt``.
-        host: Hostname of the URL to ``robots.txt``,
-            the value may not be same as in ``link``.
-
-    Returns:
-        List of link to sitemaps.
-
-    Note:
-        If the link to sitemap is not specified in
-        ``robots.txt`` [*]_, the fallback link
-        ``/sitemap.xml`` will be used.
-
-        .. [*] https://www.sitemaps.org/protocol.html#submit_robots
-
-    """
-    rp = RobotFileParser()
-    with io.StringIO(text) as file:
-        rp.parse(file)
-
-    sitemaps = rp.site_maps()
-    if sitemaps is None:
-        return [parse_link(urljoin(link.url, '/sitemap.xml'))]
-    return [parse_link(urljoin(link.url, sitemap), host=host) for sitemap in sitemaps]
-
-
 def check_robots(link: Link) -> bool:
     """Check if ``link`` is allowed in ``robots.txt``.
 
@@ -176,36 +145,10 @@ def check_robots(link: Link) -> bool:
         rp = RobotFileParser()
         with open(robots) as file:
             rp.parse(file)
-        return rp.can_fetch(requests.utils.default_user_agent(), link.url)
+
+        from darc.requests import default_user_agent  # pylint: disable=import-outside-toplevel
+        return rp.can_fetch(default_user_agent(), link.url)
     return True
-
-
-def get_sitemap(link: Link, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
-    """Fetch link to other sitemaps from a sitemap.
-
-    Args:
-        link: Original link to the sitemap.
-        text: Content of the sitemap.
-        host: Hostname of the URL to the sitemap,
-            the value may not be same as in ``link``.
-
-    Returns:
-        List of link to sitemaps.
-
-    Note:
-        As specified in the sitemap protocol,
-        it may contain links to other sitemaps. [*]_
-
-        .. [*] https://www.sitemaps.org/protocol.html#index
-
-    """
-    sitemaps = list()
-    soup = bs4.BeautifulSoup(text, 'html5lib')
-
-    # https://www.sitemaps.org/protocol.html#index
-    for loc in soup.select('sitemapindex > sitemap > loc'):
-        sitemaps.append(urljoin(link.url, loc.text))
-    return [parse_link(sitemap, host=host) for sitemap in sitemaps]
 
 
 def _check_ng(temp_list: typing.List[Link]) -> typing.List[Link]:
@@ -300,36 +243,6 @@ def _check(temp_list: typing.List[Link]) -> typing.List[Link]:
     return link_list
 
 
-def read_sitemap(link: Link, text: str, check: bool = CHECK) -> typing.Iterator[Link]:
-    """Read sitemap.
-
-    Args:
-        link: Original link to the sitemap.
-        text: Content of the sitemap.
-        check: If perform checks on extracted links,
-            default to :data:`~darc.const.CHECK`.
-
-    Returns:
-        List of links extracted.
-
-    See Also:
-        * :func:`darc.parse._check`
-        * :func:`darc.parse._check_ng`
-
-    """
-    soup = bs4.BeautifulSoup(text, 'html5lib')
-
-    # https://www.sitemaps.org/protocol.html
-    temp_list = [parse_link(urljoin(link.url, loc.text), host=link.host) for loc in soup.select('urlset > url > loc')]
-
-    # check content / proxy type
-    if check:
-        link_list = _check(temp_list)
-    else:
-        link_list = temp_list.copy()
-    yield from set(link_list)
-
-
 def get_content_type(response: typing.Response) -> str:
     """Get content type from ``response``.
 
@@ -387,7 +300,5 @@ def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHEC
 
     # check content / proxy type
     if check:
-        link_list = _check(temp_list)
-    else:
-        link_list = temp_list.copy()
-    return list(set(link_list))
+        return _check(temp_list)
+    return temp_list

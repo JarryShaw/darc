@@ -19,11 +19,18 @@ import stem.process
 import stem.util.term
 
 import darc.typing as typing
-from darc._compat import nullcontext, strsignal
+from darc._compat import strsignal
 from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, PATH_ID, REBOOT, getpid
 from darc.crawl import crawler, loader
 from darc.db import load_requests, load_selenium
-from darc.proxy.tor import renew_tor_session
+from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap
+from darc.proxy.i2p import _I2P_BS_FLAG, i2p_bootstrap
+from darc.proxy.tor import _TOR_BS_FLAG, renew_tor_session, tor_bootstrap
+from darc.proxy.zeronet import _ZERONET_BS_FLAG, zeronet_bootstrap
+
+#: List[Union[multiprocessing.Process, threading.Thread]]: List of
+#: active child processes and/or threads.
+_WORKER_POOL = None
 
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
@@ -44,6 +51,16 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
     if os.getpid() != getpid():
         return
 
+    if FLAG_MP:
+        for proc in _WORKER_POOL:
+            proc.kill()
+            proc.join()
+
+    if FLAG_TH:
+        for proc in _WORKER_POOL:
+            proc._stop()  # pylint: disable=protected-access
+            proc.join()
+
     if os.path.isfile(PATH_ID):
         os.remove(PATH_ID)
 
@@ -60,67 +77,75 @@ def process_crawler():
     print('[CRAWLER] Starting first round...')
 
     # start mainloop
-    with multiprocessing.Pool(processes=DARC_CPU) as pool:
-        while True:
-            # requests crawler
-            link_pool = load_requests()
-            if not link_pool:
-                if DARC_WAIT is not None:
-                    time.sleep(DARC_WAIT)
-                continue
-            pool.map(crawler, link_pool)
+    while True:
+        # requests crawler
+        link_pool = load_requests()
+        if not link_pool:
+            if DARC_WAIT is not None:
+                time.sleep(DARC_WAIT)
+            continue
 
-            # quit in reboot mode
-            if REBOOT:
-                break
+        for link in link_pool:
+            crawler(link)
 
-            # renew Tor session
-            renew_tor_session()
-            print('[CRAWLER] Starting next round...')
+        # quit in reboot mode
+        if REBOOT:
+            break
+
+        # renew Tor session
+        renew_tor_session()
+        print('[CRAWLER] Starting next round...')
+
+    print('[CRAWLER] Stopping mainloop...')
 
 
 def process_loader():
     """A worker to run the :func:`~darc.crawl.loader` process."""
-    if FLAG_MP:
-        pool = multiprocessing.Pool(processes=DARC_CPU)
-    else:
-        pool = nullcontext()
-
     print('[LOADER] Starting first round...')
-    with pool:
-        while True:
-            # selenium loader
-            link_pool = load_selenium()
-            if not link_pool:
-                if DARC_WAIT is not None:
-                    time.sleep(DARC_WAIT)
-                continue
 
-            if FLAG_MP:
-                pool.map(loader, link_pool)
-            elif FLAG_TH and DARC_CPU:
-                while link_pool:
-                    thread_list = list()
-                    for _ in range(DARC_CPU):
-                        try:
-                            item = link_pool.pop()
-                        except IndexError:
-                            break
-                        thread = threading.Thread(target=loader, args=(item,))
-                        thread_list.append(thread)
-                        thread.start()
-                    for thread in thread_list:
-                        thread.join()
-            else:
-                [loader(item) for item in link_pool]  # pylint: disable=expression-not-assigned
+    # start mainloop
+    while True:
+        # selenium loader
+        link_pool = load_selenium()
+        if not link_pool:
+            if DARC_WAIT is not None:
+                time.sleep(DARC_WAIT)
+            continue
 
-            # quit in reboot mode
-            if REBOOT:
-                break
+        for link in link_pool:
+            loader(link)
 
-            # renew Tor session
-            renew_tor_session()
-            print('[LOADER] Starting next round...')
+        # quit in reboot mode
+        if REBOOT:
+            break
+
+        # renew Tor session
+        renew_tor_session()
+        print('[LOADER] Starting next round...')
+
+    print('[LOADER] Stopping mainloop...')
+
+
+def _process(worker: typing.Union[process_crawler, process_loader]):
+    """Wrapper function to start the worker process."""
+    global _WORKER_POOL
+
+    if FLAG_MP:
+        _WORKER_POOL = [multiprocessing.Process(target=worker) for _ in range(DARC_CPU)]
+        for proc in _WORKER_POOL:
+            proc.start()
+        for proc in _WORKER_POOL:
+            proc.join()
+
+    elif FLAG_TH:
+        _WORKER_POOL = [threading.Thread(target=worker) for _ in range(DARC_CPU)]
+        for proc in _WORKER_POOL:
+            proc.start()
+        for proc in _WORKER_POOL:
+            proc.join()
+
+    else:
+        worker()
 
 
 def process(worker: typing.Literal['crawler', 'loader']):
@@ -235,10 +260,19 @@ def process(worker: typing.Literal['crawler', 'loader']):
 
     print(f'[DARC] Starting {worker}...')
 
+    if not _TOR_BS_FLAG:
+        tor_bootstrap()
+    if not _I2P_BS_FLAG:
+        i2p_bootstrap()
+    if not _ZERONET_BS_FLAG:
+        zeronet_bootstrap()
+    if not _FREENET_BS_FLAG:
+        freenet_bootstrap()
+
     if worker == 'crawler':
-        process_crawler()
+        _process(process_crawler)
     elif worker == 'loader':
-        process_loader()
+        _process(process_loader)
     else:
         raise ValueError(f'invalid worker type: {worker!r}')
 

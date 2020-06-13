@@ -47,7 +47,7 @@ from darc.requests import null_session
 
 # type alias
 File = typing.Dict[str, typing.Union[str, typing.ByteString]]
-Domain = typing.Union[typing.Literal['new_host'], typing.Literal['requests'], typing.Literal['selenium']]
+Domain = typing.Literal['new_host', 'requests', 'selenium']
 
 # retry times
 API_RETRY = int(os.getenv('API_RETRY', '3'))
@@ -159,105 +159,6 @@ def get_sitemap(link: Link) -> typing.Optional[typing.List[File]]:  # pylint: di
     return data_list
 
 
-def get_raw(link: Link, time: str) -> typing.Optional[File]:  # pylint: disable=inconsistent-return-statements
-    """Read raw document.
-
-    Args:
-        link: Link object to read document from |requests|_.
-
-    Returns:
-        * If document exists, return the data from document.
-
-          * ``path`` -- relative path from document to root of data storage
-            :data:`~darc.const.PATH_DB`, ``<proxy>/<scheme>/<hostname>/<hash>_<timestamp>_raw.html``
-            or ``<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.dat``
-
-          * ``data`` -- *base64* encoded content of document
-        * If not, return ``None``.
-
-    See Also:
-        * :func:`darc.crawl.crawler`
-        * :func:`darc.save.save_html`
-        * :func:`darc.save.save_file`
-
-    """
-    path = os.path.join(link.base, f'{link.name}_{time}_raw.html')
-    if not os.path.isfile(path):
-        path = os.path.join(link.base, f'{link.name}_{time}.dat')
-    if not os.path.isfile(path):
-        return
-    with open(path, 'rb') as file:
-        content = file.read()
-    data = dict(
-        path=os.path.relpath(path, PATH_DB),
-        data=base64.b64encode(content).decode(),
-    )
-    return data
-
-
-def get_html(link: Link, time: str) -> typing.Optional[File]:  # pylint: disable=inconsistent-return-statements
-    """Read HTML document.
-
-    Args:
-        link: Link object to read document from |selenium|_.
-
-    Returns:
-        * If document exists, return the data from document.
-
-          * ``path`` -- relative path from document to root of data storage
-            :data:`~darc.const.PATH_DB`, ``<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.html``
-          * ``data`` -- *base64* encoded content of document
-
-        * If not, return ``None``.
-
-    See Also:
-        * :func:`darc.crawl.loader`
-        * :func:`darc.save.save_html`
-
-    """
-    path = os.path.join(link.base, f'{link.name}_{time}.html')
-    if not os.path.isfile(path):
-        return
-    with open(path, 'rb') as file:
-        content = file.read()
-    data = dict(
-        path=os.path.relpath(path, PATH_DB),
-        data=base64.b64encode(content).decode(),
-    )
-    return data
-
-
-def get_screenshot(link: Link, time: str) -> typing.Optional[File]:  # pylint: disable=inconsistent-return-statements
-    """Read screenshot picture.
-
-    Args:
-        link: Link object to read screenshot from |selenium|_.
-
-    Returns:
-        * If screenshot exists, return the data from screenshot.
-
-          * ``path`` -- relative path from screenshot to root of data storage
-            :data:`~darc.const.PATH_DB`, ``<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.png``
-          * ``data`` -- *base64* encoded content of screenshot
-
-        * If not, return ``None``.
-
-    See Also:
-        * :func:`darc.crawl.loader`
-
-    """
-    path = os.path.join(link.base, f'{link.name}_{time}.png')
-    if not os.path.isfile(path):
-        return
-    with open(path, 'rb') as file:
-        content = file.read()
-    data = dict(
-        path=os.path.relpath(path, PATH_DB),
-        data=base64.b64encode(content).decode(),
-    )
-    return data
-
-
 def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]):
     """Save failed submit data.
 
@@ -313,7 +214,7 @@ def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]):
     save_submit(domain, data)
 
 
-def submit_new_host(time: typing.Datetime, link: Link):
+def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
     """Submit new host.
 
     When a new host is discovered, the :mod:`darc` crawler will submit the
@@ -323,6 +224,8 @@ def submit_new_host(time: typing.Datetime, link: Link):
     Args:
         time (datetime.datetime): Timestamp of submission.
         link: Link object of submission.
+        partial: If the data is not complete, i.e. failed when fetching
+            ``robots.txt``, ``hosts.txt`` and/or sitemaps.
 
     If :data:`~darc.submit.API_NEW_HOST` is ``None``, the data for submission
     will directly be save through :func:`~darc.submit.save_submit`.
@@ -330,6 +233,8 @@ def submit_new_host(time: typing.Datetime, link: Link):
     The data submitted should have following format::
 
         {
+            // partial flag - true / false
+            "$PARTIAL$": ...,
             // metadata of URL
             "[metadata]": {
                 // original URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
@@ -393,6 +298,7 @@ def submit_new_host(time: typing.Datetime, link: Link):
     ts = time.isoformat()
 
     data = {
+        '$PARTIAL$': partial,
         '[metadata]': metadata,
         'Timestamp': ts,
         'URL': link.url,
@@ -417,7 +323,8 @@ def submit_new_host(time: typing.Datetime, link: Link):
 
 
 def submit_requests(time: typing.Datetime, link: Link,
-                    response: typing.Response, session: typing.Session):
+                    response: typing.Response, session: typing.Session,
+                    content: bytes, html: bool = True):
     """Submit requests data.
 
     When crawling, we'll first fetch the URl using |requests|_, to check
@@ -429,6 +336,8 @@ def submit_requests(time: typing.Datetime, link: Link,
         link: Link object of submission.
         response (|Response|_): Response object of submission.
         session (|Session|_): Session object of submission.
+        content: Raw content of from the response.
+        html: If current document is HTML or other files.
 
     If :data:`~darc.submit.API_REQUESTS` is ``None``, the data for submission
     will directly be save through :func:`~darc.submit.save_submit`.
@@ -508,6 +417,11 @@ def submit_requests(time: typing.Datetime, link: Link,
     metadata = get_metadata(link)
     ts = time.isoformat()
 
+    if html:
+        path = f'{link.base}/{link.name}_{ts}_raw.html'
+    else:
+        path = f'{link.base}/{link.name}_{ts}.dat'
+
     data = {
         '[metadata]': metadata,
         'Timestamp': ts,
@@ -519,7 +433,10 @@ def submit_requests(time: typing.Datetime, link: Link,
         'Session': session.cookies.get_dict(),
         'Request': dict(response.request.headers),
         'Response': dict(response.headers),
-        'Document': get_raw(link, ts),
+        'Document': dict(
+            path=os.path.relpath(path, PATH_DB),
+            data=base64.b64encode(content).decode(),
+        ),
         'History': [{
             'URL': history.url,
             'Method': history.request.method,
@@ -546,7 +463,8 @@ def submit_requests(time: typing.Datetime, link: Link,
     submit(API_REQUESTS, 'requests', data)
 
 
-def submit_selenium(time: typing.Datetime, link: Link):
+def submit_selenium(time: typing.Datetime, link: Link,
+                    html: str, screenshot: typing.Optional[str]):
     """Submit selenium data.
 
     After crawling with |requests|_, we'll then render the URl using
@@ -556,6 +474,8 @@ def submit_selenium(time: typing.Datetime, link: Link):
     Args:
         time (datetime.datetime): Timestamp of submission.
         link: Link object of submission.
+        html: HTML source of the web page.
+        screenshot: *base64* encoded screenshot.
 
     If :data:`~darc.submit.API_SELENIUM` is ``None``, the data for submission
     will directly be save through :func:`~darc.submit.save_submit`.
@@ -620,12 +540,23 @@ def submit_selenium(time: typing.Datetime, link: Link):
     metadata = get_metadata(link)
     ts = time.isoformat()
 
+    if screenshot is None:
+        ss = None
+    else:
+        ss = dict(
+            path=os.path.relpath(f'{link.base}/{link.name}_{ts}.png', PATH_DB),
+            data=screenshot,
+        )
+
     data = {
         '[metadata]': metadata,
         'Timestamp': ts,
         'URL': link.url,
-        'Document': get_html(link, ts),
-        'Screenshot': get_screenshot(link, ts),
+        'Document': dict(
+            path=os.path.relpath(f'{link.base}/{link.name}_{ts}.html', PATH_DB),
+            data=base64.b64encode(html.encode()).decode(),
+        ),
+        'Screenshot': ss,
     }
 
     if DEBUG:

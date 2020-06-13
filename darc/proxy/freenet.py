@@ -20,10 +20,8 @@ import warnings
 
 import stem.util.term
 
-import darc.typing as typing
 from darc.const import DARC_USER, DEBUG, VERBOSE
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform, render_error
-from darc.link import Link
 
 # ZeroNet args
 FREENET_ARGS = shlex.split(os.getenv('FREENET_ARGS', ''))
@@ -40,8 +38,11 @@ FREENET_RETRY = int(os.getenv('FREENET_RETRY', '3'))
 # Freenet project path
 FREENET_PATH = os.getenv('FREENET_PATH', '/usr/local/src/freenet')
 
+# manage Freenet through darc?
+_MNG_FREENET = bool(int(os.getenv('DARC_FREENET', '1')))
+
 # Freenet bootstrapped flag
-_FREENET_BS_FLAG = False
+_FREENET_BS_FLAG = not _MNG_FREENET
 # Freenet daemon process
 _FREENET_PROC = None
 # Freenet bootstrap args
@@ -150,31 +151,7 @@ def freenet_bootstrap():
                 message = '[Error bootstraping Freenet proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, FreenetBootstrapFailed, __file__, 108, 'freenet_bootstrap()')
+            warning = warnings.formatwarning(error, FreenetBootstrapFailed, __file__, 147, 'freenet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-
-
-def has_freenet(link_pool: typing.Iterable[Link]) -> bool:
-    """Check if contain Freenet links.
-
-    Args:
-        link_pool: Link pool to check.
-
-    Returns:
-        If the link pool contains Freenet links.
-
-    See Also:
-        * :func:`darc.link.parse_link`
-        * :func:`darc.link.urlparse`
-        * :data:`darc.proxy.freenet.FREENET_PORT`
-
-    """
-    for link in link_pool:
-        # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = link.url_parse
-
-        if parse.netloc in (f'127.0.0.1:{FREENET_PORT}', f'localhost:{FREENET_PORT}'):
-            return True
-    return False

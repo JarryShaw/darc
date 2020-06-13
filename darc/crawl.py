@@ -27,21 +27,16 @@ import urllib3
 
 from darc._compat import datetime
 from darc.const import FORCE, SE_EMPTY
-from darc.db import save_requests, save_selenium
-from darc.error import render_error
+from darc.db import (drop_hostname, drop_requests, drop_selenium, have_hostname, save_requests,
+                     save_selenium)
+from darc.error import LinkNoReturn, render_error
 from darc.link import Link
 from darc.parse import (check_robots, extract_links, get_content_type, match_host, match_mime,
                         match_proxy)
-from darc.proxy.bitcoin import save_bitcoin
-from darc.proxy.data import save_data
-from darc.proxy.ed2k import save_ed2k
 from darc.proxy.i2p import fetch_hosts, read_hosts
-from darc.proxy.irc import save_irc
-from darc.proxy.magnet import save_magnet
-from darc.proxy.mail import save_mail
 from darc.proxy.null import fetch_sitemap, save_invalid
 from darc.requests import request_session
-from darc.save import has_folder, sanitise, save_file, save_headers, save_html
+from darc.save import save_headers
 from darc.selenium import request_driver
 from darc.sites import crawler_hook, loader_hook
 from darc.submit import submit_new_host, submit_requests, submit_selenium
@@ -116,40 +111,6 @@ def crawler(link: Link):
                                stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
             return
 
-        # save bitcoin address
-        if link.proxy == 'bitcoin':
-            save_bitcoin(link)
-            return
-
-        # save ed2k link
-        if link.proxy == 'ed2k':
-            save_ed2k(link)
-            return
-
-        # save magnet link
-        if link.proxy == 'magnet':
-            save_magnet(link)
-            return
-
-        # save email address
-        if link.proxy == 'mail':
-            save_mail(link)
-            return
-
-        # save IRC address
-        if link.proxy == 'irc':
-            save_irc(link)
-            return
-
-        # save data URI
-        if link.proxy == 'data':
-            try:
-                save_data(link)
-            except ValueError as error:
-                print(render_error(f'[REQUESTS] Failed to save data URI from {link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-            return
-
         if match_host(link.host):
             print(render_error(f'[REQUESTS] Ignored hostname from {link.url} ({link.proxy})',
                                stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
@@ -159,9 +120,9 @@ def crawler(link: Link):
         timestamp = datetime.now()
 
         # if it's a new host
-        new_host = has_folder(link) is None
+        if not have_hostname(link):
+            partial = False
 
-        if new_host:
             if link.proxy not in ('zeronet', 'freenet'):
                 # fetch sitemap.xml
                 try:
@@ -169,6 +130,7 @@ def crawler(link: Link):
                 except Exception:
                     error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                     print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                    partial = True
 
             if link.proxy == 'i2p':
                 # fetch hosts.txt
@@ -177,9 +139,12 @@ def crawler(link: Link):
                 except Exception:
                     error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                     print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                    partial = True
 
-            # submit data
-            submit_new_host(timestamp, link)
+            # submit data / drop hostname from db
+            if partial:
+                drop_hostname(link)
+            submit_new_host(timestamp, link, partial=partial)
 
         if not FORCE and not check_robots(link):
             print(render_error(f'[REQUESTS] Robots disallowed link from {link.url}',
@@ -194,11 +159,17 @@ def crawler(link: Link):
                 print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_invalid(link)
+                drop_requests(link)
                 return
             except requests.RequestException as error:
                 print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                save_requests(link.url, single=True)
+                save_requests(link, single=True)
+                return
+            except LinkNoReturn:
+                print(render_error(f'[REQUESTS] Removing from database: {link.url}',
+                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                drop_requests(link)
                 return
 
             # save headers
@@ -210,24 +181,17 @@ def crawler(link: Link):
                 print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
                                    stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
 
-                text = response.content
-                try:
-                    path = save_file(timestamp, link, text)
-                except Exception as error:
-                    print(render_error(f'[REQUESTS] Failed to save generic file from {link.url} <{error}>',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                    return
-
                 # probably hosts.txt
                 if link.proxy == 'i2p' and ct_type in ['text/plain', 'text/text']:
-                    with open(path) as hosts_file:
-                        save_requests(read_hosts(hosts_file))
+                    text = response.text
+                    save_requests(read_hosts(text))
 
                 if match_mime(ct_type):
                     return
 
                 # submit data
-                submit_requests(timestamp, link, response, session)
+                data = response.content
+                submit_requests(timestamp, link, response, session, data, html=False)
 
                 return
 
@@ -238,14 +202,11 @@ def crawler(link: Link):
                 save_requests(link.url, single=True)
                 return
 
-            # save HTML
-            save_html(timestamp, link, html, raw=True)
-
             # submit data
-            submit_requests(timestamp, link, response, session)
+            submit_requests(timestamp, link, response, session, html, html=True)
 
             # add link to queue
-            save_requests(extract_links(link, html), score=0)
+            save_requests(extract_links(link, html), score=0, nx=True)
 
             if not response.ok:
                 print(render_error(f'[REQUESTS] Failed on {link.url} [{response.status_code}]',
@@ -323,6 +284,11 @@ def loader(link: Link):
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_selenium(link, single=True)
                 return
+            except LinkNoReturn:
+                print(render_error(f'[SELENIUM] Removing from database: {link.url}',
+                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                drop_selenium(link)
+                return
 
             # get HTML source
             html = driver.page_source
@@ -333,9 +299,7 @@ def loader(link: Link):
                 save_selenium(link, single=True)
                 return
 
-            # save HTML
-            save_html(timestamp, link, html)
-
+            screenshot = None
             try:
                 # get maximum height
                 height = driver.execute_script('return document.body.scrollHeight')
@@ -346,14 +310,13 @@ def loader(link: Link):
                 driver.set_window_size(1024, math.ceil(height * 1.1))
 
                 # take a full page screenshot
-                path = sanitise(link, timestamp, screenshot=True)
-                driver.save_screenshot(path)
+                screenshot = driver.get_screenshot_as_base64()
             except Exception as error:
                 print(render_error(f'[SELENIUM] Fail to save screenshot from {link.url} <{error}>',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
 
             # submit data
-            submit_selenium(timestamp, link)
+            submit_selenium(timestamp, link, html, screenshot)
 
             # add link to queue
             save_requests(extract_links(link, html), score=0, nx=True)

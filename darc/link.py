@@ -138,8 +138,8 @@ class Link:
         :class:`~darc.link.Link`: Parsed link object.
 
     Note:
-        :class:`~darc.link.Link` is a dataclass_ object.
-        It is safely *hashable*, through ``hash(url)``.
+        :class:`~darc.link.Link` is a `dataclass`_ object.
+        It is safely *hashable*, through :func:`hash(url) <hash>`.
 
         .. _dataclass: https://www.python.org/dev/peps/pep-0557
 
@@ -275,19 +275,28 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     if scheme == 'data':
         # https://en.wikipedia.org/wiki/Data_URI_scheme
         proxy_type = 'data'
-        hostname = '(null)'
+        host = '(data)'
     elif scheme == 'javascript':
         proxy_type = 'script'
+        host = '(script)'
     elif scheme == 'bitcoin':
         proxy_type = 'bitcoin'
+        host = '(bitcoin)'
     elif scheme == 'ed2k':
         proxy_type = 'ed2k'
+        host = '(ed2k)'
     elif scheme == 'magnet':
         proxy_type = 'magnet'
+        host = '(magnet)'
     elif scheme == 'mailto':
         proxy_type = 'mail'
+        host = '(mail)'
+    elif scheme == 'tel':
+        proxy_type = 'tel'
+        host = '(tel)'
     elif scheme == 'irc':
         proxy_type = 'irc'
+        host = '(irc)'
     elif scheme not in ['http', 'https']:
         proxy_type = scheme
     # proxy type by hostname

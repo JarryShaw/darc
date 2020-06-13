@@ -11,7 +11,6 @@ import getpass
 import json
 import os
 import pprint
-import re
 import shutil
 import sys
 import traceback
@@ -23,10 +22,8 @@ import stem.control
 import stem.process
 import stem.util.term
 
-import darc.typing as typing
 from darc.const import DEBUG
-from darc.error import TorBootstrapFailed, render_error
-from darc.link import Link
+from darc.error import TorBootstrapFailed, TorRenewFailed, render_error
 
 # Tor configs
 TOR_CFG = json.loads(os.getenv('TOR_CFG', '{}'))
@@ -40,9 +37,8 @@ TOR_CTRL = os.getenv('TOR_CTRL', '9051')
 
 # Tor authentication
 TOR_PASS = os.getenv('TOR_PASS')
-
-# use stem to manage Tor?
-TOR_STEM = bool(int(os.getenv('TOR_STEM', '1')))
+if TOR_PASS is None:
+    TOR_PASS = getpass.getpass('Tor authentication: ')
 
 # Tor bootstrap retry
 TOR_RETRY = int(os.getenv('TOR_RETRY', '3'))
@@ -58,8 +54,11 @@ TOR_SELENIUM_PROXY.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
 TOR_SELENIUM_PROXY.http_proxy = f'socks5://localhost:{TOR_PORT}'
 TOR_SELENIUM_PROXY.ssl_proxy = f'socks5://localhost:{TOR_PORT}'
 
+# use stem to manage Tor?
+_MNG_TOR = bool(int(os.getenv('DARC_TOR', '1')))
+
 # Tor bootstrapped flag
-_TOR_BS_FLAG = not TOR_STEM  # only if Tor managed through stem
+_TOR_BS_FLAG = not _MNG_TOR  # only if Tor managed through stem
 # Tor controller
 _TOR_CTRL = None
 # Tor daemon process
@@ -81,9 +80,18 @@ if DEBUG:
 
 def renew_tor_session():
     """Renew Tor session."""
-    if _TOR_CTRL is None:
-        return
-    _TOR_CTRL.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
+    global _TOR_CTRL
+
+    try:
+        # Tor controller process
+        if _TOR_CTRL is None:
+            _TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))
+            _TOR_CTRL.authenticate(TOR_PASS)
+        _TOR_CTRL.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
+    except Exception as error:
+        warning = warnings.formatwarning(error, TorRenewFailed, __file__, 88,
+                                         '_TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))')
+        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
 def print_bootstrap_lines(line: str):
@@ -119,7 +127,7 @@ def _tor_bootstrap():
         * :data:`darc.proxy.tor._TOR_CTRL`
 
     """
-    global _TOR_BS_FLAG, _TOR_CTRL, _TOR_PROC, TOR_PASS
+    global _TOR_BS_FLAG, _TOR_PROC
 
     # launch Tor process
     _TOR_PROC = stem.process.launch_tor_with_config(
@@ -128,13 +136,6 @@ def _tor_bootstrap():
         timeout=BS_WAIT,
         take_ownership=True,
     )
-
-    if TOR_PASS is None:
-        TOR_PASS = getpass.getpass('Tor authentication: ')
-
-    # Tor controller process
-    _TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))
-    _TOR_CTRL.authenticate(TOR_PASS)
 
     # update flag
     _TOR_BS_FLAG = True
@@ -173,29 +174,7 @@ def tor_bootstrap():
                 message = '[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 128, 'tor_bootstrap()')
+            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 170, 'tor_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-
-
-def has_tor(link_pool: typing.Set[Link]) -> bool:
-    """Check if contain Tor links.
-
-    Args:
-        link_pool: Link pool to check.
-
-    Returns:
-        If the link pool contains Tor links.
-
-    See Also:
-        * :func:`darc.link.parse_link`
-        * :func:`darc.link.urlparse`
-
-    """
-    for link in link_pool:
-        # <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
-        parse = link.url_parse
-        if re.fullmatch(r'.*?\.onion', parse.netloc):
-            return True
-    return False

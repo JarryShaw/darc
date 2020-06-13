@@ -36,161 +36,23 @@ is typically as following::
     └── <proxy>
         └── <scheme>
             └── <hostname>
-                ├── <hash>_<timestamp>.dat
                 ├── <hash>_<timestamp>.json
-                ├── <hash>_<timestamp>_raw.html
-                ├── <hash>_<timestamp>.html
-                ├── <hash>_<timestamp>.png
                 ├── robots.txt
                 └── sitemap_<hash>.xml
 
 """
 
 import dataclasses
-import glob
 import json
-import multiprocessing
 import os
-import pathlib
-import posixpath
 
 import darc.typing as typing
 from darc._compat import datetime
-from darc.const import PATH_DB, PATH_LN, TIME_CACHE
+from darc.const import PATH_DB, PATH_LN, get_lock
 from darc.link import Link, quote
 
 # lock for file I/O
-#_SAVE_LOCK = MANAGER.Lock()  # pylint: disable=no-member
-_SAVE_LOCK = multiprocessing.Lock()
-
-
-def has_folder(link: Link) -> typing.Optional[str]:  # pylint: disable=inconsistent-return-statements
-    """Check if is a new host.
-
-    Args:
-        link: Link object to check if is a new host.
-
-    Returns:
-        * If ``link`` is a new host, return :attr:`link.base <darc.link.Link.base>`.
-        * If not, return ``None``.
-
-    """
-    # <proxy>/<scheme>/<host>/<hash>.json
-    glob_list = glob.glob(os.path.join(link.base, '*.json'))
-    if not glob_list:
-        return
-    return link.base
-
-
-def has_robots(link: Link) -> typing.Optional[str]:
-    """Check if ``robots.txt`` already exists.
-
-    Args:
-        link: Link object to check if ``robots.txt`` already exists.
-
-    Returns:
-        * If ``robots.txt`` exists, return the path to ``robots.txt``,
-          i.e. ``<root>/<proxy>/<scheme>/<hostname>/robots.txt``.
-        * If not, return ``None``.
-
-    """
-    # <proxy>/<scheme>/<host>/robots.txt
-    path = os.path.join(link.base, 'robots.txt')
-    return path if os.path.isfile(path) else None
-
-
-def has_sitemap(link: Link) -> typing.Optional[str]:
-    """Check if sitemap already exists.
-
-    Args:
-        link: Link object to check if sitemap already exists.
-
-    Returns:
-        * If sitemap exists, return the path to the sitemap,
-          i.e. ``<root>/<proxy>/<scheme>/<hostname>/sitemap_<hash>.xml``.
-        * If not, return ``None``.
-
-    """
-    # <proxy>/<scheme>/<host>/sitemap_<hash>.xml
-    path = os.path.join(link.base, f'sitemap_{link.name}.xml')
-    return path if os.path.isfile(path) else None
-
-
-def has_raw(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pylint: disable=redefined-outer-name
-    """Check if we need to re-craw the link by |requests|_.
-
-    Args:
-        link: Link object to check if we need to re-craw the link by |requests|_.
-
-    Returns:
-        * If no need, return the path to the document,
-          i.e. ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>_raw.html``,
-          or ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.dat``.
-        * If needed, return ``None``.
-
-    See Also:
-        * :data:`darc.const.TIME_CACHE`
-
-    """
-    path = os.path.join(link.base, link.name)
-    if data_list := glob.glob(f'{path}_*.dat'):
-        return data_list[0]
-
-    temp_list = glob.glob(f'{path}_*_raw.html')
-    glob_list = sorted((pathlib.Path(item) for item in temp_list), reverse=True)
-
-    if not glob_list:
-        return None
-
-    # disable caching
-    if TIME_CACHE is None:
-        return glob_list[0]
-
-    for item in glob_list:
-        item_date = item.stem.split('_')[1]
-        date = datetime.fromisoformat(item_date)
-        if time - date <= TIME_CACHE:
-            return item
-    return None
-
-
-def has_html(time: typing.Datetime, link: Link) -> typing.Optional[str]:  # pylint: disable=redefined-outer-name
-    """Check if we need to re-craw the link by |selenium|_.
-
-    Args:
-        link: Link object to check if we need to re-craw the link by |selenium|_.
-
-    Returns:
-        * If no need, return the path to the document,
-          i.e. ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.html``.
-        * If needed, return ``None``.
-
-    See Also:
-        * :data:`darc.const.TIME_CACHE`
-
-    """
-    path = os.path.join(link.base, link.name)
-    temp_list = list()
-    for item in glob.glob(f'{path}_*.html'):
-        temp = pathlib.Path(item)
-        if temp.stem.endswith('_raw'):
-            continue
-        temp_list.append(temp)
-    glob_list = sorted(temp_list, reverse=True)
-
-    if not glob_list:
-        return None
-
-    # disable caching
-    if TIME_CACHE is None:
-        return glob_list[0]
-
-    for item in glob_list:
-        item_date = item.stem.split('_')[1]
-        date = datetime.fromisoformat(item_date)
-        if time - date <= TIME_CACHE:
-            return item
-    return None
+_SAVE_LOCK = get_lock()
 
 
 def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylint: disable=redefined-outer-name
@@ -264,61 +126,6 @@ def save_link(link: Link):
         with open(PATH_LN, 'a') as file:
             print(f'{link.proxy},{link.url_parse.scheme},{os.path.split(link.base)[1]},'
                   f'{link.name},{quote(link)}', file=file)
-
-
-def save_robots(link: Link, text: str) -> str:
-    """Save ``robots.txt``.
-
-    Args:
-        link: Link object of ``robots.txt``.
-        text: Content of ``robots.txt``.
-
-    Returns:
-        Saved path to ``robots.txt``, i.e.
-        ``<root>/<proxy>/<scheme>/<hostname>/robots.txt``.
-
-    See Also:
-        * :func:`darc.save.sanitise`
-
-    """
-    path = os.path.join(link.base, 'robots.txt')
-
-    root = os.path.split(path)[0]
-    os.makedirs(root, exist_ok=True)
-
-    with open(path, 'w') as file:
-        print(f'# {link.url}', file=file)
-        file.write(text)
-    return path
-
-
-def save_sitemap(link: Link, text: str) -> str:
-    """Save sitemap.
-
-    Args:
-        link: Link object of sitemap.
-        text: Content of sitemap.
-
-    Returns:
-        Saved path to sitemap, i.e.
-        ``<root>/<proxy>/<scheme>/<hostname>/sitemap_<hash>.xml``.
-
-    See Also:
-        * :func:`darc.save.sanitise`
-
-    """
-    # <proxy>/<scheme>/<host>/sitemap_<hash>.xml
-    path = os.path.join(link.base, f'sitemap_{link.name}.xml')
-
-    root = os.path.split(path)[0]
-    os.makedirs(root, exist_ok=True)
-
-    with open(path, 'w') as file:
-        print(f'<!-- {link.url} -->', file=file)
-        file.write(text)
-
-    save_link(link)
-    return path
 
 
 def save_headers(time: typing.Datetime, link: Link,
@@ -406,85 +213,3 @@ def save_headers(time: typing.Datetime, link: Link,
 
     save_link(link)
     return path
-
-
-def save_html(time: typing.Datetime, link: Link, html: typing.Union[str, bytes], raw: bool = False) -> str:  # pylint: disable=redefined-outer-name
-    """Save response.
-
-    Args:
-        time (datetime): Timestamp of HTML document.
-        link: Link object of original URL.
-        html: Content of HTML document.
-        raw: If is fetched from |requests|_.
-
-    Returns:
-        Saved path to HTML document.
-
-        * If ``raw`` is ``True``, ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>_raw.html``.
-        * If not, ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.html``.
-
-    See Also:
-        * :func:`darc.save.sanitise`
-        * :func:`darc.crawl.crawler`
-        * :func:`darc.crawl.loader`
-
-    """
-    # comment line
-    comment = f'<!-- {link.url} -->'
-
-    path = sanitise(link, time, raw=raw)
-    if raw:
-        with open(path, 'wb') as file:
-            file.write(comment.encode())
-            file.write(os.linesep.encode())
-            file.write(html)
-    else:
-        with open(path, 'w') as file:
-            print(comment, file=file)
-            file.write(html)
-    return path
-
-
-def save_file(time: typing.Datetime, link: Link, content: bytes) -> str:
-    """Save file.
-
-    The function will also try to make symbolic links from the saved
-    file standard path to the relative path as in the URL.
-
-    Args:
-        time (datetime): Timestamp of generic file.
-        link: Link object of original URL.
-        content: Content of generic file.
-
-    Returns:
-        Saved path to generic content type file,
-        ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.dat``.
-
-    See Also:
-        * :func:`darc.save.sanitise`
-        * :func:`darc.crawl.crawler`
-
-    """
-    # real path
-    dest = sanitise(link, time, data=True)
-    with open(dest, 'wb') as file:
-        file.write(content)
-
-    # remove leading slash '/'
-    temp_path = link.url_parse.path[1:]
-
-    # <proxy>/<scheme>/<host>/"..."
-    root, name = posixpath.split(temp_path)
-    path = os.path.join(link.base, root)
-    os.makedirs(path, exist_ok=True)
-
-    # os.chdir(path)
-    # with open(name, 'wb') as file:
-    #     file.write(content)
-    # os.chdir(CWD)
-
-    src = os.path.relpath(dest, path)
-    dst = os.path.join(path, name)
-    os.symlink(src, dst, target_is_directory=False)
-
-    return dest
