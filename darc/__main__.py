@@ -28,9 +28,6 @@ _WAIT_REDIS = bool(int(os.getenv('DARC_REDIS', '1')))
 
 def wait_for_redis():
     """Wait for Redis to be ready for connection."""
-    if not _WAIT_REDIS:
-        return
-
     while True:
         try:
             REDIS.client_id()
@@ -91,7 +88,8 @@ def main():
     args = parser.parse_args()
 
     # wait for Redis
-    wait_for_redis()
+    if _WAIT_REDIS:
+        wait_for_redis()
 
     if DEBUG:
         print(stem.util.term.format('-*- Initialisation -*-', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
