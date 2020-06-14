@@ -52,7 +52,7 @@ from darc.parse import _check
 REDIS_LOCK = bool(int(os.getenv('DARC_REDIS_LOCK', '0')))
 
 # Redis retry interval
-REDIS_RETRY = float(os.getenv('DARC_REDIS_RETRY', '1'))
+REDIS_RETRY = float(os.getenv('DARC_REDIS_RETRY', '10'))
 if not math.isfinite(REDIS_RETRY):
     REDIS_RETRY = None
 
