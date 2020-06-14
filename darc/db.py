@@ -44,7 +44,7 @@ from darc._compat import nullcontext
 from darc.const import CHECK
 from darc.const import REDIS as redis
 from darc.const import TIME_CACHE, VERBOSE
-from darc.error import LockWarning, render_error
+from darc.error import LockWarning, RedisCommandFailed, render_error
 from darc.link import Link
 from darc.parse import _check
 
@@ -63,6 +63,32 @@ BULK_SIZE = int(os.getenv('DARC_BULK_SIZE', '100'))
 MAX_POOL = float(os.getenv('DARC_MAX_POOL', '100'))
 if math.isfinite(MAX_POOL):
     MAX_POOL = math.floor(MAX_POOL)
+
+
+def redis_command(command: str, *args, **kwargs) -> typing.Any:
+    """Wrapper function for Redis command.
+
+    Args:
+        command: Command name.
+        *args: Arbitrary arguments for the Redis command.
+
+    Keyword Args:
+        **kwargs: Arbitrary keyword arguments for the Redis command.
+
+    Return:
+        Values returned from the Redis command.
+
+    """
+    method = getattr(redis, command)
+    while True:
+        try:
+            value = method(*args, **kwargs)
+        except Exception as error:
+            warning = warnings.formatwarning(error, RedisCommandFailed, __file__, 85, 'value = method(*args, **kwargs)')
+            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            continue
+        break
+    return value
 
 
 def get_lock(name: str,
@@ -95,7 +121,7 @@ def get_lock(name: str,
 
     """
     if REDIS_LOCK:
-        return redis.lock(name, timeout, sleep, blocking_timeout, lock_class, thread_local)
+        return redis_command('lock', name, timeout, sleep, blocking_timeout, lock_class, thread_local)
     return nullcontext()
 
 
@@ -110,7 +136,7 @@ def have_hostname(link: Link) -> bool:
 
     """
     with get_lock('lock_queue_hostname'):
-        code = redis.sadd('queue_hostname', link.host)
+        code = redis_command('sadd', 'queue_hostname', link.host)
     flag = not bool(code)  # 1 - success; 0 - failed
     return flag
 
@@ -123,7 +149,7 @@ def drop_hostname(link: Link):
 
     """
     with get_lock('lock_queue_hostname'):
-        redis.zrem('queue_hostname', link.host)
+        redis_command('zrem', 'queue_hostname', link.host)
 
 
 def drop_requests(link: Link):
@@ -134,7 +160,7 @@ def drop_requests(link: Link):
 
     """
     with get_lock('lock_queue_requests'):
-        redis.zrem('queue_requests', pickle.dumps(link))
+        redis_command('zrem', 'queue_requests', pickle.dumps(link))
 
 
 def drop_selenium(link: Link):
@@ -145,7 +171,7 @@ def drop_selenium(link: Link):
 
     """
     with get_lock('lock_queue_selenium'):
-        redis.zrem('queue_selenium', pickle.dumps(link))
+        redis_command('zrem', 'queue_selenium', pickle.dumps(link))
 
 
 def save_requests(entries: typing.List[Link], single: bool = False,
@@ -176,14 +202,14 @@ def save_requests(entries: typing.List[Link], single: bool = False,
                 pickle.dumps(link): score for link in entries[i:i + BULK_SIZE]
             }
             with get_lock('lock_queue_requests'):
-                redis.zadd('queue_requests', mapping, nx=nx, xx=xx)
+                redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
         return
 
     mapping = {
         pickle.dumps(entries): score,
     }
     with get_lock('lock_queue_requests'):
-        redis.zadd('queue_requests', mapping, nx=nx, xx=xx)
+        redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
 
 
 def save_selenium(entries: typing.List[Link], single: bool = False,
@@ -214,14 +240,14 @@ def save_selenium(entries: typing.List[Link], single: bool = False,
                 pickle.dumps(link): score for link in entries[i:i + BULK_SIZE]
             }
             with get_lock('lock_queue_selenium'):
-                redis.zadd('queue_selenium', mapping, nx=nx, xx=xx)
+                redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
         return
 
     mapping = {
         pickle.dumps(entries): score,
     }
     with get_lock('lock_queue_selenium'):
-        redis.zadd('queue_selenium', mapping, nx=nx, xx=xx)
+        redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
 
 
 def load_requests(check: bool = CHECK) -> typing.List[Link]:
@@ -248,8 +274,8 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
 
     try:
         with get_lock('lock_queue_requests', blocking_timeout=LOCK_TIMEOUT):
-            link_pool = [pickle.loads(link) for link in redis.zrangebyscore('queue_requests', min=0, max=max_score,
-                                                                            start=0, num=MAX_POOL)]
+            link_pool = [pickle.loads(link) for link in redis_command('zrangebyscore', 'queue_requests',
+                                                                      min=0, max=max_score, start=0, num=MAX_POOL)]
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 save_requests(link_pool, score=new_score)  # force update records
@@ -297,8 +323,8 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
 
     try:
         with get_lock('lock_queue_selenium', blocking_timeout=LOCK_TIMEOUT):
-            link_pool = [pickle.loads(link) for link in redis.zrangebyscore('queue_selenium', min=0, max=max_score,
-                                                                            start=0, num=MAX_POOL)]
+            link_pool = [pickle.loads(link) for link in redis_command('zrangebyscore', 'queue_selenium',
+                                                                      min=0, max=max_score, start=0, num=MAX_POOL)]
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 save_selenium(link_pool, score=new_score)  # force update records
