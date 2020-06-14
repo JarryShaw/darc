@@ -22,6 +22,7 @@ The :mod:`darc` project provides following custom exceptions:
 * :exc:`~darc.error.SiteNotFoundWarning`
 * :exc:`~darc.error.LockWarning`
 * :exc:`~darc.error.TorRenewFailed`
+* :exc:`~darc.error.RedisConnectionFailed`
 
 """
 
@@ -64,6 +65,10 @@ class ZeroNetBootstrapFailed(Warning):
 
 class FreenetBootstrapFailed(Warning):
     """Freenet bootstrap process failed."""
+
+
+class RedisConnectionFailed(Warning):
+    """Redis connection failed."""
 
 
 class APIRequestFailed(Warning):
