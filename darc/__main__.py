@@ -12,7 +12,7 @@ import warnings
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DEBUG, PATH_LN, REDIS
+from darc.const import DEBUG, PATH_ID, PATH_LN, REDIS, getpid
 from darc.db import save_requests
 from darc.error import RedisConnectionFailed, render_error
 from darc.link import parse_link
@@ -28,11 +28,12 @@ _WAIT_REDIS = bool(int(os.getenv('DARC_REDIS', '1')))
 
 def wait_for_redis():
     """Wait for Redis to be ready for connection."""
+    pid = getpid()
     while True:
         try:
-            REDIS.client_id()
+            REDIS.set('darc', pid)
         except Exception as error:
-            warning = warnings.formatwarning(error, RedisConnectionFailed, __file__, 36, 'REDIS.client_id()')
+            warning = warnings.formatwarning(error, RedisConnectionFailed, __file__, 34, "REDIS.set('darc', pid)")
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
             continue
         break
@@ -86,6 +87,9 @@ def main():
     """Entrypoint."""
     parser = get_parser()
     args = parser.parse_args()
+
+    with open(PATH_ID, 'w') as file:
+        print(os.getpid(), file=file)
 
     # wait for Redis
     if _WAIT_REDIS:
