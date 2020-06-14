@@ -84,7 +84,8 @@ def redis_command(command: str, *args, **kwargs) -> typing.Any:
         try:
             value = method(*args, **kwargs)
         except Exception as error:
-            warning = warnings.formatwarning(error, RedisCommandFailed, __file__, 85, 'value = method(*args, **kwargs)')
+            warning = warnings.formatwarning(error, RedisCommandFailed, __file__, 85,
+                                             f"value = redis.{command}(*args, **kwargs)")
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
             continue
         break
