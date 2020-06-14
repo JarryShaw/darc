@@ -51,6 +51,11 @@ from darc.parse import _check
 # use lock?
 REDIS_LOCK = bool(int(os.getenv('DARC_REDIS_LOCK', '0')))
 
+# Redis retry interval
+REDIS_RETRY = float(os.getenv('DARC_REDIS_RETRY', '1'))
+if not math.isfinite(REDIS_RETRY):
+    REDIS_RETRY = None
+
 # lock blocking timeout
 LOCK_TIMEOUT = float(os.getenv('DARC_LOCK_TIMEOUT', '10'))
 if not math.isfinite(LOCK_TIMEOUT):
@@ -87,6 +92,9 @@ def redis_command(command: str, *args, **kwargs) -> typing.Any:
             warning = warnings.formatwarning(error, RedisCommandFailed, __file__, 85,
                                              f"value = redis.{command}(*args, **kwargs)")
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+
+            if REDIS_RETRY is not None:
+                time.sleep(REDIS_RETRY)
             continue
         break
     return value
