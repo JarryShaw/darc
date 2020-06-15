@@ -33,6 +33,7 @@ import pickle
 import pprint
 import shutil
 import sys
+import textwrap
 import time
 import warnings
 
@@ -91,21 +92,24 @@ def redis_command(command: str, *args, **kwargs) -> typing.Any:
         second(s) if such value is **NOT** :data:`None`.
 
     """
-    _args = None
-    _kwargs = None
+    _arg_msg = None
 
     method = getattr(redis, command)
     while True:
         try:
             value = method(*args, **kwargs)
         except Exception as error:
-            if _args is None:
+            if _arg_msg is None:
                 _args = ', '.join(map(repr, args))
-            if _kwargs is None:
                 _kwargs = ', '.join(f'{k}={v!r}' for k, v in kwargs.items())
+                if _kwargs:
+                    if _args:
+                        _args += ', '
+                    _args += _kwargs
+                _arg_msg = textwrap.shorten(_args, shutil.get_terminal_size().columns)
 
             warning = warnings.formatwarning(error, RedisCommandFailed, __file__, 85,
-                                             f'value = redis.{command}({_args}, {_kwargs})')
+                                             f'value = redis.{command}({_arg_msg})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
             if REDIS_RETRY is not None:
