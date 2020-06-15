@@ -1,34 +1,34 @@
-.. module:: darc
-
 Darkweb Crawler Project
 =======================
 
+.. module:: darc
+
 :mod:`darc` is designed as a swiss army knife for darkweb crawling.
-It integrates |requests|_ to collect HTTP request and response
+It integrates :mod:`requests` to collect HTTP request and response
 information, such as cookies, header fields, etc. It also bundles
-|selenium|_ to provide a fully rendered web page and screenshot
+:mod:`selenium` to provide a fully rendered web page and screenshot
 of such view.
 
 .. toctree::
 
-   darc.process
-   darc.crawl
-   darc.link
-   darc.parse
-   darc.save
-   darc.db
-   darc.submit
-   darc.requests
-   darc.selenium
-   darc.proxy
-   darc.sites
-   darc.const
-   darc.error
+   process
+   crawl
+   link
+   parse
+   save
+   db
+   submit
+   requests
+   selenium
+   proxy/index
+   sites/index
+   const
+   error
 
 As the websites can be sometimes irritating for their anti-robots
 verification, login requirements, etc., the :mod:`darc` project
 also privides hooks to customise crawling behaviours around both
-|requests|_ and |selenium|_.
+:mod:`requests` and :mod:`selenium`.
 
 .. seealso::
 
@@ -44,21 +44,13 @@ and the fallback slowest single-threaded solutions when crawling.
 
 .. note::
 
-   When rendering the target website using |selenium|_ powered by
+   When rendering the target website using :mod:`selenium` powered by
    the renown Google Chrome, it will require much memory to run.
    Thus, the three solutions mentioned above would only toggle the
-   behaviour around the use of |selenium|_.
+   behaviour around the use of :mod:`selenium`.
 
 To keep the :mod:`darc` project as it is a swiss army knife, only the
 main entrypoint function :func:`darc.process.process` is exported
 in global namespace (and renamed to :func:`darc.darc`), see below:
 
 .. autofunction:: darc.darc
-
-.. |requests| replace:: ``requests``
-.. _requests: https://requests.readthedocs.io
-.. |selenium| replace:: ``selenium``
-.. _selenium: https://www.selenium.dev
-
-.. |Chrome| replace:: ``selenium.webdriver.Chrome``
-.. _Chrome: https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver

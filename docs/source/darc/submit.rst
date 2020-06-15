@@ -3,16 +3,6 @@
    :undoc-members:
    :show-inheritance:
 
-.. |requests| replace:: ``requests``
-.. _requests: https://requests.readthedocs.io
-.. |selenium| replace:: ``selenium``
-.. _selenium: https://www.selenium.dev
-
-.. |Response| replace:: ``requests.Response``
-.. _Response: https://requests.readthedocs.io/en/latest/api/index.html#requests.Response
-.. |Session| replace:: ``requests.Session``
-.. _Session: https://requests.readthedocs.io/en/latest/api/index.html#requests.Session
-
 .. data:: darc.submit.PATH_API
    :value: '{PATH_DB}/api/'
 
@@ -36,7 +26,7 @@
 
    API URL for :func:`~darc.submit.submit_new_host`.
 
-   :default: ``None``
+   :default: :data:`None`
    :environ: :data:`API_NEW_HOST`
 
 .. data:: darc.submit.API_REQUESTS
@@ -44,7 +34,7 @@
 
    API URL for :func:`~darc.submit.submit_requests`.
 
-   :default: ``None``
+   :default: :data:`None`
    :environ: :data:`API_REQUESTS`
 
 .. data:: darc.submit.API_SELENIUM
@@ -52,13 +42,13 @@
 
    API URL for :func:`~darc.submit.submit_selenium`.
 
-   :default: ``None``
+   :default: :data:`None`
    :environ: :data:`API_SELENIUM`
 
 .. note::
 
    If :data:`~darc.submit.API_NEW_HOST`, :data:`~darc.submit.API_REQUESTS`
-   and :data:`~darc.submit.API_SELENIUM` is ``None``, the corresponding
+   and :data:`~darc.submit.API_SELENIUM` is :data:`None`, the corresponding
    submit function will save the JSON data in the path
    specified by :data:`~darc.submit.PATH_API`.
 

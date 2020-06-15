@@ -22,7 +22,7 @@ copyright = '2020, Jarry Shaw'
 author = 'Jarry Shaw'
 
 # The full version, including alpha/beta/rc tags
-release = '0.5.0rc3'
+release = '0.5.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -41,8 +41,6 @@ extensions = [
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
 
-    'peewee': ('http://docs.peewee-orm.com/en/latest/', None),
-    'pymysql': ('https://pymysql.readthedocs.io/en/latest/', None),
     'requests': ('https://requests.readthedocs.io/en/latest/', None),
     'selenium': ('https://www.selenium.dev/selenium/docs/api/py/', None),
     'stem': ('https://stem.torproject.org/', None),

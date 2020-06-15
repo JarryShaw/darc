@@ -105,7 +105,7 @@ image. Environment variables can be set as described in the
 
    Should you wish to run :mod:`darc` in reboot mode, i.e. set
    :envvar:`DARC_REBOOT` and/or :data:`~darc.const.REBOOT`
-   as ``True``, you may wish to change the entrypoint to
+   as :data:`True`, you may wish to change the entrypoint to
 
    .. code:: shell
 
@@ -129,7 +129,3 @@ image. Environment variables can be set as described in the
    In such scenario, you can customise your ``run.sh`` to, for
    instance, archive then upload current data crawled by :mod:`darc`
    to somewhere else and save up some disk space.
-
-   Or you may wish to look into the ``_queue_requests.txt`` and
-   ``_queue_selenium.txt`` databases (c.f. :mod:`darc.db`), and make
-   some minor adjustments to, perhaps, narrow down the crawling targets.

@@ -17,7 +17,7 @@ def crawler(session: typing.Session, link: Link) -> typing.NoReturn:  # pylint: 
     """Crawler hook for email addresses.
 
     Args:
-        session (|Session|_): Session object with proxy settings.
+        session (:class:`requests.Session`): Session object with proxy settings.
         link: Link object to be crawled.
 
     Raises:

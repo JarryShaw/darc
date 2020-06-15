@@ -2,7 +2,7 @@
 """Requests Wrapper
 ======================
 
-The :mod:`darc.requests` module wraps around the |requests|_
+The :mod:`darc.requests` module wraps around the :mod:`requests`
 module, and provides some simple interface for the :mod:`darc`
 project.
 
@@ -20,7 +20,16 @@ from darc.proxy.tor import TOR_REQUESTS_PROXY
 
 
 def default_user_agent(name: str = 'python-darc', proxy: typing.Optional[str] = None) -> str:
-    """Generates the default user agent."""
+    """Generates the default user agent.
+
+    Args:
+        name: Base name.
+        proxy: Proxy type.
+
+    Returns:
+        User agent in format of ``{name}/{darc.__version__} ({proxy} Proxy)``.
+
+    """
     from darc import __version__  # pylint: disable=import-outside-toplevel
 
     if proxy is None:
@@ -34,11 +43,12 @@ def request_session(link: Link, futures: bool = False) -> typing.Union[typing.Se
     """Get requests session.
 
     Args:
-        link: Link requesting for |Session|_.
-        futures: If returns a |FuturesSession|_.
+        link: Link requesting for requests.Session.
+        futures: If returns a requests_futures.FuturesSession.
 
     Returns:
-        Union[|Session|_, |FuturesSession|_]: The session object with corresponding proxy settings.
+        Union[requests.Session, requests_futures.FuturesSession]:
+        The session object with corresponding proxy settings.
 
     Raises:
         :exc:`UnsupportedLink`: If the proxy type of ``link``
@@ -61,10 +71,11 @@ def i2p_session(futures: bool = False) -> typing.Union[typing.Session, typing.Fu
     """I2P (.i2p) session.
 
     Args:
-        futures: If returns a |FuturesSession|_.
+        futures: If returns a requests_futures.FuturesSession.
 
     Returns:
-        Union[|Session|_, |FuturesSession|_]: The session object with I2P proxy settings.
+        Union[requests.Session, requests_futures.FuturesSession]:
+        The session object with I2P proxy settings.
 
     See Also:
         * :data:`darc.proxy.i2p.I2P_REQUESTS_PROXY`
@@ -84,10 +95,11 @@ def tor_session(futures: bool = False) -> typing.Union[typing.Session, typing.Fu
     """Tor (.onion) session.
 
     Args:
-        futures: If returns a |FuturesSession|_.
+        futures: If returns a requests_futures.FuturesSession.
 
     Returns:
-        Union[|Session|_, |FuturesSession|_]: The session object with Tor proxy settings.
+        Union[requests.Session, requests_futures.FuturesSession]:
+        The session object with Tor proxy settings.
 
     See Also:
         * :data:`darc.proxy.tor.TOR_REQUESTS_PROXY`
@@ -107,10 +119,11 @@ def null_session(futures: bool = False) -> typing.Union[typing.Session, typing.F
     """No proxy session.
 
     Args:
-        futures: If returns a |FuturesSession|_.
+        futures: If returns a requests_futures.FuturesSession.
 
     Returns:
-        Union[|Session|_, |FuturesSession|_]: The session object with no proxy settings.
+        Union[requests.Session, requests_futures.FuturesSession]:
+        The session object with no proxy settings.
 
     """
     if futures:

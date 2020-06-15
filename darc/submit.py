@@ -16,12 +16,12 @@ There are three submission events:
 2. Requests Submission -- :data:`~darc.submit.API_REQUESTS`
 
    Submitted in :func:`~darc.crawl.crawler` function call, after the
-   crawling process of the URL using |requests|_.
+   crawling process of the URL using :mod:`requests`.
 
 3. Selenium Submission -- :data:`~darc.submit.API_SELENIUM`
 
    Submitted in :func:`~darc.crawl.loader` function call, after the
-   loading process of the URL using |selenium|_.
+   loading process of the URL using :mod:`selenium`.
 
 """
 
@@ -104,7 +104,7 @@ def get_robots(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsis
             :data:`~darc.const.PATH_DB`, ``<proxy>/<scheme>/<hostname>/robots.txt``
           * ``data`` -- *base64* encoded content of ``robots.txt``
 
-        * If not, return ``None``.
+        * If not, return :data:`None`.
 
     See Also:
         * :func:`darc.crawl.crawler`
@@ -136,7 +136,7 @@ def get_sitemap(link: Link) -> typing.Optional[typing.List[File]]:  # pylint: di
             :data:`~darc.const.PATH_DB`, ``<proxy>/<scheme>/<hostname>/sitemap_<hash>.xml``
           * ``data`` -- *base64* encoded content of sitemap
 
-        * If not, return ``None``.
+        * If not, return :data:`None`.
 
     See Also:
         * :func:`darc.crawl.crawler`
@@ -227,7 +227,7 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
         partial: If the data is not complete, i.e. failed when fetching
             ``robots.txt``, ``hosts.txt`` and/or sitemaps.
 
-    If :data:`~darc.submit.API_NEW_HOST` is ``None``, the data for submission
+    If :data:`~darc.submit.API_NEW_HOST` is :data:`None`, the data for submission
     will directly be save through :func:`~darc.submit.save_submit`.
 
     The data submitted should have following format::
@@ -327,19 +327,19 @@ def submit_requests(time: typing.Datetime, link: Link,
                     content: bytes, html: bool = True):
     """Submit requests data.
 
-    When crawling, we'll first fetch the URl using |requests|_, to check
+    When crawling, we'll first fetch the URl using :mod:`requests`, to check
     its availability and to save its HTTP headers information. Such information
     will be submitted to the web UI.
 
     Args:
         time (datetime.datetime): Timestamp of submission.
         link: Link object of submission.
-        response (|Response|_): Response object of submission.
-        session (|Session|_): Session object of submission.
+        response (requests.Response): Response object of submission.
+        session (requests.Session): Session object of submission.
         content: Raw content of from the response.
         html: If current document is HTML or other files.
 
-    If :data:`~darc.submit.API_REQUESTS` is ``None``, the data for submission
+    If :data:`~darc.submit.API_REQUESTS` is :data:`None`, the data for submission
     will directly be save through :func:`~darc.submit.save_submit`.
 
     The data submitted should have following format::
@@ -467,8 +467,8 @@ def submit_selenium(time: typing.Datetime, link: Link,
                     html: str, screenshot: typing.Optional[str]):
     """Submit selenium data.
 
-    After crawling with |requests|_, we'll then render the URl using
-    |selenium|_ with Google Chrome and its web driver, to provide a fully
+    After crawling with :mod:`requests`, we'll then render the URl using
+    :mod:`selenium` with Google Chrome and its web driver, to provide a fully
     rendered web page. Such information will be submitted to the web UI.
 
     Args:
@@ -477,12 +477,12 @@ def submit_selenium(time: typing.Datetime, link: Link,
         html: HTML source of the web page.
         screenshot: *base64* encoded screenshot.
 
-    If :data:`~darc.submit.API_SELENIUM` is ``None``, the data for submission
+    If :data:`~darc.submit.API_SELENIUM` is :data:`None`, the data for submission
     will directly be save through :func:`~darc.submit.save_submit`.
 
     Note:
         This information is optional, only provided if the content type from
-        |requests|_ is HTML, status code not between ``400`` and ``600``, and
+        :mod:`requests` is HTML, status code not between ``400`` and ``600``, and
         HTML data not empty.
 
     The data submitted should have following format::

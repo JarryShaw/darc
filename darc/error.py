@@ -3,7 +3,7 @@
 =======================
 
 The :func:`~darc.error.render_error` function can be used to render
-multi-line error messages with |term|_ colours.
+multi-line error messages with :mod:`stem.util.term` colours.
 
 The :mod:`darc` project provides following custom exceptions:
 
@@ -86,13 +86,13 @@ class LockWarning(Warning):
 def render_error(message: str, colour: typing.Color) -> str:
     """Render error message.
 
-    The function wraps the |format|_ function to provide multi-line
-    formatting support.
+    The function wraps the :func:`stem.util.term.format` function to
+    provide multi-line formatting support.
 
     Args:
         message: Multi-line message to be rendered with ``colour``.
         colour (stem.util.term.Color): Front colour of text, c.f.
-            |color|_.
+            :class:`stem.util.term.Color`.
 
     Returns:
         The rendered error message.

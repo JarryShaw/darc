@@ -10,6 +10,5 @@ microframework.
 .. |Flask| replace:: ``Flask``
 .. _Flask: https://flask.palletsprojects.com
 
-.. literalinclude:: ../../demo/api.py
+.. literalinclude:: ../../../demo/api.py
    :language: python
-

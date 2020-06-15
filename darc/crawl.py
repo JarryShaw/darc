@@ -4,8 +4,8 @@
 
 The :mod:`darc.crawl` module provides two types of crawlers.
 
-* :func:`~darc.crawl.crawler` -- crawler powered by |requests|_
-* :func:`~darc.crawl.loader` -- crawler powered by |selenium|_
+* :func:`~darc.crawl.crawler` -- crawler powered by :mod:`requests`
+* :func:`~darc.crawl.loader` -- crawler powered by :mod:`selenium`
 
 """
 
@@ -43,31 +43,37 @@ from darc.submit import submit_new_host, submit_requests, submit_selenium
 
 
 def crawler(link: Link):
-    """Single |requests|_ crawler for a entry link.
+    """Single :mod:`requests` crawler for a entry link.
 
     Args:
-        link: URL to be crawled by |requests|_.
+        link: URL to be crawled by :mod:`requests`.
 
     The function will first parse the URL using
     :func:`~darc.link.parse_link`, and check if need to crawl the
-    URL (c.f. :data:`~darc.const.PROXY_WHITE_LIST`, :data:`~darc.const.PROXY_BLACK_LIST`
-    , :data:`~darc.const.LINK_WHITE_LIST` and :data:`~darc.const.LINK_BLACK_LIST`);
-    if true, then crawl the URL with |requests|_.
+    URL (c.f. :data:`~darc.const.PROXY_WHITE_LIST`, :data:`~darc.const.PROXY_BLACK_LIST`,
+    :data:`~darc.const.LINK_WHITE_LIST` and :data:`~darc.const.LINK_BLACK_LIST`);
+    if true, then crawl the URL with :mod:`requests`.
 
     If the URL is from a brand new host, :mod:`darc` will first try
     to fetch and save ``robots.txt`` and sitemaps of the host
     (c.f. :func:`~darc.save.save_robots` and :func:`~darc.save.save_sitemap`),
     and extract then save the links from sitemaps (c.f. :func:`~darc.parse.read_sitemap`)
     into link database for future crawling (c.f. :func:`~darc.db.save_requests`).
+
+    .. note::
+
+       A host is new if :func:`~darc.db.have_hostname` returns :data:`True`.
+
+       If :func:`darc.proxy.null.fetch_sitemap` and/or :func:`darc.proxy.i2p.fetch_hosts`
+       failed when fetching such documents, the host will be removed from the
+       hostname database through :func:`~darc.db.drop_hostname`, and considered
+       as new when next encounter.
+
     Also, if the submission API is provided, :func:`~darc.submit.submit_new_host`
     will be called and submit the documents just fetched.
 
-    .. seealso::
-
-        * :func:`darc.proxy.null.fetch_sitemap`
-
     If ``robots.txt`` presented, and :data:`~darc.const.FORCE` is
-    ``False``, :mod:`darc` will check if allowed to crawl the URL.
+    :data:`False`, :mod:`darc` will check if allowed to crawl the URL.
 
     .. note::
 
@@ -83,14 +89,17 @@ def crawler(link: Link):
 
         If :exc:`requests.exceptions.InvalidSchema` is raised, the link
         will be saved by :func:`~darc.proxy.null.save_invalid`. Further
-        processing is dropped.
+        processing is dropped, and the link will be removed from the
+        :mod:`requests` database through :func:`~darc.db.drop_requests`.
+
+        If :exc:`~darc.error.LinkNoReturn` is raised, the link will be
+        removed from the :mod:`requests` database through
+        :func:`~darc.db.drop_requests`.
 
     If the content type of response document is not ignored (c.f.
     :data:`~darc.const.MIME_WHITE_LIST` and :data:`~darc.const.MIME_BLACK_LIST`),
-    :mod:`darc` will save the document using :func:`~darc.save.save_html` or
-    :func:`~darc.save.save_file` accordingly. And if the submission API
-    is provided, :func:`~darc.submit.submit_requests` will be called and
-    submit the document just fetched.
+    :func:`~darc.submit.submit_requests` will be called and submit the document
+    just fetched.
 
     If the response document is HTML (``text/html`` and ``application/xhtml+xml``),
     :func:`~darc.parse.extract_links` will be called then to extract
@@ -100,7 +109,7 @@ def crawler(link: Link):
     And if the response status code is between ``400`` and ``600``,
     the URL will be saved back to the link database
     (c.f. :func:`~darc.db.save_requests`). If **NOT**, the URL will
-    be saved into |selenium|_ link database to proceed next steps
+    be saved into :mod:`selenium` link database to proceed next steps
     (c.f. :func:`~darc.db.save_selenium`).
 
     """
@@ -109,11 +118,13 @@ def crawler(link: Link):
         if match_proxy(link.proxy):
             print(render_error(f'[REQUESTS] Ignored proxy type from {link.url} ({link.proxy})',
                                stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+            drop_requests(link)
             return
 
         if match_host(link.host):
             print(render_error(f'[REQUESTS] Ignored hostname from {link.url} ({link.proxy})',
                                stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+            drop_requests(link)
             return
 
         # timestamp
@@ -187,6 +198,7 @@ def crawler(link: Link):
                     save_requests(read_hosts(text))
 
                 if match_mime(ct_type):
+                    drop_requests(link)
                     return
 
                 # submit data
@@ -224,21 +236,26 @@ def crawler(link: Link):
 
 
 def loader(link: Link):
-    """Single |selenium|_ loader for a entry link.
+    """Single :mod:`selenium` loader for a entry link.
 
     Args:
-        Link: URL to be crawled by |requests|_.
+        Link: URL to be crawled by :mod:`selenium`.
 
     The function will first parse the URL using :func:`~darc.link.parse_link`
-    and start loading the URL using |selenium|_ with Google Chrome.
+    and start loading the URL using :mod:`selenium` with Google Chrome.
 
     At this point, :mod:`darc` will call the customised hook function
     from :mod:`darc.sites` to load and return the original
-    |Chrome|_ object.
+    :class:`selenium.webdriver.Chrome` object.
 
-    If successful, the rendered source HTML document will be saved
-    using :func:`~darc.save.save_html`, and a full-page screenshot
-    will be taken and saved.
+    .. note::
+
+        If :exc:`~darc.error.LinkNoReturn` is raised, the link will be
+        removed from the :mod:`selenium` database through
+        :func:`~darc.db.drop_selenium`.
+
+    If successful, the rendered source HTML document will be saved, and a
+    full-page screenshot will be taken and saved.
 
     .. note::
 
@@ -247,21 +264,21 @@ def loader(link: Link):
        height of web page. If the page height is *less than* **1,000 pixels**,
        then :mod:`darc` will by default set the height as **1,000 pixels**.
 
-       Later :mod:`darc` will tell |selenium|_ to resize the window (in
+       Later :mod:`darc` will tell :mod:`selenium` to resize the window (in
        *headless* mode) to **1,024 pixels** in width and **110%** of the
        page height in height, and take a *PNG* screenshot.
-
-    .. seealso::
-
-       * :data:`darc.const.SE_EMPTY`
-       * :data:`darc.const.SE_WAIT`
 
     If the submission API is provided, :func:`~darc.submit.submit_selenium`
     will be called and submit the document just loaded.
 
     Later, :func:`~darc.parse.extract_links` will be called then to
     extract all possible links from the HTML document and save such
-    links into the |requests|_ database (c.f. :func:`~darc.db.save_requests`).
+    links into the :mod:`requests` database (c.f. :func:`~darc.db.save_requests`).
+
+    .. seealso::
+
+       * :data:`darc.const.SE_EMPTY`
+       * :data:`darc.const.SE_WAIT`
 
     """
     print(f'[SELENIUM] Loading {link.url}')

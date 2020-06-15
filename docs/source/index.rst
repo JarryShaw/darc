@@ -9,29 +9,43 @@
 .. toctree::
    :maxdepth: 2
 
-   darc
-   demo
+   darc/index
    docker
+   demo/api
+   demo/model
    aux
 
 :mod:`darc` is designed as a swiss army knife for darkweb crawling.
-It integrates |requests|_ to collect HTTP request and response
+It integrates :mod:`requests` to collect HTTP request and response
 information, such as cookies, header fields, etc. It also bundles
-|selenium|_ to provide a fully rendered web page and screenshot
+:mod:`selenium` to provide a fully rendered web page and screenshot
 of such view.
 
-The general process of :mod:`darc` can be described as following:
+There are two types of *workers*:
 
-0. :func:`~darc.process.process`: obtain URLs from the |requests|_
-   link database (c.f. :func:`~darc.db.load_requests`), and feed
-   such URLs to :func:`~darc.crawl.crawler` with *multiprocessing*
-   support.
+* ``crawler`` -- runs the :func:`darc.crawl.crawler` to provide a
+  fresh view of a link and test its connectability
+* ``loader`` -- run the :func:`darc.crawl.loader` to provide an
+  in-depth view of a link and provide more visual information
 
-1. :func:`~darc.crawl.crawler`: parse the URL using
+The general process can be described as following for *workers* of ``crawler`` type:
+
+1. :func:`~darc.process.process_crawler`: obtain URLs from the :mod:`requests`
+   link database (c.f. :func:`~darc.db.load_requests`), and feed such URLs to
+   :func:`~darc.crawl.crawler`.
+
+   .. note::
+
+      If :data:`~darc.const.FLAG_MP` is :data:`True`, the function will be
+      called with *multiprocessing* support; if :data:`~darc.const.FLAG_TH`
+      if :data:`True`, the function will be called with *multithreading*
+      support; if none, the function will be called in single-threading.
+
+2. :func:`~darc.crawl.crawler`: parse the URL using
    :func:`~darc.link.parse_link`, and check if need to crawl the
-   URL (c.f. :data:`~darc.const.PROXY_WHITE_LIST`, :data:`~darc.const.PROXY_BLACK_LIST`
-   , :data:`~darc.const.LINK_WHITE_LIST` and :data:`~darc.const.LINK_BLACK_LIST`);
-   if true, then crawl the URL with |requests|_.
+   URL (c.f. :data:`~darc.const.PROXY_WHITE_LIST`, :data:`~darc.const.PROXY_BLACK_LIST`,
+   :data:`~darc.const.LINK_WHITE_LIST` and :data:`~darc.const.LINK_BLACK_LIST`);
+   if true, then crawl the URL with :mod:`requests`.
 
    If the URL is from a brand new host, :mod:`darc` will first try
    to fetch and save ``robots.txt`` and sitemaps of the host
@@ -42,7 +56,7 @@ The general process of :mod:`darc` can be described as following:
    will be called and submit the documents just fetched.
 
    If ``robots.txt`` presented, and :data:`~darc.const.FORCE` is
-   ``False``, :mod:`darc` will check if allowed to crawl the URL.
+   :data:`False`, :mod:`darc` will check if allowed to crawl the URL.
 
    .. note::
 
@@ -62,10 +76,8 @@ The general process of :mod:`darc` can be described as following:
 
    If the content type of response document is not ignored (c.f.
    :data:`~darc.const.MIME_WHITE_LIST` and :data:`~darc.const.MIME_BLACK_LIST`),
-   :mod:`darc` will save the document using :func:`~darc.save.save_html` or
-   :func:`~darc.save.save_file` accordingly. And if the submission API
-   is provided, :func:`~darc.submit.submit_requests` will be called and
-   submit the document just fetched.
+   :func:`~darc.submit.submit_requests` will be called and submit the document
+   just fetched.
 
    If the response document is HTML (``text/html`` and ``application/xhtml+xml``),
    :func:`~darc.parse.extract_links` will be called then to extract all possible
@@ -75,46 +87,39 @@ The general process of :mod:`darc` can be described as following:
    And if the response status code is between ``400`` and ``600``,
    the URL will be saved back to the link database
    (c.f. :func:`~darc.db.save_requests`). If **NOT**, the URL will
-   be saved into |selenium|_ link database to proceed next steps
+   be saved into :mod:`selenium` link database to proceed next steps
    (c.f. :func:`~darc.db.save_selenium`).
 
-2. :func:`~darc.process.process`: in the meanwhile, :mod:`darc` will obtain URLs
-   from the |selenium|_ link database (c.f. :func:`~darc.db.load_selenium`), and
-   feed such URLs to :func:`~darc.crawl.loader`.
+The general process can be described as following for *workers* of ``loader`` type:
+
+1. :func:`~darc.process.process_loader`: in the meanwhile, :mod:`darc` will
+   obtain URLs from the :mod:`selenium` link database (c.f. :func:`~darc.db.load_selenium`),
+   and feed such URLs to :func:`~darc.crawl.loader`.
 
    .. note::
 
-      If :data:`~darc.const.FLAG_MP` is ``True``, the function will be
+      If :data:`~darc.const.FLAG_MP` is :data:`True`, the function will be
       called with *multiprocessing* support; if :data:`~darc.const.FLAG_TH`
-      if ``True``, the function will be called with *multithreading*
+      if :data:`True`, the function will be called with *multithreading*
       support; if none, the function will be called in single-threading.
 
-3. :func:`~darc.crawl.loader`: parse the URL using
+2. :func:`~darc.crawl.loader`: parse the URL using
    :func:`~darc.link.parse_link` and start loading the URL using
-   |selenium|_ with Google Chrome.
+   :mod:`selenium` with Google Chrome.
 
    At this point, :mod:`darc` will call the customised hook function
    from :mod:`darc.sites` to load and return the original
-   |Chrome|_ object.
+   :class:`~selenium.webdriver.Chrome` object.
 
-   .. |Chrome| replace:: ``selenium.webdriver.Chrome``
-   .. _Chrome: https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver
-
-   If successful, the rendered source HTML document will be saved
-   using :func:`~darc.save.save_html`, and a full-page screenshot
-   will be taken and saved.
+   If successful, the rendered source HTML document will be saved, and a
+   full-page screenshot will be taken and saved.
 
    If the submission API is provided, :func:`~darc.submit.submit_selenium`
    will be called and submit the document just loaded.
 
    Later, :func:`~darc.parse.extract_links` will be called then to
    extract all possible links from the HTML document and save such
-   links into the |requests|_ database (c.f. :func:`~darc.db.save_requests`).
-
-.. |requests| replace:: ``requests``
-.. _requests: https://requests.readthedocs.io
-.. |selenium| replace:: ``selenium``
-.. _selenium: https://www.selenium.dev
+   links into the :mod:`requests` database (c.f. :func:`~darc.db.save_requests`).
 
 ------------
 Installation
@@ -198,11 +203,11 @@ General Configurations
 
 .. envvar:: DARC_REBOOT
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    If exit the program after first round, i.e. crawled all links from the
-   |requests|_ link database and loaded all links from the |selenium|_
+   :mod:`requests` link database and loaded all links from the :mod:`selenium`
    link database.
 
    This can be useful especially when the capacity is limited and you wish
@@ -211,41 +216,41 @@ General Configurations
 
 .. envvar:: DARC_DEBUG
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    If run the program in debugging mode.
 
 .. envvar:: DARC_VERBOSE
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
-   If run the program in verbose mode. If :data:`DARC_DEBUG` is ``True``,
+   If run the program in verbose mode. If :data:`DARC_DEBUG` is :data:`True`,
    then the verbose mode will be always enabled.
 
 .. envvar:: DARC_FORCE
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    If ignore ``robots.txt`` rules when crawling (c.f. :func:`~darc.crawl.crawler`).
 
 .. envvar:: DARC_CHECK
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    If check proxy and hostname before crawling (when calling
    :func:`~darc.parse.extract_links`, :func:`~darc.parse.read_sitemap`
    and :func:`~darc.proxy.i2p.read_hosts`).
 
-   If :data:`DARC_CHECK_CONTENT_TYPE` is ``True``, then this environment
-   variable will be always set as ``True``.
+   If :data:`DARC_CHECK_CONTENT_TYPE` is :data:`True`, then this environment
+   variable will be always set as :data:`True`.
 
 .. envvar:: DARC_CHECK_CONTENT_TYPE
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    If check content type through ``HEAD`` requests before crawling
@@ -254,22 +259,22 @@ General Configurations
 
 .. envvar:: DARC_CPU
 
-   :type: ``int``
-   :default: ``None``
+   :type: :obj:`int`
+   :default: :data:`None`
 
    Number of concurrent processes. If not provided, then the number of
    system CPUs will be used.
 
 .. envvar:: DARC_MULTIPROCESSING
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``1``
 
    If enable *multiprocessing* support.
 
 .. envvar:: DARC_MULTITHREADING
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    If enable *multithreading* support.
@@ -281,14 +286,64 @@ General Configurations
 
 .. envvar:: DARC_USER
 
-   :type: ``str``
-   :default: current login user (c.f. |getuser|_)
+   :type: :obj:`str`
+   :default: current login user (c.f. :func:`getpass.getuser`)
 
    *Non-root* user for proxies.
 
+Data Storage
+------------
+
+.. seealso::
+
+   See :mod:`darc.save` for more information about source saving.
+
+   See :mod:`darc.db` for more information about Redis database integration.
+
+.. envvar:: PATH_DATA
+
+   :type: :obj:`str` (path)
+   :default: ``data``
+
+   Path to data storage.
+
+.. envvar:: REDIS_URL
+
+   :type: :obj:`str` (url)
+   :default: ``redis://127.0.0.1``
+
+   URL to the Redis database.
+
+.. envvar:: DARC_BULK_SIZE
+
+   :type: :obj:`int`
+   :default: ``100``
+
+   *Bulk* size for updating Redis databases.
+
+   .. seealso::
+
+      * :func:`darc.db.save_requests`
+      * :func:`darc.db.save_selenium`
+
+.. envvar:: LOCK_TIMEOUT
+
+   :type: ``float``
+   :default: ``10``
+
+   Lock blocking timeout.
+
+   .. note::
+
+      If is an infinit ``inf``, no timeout will be applied.
+
+   .. seealso::
+
+      Get a lock from :func:`darc.db.get_lock`.
+
 .. envvar:: DARC_MAX_POOL
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``1_000``
 
    Maximum number of links loaded from the database.
@@ -302,26 +357,31 @@ General Configurations
       * :func:`darc.db.load_requests`
       * :func:`darc.db.load_selenium`
 
-Data Storage
-------------
+.. data:: darc.db.REDIS_LOCK
 
-.. envvar:: REDIS_URL
+   :type: :obj:`bool` (:obj:`int`)
+   :default: ``0``
 
-   :type: ``str`` (url)
-   :default: ``redis://127.0.0.1``
-
-   URL to the Redis database.
-
-.. envvar:: PATH_DATA
-
-   :type: ``str`` (path)
-   :default: ``data``
-
-   Path to data storage.
+   If use Redis (Lua) lock to ensure process/thread-safely operations.
 
    .. seealso::
 
-      See :mod:`darc.save` for more information about source saving.
+      Toggles the behaviour of :func:`darc.db.get_lock`.
+
+.. envvar:: REDIS_RETRY
+
+   :type: :obj:`int`
+   :default: ``10``
+
+   Retry interval between each Redis command failure.
+
+   .. note::
+
+      If is an infinit ``inf``, no interval will be applied.
+
+   .. seealso::
+
+      Toggles the behaviour of :func:`darc.db.redis_command`.
 
 Web Crawlers
 ------------
@@ -331,20 +391,20 @@ Web Crawlers
    :type: ``float``
    :default: ``60``
 
-   Time interval between each round when the |requests|_ and/or
-   |selenium|_ database are empty.
+   Time interval between each round when the :mod:`requests` and/or
+   :mod:`selenium` database are empty.
 
 .. envvar:: DARC_SAVE
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    If save processed link back to database.
 
    .. note::
 
-      If :envvar:`DARC_SAVE` is ``True``, then :envvar:`DARC_SAVE_REQUESTS`
-      and :envvar:`DARC_SAVE_SELENIUM` will be forced to be ``True``.
+      If :envvar:`DARC_SAVE` is :data:`True`, then :envvar:`DARC_SAVE_REQUESTS`
+      and :envvar:`DARC_SAVE_SELENIUM` will be forced to be :data:`True`.
 
    .. seealso::
 
@@ -352,10 +412,10 @@ Web Crawlers
 
 .. envvar:: DARC_SAVE_REQUESTS
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
-   If save :func:`~darc.crawl.crawler` crawled link back to |requests|_ database.
+   If save :func:`~darc.crawl.crawler` crawled link back to :mod:`requests` database.
 
    .. seealso::
 
@@ -363,10 +423,10 @@ Web Crawlers
 
 .. envvar:: DARC_SAVE_SELENIUM
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
-   If save :func:`~darc.crawl.loader` crawled link back to |selenium|_ database.
+   If save :func:`~darc.crawl.loader` crawled link back to :mod:`selenium` database.
 
    .. seealso::
 
@@ -385,7 +445,7 @@ Web Crawlers
 
    .. note::
 
-      If :data:`TIME_CACHE` is ``None`` then caching will be marked
+      If :data:`TIME_CACHE` is :data:`None` then caching will be marked
       as *forever*.
 
 .. envvar:: SE_WAIT
@@ -393,11 +453,11 @@ Web Crawlers
    :type: ``float``
    :default: ``60``
 
-   Time to wait for |selenium|_ to finish loading pages.
+   Time to wait for :mod:`selenium` to finish loading pages.
 
    .. note::
 
-      Internally, |selenium|_ will wait for the browser to finish
+      Internally, :mod:`selenium` will wait for the browser to finish
       loading the pages before return (i.e. the web API event
       |event|_). However, some extra scripts may take more time
       running after the event.
@@ -432,7 +492,7 @@ White / Black Lists
 
 .. envvar:: LINK_FALLBACK
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    Fallback value for :func:`~darc.parse.match_host`.
@@ -461,7 +521,7 @@ White / Black Lists
 
 .. envvar:: MIME_FALLBACK
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    Fallback value for :func:`~darc.parse.match_mime`.
@@ -491,7 +551,7 @@ White / Black Lists
 
 .. envvar:: PROXY_FALLBACK
 
-   :type: ``bool`` (``int``)
+   :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
 
    Fallback value for :func:`~darc.parse.match_proxy`.
@@ -509,70 +569,67 @@ Data Submission
 
 .. envvar:: API_RETRY
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``3``
 
    Retry times for API submission when failure.
 
 .. envvar:: API_NEW_HOST
 
-   :type: ``str``
-   :default: ``None``
+   :type: :obj:`str`
+   :default: :data:`None`
 
    API URL for :func:`~darc.submit.submit_new_host`.
 
 .. envvar:: API_REQUESTS
 
-   :type: ``str``
-   :default: ``None``
+   :type: :obj:`str`
+   :default: :data:`None`
 
    API URL for :func:`~darc.submit.submit_requests`.
 
 .. envvar:: API_SELENIUM
 
-   :type: ``str``
-   :default: ``None``
+   :type: :obj:`str`
+   :default: :data:`None`
 
    API URL for :func:`~darc.submit.submit_selenium`.
 
 .. note::
 
    If :data:`API_NEW_HOST`, :data:`API_REQUESTS`
-   and :data:`API_SELENIUM` is ``None``, the corresponding
+   and :data:`API_SELENIUM` is :data:`None`, the corresponding
    submit function will save the JSON data in the path
    specified by :data:`PATH_DATA`.
 
 Tor Proxy Configuration
 -----------------------
 
+.. envvar:: DARC_TOR
+
+   :type: :obj:`bool` (:obj:`int`)
+   :default: ``1``
+
+   If manage the Tor proxy through :mod:`darc`.
+
 .. envvar:: TOR_PORT
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``9050``
 
    Port for Tor proxy connection.
 
 .. envvar:: TOR_CTRL
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``9051``
 
    Port for Tor controller connection.
 
-.. envvar:: TOR_STEM
-
-   :type: ``bool`` (``int``)
-   :default: ``1``
-
-   If manage the Tor proxy through |stem|_.
-
-   .. |stem| replace:: ``stem``
-   .. _stem: https://stem.torproject.org
-
 .. envvar:: TOR_PASS
 
-   :type: ``str``
-   :default: ``None``
+   :type: :obj:`str`
+   :default: :data:`None`
 
    Tor controller authentication token.
 
@@ -582,7 +639,7 @@ Tor Proxy Configuration
 
 .. envvar:: TOR_RETRY
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``3``
 
    Retry times for Tor bootstrap when failure.
@@ -612,16 +669,23 @@ Tor Proxy Configuration
 I2P Proxy Configuration
 -----------------------
 
+.. envvar:: DARC_I2P
+
+   :type: :obj:`bool` (:obj:`int`)
+   :default: ``1``
+
+   If manage the I2P proxy through :mod:`darc`.
+
 .. envvar:: I2P_PORT
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``4444``
 
    Port for I2P proxy connection.
 
 .. envvar:: I2P_RETRY
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``3``
 
    Retry times for I2P bootstrap when failure.
@@ -639,32 +703,39 @@ I2P Proxy Configuration
 
 .. envvar:: I2P_ARGS
 
-   :type: ``str`` (Shell)
+   :type: :obj:`str` (Shell)
    :default: ``''``
 
    I2P bootstrap arguments for ``i2prouter start``.
 
    If provided, it should be parsed as command
-   line arguments (c.f. |split|_).
+   line arguments (c.f. :func:`shlex.split`).
 
    .. note::
 
       The command will be run as :data:`DARC_USER`, if current
-      user (c.f. |getuser|_) is *root*.
+      user (c.f. :func:`getpass.getuser`) is *root*.
 
 ZeroNet Proxy Configuration
 ---------------------------
 
+.. envvar:: DARC_ZERONET
+
+   :type: :obj:`bool` (:obj:`int`)
+   :default: ``1``
+
+   If manage the ZeroNet proxy through :mod:`darc`.
+
 .. envvar:: ZERONET_PORT
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``4444``
 
    Port for ZeroNet proxy connection.
 
 .. envvar:: ZERONET_RETRY
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``3``
 
    Retry times for ZeroNet bootstrap when failure.
@@ -682,14 +753,14 @@ ZeroNet Proxy Configuration
 
 .. envvar:: ZERONET_PATH
 
-   :type: ``str`` (path)
+   :type: :obj:`str` (path)
    :default: ``/usr/local/src/zeronet``
 
    Path to the ZeroNet project.
 
 .. envvar:: ZERONET_ARGS
 
-   :type: ``str`` (Shell)
+   :type: :obj:`str` (Shell)
    :default: ``''``
 
    ZeroNet bootstrap arguments for ``ZeroNet.sh main``.
@@ -697,21 +768,28 @@ ZeroNet Proxy Configuration
    .. note::
 
       If provided, it should be parsed as command
-      line arguments (c.f. |split|_).
+      line arguments (c.f. :func:`shlex.split`).
 
 Freenet Proxy Configuration
 ---------------------------
 
+.. envvar:: DARC_FREENET
+
+   :type: :obj:`bool` (:obj:`int`)
+   :default: ``1``
+
+   If manage the Freenet proxy through :mod:`darc`.
+
 .. envvar:: FREENET_PORT
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``8888``
 
    Port for Freenet proxy connection.
 
 .. envvar:: FREENET_RETRY
 
-   :type: ``int``
+   :type: :obj:`int`
    :default: ``3``
 
    Retry times for Freenet bootstrap when failure.
@@ -729,25 +807,25 @@ Freenet Proxy Configuration
 
 .. envvar:: FREENET_PATH
 
-   :type: ``str`` (path)
+   :type: :obj:`str` (path)
    :default: ``/usr/local/src/freenet``
 
    Path to the Freenet project.
 
 .. envvar:: FREENET_ARGS
 
-   :type: ``str`` (Shell)
+   :type: :obj:`str` (Shell)
    :default: ``''``
 
    Freenet bootstrap arguments for ``run.sh start``.
 
    If provided, it should be parsed as command
-   line arguments (c.f. |split|_).
+   line arguments (c.f. :func:`shlex.split`).
 
    .. note::
 
       The command will be run as :data:`DARC_USER`, if current
-      user (c.f. |getuser|_) is *root*.
+      user (c.f. :func:`getpass.getuser`) is *root*.
 
 Indices and tables
 ==================
@@ -755,9 +833,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-.. |split| replace:: ``shlex.split``
-.. _split: https://docs.python.org/3/library/shlex.html#shlex.split
-
-.. |getuser| replace:: :func:`getpass.getuser`
-.. _getuser: https://docs.python.org/3/library/getpass.html#getpass.getuser

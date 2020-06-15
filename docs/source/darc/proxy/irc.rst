@@ -13,6 +13,10 @@
       * :data:`darc.const.PATH_MISC`
 
 .. data:: darc.proxy.irc.LOCK
-   :type: multiprocessing.Lock
+   :type: Union[multiprocessing.Lock, threading.Lock, contextlib.nullcontext]
 
    I/O lock for saving IRC addresses :data:`~darc.proxy.irc.PATH`.
+
+   .. seealso::
+
+      * :func:`darc.const.get_lock`

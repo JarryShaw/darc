@@ -5,6 +5,7 @@ Auxiliary Function
 ------------------
 
 .. autofunction:: darc.const.getpid
+.. autofunction:: darc.const.get_lock
 
 General Configurations
 ----------------------
@@ -13,14 +14,14 @@ General Configurations
    :type: bool
 
    If exit the program after first round, i.e. crawled all links from the
-   |requests|_ link database and loaded all links from the |selenium|_
+   :mod:`requests` link database and loaded all links from the :mod:`selenium`
    link database.
 
    This can be useful especially when the capacity is limited and you wish
    to save some space before continuing next round. See
    :doc:`Docker integration </docker>` for more information.
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`DARC_REBOOT`
 
 .. data:: darc.const.DEBUG
@@ -28,16 +29,16 @@ General Configurations
 
    If run the program in debugging mode.
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`DARC_DEBUG`
 
 .. data:: darc.const.VERBOSE
    :type: bool
 
-   If run the program in verbose mode. If :data:`~darc.const.DEBUG` is ``True``,
+   If run the program in verbose mode. If :data:`~darc.const.DEBUG` is :data:`True`,
    then the verbose mode will be always enabled.
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`DARC_VERBOSE`
 
 .. data:: darc.const.FORCE
@@ -45,7 +46,7 @@ General Configurations
 
    If ignore ``robots.txt`` rules when crawling (c.f. :func:`~darc.crawl.crawler`).
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`DARC_FORCE`
 
 .. data:: darc.const.CHECK
@@ -55,10 +56,10 @@ General Configurations
    :func:`~darc.parse.extract_links`, :func:`~darc.parse.read_sitemap`
    and :func:`~darc.proxy.i2p.read_hosts`).
 
-   If :data:`~darc.const.CHECK_NG` is ``True``, then this environment
-   variable will be always set as ``True``.
+   If :data:`~darc.const.CHECK_NG` is :data:`True`, then this environment
+   variable will be always set as :data:`True`.
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`DARC_CHECK`
 
 .. data:: darc.const.CHECK_NG
@@ -68,7 +69,7 @@ General Configurations
    (when calling :func:`~darc.parse.extract_links`,
    :func:`~darc.parse.read_sitemap` and :func:`~darc.proxy.i2p.read_hosts`).
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`DARC_CHECK_CONTENT_TYPE`
 
 .. data:: darc.const.ROOT
@@ -87,7 +88,7 @@ General Configurations
    Number of concurrent processes. If not provided, then the number of
    system CPUs will be used.
 
-   :default: ``None``
+   :default: :data:`None`
    :environ: :envvar:`DARC_CPU`
 
 .. data:: darc.const.FLAG_MP
@@ -95,7 +96,7 @@ General Configurations
 
    If enable *multiprocessing* support.
 
-   :default: ``True``
+   :default: :data:`True`
    :environ: :envvar:`DARC_MULTIPROCESSING`
 
 .. data:: darc.const.FLAG_TH
@@ -103,7 +104,7 @@ General Configurations
 
    If enable *multithreading* support.
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`DARC_MULTITHREADING`
 
    .. note::
@@ -132,6 +133,10 @@ Data Storage
 
    :default: ``redis://127.0.0.1``
    :environ: :envvar:`REDIS_URL`
+
+   .. seealso::
+
+      See :mod:`darc.db` for more information about Redis database integration.
 
 .. data:: darc.const.PATH_DB
    :type: str
@@ -168,7 +173,7 @@ Data Storage
 .. data:: darc.const.PATH_QR
    :value: '{PATH_DB}/_queue_requests.txt'
 
-   Path to the |requests|_ database, ``_queue_requests.txt``.
+   Path to the :mod:`requests` database, ``_queue_requests.txt``.
 
    .. seealso::
 
@@ -179,7 +184,7 @@ Data Storage
 .. data:: darc.const.PATH_QS
    :value: '{PATH_DB}/_queue_selenium.txt'
 
-   Path to the |selenium|_ database, ``_queue_selenium.txt``.
+   Path to the :mod:`selenium` database, ``_queue_selenium.txt``.
 
    .. seealso::
 
@@ -203,53 +208,11 @@ Web Crawlers
 .. data:: darc.const.DARC_WAIT
    :type: Optional[float]
 
-   Time interval between each round when the |requests|_ and/or
-   |selenium|_ database are empty.
+   Time interval between each round when the :mod:`requests` and/or
+   :mod:`selenium` database are empty.
 
    :default: ``60``
    :environ: :envvar:`DARC_WAIT`
-
-.. data:: darc.const.SAVE
-   :type: bool
-
-   If save processed link back to database.
-
-   .. note::
-
-      If :data:`~darc.const.SAVE` is ``True``, then
-      :data:`~darc.const.SAVE_REQUESTS` and :data:`~darc.const.SAVE_SELENIUM`
-      will be forced to be ``True``.
-
-   :default: ``False``
-   :environ: :envvar:`DARC_SAVE`
-
-   .. seealso::
-
-      See :mod:`darc.db` for more information about link database.
-
-.. data:: darc.const.SAVE_REQUESTS
-   :type: bool
-
-   If save :func:`~darc.crawl.crawler` crawled link back to |requests|_ database.
-
-   :default: ``False``
-   :environ: :envvar:`DARC_SAVE_REQUESTS`
-
-   .. seealso::
-
-      See :mod:`darc.db` for more information about link database.
-
-.. data:: darc.const.SAVE_SELENIUM
-   :type: bool
-
-   If save :func:`~darc.crawl.loader` crawled link back to |selenium|_ database.
-
-   :default: ``False``
-   :environ: :envvar:`DARC_SAVE_SELENIUM`
-
-   .. seealso::
-
-      See :mod:`darc.db` for more information about link database.
 
 .. data:: darc.const.TIME_CACHE
    :type: float
@@ -262,7 +225,7 @@ Web Crawlers
 
    .. note::
 
-      If :data:`~darc.const.TIME_CACHE` is ``None`` then caching
+      If :data:`~darc.const.TIME_CACHE` is :data:`None` then caching
       will be marked as *forever*.
 
    :default: ``60``
@@ -271,11 +234,11 @@ Web Crawlers
 .. data:: darc.const.SE_WAIT
    :type: float
 
-   Time to wait for |selenium|_ to finish loading pages.
+   Time to wait for :mod:`selenium` to finish loading pages.
 
    .. note::
 
-      Internally, |selenium|_ will wait for the browser to finish
+      Internally, :mod:`selenium` will wait for the browser to finish
       loading the pages before return (i.e. the web API event
       |event|_). However, some extra scripts may take more time
       running after the event.
@@ -289,7 +252,7 @@ Web Crawlers
 .. data:: darc.const.SE_EMPTY
    :value: '<html><head></head><body></body></html>'
 
-   The empty page from |selenium|_.
+   The empty page from :mod:`selenium`.
 
    .. seealso::
 
@@ -327,7 +290,7 @@ White / Black Lists
 
    Fallback value for :func:`~darc.parse.match_host`.
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`LINK_FALLBACK`
 
 .. data:: darc.const.MIME_WHITE_LIST
@@ -359,7 +322,7 @@ White / Black Lists
 
    Fallback value for :func:`~darc.parse.match_mime`.
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`MIME_FALLBACK`
 
 .. data:: darc.const.PROXY_WHITE_LIST
@@ -391,10 +354,5 @@ White / Black Lists
 
    Fallback value for :func:`~darc.parse.match_proxy`.
 
-   :default: ``False``
+   :default: :data:`False`
    :environ: :envvar:`PROXY_FALLBACK`
-
-.. |requests| replace:: ``requests``
-.. _requests: https://requests.readthedocs.io
-.. |selenium| replace:: ``selenium``
-.. _selenium: https://www.selenium.dev

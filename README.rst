@@ -9,20 +9,36 @@ of such view.
 
 The general process of ``darc`` can be described as following:
 
-0. ``darc.process.process`: obtain URLs from the ``requests```
-   link database (c.f. ``darc.db.load_requests``), and feed
-   such URLs to ``darc.crawl.crawler`` with *multiprocessing*
-   support.
+There are two types of *workers*:
 
-1. ``darc.crawl.crawler``: parse the URL using
+* ``crawler`` -- runs the ``darc.crawl.crawler`` to provide a
+  fresh view of a link and test its connectability
+
+* ``loader`` -- run the ``darc.crawl.loader`` to provide an
+  in-depth view of a link and provide more visual information
+
+The general process can be described as following for *workers* of ``crawler`` type:
+
+1. ``darc.process.process_crawler``: obtain URLs from the ``requests``
+   link database (c.f. ``darc.db.load_requests``), and feed such URLs to
+   ``darc.crawl.crawler``.
+
+   **NOTE:**
+
+      If ``darc.const.FLAG_MP`` is ``True``, the function will be
+      called with *multiprocessing* support; if ``darc.const.FLAG_TH``
+      if ``True``, the function will be called with *multithreading*
+      support; if none, the function will be called in single-threading.
+
+2. ``darc.crawl.crawler``: parse the URL using
    ``darc.link.parse_link``, and check if need to crawl the
-   URL (c.f. ``darc.const.PROXY_WHITE_LIST`, ``darc.const.PROXY_BLACK_LIST```
-   , ``darc.const.LINK_WHITE_LIST` and ``darc.const.LINK_BLACK_LIST```);
+   URL (c.f. ``darc.const.PROXY_WHITE_LIST``, ``darc.const.PROXY_BLACK_LIST``,
+   ``darc.const.LINK_WHITE_LIST`` and ``darc.const.LINK_BLACK_LIST``);
    if true, then crawl the URL with ``requests``.
 
    If the URL is from a brand new host, ``darc`` will first try
    to fetch and save ``robots.txt`` and sitemaps of the host
-   (c.f. ``darc.save.save_robots` and ``darc.save.save_sitemap```),
+   (c.f. ``darc.save.save_robots`` and ``darc.save.save_sitemap``),
    and extract then save the links from sitemaps (c.f. ``darc.parse.read_sitemap``)
    into link database for future crawling (c.f. ``darc.db.save_requests``).
    Also, if the submission API is provided, ``darc.submit.submit_new_host``
@@ -41,16 +57,20 @@ The general process of ``darc`` can be described as following:
    ``darc`` will save the session cookies and header information,
    using ``darc.save.save_headers``.
 
-   If the content type of response document is not ignored (c.f.
-   ``darc.const.MIME_WHITE_LIST` and ``darc.const.MIME_BLACK_LIST```),
-   ``darc` will save the document using ``darc.save.save_html``` or
-   ``darc.save.save_file`` accordingly. And if the submission API
-   is provided, ``darc.submit.submit_requests`` will be called and
-   submit the document just fetched.
+   **NOTE:**
 
-   If the response document is HTML, ``darc.parse.extract_links``
-   will be called then to extract all possible links from the HTML
-   document and save such links into the database
+      If :exc:`requests.exceptions.InvalidSchema` is raised, the link
+      will be saved by ``darc.save.save_invalid``. Further
+      processing is dropped.
+
+   If the content type of response document is not ignored (c.f.
+   ``darc.const.MIME_WHITE_LIST`` and ``darc.const.MIME_BLACK_LIST``),
+   ``darc.submit.submit_requests`` will be called and submit the document
+   just fetched.
+
+   If the response document is HTML (``text/html`` and ``application/xhtml+xml``),
+   ``darc.parse.extract_links`` will be called then to extract all possible
+   links from the HTML document and save such links into the database
    (c.f. ``darc.db.save_requests``).
 
    And if the response status code is between ``400`` and ``600``,
@@ -59,18 +79,20 @@ The general process of ``darc`` can be described as following:
    be saved into ``selenium`` link database to proceed next steps
    (c.f. ``darc.db.save_selenium``).
 
-2. ``darc.process.process``: in the meanwhile, ``darc` will obtain URLs
-   from the ``selenium``` link database (c.f. ``darc.db.load_selenium``),
+The general process can be described as following for *workers* of ``loader`` type:
+
+1. ``darc.process.process_loader``: in the meanwhile, ``darc`` will
+   obtain URLs from the ``selenium`` link database (c.f. ``darc.db.load_selenium``),
    and feed such URLs to ``darc.crawl.loader``.
 
    **NOTE:**
 
-      If ``darc.const.FLAG_MP` is ``True```, the function will be
+      If ``darc.const.FLAG_MP`` is ``True``, the function will be
       called with *multiprocessing* support; if ``darc.const.FLAG_TH``
       if ``True``, the function will be called with *multithreading*
       support; if none, the function will be called in single-threading.
 
-3. ``darc.crawl.loader``: parse the URL using
+2. ``darc.crawl.loader``: parse the URL using
    ``darc.link.parse_link`` and start loading the URL using
    ``selenium`` with Google Chrome.
 
@@ -78,9 +100,8 @@ The general process of ``darc`` can be described as following:
    from ``darc.sites`` to load and return the original
    ``selenium.webdriver.Chrome`` object.
 
-   If successful, the rendered source HTML document will be saved
-   using ``darc.save.save_html``, and a full-page screenshot
-   will be taken and saved.
+   If successful, the rendered source HTML document will be saved, and a
+   full-page screenshot will be taken and saved.
 
    If the submission API is provided, ``darc.submit.submit_selenium``
    will be called and submit the document just loaded.

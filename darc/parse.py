@@ -38,7 +38,7 @@ def match_proxy(proxy: str) -> bool:
 
     Note:
         If ``proxy`` is ``script``, then it
-        will always return ``True``.
+        will always return :data:`True`.
 
     See Also:
         * :data:`darc.const.PROXY_WHITE_LIST`
@@ -71,8 +71,8 @@ def match_host(host: str) -> bool:
         If ``host`` in  black list.
 
     Note:
-        If ``host`` is ``None``, then it
-        will always return ``True``.
+        If ``host`` is :data:`None`, then it
+        will always return :data:`True`.
 
     See Also:
         * :data:`darc.const.LINK_WHITE_LIST`
@@ -133,7 +133,7 @@ def check_robots(link: Link) -> bool:
         If ``link`` is allowed in ``robots.txt``.
 
     Note:
-        The root path of a URL will always return ``True``.
+        The root path of a URL will always return :data:`True`.
 
     """
     # bypass robots for root path
@@ -221,7 +221,7 @@ def _check(temp_list: typing.List[Link]) -> typing.List[Link]:
         List of links matches the requirements.
 
     Note:
-        If :data:`~darc.const.CHECK_NG` is ``True``,
+        If :data:`~darc.const.CHECK_NG` is :data:`True`,
         the function will directly call :func:`~darc.parse._check_ng`
         instead.
 
@@ -247,7 +247,7 @@ def get_content_type(response: typing.Response) -> str:
     """Get content type from ``response``.
 
     Args:
-        response (|Response|_): Response object.
+        response (:class:`requests.Response`): Response object.
 
     Returns:
         The content type from ``response``.

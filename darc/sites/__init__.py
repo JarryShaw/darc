@@ -4,7 +4,7 @@
 
 As websites may have authentication requirements, etc., over
 its content, the :mod:`darc.sites` module provides site
-customisation hooks to both |requests|_ and |selenium|_
+customisation hooks to both :mod:`requests` and :mod:`selenium`
 crawling processes.
 
 """
@@ -75,14 +75,14 @@ def _get_spec(link: Link) -> typing.ModuleType:
 
 
 def crawler_hook(link: Link, session: typing.Session) -> typing.Response:
-    """Customisation as to |requests|_ sessions.
+    """Customisation as to :mod:`requests` sessions.
 
     Args:
         link: Link object to be crawled.
-        session (|Session|_): Session object with proxy settings.
+        session (requests.Session): Session object with proxy settings.
 
     Returns:
-        |Response|_: The final response object with crawled data.
+        requests.Response: The final response object with crawled data.
 
     See Also:
         * :data:`darc.sites.SITE_MAP`
@@ -95,14 +95,14 @@ def crawler_hook(link: Link, session: typing.Session) -> typing.Response:
 
 
 def loader_hook(link: Link, driver: typing.Driver) -> typing.Driver:
-    """Customisation as to |selenium|_ drivers.
+    """Customisation as to :mod:`selenium` drivers.
 
     Args:
         link: Link object to be loaded.
-        driver (|Chrome|_): Web driver object with proxy settings.
+        driver (selenium.webdriver.Chrome): Web driver object with proxy settings.
 
     Returns:
-        |Chrome|_: The web driver object with loaded data.
+        selenium.webdriver.Chrome: The web driver object with loaded data.
 
     See Also:
         * :data:`darc.sites.SITE_MAP`

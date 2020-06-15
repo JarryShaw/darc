@@ -8,10 +8,7 @@ required to identify a URL's proxy type, hostname, path prefix
 when saving, etc.
 
 The :mod:`~darc.link` module also provides several wrapper
-function to the |urllib|_.
-
-.. |urllib| replace:: ``urllib.parse``
-.. _urllib: https://docs.python.org/3/library/urllib.parse.html
+function to the :mod:`urllib.parse` module.
 
 """
 
@@ -35,7 +32,7 @@ except NotImplementedError:
 
 def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',
           encoding: typing.Optional[str] = None, errors: typing.Optional[str] = None) -> str:
-    """Wrapper function for |quote|_.
+    """Wrapper function for :func:`urllib.parse.quote`.
 
     Args:
         string: string to be quoted
@@ -48,7 +45,8 @@ def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',
 
     Note:
         The function suppressed possible errors when calling
-        |quote|_. If any, it will return the original string.
+        :func:`urllib.parse.quote`. If any, it will return
+        the original string.
 
     """
     with contextlib.suppress(Exception):
@@ -57,7 +55,7 @@ def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',
 
 
 def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'replace') -> str:
-    """Wrapper function for |unquote|_.
+    """Wrapper function for :func:`urllib.parse.unquote`.
 
     Args:
         string: string to be unquoted
@@ -69,7 +67,8 @@ def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'repla
 
     Note:
         The function suppressed possible errors when calling
-        |unquote|_. If any, it will return the original string.
+        :func:`urllib.parse.unquote`. If any, it will return
+        the original string.
 
     """
     with contextlib.suppress(Exception):
@@ -78,7 +77,7 @@ def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'repla
 
 
 def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = True) -> str:
-    """Wrapper function for |urljoin|_.
+    """Wrapper function for :func:`urllib.parse.urljoin`.
 
     Args:
         base: base URL
@@ -90,7 +89,8 @@ def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = Tru
 
     Note:
         The function suppressed possible errors when calling
-        |urljoin|_. If any, it will return ``base/url`` directly.
+        :func:`urllib.parse.urljoin`. If any, it will return
+        ``base/url`` directly.
 
     """
     with contextlib.suppress(ValueError):
@@ -99,7 +99,7 @@ def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = Tru
 
 
 def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib.parse.ParseResult:
-    """Wrapper function for |urlparse|_.
+    """Wrapper function for :func:`urllib.parse.urlparse`.
 
     Args:
         url: URL to be parsed
@@ -111,7 +111,7 @@ def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib
 
     Note:
         The function suppressed possible errors when calling
-        |urlparse|_. If any, it will return
+        :func:`urllib.parse.urlparse`. If any, it will return
         ``urllib.parse.ParseResult(scheme=scheme, netloc='', path=url, params='', query='', fragment='')``
         directly.
 
@@ -132,7 +132,7 @@ class Link:
         host: URL's hostname
         base: base folder for saving files
         name: hashed link for saving files
-        url_parse: parsed URL from |urlparse|_
+        url_parse: parsed URL from :func:`urllib.parse.urlparse`
 
     Returns:
         :class:`~darc.link.Link`: Parsed link object.
@@ -150,7 +150,7 @@ class Link:
     #: proxy type
     proxy: str
 
-    #: parsed URL from |urlparse|_
+    #: parsed URL from :func:`urllib.parse.urlparse`
     url_parse: urllib.parse.ParseResult
 
     #: URL's hostname
@@ -194,7 +194,7 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
 
     The parsing process of proxy type is as follows:
 
-    0.  If ``host`` is ``None`` and the parse result from |urlparse|_
+    0.  If ``host`` is :data:`None` and the parse result from :func:`urllib.parse.urlparse`
         has no ``netloc`` (or hostname) specified, then set ``hostname``
         as ``(null)``; else set it as is.
     1.  If the scheme is ``data``, then the ``link`` is a data URI,
@@ -213,7 +213,7 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         link, set ``proxy`` as ``irc``.
     8.  If the scheme is **NOT** any of ``http`` or ``https``,
         then set ``proxy`` to the scheme.
-    9.  If the host is ``None``, set ``hostname`` to ``(null)``,
+    9.  If the host is :data:`None`, set ``hostname`` to ``(null)``,
         set ``proxy`` to ``null``.
     10. If the host is an onion (``.onion``) address,
         set ``proxy`` to ``tor``.
@@ -254,10 +254,7 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     where ``root`` is :data:`~darc.const.PATH_DB`.
 
     The ``name`` for parsed link :class:`~darc.link.Link` object is
-    the sha256 hash (c.f. |sha256|_) of the original ``link``.
-
-    .. |sha256| replace:: ``hashlib.sha256()``
-    .. _sha256: https://docs.python.org/3/library/hashlib.html#hashlib.sha256
+    the sha256 hash (c.f. :func:`hashlib.sha256`) of the original ``link``.
 
     """
     from darc.proxy.freenet import FREENET_PORT  # pylint: disable=import-outside-toplevel

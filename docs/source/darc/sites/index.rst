@@ -1,33 +1,43 @@
 Sites Customisation
 ===================
 
+.. module:: darc.sites
+
 As websites may have authentication requirements, etc., over
 its content, the :mod:`darc.sites` module provides sites
-customisation hooks to both |requests|_ and |selenium|_
+customisation hooks to both :mod:`requests` and :mod:`selenium`
 crawling processes.
 
 .. toctree::
 
-   darc.sites.default
+   default
+   bitcoin
+   data
+   ed2k
+   irc
+   magnet
+   mail
+   script
+   tel
 
-To customise behaviours over |requests|_, you sites customisation
+To customise behaviours over :mod:`requests`, you sites customisation
 module should have a :func:`crawler` function, e.g.
 :func:`~darc.sites.default.crawler`.
 
-The function takes the |Session|_ object with proxy settings and
+The function takes the :class:`requests.Session` object with proxy settings and
 a :class:`~darc.link.Link` object representing the link to be
-crawled, then returns a |Response|_ object containing the final
+crawled, then returns a :class:`requests.Response` object containing the final
 data of the crawling process.
 
 .. autofunction:: darc.sites.crawler_hook
 
-To customise behaviours over |selenium|_, you sites customisation
+To customise behaviours over :mod:`selenium`, you sites customisation
 module should have a :func:`loader` function, e.g.
 :func:`~darc.sites.default.loader`.
 
-The function takes the |Chrome|_ object with proxy settings and
+The function takes the :class:`~selenium.webdriver.Chrome` object with proxy settings and
 a :class:`~darc.link.Link` object representing the link to be
-loaded, then returns the |Chrome|_ object containing the final
+loaded, then returns the :class:`~selenium.webdriver.Chrome` object containing the final
 data of the loading process.
 
 .. autofunction:: darc.sites.loader_hook
@@ -51,16 +61,3 @@ such module to the :data:`~darc.sites.SITEMAP` mapping dictionary.
    The fallback value is ``default``, c.f. :mod:`darc.sites.default`.
 
 .. autofunction:: darc.sites._get_spec
-
-.. |requests| replace:: ``requests``
-.. _requests: https://requests.readthedocs.io
-.. |selenium| replace:: ``selenium``
-.. _selenium: https://www.selenium.dev
-
-.. |Response| replace:: ``requests.Response``
-.. _Response: https://requests.readthedocs.io/en/latest/api/index.html#requests.Response
-.. |Session| replace:: ``requests.Session``
-.. _Session: https://requests.readthedocs.io/en/latest/api/index.html#requests.Session
-
-.. |Chrome| replace:: ``selenium.webdriver.Chrome``
-.. _Chrome: https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver

@@ -2,7 +2,7 @@
 """Selenium Wrapper
 ======================
 
-The :mod:`darc.selenium` module wraps around the |selenium|_
+The :mod:`darc.selenium` module wraps around the :mod:`selenium`
 module, and provides some simple interface for the :mod:`darc`
 project.
 
@@ -26,13 +26,13 @@ def request_driver(link: Link) -> typing.Driver:
     """Get selenium driver.
 
     Args:
-        link: Link requesting for |Chrome|_.
+        link: Link requesting for :class:`~selenium.webdriver.Chrome`.
 
     Returns:
-        |Chrome|_: The web driver object with corresponding proxy settings.
+        selenium.webdriver.Chrome: The web driver object with corresponding proxy settings.
 
     Raises:
-        :exc:`UnsupportedLink`: If the proxy type of ``link``
+        UnsupportedLink: If the proxy type of ``link``
             if not specified in the :data:`~darc.proxy.LINK_MAP`.
 
     See Also:
@@ -54,12 +54,12 @@ def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefi
         type: Proxy type for options.
 
     Returns:
-        |Options|_: The options for the web driver |Chrome|_.
+        selenium.webdriver.ChromeOptions: The options for the web driver :class:`~selenium.webdriver.Chrome`.
 
     Raises:
-        :exc:`UnsupportedPlatform`: If the operation system is **NOT**
+        UnsupportedPlatform: If the operation system is **NOT**
             macOS or Linux.
-        :exc:`UnsupportedProxy`: If the proxy type is **NOT**
+        UnsupportedProxy: If the proxy type is **NOT**
             ``null``, ``tor`` or ``i2p``.
 
     See Also:
@@ -125,10 +125,10 @@ def get_capabilities(type: str = 'null') -> dict:  # pylint: disable=redefined-b
         type: Proxy type for capabilities.
 
     Returns:
-        The desied capabilities for the web driver |Chrome|_.
+        The desied capabilities for the web driver :class:`~selenium.webdriver.Chrome`.
 
     Raises:
-        :exc:`UnsupportedProxy`: If the proxy type is **NOT**
+        UnsupportedProxy: If the proxy type is **NOT**
             ``null``, ``tor`` or ``i2p``.
 
     See Also:
@@ -151,10 +151,10 @@ def get_capabilities(type: str = 'null') -> dict:  # pylint: disable=redefined-b
 
 
 def i2p_driver() -> typing.Driver:
-    """I2P (.i2p) driver.
+    """I2P (``.i2p``) driver.
 
     Returns:
-        |Chrome|_: The web driver object with I2P proxy settings.
+        selenium.webdriver.Chrome: The web driver object with I2P proxy settings.
 
     See Also:
         * :func:`darc.selenium.get_options`
@@ -171,10 +171,10 @@ def i2p_driver() -> typing.Driver:
 
 
 def tor_driver() -> typing.Driver:
-    """Tor (.onion) driver.
+    """Tor (``.onion``) driver.
 
     Returns:
-        |Chrome|_: The web driver object with Tor proxy settings.
+        selenium.webdriver.Chrome: The web driver object with Tor proxy settings.
 
     See Also:
         * :func:`darc.selenium.get_options`
@@ -194,7 +194,7 @@ def null_driver() -> typing.Driver:
     """No proxy driver.
 
     Returns:
-        |Chrome|_: The web driver object with no proxy settings.
+        selenium.webdriver.Chrome: The web driver object with no proxy settings.
 
     See Also:
         * :func:`darc.selenium.get_options`

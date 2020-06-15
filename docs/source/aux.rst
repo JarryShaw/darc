@@ -1,4 +1,3 @@
-
 Auxiliary Scripts
 =================
 
@@ -8,13 +7,18 @@ we provided some auxiliary scripts to help with the deployment.
 Health Check
 ------------
 
-:File location: ``extra/healthcheck.py``
+:File location:
+   * Entry point: ``extra/healthcheck.py``
+   * System V service: ``extra/healthcheck.service``
 
 .. code:: text
 
-   usage: healthcheck [-h] [-f FILE] [-i INTERVAL]
+   usage: healthcheck [-h] [-f FILE] [-i INTERVAL] ...
 
    health check running container
+
+   positional arguments:
+     services              name of services
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -35,8 +39,9 @@ Upload API Submission Files
 ---------------------------
 
 :File location:
-    * Entry point: ``extra/upload.py``
-    * Helper script: ``extra/upload.sh``
+   * Entry point: ``extra/upload.py``
+   * Helper script: ``extra/upload.sh``
+   * System V service: ``extra/upload.service``
 
 .. code:: text
 

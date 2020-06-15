@@ -18,11 +18,11 @@ def crawler(session: typing.Session, link: Link) -> typing.Response:
     """Default crawler hook.
 
     Args:
-        session (|Session|_): Session object with proxy settings.
+        session (requests.Session): Session object with proxy settings.
         link: Link object to be crawled.
 
     Returns:
-        |Response|_: The final response object with crawled data.
+        requests.Response: The final response object with crawled data.
 
     See Also:
         * :func:`darc.crawl.crawler`
@@ -40,14 +40,14 @@ def loader(driver: typing.Driver, link: Link) -> typing.Driver:
     loading contents.
 
     Args:
-        driver (|Chrome|_): Web driver object with proxy settings.
+        driver (selenium.webdriver.Chrome): Web driver object with proxy settings.
         link: Link object to be loaded.
 
     Returns:
-        |Chrome|_: The web driver object with loaded data.
+        selenium.webdriver.Chrome: The web driver object with loaded data.
 
     Note:
-        Internally, |selenium|_ will wait for the browser to finish
+        Internally, :mod:`selenium` will wait for the browser to finish
         loading the pages before return (i.e. the web API event
         |event|_). However, some extra scripts may take more time
         running after the event.

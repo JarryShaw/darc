@@ -112,7 +112,7 @@ def have_robots(link: Link) -> typing.Optional[str]:
     Returns:
         * If ``robots.txt`` exists, return the path to ``robots.txt``,
           i.e. ``<root>/<proxy>/<scheme>/<hostname>/robots.txt``.
-        * If not, return ``None``.
+        * If not, return :data:`None`.
 
     """
     # <proxy>/<scheme>/<host>/robots.txt
@@ -129,7 +129,7 @@ def have_sitemap(link: Link) -> typing.Optional[str]:
     Returns:
         * If sitemap exists, return the path to the sitemap,
           i.e. ``<root>/<proxy>/<scheme>/<hostname>/sitemap_<hash>.xml``.
-        * If not, return ``None``.
+        * If not, return :data:`None`.
 
     """
     # <proxy>/<scheme>/<host>/sitemap_<hash>.xml

@@ -13,6 +13,10 @@
       * :data:`darc.const.PATH_MISC`
 
 .. data:: darc.proxy.null.LOCK
-   :type: multiprocessing.Lock
+   :type: Union[multiprocessing.Lock, threading.Lock, contextlib.nullcontext]
 
    I/O lock for saving links with invalid scheme :data:`~darc.proxy.null.PATH`.
+
+   .. seealso::
+
+      * :func:`darc.const.get_lock`

@@ -9,10 +9,6 @@ The data storage under the root path (:data:`~darc.const.PATH_DB`)
 is typically as following::
 
     data
-    ├── _queue_requests.txt
-    ├── _queue_requests.txt.tmp
-    ├── _queue_selenium.txt
-    ├── _queue_selenium.txt.tmp
     ├── api
     │   └── <proxy>
     │       └── <scheme>
@@ -63,19 +59,19 @@ def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylin
     Args:
         link: Link object to sanitise the path
         time (datetime): Timestamp for the path.
-        raw: If this is a raw HTML document from |requests|_.
+        raw: If this is a raw HTML document from :mod:`requests`.
         data: If this is a generic content type document.
-        headers: If this is response headers from |requests|_.
-        screenshot: If this is the screenshot from |selenium|_.
+        headers: If this is response headers from :mod:`requests`.
+        screenshot: If this is the screenshot from :mod:`selenium`.
 
     Returns:
-        * If ``raw`` is ``True``,
+        * If ``raw`` is :data:`True`,
           ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>_raw.html``.
-        * If ``data`` is ``True``,
+        * If ``data`` is :data:`True`,
           ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.dat``.
-        * If ``headers`` is ``True``,
+        * If ``headers`` is :data:`True`,
           ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.json``.
-        * If ``screenshot`` is ``True``,
+        * If ``screenshot`` is :data:`True`,
           ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.png``.
         * If none above,
           ``<root>/<proxy>/<scheme>/<hostname>/<hash>_<timestamp>.html``.
@@ -135,8 +131,8 @@ def save_headers(time: typing.Datetime, link: Link,
     Args:
         time (datetime): Timestamp of response.
         link: Link object of response.
-        response (|Response|_): Response object to be saved.
-        session (|Session|_): Session object of response.
+        response (:class:`requests.Response`): Response object to be saved.
+        session (:class:`requests.Session`): Session object of response.
 
     Returns:
         Saved path to response headers, i.e.

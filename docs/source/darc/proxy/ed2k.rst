@@ -13,6 +13,10 @@
       * :data:`darc.const.PATH_MISC`
 
 .. data:: darc.proxy.ed2k.LOCK
-   :type: multiprocessing.Lock
+   :type: Union[multiprocessing.Lock, threading.Lock, contextlib.nullcontext]
 
    I/O lock for saving ED2K magnet links :data:`~darc.proxy.ed2k.PATH`.
+
+   .. seealso::
+
+      * :func:`darc.const.get_lock`

@@ -160,18 +160,31 @@ def process(worker: typing.Literal['crawler', 'loader']):
     Raises:
         ValueError: If ``worker`` is not a valid value.
 
-    The general process can be described as following:
+    Before starting the workers, the function will start proxies through
 
-    0. :func:`~darc.process.process`: obtain URLs from the |requests|_
-       link database (c.f. :func:`~darc.db.load_requests`), and feed
-       such URLs to :func:`~darc.crawl.crawler` with *multiprocessing*
-       support.
+    * :func:`darc.proxy.tor.tor_proxy`
+    * :func:`darc.proxy.i2p.i2p_proxy`
+    * :func:`darc.proxy.zeronet.zeronet_proxy`
+    * :func:`darc.proxy.freenet.freenet_proxy`
 
-    1. :func:`~darc.crawl.crawler`: parse the URL using
+    The general process can be described as following for *workers* of ``crawler`` type:
+
+    1. :func:`~darc.process.process_crawler`: obtain URLs from the :mod:`requests`
+       link database (c.f. :func:`~darc.db.load_requests`), and feed such URLs to
+       :func:`~darc.crawl.crawler`.
+
+       .. note::
+
+          If :data:`~darc.const.FLAG_MP` is :data:`True`, the function will be
+          called with *multiprocessing* support; if :data:`~darc.const.FLAG_TH`
+          if :data:`True`, the function will be called with *multithreading*
+          support; if none, the function will be called in single-threading.
+
+    2. :func:`~darc.crawl.crawler`: parse the URL using
        :func:`~darc.link.parse_link`, and check if need to crawl the
        URL (c.f. :data:`~darc.const.PROXY_WHITE_LIST`, :data:`~darc.const.PROXY_BLACK_LIST`
        , :data:`~darc.const.LINK_WHITE_LIST` and :data:`~darc.const.LINK_BLACK_LIST`);
-       if true, then crawl the URL with |requests|_.
+       if true, then crawl the URL with :mod:`requests`.
 
        If the URL is from a brand new host, :mod:`darc` will first try
        to fetch and save ``robots.txt`` and sitemaps of the host
@@ -182,7 +195,7 @@ def process(worker: typing.Literal['crawler', 'loader']):
        will be called and submit the documents just fetched.
 
        If ``robots.txt`` presented, and :data:`~darc.const.FORCE` is
-       ``False``, :mod:`darc` will check if allowed to crawl the URL.
+       :data:`False`, :mod:`darc` will check if allowed to crawl the URL.
 
        .. note::
 
@@ -202,10 +215,8 @@ def process(worker: typing.Literal['crawler', 'loader']):
 
        If the content type of response document is not ignored (c.f.
        :data:`~darc.const.MIME_WHITE_LIST` and :data:`~darc.const.MIME_BLACK_LIST`),
-       :mod:`darc` will save the document using :func:`~darc.save.save_html` or
-       :func:`~darc.save.save_file` accordingly. And if the submission API
-       is provided, :func:`~darc.submit.submit_requests` will be called and
-       submit the document just fetched.
+       :func:`~darc.submit.submit_requests` will be called and submit the document
+       just fetched.
 
        If the response document is HTML (``text/html`` and ``application/xhtml+xml``),
        :func:`~darc.parse.extract_links` will be called then to extract all possible
@@ -215,40 +226,41 @@ def process(worker: typing.Literal['crawler', 'loader']):
        And if the response status code is between ``400`` and ``600``,
        the URL will be saved back to the link database
        (c.f. :func:`~darc.db.save_requests`). If **NOT**, the URL will
-       be saved into |selenium|_ link database to proceed next steps
+       be saved into :mod:`selenium` link database to proceed next steps
        (c.f. :func:`~darc.db.save_selenium`).
 
-    2. :func:`~darc.process.process`: in the meanwhile, :mod:`darc` will
-       obtain URLs from the |selenium|_ link database (c.f. :func:`~darc.db.load_selenium`),
+    The general process can be described as following for *workers* of ``loader`` type:
+
+    1. :func:`~darc.process.process_loader`: in the meanwhile, :mod:`darc` will
+       obtain URLs from the :mod:`selenium` link database (c.f. :func:`~darc.db.load_selenium`),
        and feed such URLs to :func:`~darc.crawl.loader`.
 
        .. note::
 
-          If :data:`~darc.const.FLAG_MP` is ``True``, the function will be
+          If :data:`~darc.const.FLAG_MP` is :data:`True`, the function will be
           called with *multiprocessing* support; if :data:`~darc.const.FLAG_TH`
-          if ``True``, the function will be called with *multithreading*
+          if :data:`True`, the function will be called with *multithreading*
           support; if none, the function will be called in single-threading.
 
-    3. :func:`~darc.crawl.loader`: parse the URL using
+    2. :func:`~darc.crawl.loader`: parse the URL using
        :func:`~darc.link.parse_link` and start loading the URL using
-       |selenium|_ with Google Chrome.
+       :mod:`selenium` with Google Chrome.
 
        At this point, :mod:`darc` will call the customised hook function
        from :mod:`darc.sites` to load and return the original
-       |Chrome|_ object.
+       :class:`~selenium.webdriver.Chrome` object.
 
-       If successful, the rendered source HTML document will be saved
-       using :func:`~darc.save.save_html`, and a full-page screenshot
-       will be taken and saved.
+       If successful, the rendered source HTML document will be saved, and a
+       full-page screenshot will be taken and saved.
 
        If the submission API is provided, :func:`~darc.submit.submit_selenium`
        will be called and submit the document just loaded.
 
        Later, :func:`~darc.parse.extract_links` will be called then to
        extract all possible links from the HTML document and save such
-       links into the |requests|_ database (c.f. :func:`~darc.db.save_requests`).
+       links into the :mod:`requests` database (c.f. :func:`~darc.db.save_requests`).
 
-    If in reboot mode, i.e. :data:`~darc.const.REBOOT` is ``True``, the function
+    If in reboot mode, i.e. :data:`~darc.const.REBOOT` is :data:`True`, the function
     will exit after first round. If not, it will renew the Tor connections (if
     bootstrapped), c.f. :func:`~darc.proxy.tor.renew_tor_session`, and start
     another round.

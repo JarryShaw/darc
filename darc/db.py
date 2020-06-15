@@ -2,28 +2,28 @@
 """Link Database
 ===================
 
-The :mod:`darc` project utilises file system based database
+The :mod:`darc` project utilises `Redis`_ based database
 to provide tele-process communication.
 
 .. note::
 
    In its first implementation, the :mod:`darc` project used
-   |Queue|_ to support such communication. However, as noticed
-   when runtime, the |Queue| object will be much affected by
-   the lack of memory.
+   :class:`~multiprocessing.Queue` to support such communication.
+   However, as noticed when runtime, the :class:`~multiprocessing.Queue`
+   object will be much affected by the lack of memory.
 
-   .. |Queue| replace:: ``multiprocessing.Queue``
-   .. _Queue: https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue
+There will be three databases, all following the save naming
+convension with ``queue_`` prefix:
 
-There will be two databases, both locate at root of the
-data storage path :data:`~darc.const.PATH_DB`:
+* the hostname database -- ``queue_hostname``
+* the :mod:`requests` database -- ``queue_requests``
+* the :mod:`selenium` database -- ``queue_selenium``
 
-* the |requests|_ database -- ``queue_requests.txt``
-* the |selenium|_ database -- ``queue_selenium.txt``
+For ``queue_hostname``, it is a `Redis`_ **set** data type;
+and for ``queue_requests`` and ``queue_selenium``, they
+are both `Redis`_ **sorted set** data type.
 
-At runtime, after reading such database, :mod:`darc`
-will keep a backup of the database with ``.tmp`` suffix
-to its file extension.
+.. _Redis: https://redis.io/
 
 """
 
@@ -83,14 +83,29 @@ def redis_command(command: str, *args, **kwargs) -> typing.Any:
     Return:
         Values returned from the Redis command.
 
+    Warns:
+        RedisCommandFailed: Warns at each round when the command failed.
+
+    See Also:
+        Between each retry, the function sleeps for :data:`~darc.db.REDIS_RETRY`
+        second(s) if such value is **NOT** :data:`None`.
+
     """
+    _args = None
+    _kwargs = None
+
     method = getattr(redis, command)
     while True:
         try:
             value = method(*args, **kwargs)
         except Exception as error:
+            if _args is None:
+                _args = ', '.join(map(repr, args))
+            if _kwargs is None:
+                _kwargs = ', '.join(f'{k}={v!r}' for k, v in kwargs.items())
+
             warning = warnings.formatwarning(error, RedisCommandFailed, __file__, 85,
-                                             f"value = redis.{command}(*args, **kwargs)")
+                                             f'value = redis.{command}({_args}, {_kwargs})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
             if REDIS_RETRY is not None:
@@ -124,7 +139,7 @@ def get_lock(name: str,
         Return a new :class:`redis.lock.Lock` object using key ``name``
         that mimics the behavior of :class:`threading.Lock`.
 
-    Notes:
+    Seel Also:
         If :data:`~darc.db.REDIS_LOCK` is :data:`False`, returns a
         :class:`contextlib.nullcontext` instead.
 
@@ -136,6 +151,8 @@ def get_lock(name: str,
 
 def have_hostname(link: Link) -> bool:
     """Check if current link is a new host.
+
+    The function checks the ``queue_hostname`` database.
 
     Args:
         link: Link to check against.
@@ -153,6 +170,8 @@ def have_hostname(link: Link) -> bool:
 def drop_hostname(link: Link):
     """Remove link from the hostname database.
 
+    The function updates the ``queue_hostname`` database.
+
     Args:
         link: Link to be removed.
 
@@ -162,7 +181,9 @@ def drop_hostname(link: Link):
 
 
 def drop_requests(link: Link):
-    """Remove link from the |requests|_ database.
+    """Remove link from the :mod:`requests` database.
+
+    The function updates the ``queue_requests`` database.
 
     Args:
         link: Link to be removed.
@@ -173,7 +194,9 @@ def drop_requests(link: Link):
 
 
 def drop_selenium(link: Link):
-    """Remove link from the |selenium|_ database.
+    """Remove link from the :mod:`selenium` database.
+
+    The function updates the ``queue_selenium`` database.
 
     Args:
         link: Link to be removed.
@@ -185,12 +208,14 @@ def drop_selenium(link: Link):
 
 def save_requests(entries: typing.List[Link], single: bool = False,
                   score=None, nx=False, xx=False):
-    """Save link to the |requests|_ database.
+    """Save link to the :mod:`requests` database.
+
+    The function updates the ``queue_requests`` database.
 
     Args:
-        entries: Links to be added to the |requests|_ database.
+        entries: Links to be added to the :mod:`requests` database.
             It can be either a :obj:`list` of links, or a single
-            link string (if ``single`` set as ``True``).
+            link string (if ``single`` set as :data:`True`).
         single: Indicate if ``entries`` is a :obj:`list` of links
             or a single link string.
         score: Score to for the Redis sorted set.
@@ -198,6 +223,14 @@ def save_requests(entries: typing.List[Link], single: bool = False,
             update scores for elements that already exist.
         xx: Forces ``ZADD`` to only update scores of elements that
             already exist. New elements will not be added.
+
+    When ``entries`` is a list of :class:`~darc.link.Link` instances,
+    we tries to perform *bulk* update to easy the memory consumption.
+    The *bulk* size is defined by :data:`~darc.db.BULK_SIZE`.
+
+    Notes:
+        The ``entries`` will be dumped through :mod:`pickle` so that
+        :mod:`darc` do not need to parse them again.
 
     """
     if not entries:
@@ -223,12 +256,14 @@ def save_requests(entries: typing.List[Link], single: bool = False,
 
 def save_selenium(entries: typing.List[Link], single: bool = False,
                   score=None, nx=False, xx=False):
-    """Save link to the |selenium|_ database.
+    """Save link to the :mod:`selenium` database.
+
+    The function updates the ``queue_selenium`` database.
 
     Args:
-        entries: Links to be added to the |selenium|_ database.
+        entries: Links to be added to the :mod:`selenium` database.
             It can be either an *iterable* of links, or a single
-            link string (if ``single`` set as ``True``).
+            link string (if ``single`` set as :data:`True`).
         single: Indicate if ``entries`` is an *iterable* of links
             or a single link string.
         score: Score to for the Redis sorted set.
@@ -236,6 +271,14 @@ def save_selenium(entries: typing.List[Link], single: bool = False,
             update scores for elements that already exist.
         xx: Forces ``ZADD`` to only update scores of elements that
             already exist. New elements will not be added.
+
+    When ``entries`` is a list of :class:`~darc.link.Link` instances,
+    we tries to perform *bulk* update to easy the memory consumption.
+    The *bulk* size is defined by :data:`~darc.db.BULK_SIZE`.
+
+    Notes:
+        The ``entries`` will be dumped through :mod:`pickle` so that
+        :mod:`darc` do not need to parse them again.
 
     """
     if not entries:
@@ -260,14 +303,16 @@ def save_selenium(entries: typing.List[Link], single: bool = False,
 
 
 def load_requests(check: bool = CHECK) -> typing.List[Link]:
-    """Load link from the |requests|_ database.
+    """Load link from the :mod:`requests` database.
+
+    The function reads the ``queue_requests`` database.
 
     Args:
         check: If perform checks on loaded links,
             default to :data:`~darc.const.CHECK`.
 
     Returns:
-        List of loaded links from the |requests|_ database.
+        List of loaded links from the :mod:`requests` database.
 
     Note:
         At runtime, the function will load links with maximum number
@@ -309,14 +354,16 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
 
 
 def load_selenium(check: bool = CHECK) -> typing.List[Link]:
-    """Load link from the |selenium|_ database.
+    """Load link from the :mod:`selenium` database.
+
+    The function reads the ``queue_selenium`` database.
 
     Args:
         check: If perform checks on loaded links,
             default to :data:`~darc.const.CHECK`.
 
     Returns:
-        List of loaded links from the |selenium|_ database.
+        List of loaded links from the :mod:`selenium` database.
 
     Note:
         At runtime, the function will load links with maximum number

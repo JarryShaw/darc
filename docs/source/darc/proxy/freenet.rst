@@ -47,7 +47,7 @@ The following constants are configuration through environment variables:
    Freenet bootstrap arguments for ``run.sh start``.
 
    If provided, it should be parsed as command
-   line arguments (c.f. |split|_).
+   line arguments (c.f. :func:`shlex.split`).
 
    :default: ``''``
    :environ: :data:`FREENET_ARGS`
@@ -55,15 +55,17 @@ The following constants are configuration through environment variables:
    .. note::
 
       The command will be run as :data:`~darc.const.DARC_USER`,
-      if current user (c.f. |getuser|_) is *root*.
-
-.. |split| replace:: ``shlex.split``
-.. _split: https://docs.python.org/3/library/shlex.html#shlex.split
-
-.. |getuser| replace:: :func:`getpass.getuser`
-.. _getuser: https://docs.python.org/3/library/getpass.html#getpass.getuser
+      if current user (c.f. :func:`getpass.getuser`) is *root*.
 
 The following constants are defined for internal usage:
+
+.. data:: darc.proxy.freenet._MNG_FREENET
+   :type: bool
+
+   If manage Freenet proxy through :mod:`darc`.
+
+   :default: :data:`True`
+   :environ: :data:`DARC_FREENET`
 
 .. data:: darc.proxy.freenet._FREENET_BS_FLAG
    :type: bool

@@ -189,7 +189,7 @@ def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, typing.Union[str, 
             :data:`~darc.const.PATH_DB`, ``<proxy>/<scheme>/<hostname>/hosts.txt``
           * ``data`` -- *base64* encoded content of ``hosts.txt``
 
-        * If not, return ``None``.
+        * If not, return :data:`None`.
 
     See Also:
         * :func:`darc.submit.submit_new_host`
@@ -217,7 +217,7 @@ def have_hosts(link: Link) -> typing.Optional[str]:
     Returns:
         * If ``hosts.txt`` exists, return the path to ``hosts.txt``,
           i.e. ``<root>/<proxy>/<scheme>/<hostname>/hosts.txt``.
-        * If not, return ``None``.
+        * If not, return :data:`None`.
 
     """
     # <proxy>/<scheme>/<host>/hosts.txt

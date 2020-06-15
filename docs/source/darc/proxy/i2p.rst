@@ -60,7 +60,7 @@ The following constants are configuration through environment variables:
    I2P bootstrap arguments for ``i2prouter start``.
 
    If provided, it should be parsed as command
-   line arguments (c.f. |split|_).
+   line arguments (c.f. :func:`shlex.split`).
 
    :default: ``''``
    :environ: :data:`I2P_ARGS`
@@ -68,15 +68,17 @@ The following constants are configuration through environment variables:
    .. note::
 
       The command will be run as :data:`~darc.const.DARC_USER`,
-      if current user (c.f. |getuser|_) is *root*.
-
-.. |split| replace:: ``shlex.split``
-.. _split: https://docs.python.org/3/library/shlex.html#shlex.split
-
-.. |getuser| replace:: :func:`getpass.getuser`
-.. _getuser: https://docs.python.org/3/library/getpass.html#getpass.getuser
+      if current user (c.f. :func:`getpass.getuser`) is *root*.
 
 The following constants are defined for internal usage:
+
+.. data:: darc.proxy.i2p._MNG_I2P
+   :type: bool
+
+   If manage I2P proxy through :mod:`darc`.
+
+   :default: :data:`True`
+   :environ: :data:`DARC_I2P`
 
 .. data:: darc.proxy.i2p._I2P_BS_FLAG
    :type: bool

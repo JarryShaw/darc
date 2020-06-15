@@ -15,14 +15,11 @@
 .. data:: darc.proxy.tor.TOR_SELENIUM_PROXY
    :type: selenium.webdriver.Proxy
 
-   Proxy (|Proxy|_) for Tor web drivers.
+   Proxy (:class:`selenium.webdriver.Proxy`) for Tor web drivers.
 
    .. seealso::
 
       * :func:`darc.selenium.tor_driver`
-
-   .. |Proxy| replace:: ``selenium.webdriver.Proxy``
-   .. _Proxy: https://www.selenium.dev/selenium/docs/api/py/webdriver/selenium.webdriver.common.proxy.html?highlight=proxy#selenium.webdriver.common.proxy.Proxy
 
 The following constants are configuration through environment variables:
 
@@ -42,23 +39,12 @@ The following constants are configuration through environment variables:
    :default: ``9051``
    :environ: :data:`TOR_CTRL`
 
-.. data:: darc.proxy.tor.TOR_STEM
-   :type: bool
-
-   If manage the Tor proxy through |stem|_.
-
-   .. |stem| replace:: ``stem``
-   .. _stem: https://stem.torproject.org
-
-   :default: ``True``
-   :environ: :data:`TOR_STEM`
-
 .. data:: darc.proxy.tor.TOR_PASS
    :type: str
 
    Tor controller authentication token.
 
-   :default: ``None``
+   :default: :data:`None`
    :environ: :data:`TOR_PASS`
 
    .. note::
@@ -99,6 +85,14 @@ The following constants are configuration through environment variables:
 
 The following constants are defined for internal usage:
 
+.. data:: darc.proxy.tor._MNG_TOR
+   :type: bool
+
+   If manage Tor proxy through :mod:`darc`.
+
+   :default: :data:`True`
+   :environ: :data:`DARC_TOR`
+
 .. data:: darc.proxy.tor._TOR_BS_FLAG
    :type: bool
 
@@ -112,15 +106,9 @@ The following constants are defined for internal usage:
 .. data:: darc.proxy.tor._TOR_CTRL
    :type: stem.control.Controller
 
-   Tor controller process (|Controller|_) running in the background.
-
-.. |Controller| replace:: :class:`stem.control.Controller`
-.. _Controller: https://stem.torproject.org/api/control.html#stem.control.Controller
+   Tor controller process (:class:`stem.control.Controller`) running in the background.
 
 .. data:: darc.proxy.tor._TOR_CONFIG
    :type: List[str]
 
-   Tor bootstrap configuration for |launch_tor_with_config|_.
-
-.. |launch_tor_with_config| replace:: :func:`stem.process.launch_tor_with_config`
-.. _launch_tor_with_config: https://stem.torproject.org/api/process.html#stem.process.launch_tor_with_config
+   Tor bootstrap configuration for :func:`stem.process.launch_tor_with_config`.
