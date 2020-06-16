@@ -63,6 +63,7 @@
         "sess",
         "shuf",
         "signum",
+        "srem",
         "systemd",
         "tbselenium",
         "tmpfs",

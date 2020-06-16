@@ -181,7 +181,7 @@ def drop_hostname(link: Link):
 
     """
     with get_lock('lock_queue_hostname'):
-        redis_command('zrem', 'queue_hostname', link.host)
+        redis_command('srem', 'queue_hostname', link.host)
 
 
 def drop_requests(link: Link):
