@@ -102,6 +102,10 @@ html_static_path = ['_static']
 
 # -- Customised hooks --------------------------------------------------------
 
+import os
+
+os.environ['TOR_PASS'] = 'null'
+
 
 def maybe_skip_member(app, what: str, name: str, obj: object, skip: bool, options: dict):
     if name == '_abc_impl':
