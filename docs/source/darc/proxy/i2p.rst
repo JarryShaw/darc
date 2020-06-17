@@ -13,16 +13,13 @@
       * :func:`darc.requests.i2p_session`
 
 .. data:: darc.proxy.i2p.I2P_SELENIUM_PROXY
-   :type: selenium.webdriver.Proxy
+   :type: selenium.webdriver.common.proxy.Proxy
 
-   Proxy (|Proxy|_) for I2P web drivers.
+   :class:`~selenium.webdriver.common.proxy.Proxy` for I2P web drivers.
 
    .. seealso::
 
       * :func:`darc.selenium.i2p_driver`
-
-   .. |Proxy| replace:: ``selenium.webdriver.Proxy``
-   .. _Proxy: https://www.selenium.dev/selenium/docs/api/py/webdriver/selenium.webdriver.common.proxy.html?highlight=proxy#selenium.webdriver.common.proxy.Proxy
 
 The following constants are configuration through environment variables:
 

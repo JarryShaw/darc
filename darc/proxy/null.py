@@ -236,8 +236,8 @@ def fetch_sitemap(link: Link):
         Contents of ``robots.txt`` and sitemaps.
 
     See Also:
-        * :func:`darc.parse.read_robots`
-        * :func:`darc.parse.read_sitemap`
+        * :func:`darc.proxy.null.read_robots`
+        * :func:`darc.proxy.null.read_sitemap`
         * :func:`darc.parse.get_sitemap`
 
     """

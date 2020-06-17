@@ -55,5 +55,5 @@
 .. seealso::
 
    The :mod:`darc` provides a demo on how to implement a :mod:`darc`-compliant
-   web backend for the data submission module. See the :doc:`demo </demo>` page
-   for more information.
+   web backend for the data submission module. See the :doc:`demo </demo/api>`
+   page for more information.

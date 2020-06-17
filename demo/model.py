@@ -52,14 +52,23 @@ class BaseModel(peewee.Model):
     #: Basic metadata for data models.
     Meta = BaseMeta
 
-    def to_dict(self):
+    def to_dict(self, keep_id: bool = False):
         """Convert record to :obj:`dict`.
+
+        Args:
+            keep_id: If keep the ID auto field.
 
         Returns:
             The data converted through :func:`playhouse.shortcuts.model_to_dict`.
 
         """
-        return playhouse.shortcuts.model_to_dict(self)
+        data = playhouse.shortcuts.model_to_dict(self)
+        if keep_id:
+            return data
+
+        if 'id' in data:
+            del data['id']
+        return data
 
 
 class HostnameModel(BaseModel):

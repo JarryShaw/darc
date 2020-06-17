@@ -188,8 +188,8 @@ def process(worker: typing.Literal['crawler', 'loader']):
 
        If the URL is from a brand new host, :mod:`darc` will first try
        to fetch and save ``robots.txt`` and sitemaps of the host
-       (c.f. :func:`~darc.save.save_robots` and :func:`~darc.save.save_sitemap`),
-       and extract then save the links from sitemaps (c.f. :func:`~darc.parse.read_sitemap`)
+       (c.f. :func:`~darc.proxy.null.save_robots` and :func:`~darc.proxy.null.save_sitemap`),
+       and extract then save the links from sitemaps (c.f. :func:`~darc.proxy.null.read_sitemap`)
        into link database for future crawling (c.f. :func:`~darc.db.save_requests`).
        Also, if the submission API is provided, :func:`~darc.submit.submit_new_host`
        will be called and submit the documents just fetched.
@@ -210,7 +210,7 @@ def process(worker: typing.Literal['crawler', 'loader']):
        .. note::
 
           If :exc:`requests.exceptions.InvalidSchema` is raised, the link
-          will be saved by :func:`~darc.save.save_invalid`. Further
+          will be saved by :func:`~darc.proxy.null.save_invalid`. Further
           processing is dropped.
 
        If the content type of response document is not ignored (c.f.

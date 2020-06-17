@@ -56,8 +56,8 @@ def crawler(link: Link):
 
     If the URL is from a brand new host, :mod:`darc` will first try
     to fetch and save ``robots.txt`` and sitemaps of the host
-    (c.f. :func:`~darc.save.save_robots` and :func:`~darc.save.save_sitemap`),
-    and extract then save the links from sitemaps (c.f. :func:`~darc.parse.read_sitemap`)
+    (c.f. :func:`~darc.proxy.null.save_robots` and :func:`~darc.proxy.null.save_sitemap`),
+    and extract then save the links from sitemaps (c.f. :func:`~darc.proxy.null.read_sitemap`)
     into link database for future crawling (c.f. :func:`~darc.db.save_requests`).
 
     .. note::

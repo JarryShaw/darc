@@ -108,7 +108,7 @@ def get_robots(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsis
 
     See Also:
         * :func:`darc.crawl.crawler`
-        * :func:`darc.save.save_robots`
+        * :func:`darc.proxy.null.save_robots`
 
     """
     path = os.path.join(link.base, 'robots.txt')
@@ -140,7 +140,7 @@ def get_sitemap(link: Link) -> typing.Optional[typing.List[File]]:  # pylint: di
 
     See Also:
         * :func:`darc.crawl.crawler`
-        * :func:`darc.save.save_sitemap`
+        * :func:`darc.proxy.null.save_sitemap`
 
     """
     path_list = glob.glob(os.path.join(link.base, 'sitemap_*.xml'))

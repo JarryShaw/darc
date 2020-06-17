@@ -35,10 +35,10 @@ To customise behaviours over :mod:`selenium`, you sites customisation
 module should have a :func:`loader` function, e.g.
 :func:`~darc.sites.default.loader`.
 
-The function takes the :class:`~selenium.webdriver.Chrome` object with proxy settings and
-a :class:`~darc.link.Link` object representing the link to be
-loaded, then returns the :class:`~selenium.webdriver.Chrome` object containing the final
-data of the loading process.
+The function takes the :class:`~selenium.webdriver.chrome.webdriver.WebDriver`
+object with proxy settings and a :class:`~darc.link.Link` object representing
+the link to be loaded, then returns the :class:`~selenium.webdriver.chrome.webdriver.WebDriver`
+object containing the final data of the loading process.
 
 .. autofunction:: darc.sites.loader_hook
 

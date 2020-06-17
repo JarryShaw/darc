@@ -13,9 +13,9 @@
       * :func:`darc.requests.tor_session`
 
 .. data:: darc.proxy.tor.TOR_SELENIUM_PROXY
-   :type: selenium.webdriver.Proxy
+   :type: selenium.webdriver.common.proxy.Proxy
 
-   Proxy (:class:`selenium.webdriver.Proxy`) for Tor web drivers.
+   :class:`~selenium.webdriver.common.proxy.Proxy` for Tor web drivers.
 
    .. seealso::
 
@@ -74,7 +74,7 @@ The following constants are configuration through environment variables:
 .. data:: darc.proxy.tor.TOR_CFG
    :type: Dict[str, Any]
 
-   Tor bootstrap configuration for |launch_tor_with_config|_.
+   Tor bootstrap configuration for :func:`stem.process.launch_tor_with_config`.
 
    :default: ``{}``
    :environ: :data:`TOR_CFG`

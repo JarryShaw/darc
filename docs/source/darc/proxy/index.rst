@@ -23,8 +23,9 @@ to the :mod:`darc` project.
    zeronet
 
 To tell the :mod:`darc` project which proxy settings to be used for the
-:class:`requests.Session` objects and |Chrome| objects, you can specify such information
-in the :data:`darc.proxy.LINK_MAP` mapping dictionarty.
+:class:`requests.Session` objects and :class:`~selenium.webdriver.chrome.webdriver.WebDriver`
+objects, you can specify such information in the :data:`darc.proxy.LINK_MAP`
+mapping dictionarty.
 
 .. data:: darc.proxy.LINK_MAP
    :type: DefaultDict[str, Tuple[types.FunctionType, types.FunctionType]]
@@ -40,13 +41,13 @@ in the :data:`darc.proxy.LINK_MAP` mapping dictionarty.
       )
 
    The mapping dictionary for proxy type to its corresponding :class:`requests.Session`
-   factory function and :class:`~selenium.webdriver.Chrome` factory function.
+   factory function and :class:`~selenium.webdriver.chrome.webdriver.WebDriver` factory function.
 
    The fallback value is the no proxy :class:`requests.Session` object
-   (:func:`~darc.requests.null_session`) and :class:`~selenium.webdriver.Chrome` object
+   (:func:`~darc.requests.null_session`) and :class:`~selenium.webdriver.chrome.webdriver.WebDriver` object
    (:func:`~darc.selenium.null_driver`).
 
    .. seealso::
 
       * :mod:`darc.requests` -- :class:`requests.Session` factory functions
-      * :mod:`darc.selenium` -- :class:`~selenium.webdriver.Chrome` factory functions
+      * :mod:`darc.selenium` -- :class:`~selenium.webdriver.chrome.webdriver.WebDriver` factory functions

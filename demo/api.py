@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
 import flask  # pylint: disable=import-error
 
 # Flask application
@@ -15,6 +17,8 @@ def new_host():
     Data format::
 
         {
+            // partial flag - true / false
+            "$PARTIAL$": ...,
             // metadata of URL
             "[metadata]": {
                 // original URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
@@ -211,4 +215,4 @@ def from_selenium():
 
 
 if __name__ == "__main__":
-    flask.run()
+    sys.exit(app.run())

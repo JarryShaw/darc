@@ -38,8 +38,8 @@ The general process can be described as following for *workers* of ``crawler`` t
 
    If the URL is from a brand new host, ``darc`` will first try
    to fetch and save ``robots.txt`` and sitemaps of the host
-   (c.f. ``darc.save.save_robots`` and ``darc.save.save_sitemap``),
-   and extract then save the links from sitemaps (c.f. ``darc.parse.read_sitemap``)
+   (c.f. ``darc.proxy.null.save_robots`` and ``darc.proxy.null.save_sitemap``),
+   and extract then save the links from sitemaps (c.f. ``darc.proxy.null.read_sitemap``)
    into link database for future crawling (c.f. ``darc.db.save_requests``).
    Also, if the submission API is provided, ``darc.submit.submit_new_host``
    will be called and submit the documents just fetched.
@@ -60,7 +60,7 @@ The general process can be described as following for *workers* of ``crawler`` t
    **NOTE:**
 
       If :exc:`requests.exceptions.InvalidSchema` is raised, the link
-      will be saved by ``darc.save.save_invalid``. Further
+      will be saved by ``darc.proxy.null.save_invalid``. Further
       processing is dropped.
 
    If the content type of response document is not ignored (c.f.
@@ -98,7 +98,7 @@ The general process can be described as following for *workers* of ``loader`` ty
 
    At this point, ``darc`` will call the customised hook function
    from ``darc.sites`` to load and return the original
-   ``selenium.webdriver.Chrome`` object.
+   ``selenium.webdriver.chrome.webdriver.WebDriver`` object.
 
    If successful, the rendered source HTML document will be saved, and a
    full-page screenshot will be taken and saved.

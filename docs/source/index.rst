@@ -49,8 +49,8 @@ The general process can be described as following for *workers* of ``crawler`` t
 
    If the URL is from a brand new host, :mod:`darc` will first try
    to fetch and save ``robots.txt`` and sitemaps of the host
-   (c.f. :func:`~darc.save.save_robots` and :func:`~darc.save.save_sitemap`),
-   and extract then save the links from sitemaps (c.f. :func:`~darc.parse.read_sitemap`)
+   (c.f. :func:`~darc.proxy.null.save_robots` and :func:`~darc.proxy.null.save_sitemap`),
+   and extract then save the links from sitemaps (c.f. :func:`~darc.proxy.null.read_sitemap`)
    into link database for future crawling (c.f. :func:`~darc.db.save_requests`).
    Also, if the submission API is provided, :func:`~darc.submit.submit_new_host`
    will be called and submit the documents just fetched.
@@ -71,7 +71,7 @@ The general process can be described as following for *workers* of ``crawler`` t
    .. note::
 
       If :exc:`requests.exceptions.InvalidSchema` is raised, the link
-      will be saved by :func:`~darc.save.save_invalid`. Further
+      will be saved by :func:`~darc.proxy.null.save_invalid`. Further
       processing is dropped.
 
    If the content type of response document is not ignored (c.f.
@@ -109,7 +109,7 @@ The general process can be described as following for *workers* of ``loader`` ty
 
    At this point, :mod:`darc` will call the customised hook function
    from :mod:`darc.sites` to load and return the original
-   :class:`~selenium.webdriver.Chrome` object.
+   :class:`~selenium.webdriver.chrome.webdriver.WebDriver` object.
 
    If successful, the rendered source HTML document will be saved, and a
    full-page screenshot will be taken and saved.
@@ -242,7 +242,7 @@ General Configurations
    :default: ``0``
 
    If check proxy and hostname before crawling (when calling
-   :func:`~darc.parse.extract_links`, :func:`~darc.parse.read_sitemap`
+   :func:`~darc.parse.extract_links`, :func:`~darc.proxy.null.read_sitemap`
    and :func:`~darc.proxy.i2p.read_hosts`).
 
    If :data:`DARC_CHECK_CONTENT_TYPE` is :data:`True`, then this environment
@@ -255,7 +255,7 @@ General Configurations
 
    If check content type through ``HEAD`` requests before crawling
    (when calling :func:`~darc.parse.extract_links`,
-   :func:`~darc.parse.read_sitemap` and :func:`~darc.proxy.i2p.read_hosts`).
+   :func:`~darc.proxy.null.read_sitemap` and :func:`~darc.proxy.i2p.read_hosts`).
 
 .. envvar:: DARC_CPU
 

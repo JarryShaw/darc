@@ -53,7 +53,7 @@ General Configurations
    :type: bool
 
    If check proxy and hostname before crawling (when calling
-   :func:`~darc.parse.extract_links`, :func:`~darc.parse.read_sitemap`
+   :func:`~darc.parse.extract_links`, :func:`~darc.proxy.null.read_sitemap`
    and :func:`~darc.proxy.i2p.read_hosts`).
 
    If :data:`~darc.const.CHECK_NG` is :data:`True`, then this environment
@@ -67,7 +67,7 @@ General Configurations
 
    If check content type through ``HEAD`` requests before crawling
    (when calling :func:`~darc.parse.extract_links`,
-   :func:`~darc.parse.read_sitemap` and :func:`~darc.proxy.i2p.read_hosts`).
+   :func:`~darc.proxy.null.read_sitemap` and :func:`~darc.proxy.i2p.read_hosts`).
 
    :default: :data:`False`
    :environ: :envvar:`DARC_CHECK_CONTENT_TYPE`
@@ -169,28 +169,6 @@ Data Storage
 
       * :data:`darc.const.PATH_DB`
       * :data:`darc.save.save_link`
-
-.. data:: darc.const.PATH_QR
-   :value: '{PATH_DB}/_queue_requests.txt'
-
-   Path to the :mod:`requests` database, ``_queue_requests.txt``.
-
-   .. seealso::
-
-      * :data:`darc.const.PATH_DB`
-      * :func:`darc.db.load_requests`
-      * :func:`darc.db.save_requests`
-
-.. data:: darc.const.PATH_QS
-   :value: '{PATH_DB}/_queue_selenium.txt'
-
-   Path to the :mod:`selenium` database, ``_queue_selenium.txt``.
-
-   .. seealso::
-
-      * :data:`darc.const.PATH_DB`
-      * :func:`darc.db.load_selenium`
-      * :func:`darc.db.save_selenium`
 
 .. data:: darc.const.PATH_ID
    :value: '{PATH_DB}/darc.pid'
