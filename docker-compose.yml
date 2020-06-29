@@ -12,6 +12,7 @@ services:
     #entrypoint: [ "bash", "/app/run.sh" ]
     command: [ "--type", "crawler",
                "--file", "/app/text/market.txt",
+               "--file", "/app/text/ahmia.fi_onions.txt",
                "--file", "/app/text/top-20k.txt",
                "--file", "/app/text/i2p.txt",
                "--file", "/app/text/zeronet.txt",
