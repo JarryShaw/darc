@@ -51,7 +51,7 @@ services:
       # data storage
       PATH_DATA: "data"
       # Redis URL
-      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
       # max pool
       DARC_MAX_POOL: 10
       # Tor proxy & control port
@@ -175,7 +175,7 @@ services:
       # data storage
       PATH_DATA: "data"
       # Redis URL
-      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
       # max pool
       DARC_MAX_POOL: 10
       # Tor proxy & control port
@@ -255,19 +255,6 @@ services:
     restart: "always"
     networks: *networks
     volumes: *volumes
-
-  redis:
-    image: redis:darc
-    build:
-      context: .
-      dockerfile: extra/redis.dockerfile
-    container_name: redis
-    expose:
-      - 6379
-    restart: "always"
-    networks: *networks
-    volumes:
-      - /data/darc/redis:/data
 
 # network settings
 networks:

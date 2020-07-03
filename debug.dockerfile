@@ -12,7 +12,7 @@
 FROM ubuntu:bionic
 
 LABEL Name=darc \
-      Version=0.5.0.post2
+      Version=0.5.0.post3
 #EXPOSE 9050
 
 STOPSIGNAL SIGINT

@@ -445,6 +445,7 @@ def submit_requests(time: typing.Datetime, link: Link,
             'Cookies': history.cookies.get_dict(),
             'Request': dict(history.request.headers),
             'Response': dict(history.headers),
+            'Document': base64.b64encode(history.content).decode(),
         } for history in response.history],
     }
 

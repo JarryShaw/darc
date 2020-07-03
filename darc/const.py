@@ -156,7 +156,7 @@ del _SE_WAIT
 SE_EMPTY = '<html><head></head><body></body></html>'
 
 # Redis client
-REDIS = redis.Redis.from_url(os.getenv('REDIS_URL', 'redis://127.0.0.1'))
+REDIS = redis.Redis.from_url(os.getenv('REDIS_URL', 'redis://localhost'), decode_components=True)
 
 # selenium wait time
 _DARC_WAIT = float(os.getenv('DARC_WAIT', '60'))
