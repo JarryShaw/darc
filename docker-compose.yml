@@ -17,8 +17,6 @@ services:
                "--file", "/app/text/i2p.txt",
                "--file", "/app/text/zeronet.txt",
                "--file", "/app/text/freenet.txt" ]
-    depends_on: &depends_on
-      - redis
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -142,7 +140,6 @@ services:
     container_name: loader
     #entrypoint: [ "bash", "/app/run.sh" ]
     command: [ "--type", "loader" ]
-    depends_on: *depends_on
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
