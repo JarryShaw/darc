@@ -11,14 +11,18 @@ import traceback
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DEBUG, PATH_ID, PATH_LN
-from darc.db import redis_command, save_requests
+from darc.const import DEBUG, FLAG_DB, PATH_ID, PATH_LN
+from darc.db import _redis_command, save_requests
 from darc.link import parse_link
+from darc.model import (HostnameModel, HostnameQueueModel, HostsModel, RequestsHistoryModel,
+                        RequestsModel, RequestsQueueModel, RobotsModel, SeleniumModel,
+                        SeleniumQueueModel, SitemapModel, URLModel)
 from darc.process import process
 from darc.proxy.freenet import _FREENET_PROC
 from darc.proxy.i2p import _I2P_PROC
 from darc.proxy.tor import _TOR_CTRL, _TOR_PROC
 from darc.proxy.zeronet import _ZERONET_PROC
+from darc.submit import SAVE_DB
 
 # wait for Redis connection?
 _WAIT_REDIS = bool(int(os.getenv('DARC_REDIS', '1')))
@@ -79,15 +83,31 @@ def main():
 
     # wait for Redis
     if _WAIT_REDIS:
-        redis_command('set', 'darc', pid)
+        if not FLAG_DB:
+            _redis_command('set', 'darc', pid)
 
     if DEBUG:
         print(stem.util.term.format('-*- Initialisation -*-', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
         # nuke the db
-        redis_command('delete', 'queue_hostname')
-        redis_command('delete', 'queue_requests')
-        redis_command('delete', 'queue_selenium')
+        if FLAG_DB:
+            HostnameQueueModel.truncate_table()
+            RequestsQueueModel.truncate_table()
+            SeleniumQueueModel.truncate_table()
+        else:
+            _redis_command('delete', 'queue_hostname')
+            _redis_command('delete', 'queue_requests')
+            _redis_command('delete', 'queue_selenium')
+
+        if SAVE_DB:
+            HostnameModel.truncate_table()
+            URLModel.truncate_table()
+            RobotsModel.truncate_table()
+            SitemapModel.truncate_table()
+            HostsModel.truncate_table()
+            RequestsModel.truncate_table()
+            RequestsHistoryModel.truncate_table()
+            SeleniumModel.truncate_table()
 
     link_list = list()
     for link in filter(None, map(lambda s: s.strip(), args.link)):

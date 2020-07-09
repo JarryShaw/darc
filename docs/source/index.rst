@@ -147,10 +147,21 @@ Driver installed on your system.
 .. important::
 
    Starting from version **0.3.0**, we introduced `Redis`_ for the task
-   queue database backend. Please make sure you have it installed, configured,
-   and running when using the ``darc`` project.
+   queue database backend.
 
    .. _Redis: https://redis.io
+
+   Since version **0.6.0**, we introduced relationship database storage
+   (e.g. `MySQL`_, `SQLite`_, `PostgreSQL`_, etc.) for the task queue database
+   backend, besides the `Redis`_ database, since it can be too much memory-costly
+   when the task queue becomes vary large.
+
+   .. _MySQL: https://mysql.com/
+   .. _SQLite: https://www.sqlite.org/
+   .. _PostgreSQL: https://www.postgresql.org/
+
+   Please make sure you have one of the backend database installed, configured,
+   and running when using the :mod:`darc` project.
 
 However, the :mod:`darc` project is shipped with Docker and Compose support.
 Please see :doc:`/docker`  for more information.
@@ -298,7 +309,7 @@ Data Storage
 
    See :mod:`darc.save` for more information about source saving.
 
-   See :mod:`darc.db` for more information about Redis database integration.
+   See :mod:`darc.db` for more information about database integration.
 
 .. envvar:: PATH_DATA
 
@@ -314,12 +325,26 @@ Data Storage
 
    URL to the Redis database.
 
+.. envvar:: DB_URL
+
+   :type: :obj:`str` (url)
+
+   URL to the RDS storage.
+
+   .. important::
+
+      The task queues will be saved to ``darc`` database;
+      the data submittsion will be saved to ``darcweb`` database.
+
+      Thus, when providing this environment variable, please do
+      **NOT** specify the database name.
+
 .. envvar:: DARC_BULK_SIZE
 
    :type: :obj:`int`
    :default: ``100``
 
-   *Bulk* size for updating Redis databases.
+   *Bulk* size for updating databases.
 
    .. seealso::
 
@@ -357,7 +382,7 @@ Data Storage
       * :func:`darc.db.load_requests`
       * :func:`darc.db.load_selenium`
 
-.. data:: darc.db.REDIS_LOCK
+.. envvar:: REDIS_LOCK
 
    :type: :obj:`bool` (:obj:`int`)
    :default: ``0``
@@ -566,6 +591,13 @@ White / Black Lists
 
 Data Submission
 ---------------
+
+.. envvar:: SAVE_DB
+
+   :type: :obj:`bool`
+   :default: :data:`True`
+
+   Save submitted data to database.
 
 .. envvar:: API_RETRY
 

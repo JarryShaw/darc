@@ -133,9 +133,22 @@ Installation
 Please make sure you have Google Chrome and corresponding version of Chrome
 Driver installed on your system.
 
-Also, starting from version **0.3.0**, we introduced `Redis`_ for the task
-queue database backend. Please make sure you have it installed, configured,
-and running when using the ``darc`` project.
+   Starting from version **0.3.0**, we introduced `Redis`_ for the task
+   queue database backend.
+
+   .. _Redis: https://redis.io
+
+   Since version **0.6.0**, we introduced relationship database storage
+   (e.g. `MySQL`_, `SQLite`_, `PostgreSQL`_, etc.) for the task queue database
+   backend, besides the `Redis`_ database, since it can be too much memory-costly
+   when the task queue becomes vary large.
+
+   .. _MySQL: https://mysql.com/
+   .. _SQLite: https://www.sqlite.org/
+   .. _PostgreSQL: https://www.postgresql.org/
+
+   Please make sure you have one of the backend database installed, configured,
+   and running when using the ``darc`` project.
 
 However, the ``darc`` project is shipped with Docker and Compose support.
 Please see the project root for relevant files and more information.
@@ -147,7 +160,6 @@ Or, you may refer to and/or install from the `Docker Hub`_ repository:
    docker pull jsnbzh/darc[:TAGNAME]
 
 .. _Docker Hub: https://hub.docker.com/r/jsnbzh/darc
-.. _Redis: https://redis.io
 
 -----
 Usage

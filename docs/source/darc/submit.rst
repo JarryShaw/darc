@@ -13,13 +13,21 @@
 
       * :data:`darc.const.PATH_DB`
 
+.. data::  darc.submit.SAVE_DB
+   :type: bool
+
+   Save submitted data to database.
+
+   :default: :data:`True`
+   :environ: :envvar:`SAVE_DB`
+
 .. data:: darc.submit.API_RETRY
    :type: int
 
    Retry times for API submission when failure.
 
    :default: ``3``
-   :environ: :data:`API_RETRY`
+   :environ: :envvar:`API_RETRY`
 
 .. data:: darc.submit.API_NEW_HOST
    :type: str
@@ -27,7 +35,7 @@
    API URL for :func:`~darc.submit.submit_new_host`.
 
    :default: :data:`None`
-   :environ: :data:`API_NEW_HOST`
+   :environ: :envvar:`API_NEW_HOST`
 
 .. data:: darc.submit.API_REQUESTS
    :type: str
@@ -35,7 +43,7 @@
    API URL for :func:`~darc.submit.submit_requests`.
 
    :default: :data:`None`
-   :environ: :data:`API_REQUESTS`
+   :environ: :envvar:`API_REQUESTS`
 
 .. data:: darc.submit.API_SELENIUM
    :type: str
@@ -43,7 +51,7 @@
    API URL for :func:`~darc.submit.submit_selenium`.
 
    :default: :data:`None`
-   :environ: :data:`API_SELENIUM`
+   :environ: :envvar:`API_SELENIUM`
 
 .. note::
 

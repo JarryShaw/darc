@@ -11,7 +11,8 @@ services:
         DARC_USER: "darc"
     container_name: crawler
     depends_on: &depends_on
-      - redis
+      #- redis
+      - db
     #ports: &ports
     #  - 9050:1089
     command:
@@ -62,7 +63,9 @@ services:
       # data storage
       PATH_DATA: "data"
       # Redis URL
-      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      # database URL
+      DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
       DARC_MAX_POOL: 1
       # Tor proxy & control port
@@ -153,10 +156,10 @@ services:
     image: jsnbzh/darc:debug
     build: *build
     container_name: loader
-    depends_on: *depends_on
     #ports: *ports
     command:
       - --type=loader
+    depends_on: *depends_on
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -189,7 +192,9 @@ services:
       # data storage
       PATH_DATA: "data"
       # Redis URL
-      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      # database URL
+      DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
       DARC_MAX_POOL: 1
       # Tor proxy & control port
@@ -283,6 +288,20 @@ services:
     networks: *networks
     volumes:
       - ./data/redis:/data
+
+  db:
+    image: mysql
+    container_name: db
+    command: --default-authentication-plugin=mysql_native_password
+    expose:
+      - 3306
+    restart: "always"
+    environment:
+      MYSQL_ROOT_PASSWORD: "b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA"
+      MYSQL_DATABASE: "darc"
+    networks: *networks
+    volumes:
+      - ./data/mysql:/var/lib/mysql
 
 # network settings
 networks:

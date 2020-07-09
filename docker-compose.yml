@@ -12,11 +12,14 @@ services:
     #entrypoint: [ "bash", "/app/run.sh" ]
     command: [ "--type", "crawler",
                "--file", "/app/text/market.txt",
-               "--file", "/app/text/ahmia.fi_onions.txt",
                "--file", "/app/text/top-20k.txt",
                "--file", "/app/text/i2p.txt",
                "--file", "/app/text/zeronet.txt",
-               "--file", "/app/text/freenet.txt" ]
+               "--file", "/app/text/freenet.txt",
+               "--file", "/app/text/ahmia.fi_onions.txt",
+               "--file", "/app/text/tor.new.txt" ]
+    depends_on: &depends_on
+      - db
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -49,7 +52,9 @@ services:
       # data storage
       PATH_DATA: "data"
       # Redis URL
-      REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
+      #REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
+      # database URL
+      DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
       DARC_MAX_POOL: 10
       # Tor proxy & control port
@@ -140,6 +145,7 @@ services:
     container_name: loader
     #entrypoint: [ "bash", "/app/run.sh" ]
     command: [ "--type", "loader" ]
+    depends_on: *depends_on
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -172,7 +178,9 @@ services:
       # data storage
       PATH_DATA: "data"
       # Redis URL
-      REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
+      #REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
+      # database URL
+      DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
       DARC_MAX_POOL: 10
       # Tor proxy & control port
@@ -252,6 +260,20 @@ services:
     restart: "always"
     networks: *networks
     volumes: *volumes
+
+  db:
+    image: mysql
+    container_name: db
+    command: --default-authentication-plugin=mysql_native_password
+    expose:
+      - 3306
+    restart: "always"
+    environment:
+      MYSQL_ROOT_PASSWORD: "b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA"
+      MYSQL_DATABASE: "darc"
+    networks: *networks
+    volumes:
+      - /data/darc/mysql:/var/lib/mysql
 
 # network settings
 networks:

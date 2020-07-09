@@ -12,7 +12,10 @@ import re
 import shutil
 import sys
 import threading
+import urllib.parse
 
+import peewee
+import playhouse.db_url
 import redis
 import stem.util.term
 
@@ -155,9 +158,6 @@ del _SE_WAIT
 # selenium empty page
 SE_EMPTY = '<html><head></head><body></body></html>'
 
-# Redis client
-REDIS = redis.Redis.from_url(os.getenv('REDIS_URL', 'redis://localhost'), decode_components=True)
-
 # selenium wait time
 _DARC_WAIT = float(os.getenv('DARC_WAIT', '60'))
 if math.isfinite(_DARC_WAIT):
@@ -165,6 +165,25 @@ if math.isfinite(_DARC_WAIT):
 else:
     DARC_WAIT = None
 del _DARC_WAIT
+
+# Redis client
+_REDIS_URL = os.getenv('REDIS_URL')
+if _REDIS_URL is None:
+    REDIS = NotImplemented
+    FLAG_DB = True
+else:
+    REDIS = redis.Redis.from_url(_REDIS_URL, decode_components=True)
+    FLAG_DB = False
+
+# database instance
+_DB_URL = os.getenv('DB_URL')
+if _DB_URL is None:
+    DB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/darc.db')
+    DB_WEB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/darcweb.db')
+else:
+    DB: typing.Database = playhouse.db_url.connect(f'{_DB_URL}/darc', unquote_password=True)
+    DB_WEB: typing.Database = playhouse.db_url.connect(f'{_DB_URL}/darcweb', unquote_password=True)
+del _DB_URL
 
 
 def getpid() -> int:

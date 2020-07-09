@@ -42,12 +42,16 @@ import darc.typing as typing
 from darc.const import DEBUG, PATH_DB
 from darc.error import APIRequestFailed, render_error
 from darc.link import Link
-from darc.proxy.i2p import get_hosts
+from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, RequestsModel, RobotsModel,
+                        SeleniumModel, SitemapModel, URLModel)
 from darc.requests import null_session
 
 # type alias
 File = typing.Dict[str, typing.Union[str, typing.ByteString]]
 Domain = typing.Literal['new_host', 'requests', 'selenium']
+
+# save submitted data to database
+SAVE_DB = bool(int(os.getenv('SAVE_DB', '1')))
 
 # retry times
 API_RETRY = int(os.getenv('API_RETRY', '3'))
@@ -157,6 +161,41 @@ def get_sitemap(link: Link) -> typing.Optional[typing.List[File]]:  # pylint: di
         )
         data_list.append(data)
     return data_list
+
+
+def get_hosts(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsistent-return-statements
+    """Read ``hosts.txt``.
+
+    Args:
+        link: Link object to read ``hosts.txt``.
+
+    Returns:
+        * If ``hosts.txt`` exists, return the data from ``hosts.txt``.
+
+          * ``path`` -- relative path from ``hosts.txt`` to root of data storage
+            :data:`~darc.const.PATH_DB`, ``<proxy>/<scheme>/<hostname>/hosts.txt``
+          * ``data`` -- *base64* encoded content of ``hosts.txt``
+
+        * If not, return :data:`None`.
+
+    See Also:
+        * :func:`darc.crawl.crawler`
+        * :func:`darc.proxy.i2p.save_hosts`
+
+    """
+    if link.proxy != 'i2p':
+        return
+
+    path = os.path.join(link.base, 'hosts.txt')
+    if not os.path.isfile(path):
+        return
+    with open(path, 'rb') as file:
+        content = file.read()
+    data = dict(
+        path=os.path.relpath(path, PATH_DB),
+        data=base64.b64encode(content).decode(),
+    )
+    return data
 
 
 def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]):
@@ -291,20 +330,55 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
         * :func:`darc.submit.save_submit`
         * :func:`darc.submit.get_metadata`
         * :func:`darc.submit.get_robots`
-        * :func:`darc.proxy.i2p.get_hosts`
+        * :func:`darc.submit.get_sitemap`
+        * :func:`darc.submit.get_hosts`
 
     """
     metadata = get_metadata(link)
     ts = time.isoformat()
 
+    robots = get_robots(link)
+    sitemap = get_sitemap(link)
+    hosts = get_hosts(link)
+
+    if SAVE_DB:
+        model, _ = HostnameModel.get_or_create(hostname=link.host, defaults=dict(
+            proxy=HostnameModel.Proxy[link.proxy.upper()],
+            discovery=time,
+            last_seen=time,
+            alive=False,
+            since=time,
+        ))
+
+        if robots is not None:
+            RobotsModel.create(
+                host=model,
+                timestamp=time,
+                document=base64.b64decode(robots['data']).decode(),
+            )
+
+        if sitemap is not None:
+            SitemapModel.create(
+                host=model,
+                timestamp=time,
+                document=base64.b64decode(sitemap['data']).decode(),
+            )
+
+        if hosts is not None:
+            HostsModel.create(
+                host=model,
+                timestamp=time,
+                document=base64.b64decode(hosts['data']).decode(),
+            )
+
     data = {
         '$PARTIAL$': partial,
         '[metadata]': metadata,
         'Timestamp': ts,
-        'URL': link.url,
-        'Robots': get_robots(link),
-        'Sitemaps': get_sitemap(link),
-        'Hosts': get_hosts(link),
+        'URL': link.host,
+        'Robots': robots,
+        'Sitemaps': sitemap,
+        'Hosts': hosts,
     }
 
     if DEBUG:
@@ -324,7 +398,7 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
 
 def submit_requests(time: typing.Datetime, link: Link,
                     response: typing.Response, session: typing.Session,
-                    content: bytes, html: bool = True):
+                    content: bytes, mime_type: str, html: bool = True):
     """Submit requests data.
 
     When crawling, we'll first fetch the URl using :mod:`requests`, to check
@@ -337,6 +411,7 @@ def submit_requests(time: typing.Datetime, link: Link,
         response (requests.Response): Response object of submission.
         session (requests.Session): Session object of submission.
         content: Raw content of from the response.
+        mime_type: Content type.
         html: If current document is HTML or other files.
 
     If :data:`~darc.submit.API_REQUESTS` is :data:`None`, the data for submission
@@ -388,6 +463,8 @@ def submit_requests(time: typing.Datetime, link: Link,
             "Response": {
                 ...
             },
+            // Content type
+            "Content-Type": ...,
             // requested file (if not exists, then ``null``)
             "Document": {
                 // path of the file, relative path (to data root path ``PATH_DATA``) in container
@@ -422,6 +499,47 @@ def submit_requests(time: typing.Datetime, link: Link,
     else:
         path = f'{link.base}/{link.name}_{ts}.dat'
 
+    if SAVE_DB:
+        url, _ = URLModel.get_or_create(hash=link.name, defaults=dict(
+            url=link.url,
+            hostname=HostnameModel.get(HostnameModel.hostname == link.host),
+            proxy=URLModel.Proxy[link.proxy.upper()],
+            discovery=time,
+            last_seen=time,
+            alive=False,
+            since=time,
+        ))
+
+        model = RequestsModel.create(
+            url=url,
+            timestamp=time,
+            method=response.request.method,
+            document=content,
+            mime_type=mime_type,
+            is_html = html,
+            status_code=response.status_code,
+            reason=response.reason,
+            cookies=response.cookies.get_dict(),
+            session=response.cookies.get_dict(),
+            request=dict(response.request.headers),
+            response=dict(response.headers),
+        )
+
+        for index, history in enumerate(response.history):
+            RequestsHistoryModel.create(
+                index=index,
+                model=model,
+                url=history.url,
+                timestamp=time,
+                method=history.request.method,
+                document=history.content,
+                status_code=history.status_code,
+                reason=history.reason,
+                cookies=history.cookies.get_dict(),
+                request=dict(history.request.headers),
+                response=dict(history.headers),
+            )
+
     data = {
         '[metadata]': metadata,
         'Timestamp': ts,
@@ -433,6 +551,7 @@ def submit_requests(time: typing.Datetime, link: Link,
         'Session': session.cookies.get_dict(),
         'Request': dict(response.request.headers),
         'Response': dict(response.headers),
+        'Content-Type': mime_type,
         'Document': dict(
             path=os.path.relpath(path, PATH_DB),
             data=base64.b64encode(content).decode(),
@@ -547,6 +666,14 @@ def submit_selenium(time: typing.Datetime, link: Link,
         ss = dict(
             path=os.path.relpath(f'{link.base}/{link.name}_{ts}.png', PATH_DB),
             data=screenshot,
+        )
+
+    if SAVE_DB:
+        SeleniumModel.create(
+            url=URLModel.get(URLModel.hash == link.name),
+            timestamp=time,
+            document=html,
+            screenshot=base64.b64decode(screenshot),
         )
 
     data = {

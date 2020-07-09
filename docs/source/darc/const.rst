@@ -126,6 +126,10 @@ General Configurations
 Data Storage
 ------------
 
+.. seealso::
+
+   See :mod:`darc.db` for more information about database integration.
+
 .. data:: darc.const.REDIS
    :type: redis.Redis
 
@@ -134,9 +138,28 @@ Data Storage
    :default: ``redis://127.0.0.1``
    :environ: :envvar:`REDIS_URL`
 
-   .. seealso::
+.. data:: darc.const.DB
+   :type: peewee.Database
 
-      See :mod:`darc.db` for more information about Redis database integration.
+   URL to the RDS storage.
+
+   :default: ``sqlite://{PATH_DB}/darc.db``
+   :environ: :envvar`DB_URL`
+
+.. data:: darc.const.DB
+   :type: peewee.Database
+
+   URL to the data submission storage.
+
+   :default: ``sqlite://{PATH_DB}/darcweb.db``
+   :environ: :envvar`DB_URL`
+
+.. data:: darc.const.FLAG_DB
+   :type: bool
+
+   Flag if uses RDS as the task queue backend.
+   If :envvar:`REDIS_URL` is provided, then
+   :data:`False`; else, :data:`True`.
 
 .. data:: darc.const.PATH_DB
    :type: str

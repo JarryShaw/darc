@@ -129,6 +129,8 @@ def from_requests():
             "Response": {
                 ...
             },
+            // Content type
+            "Content-Type": ...,
             // requested file (if not exists, then ``null``)
             "Document": {
                 // path of the file, relative path (to data root path ``PATH_DATA``) in container

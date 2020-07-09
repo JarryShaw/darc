@@ -5,7 +5,7 @@ import sys
 import subprocess
 
 # version string
-__version__ = '0.5.0.post3'
+__version__ = '0.6.0'
 
 # setup attributes
 attrs = dict(
@@ -81,6 +81,7 @@ attrs = dict(
     install_requires=[
         'beautifulsoup4[html5lib]',
         'file-magic',
+        'peewee',
         'python-datauri',
         'redis[hiredis]',
         'requests-futures',
@@ -95,6 +96,10 @@ attrs = dict(
         ]
     },
     extras_require={
+        # database
+        'SQLite': ['pysqlite3'],
+        'MySQL': ['PyMySQL[rsa]'],
+        'PostgreSQL': ['psycopg2'],
         # version compatibility
         ':python_version < "3.8"': ['python-walrus'],
         ':python_version < "3.7"': ['dataclasses'],

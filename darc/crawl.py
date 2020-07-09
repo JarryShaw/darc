@@ -203,7 +203,7 @@ def crawler(link: Link):
 
                 # submit data
                 data = response.content
-                submit_requests(timestamp, link, response, session, data, html=False)
+                submit_requests(timestamp, link, response, session, data, mime_type=ct_type, html=False)
 
                 return
 
@@ -211,11 +211,11 @@ def crawler(link: Link):
             if not html:
                 print(render_error(f'[REQUESTS] Empty response from {link.url}',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                save_requests(link.url, single=True)
+                save_requests(link, single=True)
                 return
 
             # submit data
-            submit_requests(timestamp, link, response, session, html, html=True)
+            submit_requests(timestamp, link, response, session, html, mime_type=ct_type, html=True)
 
             # add link to queue
             save_requests(extract_links(link, html), score=0, nx=True)
@@ -223,7 +223,7 @@ def crawler(link: Link):
             if not response.ok:
                 print(render_error(f'[REQUESTS] Failed on {link.url} [{response.status_code}]',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-                save_requests(link.url, single=True)
+                save_requests(link, single=True)
                 return
 
             # add link to queue

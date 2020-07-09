@@ -14,7 +14,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-python-darc = {editable = true,path = "."}
+python-darc = {editable = true,path = ".",extras = ["mysql"]}
 autopep8 = "*"
 pylint = "*"
 ipython = "*"
@@ -25,18 +25,18 @@ sphinxcontrib-napoleon = "*"
 doc8 = "*"
 rstcheck = "*"
 Flask = "*"
-peewee = "*"
-PyMySQL = {version = "*",extras = ["rsa"]}
 
 [packages]
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}
 file-magic = "*"
+peewee = "*"
+PyMySQL = {version = "*",extras = ["rsa"]}
 python-datauri = "*"
 redis = {extras = ['hiredis'],version = "*"}
-requests-futures = "*"
 requests = {extras = ["socks"],version = "*"}
-stem = "*"
+requests-futures = "*"
 selenium = "*"
+stem = "*"
 typing-extensions = "*"
 
 [requires]
