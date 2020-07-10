@@ -749,18 +749,19 @@ def _load_requests_db() -> typing.List[Link]:
         sec_delta = TIME_CACHE
         max_score = now - sec_delta
 
-    query: typing.List[RequestsQueueModel] = (
-        RequestsQueueModel
-        .select(RequestsQueueModel.link)
-        .where(RequestsQueueModel.timestamp <= max_score)
-        .order_by(RequestsQueueModel.timestamp)
-        .limit(MAX_POOL)
-    )
-    link_pool = [model.link for model in query]
+    with database.atomic():
+        query: typing.List[RequestsQueueModel] = (
+            RequestsQueueModel
+            .select(RequestsQueueModel.link)
+            .where(RequestsQueueModel.timestamp <= max_score)
+            .order_by(RequestsQueueModel.timestamp)
+            .limit(MAX_POOL)
+        )
+        link_pool = [model.link for model in query]
 
-    if TIME_CACHE is not None:
-        new_score = now + sec_delta
-        _save_requests_db(link_pool, score=new_score)  # force update records
+        if TIME_CACHE is not None:
+            new_score = now + sec_delta
+            _save_requests_db(link_pool, score=new_score)  # force update records
     return link_pool
 
 
@@ -859,18 +860,19 @@ def _load_selenium_db() -> typing.List[Link]:
         sec_delta = TIME_CACHE
         max_score = now - sec_delta
 
-    query: typing.List[SeleniumQueueModel] = (
-        SeleniumQueueModel
-        .select(SeleniumQueueModel.link)
-        .where(SeleniumQueueModel.timestamp <= max_score)
-        .order_by(SeleniumQueueModel.timestamp)
-        .limit(MAX_POOL)
-    )
-    link_pool = [model.link for model in query]
+    with database.atomic():
+        query: typing.List[SeleniumQueueModel] = (
+            SeleniumQueueModel
+            .select(SeleniumQueueModel.link)
+            .where(SeleniumQueueModel.timestamp <= max_score)
+            .order_by(SeleniumQueueModel.timestamp)
+            .limit(MAX_POOL)
+        )
+        link_pool = [model.link for model in query]
 
-    if TIME_CACHE is not None:
-        new_score = now + sec_delta
-        _save_selenium_db(link_pool, score=new_score)  # force update records
+        if TIME_CACHE is not None:
+            new_score = now + sec_delta
+            _save_selenium_db(link_pool, score=new_score)  # force update records
     return link_pool
 
 
