@@ -276,18 +276,18 @@ services:
     networks: *networks
     volumes: *volumes
 
-  redis:
-    image: redis:darc
-    container_name: redis
-    build:
-      context: .
-      dockerfile: extra/redis.dockerfile
-    expose:
-      - 6379
-    restart: "always"
-    networks: *networks
-    volumes:
-      - ./data/redis:/data
+  # redis:
+  #   image: redis:darc
+  #   container_name: redis
+  #   build:
+  #     context: .
+  #     dockerfile: extra/redis.dockerfile
+  #   expose:
+  #     - 6379
+  #   restart: "always"
+  #   networks: *networks
+  #   volumes:
+  #     - ./data/redis:/data
 
   db:
     image: mysql

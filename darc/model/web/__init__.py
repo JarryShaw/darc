@@ -12,7 +12,6 @@ to store the data crawled from the :mod:`darc` project.
 
 """
 
-from darc.const import DB_WEB as DB
 from darc.model.web.hostname import HostnameModel
 from darc.model.web.hosts import HostsModel
 from darc.model.web.requests import RequestsModel, RequestsHistoryModel
@@ -26,10 +25,3 @@ __all__ = [
     'RobotsModel', 'SitemapModel', 'HostsModel',
     'RequestsModel', 'RequestsHistoryModel', 'SeleniumModel',
 ]
-
-with DB:
-    DB.create_tables([
-        HostnameModel, URLModel,
-        RobotsModel, SitemapModel, HostsModel,
-        RequestsModel, RequestsHistoryModel, SeleniumModel,
-    ])

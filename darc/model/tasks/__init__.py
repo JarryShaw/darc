@@ -12,7 +12,6 @@ required for the task queue of :mod:`darc`.
 
 """
 
-from darc.const import DB
 from darc.model.tasks.hostname import HostnameQueueModel
 from darc.model.tasks.requests import RequestsQueueModel
 from darc.model.tasks.selenium import SeleniumQueueModel
@@ -20,8 +19,3 @@ from darc.model.tasks.selenium import SeleniumQueueModel
 __all__ = [
     'HostnameQueueModel', 'RequestsQueueModel', 'SeleniumQueueModel',
 ]
-
-with DB:
-    DB.create_tables([
-        HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel,
-    ])

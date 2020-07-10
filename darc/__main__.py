@@ -11,7 +11,7 @@ import traceback
 import stem.util.term
 
 import darc.typing as typing
-from darc.const import DEBUG, FLAG_DB, PATH_ID, PATH_LN
+from darc.const import DB, DB_WEB, DEBUG, FLAG_DB, PATH_ID, PATH_LN
 from darc.db import _redis_command, save_requests
 from darc.link import parse_link
 from darc.model import (HostnameModel, HostnameQueueModel, HostsModel, RequestsHistoryModel,
@@ -86,28 +86,34 @@ def main():
         if not FLAG_DB:
             _redis_command('set', 'darc', pid)
 
+    if FLAG_DB:
+        while True:
+            with contextlib.suppress(Exception):
+                with DB:
+                    DB.create_tables([
+                        HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel,
+                    ])
+            break
+
+    if SAVE_DB:
+        while True:
+            with contextlib.suppress(Exception):
+                with DB_WEB:
+                    DB_WEB.create_tables([
+                        HostnameModel, URLModel,
+                        RobotsModel, SitemapModel, HostsModel,
+                        RequestsModel, RequestsHistoryModel, SeleniumModel,
+                    ])
+            break
+
     if DEBUG:
         print(stem.util.term.format('-*- Initialisation -*-', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
         # nuke the db
-        if FLAG_DB:
-            HostnameQueueModel.truncate_table()
-            RequestsQueueModel.truncate_table()
-            SeleniumQueueModel.truncate_table()
-        else:
+        if not FLAG_DB:
             _redis_command('delete', 'queue_hostname')
             _redis_command('delete', 'queue_requests')
             _redis_command('delete', 'queue_selenium')
-
-        if SAVE_DB:
-            HostnameModel.truncate_table()
-            URLModel.truncate_table()
-            RobotsModel.truncate_table()
-            SitemapModel.truncate_table()
-            HostsModel.truncate_table()
-            RequestsModel.truncate_table()
-            RequestsHistoryModel.truncate_table()
-            SeleniumModel.truncate_table()
 
     link_list = list()
     for link in filter(None, map(lambda s: s.strip(), args.link)):
