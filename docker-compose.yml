@@ -49,6 +49,8 @@ services:
       DARC_MULTITHREADING: 0
       # time lapse
       DARC_WAIT: 60
+      # bulk size
+      DARC_BULK_SIZE: 1000
       # data storage
       PATH_DATA: "data"
       # Redis URL
