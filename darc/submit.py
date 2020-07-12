@@ -26,6 +26,7 @@ There are three submission events:
 """
 
 import base64
+import contextlib
 import dataclasses
 import glob
 import json
@@ -342,34 +343,35 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
     hosts = get_hosts(link)
 
     if SAVE_DB:
-        model, _ = HostnameModel.get_or_create(hostname=link.host, defaults=dict(
-            proxy=HostnameModel.Proxy[link.proxy.upper()],
-            discovery=time,
-            last_seen=time,
-            alive=False,
-            since=time,
-        ))
+        with contextlib.suppress(Exception):
+            model, _ = HostnameModel.get_or_create(hostname=link.host, defaults=dict(
+                proxy=HostnameModel.Proxy[link.proxy.upper()],
+                discovery=time,
+                last_seen=time,
+                alive=False,
+                since=time,
+            ))
 
-        if robots is not None:
-            RobotsModel.create(
-                host=model,
-                timestamp=time,
-                document=base64.b64decode(robots['data']).decode(),
-            )
+            if robots is not None:
+                RobotsModel.create(
+                    host=model,
+                    timestamp=time,
+                    document=base64.b64decode(robots['data']).decode(),
+                )
 
-        if sitemap is not None:
-            SitemapModel.create(
-                host=model,
-                timestamp=time,
-                document=base64.b64decode(sitemap['data']).decode(),
-            )
+            if sitemap is not None:
+                SitemapModel.create(
+                    host=model,
+                    timestamp=time,
+                    document=base64.b64decode(sitemap['data']).decode(),
+                )
 
-        if hosts is not None:
-            HostsModel.create(
-                host=model,
-                timestamp=time,
-                document=base64.b64decode(hosts['data']).decode(),
-            )
+            if hosts is not None:
+                HostsModel.create(
+                    host=model,
+                    timestamp=time,
+                    document=base64.b64decode(hosts['data']).decode(),
+                )
 
     data = {
         '$PARTIAL$': partial,
@@ -491,6 +493,48 @@ def submit_requests(time: typing.Datetime, link: Link,
         * :func:`darc.crawl.crawler`
 
     """
+    if SAVE_DB:
+        with contextlib.suppress(Exception):
+            url, _ = URLModel.get_or_create(hash=link.name, defaults=dict(
+                url=link.url,
+                hostname=HostnameModel.get(HostnameModel.hostname == link.host),
+                proxy=URLModel.Proxy[link.proxy.upper()],
+                discovery=time,
+                last_seen=time,
+                alive=False,
+                since=time,
+            ))
+
+            model = RequestsModel.create(
+                url=url,
+                timestamp=time,
+                method=response.request.method,
+                document=content,
+                mime_type=mime_type,
+                is_html = html,
+                status_code=response.status_code,
+                reason=response.reason,
+                cookies=response.cookies.get_dict(),
+                session=response.cookies.get_dict(),
+                request=dict(response.request.headers),
+                response=dict(response.headers),
+            )
+
+            for index, history in enumerate(response.history):
+                RequestsHistoryModel.create(
+                    index=index,
+                    model=model,
+                    url=history.url,
+                    timestamp=time,
+                    method=history.request.method,
+                    document=history.content,
+                    status_code=history.status_code,
+                    reason=history.reason,
+                    cookies=history.cookies.get_dict(),
+                    request=dict(history.request.headers),
+                    response=dict(history.headers),
+                )
+
     metadata = get_metadata(link)
     ts = time.isoformat()
 
@@ -498,47 +542,6 @@ def submit_requests(time: typing.Datetime, link: Link,
         path = f'{link.base}/{link.name}_{ts}_raw.html'
     else:
         path = f'{link.base}/{link.name}_{ts}.dat'
-
-    if SAVE_DB:
-        url, _ = URLModel.get_or_create(hash=link.name, defaults=dict(
-            url=link.url,
-            hostname=HostnameModel.get(HostnameModel.hostname == link.host),
-            proxy=URLModel.Proxy[link.proxy.upper()],
-            discovery=time,
-            last_seen=time,
-            alive=False,
-            since=time,
-        ))
-
-        model = RequestsModel.create(
-            url=url,
-            timestamp=time,
-            method=response.request.method,
-            document=content,
-            mime_type=mime_type,
-            is_html = html,
-            status_code=response.status_code,
-            reason=response.reason,
-            cookies=response.cookies.get_dict(),
-            session=response.cookies.get_dict(),
-            request=dict(response.request.headers),
-            response=dict(response.headers),
-        )
-
-        for index, history in enumerate(response.history):
-            RequestsHistoryModel.create(
-                index=index,
-                model=model,
-                url=history.url,
-                timestamp=time,
-                method=history.request.method,
-                document=history.content,
-                status_code=history.status_code,
-                reason=history.reason,
-                cookies=history.cookies.get_dict(),
-                request=dict(history.request.headers),
-                response=dict(history.headers),
-            )
 
     data = {
         '[metadata]': metadata,
@@ -657,6 +660,15 @@ def submit_selenium(time: typing.Datetime, link: Link,
         * :func:`darc.crawl.loader`
 
     """
+    if SAVE_DB:
+        with contextlib.suppress(Exception):
+            SeleniumModel.create(
+                url=URLModel.get(URLModel.hash == link.name),
+                timestamp=time,
+                document=html,
+                screenshot=base64.b64decode(screenshot),
+            )
+
     metadata = get_metadata(link)
     ts = time.isoformat()
 
@@ -666,14 +678,6 @@ def submit_selenium(time: typing.Datetime, link: Link,
         ss = dict(
             path=os.path.relpath(f'{link.base}/{link.name}_{ts}.png', PATH_DB),
             data=screenshot,
-        )
-
-    if SAVE_DB:
-        SeleniumModel.create(
-            url=URLModel.get(URLModel.hash == link.name),
-            timestamp=time,
-            document=html,
-            screenshot=base64.b64decode(screenshot),
         )
 
     data = {

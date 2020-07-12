@@ -265,7 +265,7 @@ def fetch_sitemap(link: Link):
         if response.ok:
             ct_type = get_content_type(response)
             if ct_type not in ['text/text', 'text/plain']:
-                print(render_error(f'[ROBOTS] Unresolved content type on {robots_link.url} ({ct_type}',
+                print(render_error(f'[ROBOTS] Unresolved content type on {robots_link.url} ({ct_type})',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 robots_text = ''
             else:
@@ -315,7 +315,7 @@ def fetch_sitemap(link: Link):
                 sitemap_text = response.text
                 save_sitemap(sitemap_link, sitemap_text)
             else:
-                print(render_error(f'[SITEMAP] Unresolved content type on {sitemap_link.url} ({ct_type}',
+                print(render_error(f'[SITEMAP] Unresolved content type on {sitemap_link.url} ({ct_type})',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 continue
 

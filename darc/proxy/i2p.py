@@ -318,7 +318,7 @@ def fetch_hosts(link: Link):
 
         ct_type = get_content_type(response)
         if ct_type not in ['text/text', 'text/plain']:
-            print(render_error(f'[HOSTS] Unresolved content type on {hosts_link.url} ({ct_type}',
+            print(render_error(f'[HOSTS] Unresolved content type on {hosts_link.url} ({ct_type})',
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             return
 
