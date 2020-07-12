@@ -20,6 +20,7 @@ services:
                "--file", "/app/text/tor.new.txt" ]
     depends_on: &depends_on
       - db
+      - redis
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -56,6 +57,7 @@ services:
       # save data submitssion
       SAVE_DB: 0
       # Redis URL
+      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
       #REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
       # database URL
       DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
@@ -288,7 +290,7 @@ services:
     restart: "always"
     environment:
       MYSQL_ROOT_PASSWORD: "b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA"
-      MYSQL_DATABASE: "darc"
+      MYSQL_DATABASE: "darcweb"
     networks: *networks
     volumes:
       - /data/darc/mysql:/var/lib/mysql
