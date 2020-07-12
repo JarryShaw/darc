@@ -53,6 +53,8 @@ services:
       DARC_BULK_SIZE: 1000
       # data storage
       PATH_DATA: "data"
+      # save data submitssion
+      SAVE_DB: 0
       # Redis URL
       #REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
       # database URL
