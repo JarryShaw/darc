@@ -88,22 +88,30 @@ def main():
 
     if FLAG_DB:
         while True:
-            with contextlib.suppress(Exception):
+            try:
                 with DB:
                     DB.create_tables([
                         HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel,
                     ])
+            except Exception:
+                print(render_error(traceback.format_exc(), stem.util.term.Color.YELLOW),  # pylint: disable=no-member
+                      end='', file=sys.stderr)
+                continue
             break
 
     if SAVE_DB:
         while True:
-            with contextlib.suppress(Exception):
+            try:
                 with DB_WEB:
                     DB_WEB.create_tables([
                         HostnameModel, URLModel,
                         RobotsModel, SitemapModel, HostsModel,
                         RequestsModel, RequestsHistoryModel, SeleniumModel,
                     ])
+            except Exception:
+                print(render_error(traceback.format_exc(), stem.util.term.Color.YELLOW),  # pylint: disable=no-member
+                      end='', file=sys.stderr)
+                continue
             break
 
     if DEBUG:
