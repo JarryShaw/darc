@@ -6,13 +6,14 @@ import contextlib
 import os
 import shutil
 import sys
-import traceback
+import warnings
 
 import stem.util.term
 
 import darc.typing as typing
 from darc.const import DB, DB_WEB, DEBUG, FLAG_DB, PATH_ID, PATH_LN
 from darc.db import _redis_command, save_requests
+from darc.error import DatabaseOperaionFailed, render_error
 from darc.link import parse_link
 from darc.model import (HostnameModel, HostnameQueueModel, HostsModel, RequestsHistoryModel,
                         RequestsModel, RequestsQueueModel, RobotsModel, SeleniumModel,
@@ -93,9 +94,10 @@ def main():
                     DB.create_tables([
                         HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel,
                     ])
-            except Exception:
-                print(render_error(traceback.format_exc(), stem.util.term.Color.YELLOW),  # pylint: disable=no-member
-                      end='', file=sys.stderr)
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 94,
+                                                 'DB.create_tables([HostnameQueueModel, ...])')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 continue
             break
 
@@ -108,9 +110,10 @@ def main():
                         RobotsModel, SitemapModel, HostsModel,
                         RequestsModel, RequestsHistoryModel, SeleniumModel,
                     ])
-            except Exception:
-                print(render_error(traceback.format_exc(), stem.util.term.Color.YELLOW),  # pylint: disable=no-member
-                      end='', file=sys.stderr)
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 108,
+                                                 'DB.create_tables([HostnameModel, ...])')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 continue
             break
 

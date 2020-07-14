@@ -11,7 +11,7 @@ services:
         DARC_USER: "darc"
     container_name: crawler
     depends_on: &depends_on
-      #- redis
+      - redis
       - db
     #ports: &ports
     #  - 9050:1089
@@ -62,8 +62,10 @@ services:
       DARC_WAIT: 5
       # data storage
       PATH_DATA: "data"
+      # save data submitssion
+      SAVE_DB: 1
       # Redis URL
-      #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
       # database URL
       DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
@@ -191,8 +193,10 @@ services:
       DARC_WAIT: 5
       # data storage
       PATH_DATA: "data"
+      # save data submitssion
+      SAVE_DB: 1
       # Redis URL
-      #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
       # database URL
       DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
@@ -276,18 +280,18 @@ services:
     networks: *networks
     volumes: *volumes
 
-  # redis:
-  #   image: redis:darc
-  #   container_name: redis
-  #   build:
-  #     context: .
-  #     dockerfile: extra/redis.dockerfile
-  #   expose:
-  #     - 6379
-  #   restart: "always"
-  #   networks: *networks
-  #   volumes:
-  #     - ./data/redis:/data
+  redis:
+    image: redis:darc
+    container_name: redis
+    build:
+      context: .
+      dockerfile: extra/redis.dockerfile
+    expose:
+      - 6379
+    restart: "always"
+    networks: *networks
+    volumes:
+      - ./data/redis:/data
 
   db:
     image: mysql
@@ -298,7 +302,7 @@ services:
     restart: "always"
     environment:
       MYSQL_ROOT_PASSWORD: "b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA"
-      MYSQL_DATABASE: "darc"
+      MYSQL_DATABASE: "darcweb"
     networks: *networks
     volumes:
       - ./data/mysql:/var/lib/mysql

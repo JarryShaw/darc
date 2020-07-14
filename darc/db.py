@@ -19,9 +19,8 @@ convension with ``queue_`` prefix:
 * the :mod:`requests` database -- ``queue_requests`` (:class:`~darc.model.tasks.requests.RequestsQueueModel`)
 * the :mod:`selenium` database -- ``queue_selenium`` (:class:`~darc.model.tasks.selenium.SeleniumQueueModel`)
 
-For ``queue_hostname``, it is a `Redis`_ **set** data type;
-and for ``queue_requests`` and ``queue_selenium``, they
-are both `Redis`_ **sorted set** data type.
+For ``queue_hostname``, ``queue_requests`` and ``queue_selenium``,
+they are all `Redis`_ **sorted set** data type.
 
 If :data:`~darc.const.FLAG_DB` is :data:`True`, then the
 module uses the RDS storage described by the :mod:`peewee`
@@ -54,7 +53,7 @@ from darc.const import DB as database
 from darc.const import FLAG_DB
 from darc.const import REDIS as redis
 from darc.const import TIME_CACHE, VERBOSE
-from darc.error import LockWarning, RedisCommandFailed, render_error
+from darc.error import DatabaseOperaionFailed, LockWarning, RedisCommandFailed, render_error
 from darc.link import Link
 from darc.model.tasks import HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel
 from darc.parse import _check
@@ -163,14 +162,16 @@ def _redis_get_lock(name: str,
     return nullcontext()
 
 
-def have_hostname(link: Link) -> bool:
+def have_hostname(link: Link) -> typing.Tuple[bool, bool]:
     """Check if current link is a new host.
 
     Args:
         link: Link to check against.
 
     Returns:
-        If such link is a new host.
+        A tuple of two :obj:`bool` values representing
+        if such link is a known host and needs force
+        refetch respectively.
 
     See Also:
         * :func:`darc.db._have_hostname_db`
@@ -179,11 +180,17 @@ def have_hostname(link: Link) -> bool:
     """
     if FLAG_DB:
         with database.connection_context():
-            return _have_hostname_db(link)
+            try:
+                return _have_hostname_db(link)
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 183,
+                                                 f'_have_hostname_db({link})')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                return False, False
     return _have_hostname_redis(link)
 
 
-def _have_hostname_db(link: Link) -> bool:
+def _have_hostname_db(link: Link) -> typing.Tuple[bool, bool]:
     """Check if current link is a new host.
 
     The function checks the :class:`~darc.models.tasks.hostname.HostnameQueueModel` table.
@@ -192,12 +199,14 @@ def _have_hostname_db(link: Link) -> bool:
         link: Link to check against.
 
     Returns:
-        If such link is a new host.
+        A tuple of two :obj:`bool` values representing
+        if such link is a known host and needs force
+        refetch respectively.
 
     """
     timestamp = datetime.datetime.now()
     if TIME_CACHE is None:
-        threshold = -1
+        threshold = math.inf
     else:
         threshold = timestamp - TIME_CACHE
 
@@ -205,11 +214,11 @@ def _have_hostname_db(link: Link) -> bool:
         timestamp=timestamp,
     ))
     if created:
-        return False
-    return model.timestamp > threshold
+        return False, False
+    return True, model.timestamp < threshold
 
 
-def _have_hostname_redis(link: Link) -> bool:
+def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
     """Check if current link is a new host.
 
     The function checks the ``queue_hostname`` database.
@@ -218,13 +227,26 @@ def _have_hostname_redis(link: Link) -> bool:
         link: Link to check against.
 
     Returns:
-        If such link is a new host.
+        A tuple of two :obj:`bool` values representing
+        if such link is a known host and needs force
+        refetch respectively.
 
     """
+    new_score = time.time()
+    if TIME_CACHE is None:
+        threshold = math.inf
+    else:
+        threshold = new_score - TIME_CACHE.total_seconds()
+
     with _redis_get_lock('lock_queue_hostname'):
-        code = _redis_command('sadd', 'queue_hostname', link.host)
-    flag = not bool(code)  # 1 - success; 0 - failed
-    return flag
+        score = _redis_command('zscore', 'queue_hostname', link.name)
+        _redis_command('zadd', 'queue_hostname', {
+            link.host: new_score,
+        })
+
+    if score is None:
+        return False, False
+    return True, score < threshold
 
 
 def drop_hostname(link: Link):
@@ -240,7 +262,13 @@ def drop_hostname(link: Link):
     """
     if FLAG_DB:
         with database.connection_context():
-            return _drop_hostname_db(link)
+            try:
+                return _drop_hostname_db(link)
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 249,
+                                                 f'_drop_hostname_db({link})')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                return
     return _drop_hostname_redis(link)
 
 
@@ -269,7 +297,7 @@ def _drop_hostname_redis(link: Link):
 
     """
     with _redis_get_lock('lock_queue_hostname'):
-        _redis_command('srem', 'queue_hostname', link.host)
+        _redis_command('zrem', 'queue_hostname', link.host)
 
 
 def drop_requests(link: Link):
@@ -285,7 +313,13 @@ def drop_requests(link: Link):
     """
     if FLAG_DB:
         with database.connection_context():
-            return _drop_requests_db(link)
+            try:
+                return _drop_requests_db(link)
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 299,
+                                                 f'_drop_requests_db({link})')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                return
     return _drop_requests_redis(link)
 
 
@@ -330,7 +364,13 @@ def drop_selenium(link: Link):
     """
     if FLAG_DB:
         with database.connection_context():
-            return _drop_selenium_db(link)
+            try:
+                return _drop_selenium_db(link)
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 349,
+                                                 f'_drop_selenium_db({link})')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                return
     return _drop_selenium_redis(link)
 
 
@@ -395,7 +435,13 @@ def save_requests(entries: typing.List[Link], single: bool = False,
     """
     if FLAG_DB:
         with database.connection_context():
-            return _save_requests_db(entries, single, score, nx, xx)
+            try:
+                return _save_requests_db(entries, single, score, nx, xx)
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 419,
+                                                 '_save_requests_db(...)')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                return
     return _save_requests_redis(entries, single, score, nx, xx)
 
 
@@ -507,9 +553,12 @@ def _save_requests_redis(entries: typing.List[Link], single: bool = False,
         score = time.time()
 
     if not single:
-        for i in range(0, len(entries), BULK_SIZE):
+        for chunk in peewee.chunked(entries, BULK_SIZE):
+            pool = list(filter(lambda link: isinstance(link, Link), chunk))
+            for link in pool:
+                _redis_command('set', link.name, pickle.dumps(link), nx=True)
             mapping = {
-                pickle.dumps(link): score for link in entries[i:i + BULK_SIZE]
+                link.name: score for link in pool
             }
             with _redis_get_lock('lock_queue_requests'):
                 _redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
@@ -553,7 +602,13 @@ def save_selenium(entries: typing.List[Link], single: bool = False,
     """
     if FLAG_DB:
         with database.connection_context():
-            return _save_selenium_db(entries, single, score, nx, xx)
+            try:
+                return _save_selenium_db(entries, single, score, nx, xx)
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 582,
+                                                 '_save_selenium_db(...)')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                return
     return _save_selenium_redis(entries, single, score, nx, xx)
 
 
@@ -675,9 +730,12 @@ def _save_selenium_redis(entries: typing.List[Link], single: bool = False,
         score = time.time()
 
     if not single:
-        for i in range(0, len(entries), BULK_SIZE):
+        for chunk in peewee.chunked(entries, BULK_SIZE):
+            pool = list(filter(lambda link: isinstance(link, Link), chunk))
+            for link in pool:
+                _redis_command('set', link.name, pickle.dumps(link), nx=True)
             mapping = {
-                pickle.dumps(link): score for link in entries[i:i + BULK_SIZE]
+                link.name: score for link in pool
             }
             with _redis_get_lock('lock_queue_selenium'):
                 _redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
@@ -711,7 +769,13 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
     """
     if FLAG_DB:
         with database.connection_context():
-            link_pool = _load_requests_db()
+            try:
+                link_pool = _load_requests_db()
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 745,
+                                                 '_load_requests_db()')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                link_pool = list()
     else:
         link_pool = _load_requests_redis()
 
@@ -788,8 +852,9 @@ def _load_requests_redis() -> typing.List[Link]:
 
     try:
         with _redis_get_lock('lock_queue_requests', blocking_timeout=LOCK_TIMEOUT):
-            link_pool = [pickle.loads(link) for link in _redis_command('zrangebyscore', 'queue_requests',
-                                                                       min=0, max=max_score, start=0, num=MAX_POOL)]
+            temp_pool = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_requests',
+                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]
+            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 _save_requests_redis(link_pool, score=new_score)  # force update records
@@ -822,7 +887,13 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
     """
     if FLAG_DB:
         with database.connection_context():
-            link_pool = _load_selenium_db()
+            try:
+                link_pool = _load_selenium_db()
+            except Exception as error:
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 862,
+                                                 '_load_selenium_db()')
+                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                link_pool = list()
     else:
         link_pool = _load_selenium_redis()
 
@@ -903,8 +974,9 @@ def _load_selenium_redis() -> typing.List[Link]:
 
     try:
         with _redis_get_lock('lock_queue_selenium', blocking_timeout=LOCK_TIMEOUT):
-            link_pool = [pickle.loads(link) for link in _redis_command('zrangebyscore', 'queue_selenium',
-                                                                       min=0, max=max_score, start=0, num=MAX_POOL)]
+            temp_pool = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_selenium',
+                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]
+            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 _save_selenium_redis(link_pool, score=new_score)  # force update records

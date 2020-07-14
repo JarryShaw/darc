@@ -278,17 +278,22 @@ def read_hosts(text: str, check: bool = CHECK) -> typing.List[Link]:
     return temp_list
 
 
-def fetch_hosts(link: Link):
+def fetch_hosts(link: Link, force: bool = False):
     """Fetch ``hosts.txt``.
 
     Args:
         link: Link object to fetch for its ``hosts.txt``.
+        force: Force refetch ``hosts.txt``.
 
     Returns:
         Content of the ``hosts.txt`` file.
 
     """
-    hosts_path = have_hosts(link)
+    if force:
+        print(stem.util.term.format(f'[HOSTS] Force refetch {link.url}',
+                                    stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+
+    hosts_path = None if force else have_hosts(link)
     if hosts_path is not None:
 
         print(stem.util.term.format(f'[HOSTS] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member

@@ -223,7 +223,7 @@ def read_sitemap(link: Link, text: str, check: bool = CHECK) -> typing.List[Link
     return temp_list
 
 
-def fetch_sitemap(link: Link):
+def fetch_sitemap(link: Link, force: bool = False):
     """Fetch sitemap.
 
     The function will first fetch the ``robots.txt``, then
@@ -231,6 +231,7 @@ def fetch_sitemap(link: Link):
 
     Args:
         link: Link object to fetch for its sitemaps.
+        force: Force refetch its sitemaps.
 
     Returns:
         Contents of ``robots.txt`` and sitemaps.
@@ -241,7 +242,11 @@ def fetch_sitemap(link: Link):
         * :func:`darc.parse.get_sitemap`
 
     """
-    robots_path = have_robots(link)
+    if force:
+        print(stem.util.term.format(f'[ROBOTS] Force refetch {link.url}',
+                                    stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+
+    robots_path = None if force else have_robots(link)
     if robots_path is not None:
 
         print(stem.util.term.format(f'[ROBOTS] Cached {link.url}',
@@ -277,12 +282,16 @@ def fetch_sitemap(link: Link):
                                stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             robots_text = ''
 
+    if force:
+        print(stem.util.term.format(f'[SITEMAP] Force refetch {link.url}',
+                                    stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+
     sitemaps = read_robots(link, robots_text, host=link.host)
     for sitemap_link in sitemaps:
-        sitemap_path = have_sitemap(sitemap_link)
+        sitemap_path = None if force else have_sitemap(sitemap_link)
         if sitemap_path is not None:
 
-            print(stem.util.term.format(f'[SITEMAP] Cached {link.url}',
+            print(stem.util.term.format(f'[SITEMAP] Cached {sitemap_link.url}',
                                         stem.util.term.Color.YELLOW))  # pylint: disable=no-member
             with open(sitemap_path) as file:
                 sitemap_text = file.read()

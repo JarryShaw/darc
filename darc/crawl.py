@@ -131,13 +131,14 @@ def crawler(link: Link):
         timestamp = datetime.now()
 
         # if it's a new host
-        if not have_hostname(link):
+        flag_have, force_fetch = have_hostname(link)
+        if not flag_have or force_fetch:
             partial = False
 
             if link.proxy not in ('zeronet', 'freenet'):
                 # fetch sitemap.xml
                 try:
-                    fetch_sitemap(link)
+                    fetch_sitemap(link, force=force_fetch)
                 except Exception:
                     error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                     print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
@@ -146,7 +147,7 @@ def crawler(link: Link):
             if link.proxy == 'i2p':
                 # fetch hosts.txt
                 try:
-                    fetch_hosts(link)
+                    fetch_hosts(link, force=force_fetch)
                 except Exception:
                     error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
                     print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member

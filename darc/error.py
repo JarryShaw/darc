@@ -71,6 +71,10 @@ class RedisCommandFailed(Warning):
     """Redis command execution failed."""
 
 
+class DatabaseOperaionFailed(Warning):
+    """Database operation execution failed."""
+
+
 class APIRequestFailed(Warning):
     """API submit failed."""
 

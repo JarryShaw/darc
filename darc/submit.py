@@ -41,7 +41,7 @@ import stem.util.term
 
 import darc.typing as typing
 from darc.const import DEBUG, PATH_DB
-from darc.error import APIRequestFailed, render_error
+from darc.error import APIRequestFailed, DatabaseOperaionFailed, render_error
 from darc.link import Link
 from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, RequestsModel, RobotsModel,
                         SeleniumModel, SitemapModel, URLModel)
@@ -343,7 +343,7 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
     hosts = get_hosts(link)
 
     if SAVE_DB:
-        with contextlib.suppress(Exception):
+        try:
             model, _ = HostnameModel.get_or_create(hostname=link.host, defaults=dict(
                 proxy=HostnameModel.Proxy[link.proxy.upper()],
                 discovery=time,
@@ -372,6 +372,10 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
                     timestamp=time,
                     document=base64.b64decode(hosts['data']).decode(),
                 )
+        except Exception as error:
+            warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 347,
+                                             'submit_new_host(...)')
+            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
     data = {
         '$PARTIAL$': partial,
@@ -494,10 +498,18 @@ def submit_requests(time: typing.Datetime, link: Link,
 
     """
     if SAVE_DB:
-        with contextlib.suppress(Exception):
+        try:
+            model, _ = HostnameModel.get_or_create(hostname=link.host, defaults=dict(
+                proxy=HostnameModel.Proxy[link.proxy.upper()],
+                discovery=time,
+                last_seen=time,
+                alive=False,
+                since=time,
+            ))
+
             url, _ = URLModel.get_or_create(hash=link.name, defaults=dict(
                 url=link.url,
-                hostname=HostnameModel.get(HostnameModel.hostname == link.host),
+                hostname=model,
                 proxy=URLModel.Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
@@ -534,6 +546,10 @@ def submit_requests(time: typing.Datetime, link: Link,
                     request=dict(history.request.headers),
                     response=dict(history.headers),
                 )
+        except Exception as error:
+            warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 502,
+                                             'submit_requests(...)')
+            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
     metadata = get_metadata(link)
     ts = time.isoformat()
@@ -661,13 +677,35 @@ def submit_selenium(time: typing.Datetime, link: Link,
 
     """
     if SAVE_DB:
-        with contextlib.suppress(Exception):
+        try:
+            model, _ = HostnameModel.get_or_create(hostname=link.host, defaults=dict(
+                proxy=HostnameModel.Proxy[link.proxy.upper()],
+                discovery=time,
+                last_seen=time,
+                alive=False,
+                since=time,
+            ))
+
+            url, _ = URLModel.get_or_create(hash=link.name, defaults=dict(
+                url=link.url,
+                hostname=model,
+                proxy=URLModel.Proxy[link.proxy.upper()],
+                discovery=time,
+                last_seen=time,
+                alive=False,
+                since=time,
+            ))
+
             SeleniumModel.create(
-                url=URLModel.get(URLModel.hash == link.name),
+                url=url,
                 timestamp=time,
                 document=html,
                 screenshot=base64.b64decode(screenshot),
             )
+        except Exception as error:
+            warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 681,
+                                             'submit_selenium(...)')
+            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
     metadata = get_metadata(link)
     ts = time.isoformat()

@@ -91,7 +91,9 @@
         "xvzf",
         "zadd",
         "zrangebyscore",
-        "zrem"
+        "zrem",
+        "zscan",
+        "zscore"
     ],
     "python.pythonPath": "/Users/jarryshaw/GitHub/darc/.venv/bin/python3.8",
     "restructuredtext.confPath": "${workspaceFolder}/docs/conf.py"
