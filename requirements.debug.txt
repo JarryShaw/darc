@@ -10,7 +10,7 @@ wheel==0.34.2
 
 # Python dependencies
 beautifulsoup4[html5lib]==4.9.1
-certifi==2020.6.30
+certifi==2020.6.20
 cffi==1.14.0
 chardet==3.0.4
 cryptography==2.9.2
