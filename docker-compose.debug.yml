@@ -43,9 +43,9 @@ services:
       # force mode (ignore robots.txt)
       DARC_FORCE: 0
       # check mode (check proxy and hostname before crawling)
-      DARC_CHECK: 1
+      DARC_CHECK: 0
       # check mode (check content type before crawling)
-      DARC_CHECK_CONTENT_TYPE: 1
+      DARC_CHECK_CONTENT_TYPE: 0
       # save mode
       DARC_SAVE: 0
       # save mode (for requests)
@@ -55,7 +55,7 @@ services:
       # processes
       DARC_CPU: 64
       # multiprocessing
-      DARC_MULTIPROCESSING: 1
+      DARC_MULTIPROCESSING: 0
       # multithreading
       DARC_MULTITHREADING: 0
       # time lapse
@@ -69,7 +69,7 @@ services:
       # database URL
       DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
-      DARC_MAX_POOL: 1
+      DARC_MAX_POOL: 10
       # Tor proxy & control port
       TOR_PORT: 9050
       TOR_CTRL: 9051
@@ -145,6 +145,11 @@ services:
       #API_NEW_HOST: 'https://example.com/api/new_host'
       #API_REQUESTS: 'https://example.com/api/requests'
       #API_SELENIUM: 'https://example.com/api/selenium'
+      # managed proxies
+      DARC_TOR: 0
+      DARC_I2P: 0
+      DARC_ZERONET: 0
+      DARC_FREENET: 0
     restart: "on-failure"
     networks: &networks
       - darc
@@ -174,9 +179,9 @@ services:
       # force mode (ignore robots.txt)
       DARC_FORCE: 0
       # check mode (check proxy and hostname before crawling)
-      DARC_CHECK: 1
+      DARC_CHECK: 0
       # check mode (check content type before crawling)
-      DARC_CHECK_CONTENT_TYPE: 1
+      DARC_CHECK_CONTENT_TYPE: 0
       # save mode
       DARC_SAVE: 0
       # save mode (for requests)
@@ -200,7 +205,7 @@ services:
       # database URL
       DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
-      DARC_MAX_POOL: 1
+      DARC_MAX_POOL: 10
       # Tor proxy & control port
       TOR_PORT: 9050
       TOR_CTRL: 9051
@@ -276,6 +281,11 @@ services:
       #API_NEW_HOST: 'https://example.com/api/new_host'
       #API_REQUESTS: 'https://example.com/api/requests'
       #API_SELENIUM: 'https://example.com/api/selenium'
+      # managed proxies
+      DARC_TOR: 0
+      DARC_I2P: 0
+      DARC_ZERONET: 0
+      DARC_FREENET: 0
     restart: "on-failure"
     networks: *networks
     volumes: *volumes

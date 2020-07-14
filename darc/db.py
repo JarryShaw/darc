@@ -348,7 +348,7 @@ def _drop_requests_redis(link: Link):
 
     """
     with _redis_get_lock('lock_queue_requests'):
-        _redis_command('zrem', 'queue_requests', pickle.dumps(link))
+        _redis_command('zrem', 'queue_requests', link.name)
 
 
 def drop_selenium(link: Link):
@@ -399,7 +399,7 @@ def _drop_selenium_redis(link: Link):
 
     """
     with _redis_get_lock('lock_queue_selenium'):
-        _redis_command('zrem', 'queue_selenium', pickle.dumps(link))
+        _redis_command('zrem', 'queue_selenium', link.names)
 
 
 def save_requests(entries: typing.List[Link], single: bool = False,
@@ -564,8 +564,9 @@ def _save_requests_redis(entries: typing.List[Link], single: bool = False,
                 _redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
         return
 
+    _redis_command('set', entries.name, pickle.dumps(entries), nx=True)
     mapping = {
-        pickle.dumps(entries): score,
+        entries.name: score,
     }
     with _redis_get_lock('lock_queue_requests'):
         _redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
@@ -737,12 +738,14 @@ def _save_selenium_redis(entries: typing.List[Link], single: bool = False,
             mapping = {
                 link.name: score for link in pool
             }
+            print('save:', mapping)
             with _redis_get_lock('lock_queue_selenium'):
                 _redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
         return
 
+    _redis_command('set', entries.name, pickle.dumps(entries), nx=True)
     mapping = {
-        pickle.dumps(entries): score,
+        entries.name: score,
     }
     with _redis_get_lock('lock_queue_selenium'):
         _redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
@@ -976,6 +979,7 @@ def _load_selenium_redis() -> typing.List[Link]:
         with _redis_get_lock('lock_queue_selenium', blocking_timeout=LOCK_TIMEOUT):
             temp_pool = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_selenium',
                                                                                 min=0, max=max_score, start=0, num=MAX_POOL)]
+            print('load:', temp_pool)
             link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
