@@ -6,6 +6,7 @@ import contextlib
 import os
 import shutil
 import sys
+import traceback
 import warnings
 
 import stem.util.term
