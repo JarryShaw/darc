@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
 LABEL Name=darc \
-      Version=0.6.3.post1
+      Version=0.6.3.post2
 
 STOPSIGNAL SIGINT
 HEALTHCHECK --interval=1h --timeout=1m \
@@ -17,7 +17,7 @@ ENV LANG="C.UTF-8" \
 
 COPY extra/retry.sh /usr/local/bin/retry
 COPY extra/install.py /usr/local/bin/pty-install
-COPY vendor/jdk-11.0.7_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
+COPY vendor/jdk-11.0.8_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
 
 RUN set -x \
  && retry apt-get update \

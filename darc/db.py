@@ -249,7 +249,7 @@ def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
     return True, score < threshold
 
 
-def drop_hostname(link: Link):
+def drop_hostname(link: Link):  # pylint: disable=inconsistent-return-statements
     """Remove link from the hostname database.
 
     Args:
@@ -300,7 +300,7 @@ def _drop_hostname_redis(link: Link):
         _redis_command('zrem', 'queue_hostname', link.host)
 
 
-def drop_requests(link: Link):
+def drop_requests(link: Link):  # pylint: disable=inconsistent-return-statements
     """Remove link from the :mod:`requests` database.
 
     Args:
@@ -351,7 +351,7 @@ def _drop_requests_redis(link: Link):
         _redis_command('zrem', 'queue_requests', link.name)
 
 
-def drop_selenium(link: Link):
+def drop_selenium(link: Link):  # pylint: disable=inconsistent-return-statements
     """Remove link from the :mod:`selenium` database.
 
     Args:
@@ -402,7 +402,7 @@ def _drop_selenium_redis(link: Link):
         _redis_command('zrem', 'queue_selenium', link.names)
 
 
-def save_requests(entries: typing.List[Link], single: bool = False,
+def save_requests(entries: typing.List[Link], single: bool = False,  # pylint: disable=inconsistent-return-statements
                   score=None, nx=False, xx=False):
     """Save link to the :mod:`requests` database.
 
@@ -572,7 +572,7 @@ def _save_requests_redis(entries: typing.List[Link], single: bool = False,
         _redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
 
 
-def save_selenium(entries: typing.List[Link], single: bool = False,
+def save_selenium(entries: typing.List[Link], single: bool = False,  # pylint: disable=inconsistent-return-statements
                   score=None, nx=False, xx=False):
     """Save link to the :mod:`selenium` database.
 
@@ -738,7 +738,6 @@ def _save_selenium_redis(entries: typing.List[Link], single: bool = False,
             mapping = {
                 link.name: score for link in pool
             }
-            print('save:', mapping)
             with _redis_get_lock('lock_queue_selenium'):
                 _redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
         return
@@ -856,7 +855,7 @@ def _load_requests_redis() -> typing.List[Link]:
     try:
         with _redis_get_lock('lock_queue_requests', blocking_timeout=LOCK_TIMEOUT):
             temp_pool = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_requests',
-                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]
+                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
             link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
@@ -978,8 +977,7 @@ def _load_selenium_redis() -> typing.List[Link]:
     try:
         with _redis_get_lock('lock_queue_selenium', blocking_timeout=LOCK_TIMEOUT):
             temp_pool = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_selenium',
-                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]
-            print('load:', temp_pool)
+                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
             link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]
             if TIME_CACHE is not None:
                 new_score = now + sec_delta

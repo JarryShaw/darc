@@ -12,7 +12,6 @@ import re
 import shutil
 import sys
 import threading
-import urllib.parse
 
 import peewee
 import playhouse.db_url
@@ -178,8 +177,8 @@ else:
 # database instance
 _DB_URL = os.getenv('DB_URL')
 if _DB_URL is None:
-    DB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/darc.db')
-    DB_WEB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/darcweb.db')
+    DB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/sqlite/darc.db')
+    DB_WEB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/sqlite/darcweb.db')
 else:
     DB: typing.Database = playhouse.db_url.connect(f'{_DB_URL}/darc', unquote_password=True)
     DB_WEB: typing.Database = playhouse.db_url.connect(f'{_DB_URL}/darcweb', unquote_password=True)

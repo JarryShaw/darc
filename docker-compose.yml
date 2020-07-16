@@ -19,7 +19,6 @@ services:
                "--file", "/app/text/ahmia.fi_onions.txt",
                "--file", "/app/text/tor.new.txt" ]
     depends_on: &depends_on
-      - db
       - redis
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
@@ -57,10 +56,10 @@ services:
       # save data submitssion
       SAVE_DB: 0
       # Redis URL
-      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
-      #REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
+      #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      REDIS_URL: 'redis://darc:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'm
       # database URL
-      DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
+      #DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
       DARC_MAX_POOL: 10
       # Tor proxy & control port
@@ -184,12 +183,14 @@ services:
       # data storage
       PATH_DATA: "data"
       # Redis URL
-      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
-      #REDIS_URL: 'redis://r-j6cd2kyxmdmtwsuwwq:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
+      #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
+      REDIS_URL: 'redis://darc:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
       # database URL
       DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
       DARC_MAX_POOL: 10
+      # save data submitssion
+      SAVE_DB: 0
       # Tor proxy & control port
       TOR_PORT: 9050
       TOR_CTRL: 9051
@@ -280,20 +281,6 @@ services:
     networks: *networks
     volumes:
       - /data/darc/redis:/data
-
-  db:
-    image: mysql
-    container_name: db
-    command: --default-authentication-plugin=mysql_native_password
-    expose:
-      - 3306
-    restart: "always"
-    environment:
-      MYSQL_ROOT_PASSWORD: "b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA"
-      MYSQL_DATABASE: "darcweb"
-    networks: *networks
-    volumes:
-      - /data/darc/mysql:/var/lib/mysql
 
 # network settings
 networks:

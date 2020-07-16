@@ -26,7 +26,6 @@ There are three submission events:
 """
 
 import base64
-import contextlib
 import dataclasses
 import glob
 import json
