@@ -18,8 +18,6 @@ services:
                "--file", "/app/text/freenet.txt",
                "--file", "/app/text/ahmia.fi_onions.txt",
                "--file", "/app/text/tor.new.txt" ]
-    depends_on: &depends_on
-      - redis
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -57,7 +55,7 @@ services:
       SAVE_DB: 0
       # Redis URL
       #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
-      REDIS_URL: 'redis://darc:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'm
+      REDIS_URL: 'redis://r-j6c63g3ch2v493jm6r:Zft13917331612@r-j6c63g3ch2v493jm6r.redis.rds.aliyuncs.com'
       # database URL
       #DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
@@ -150,7 +148,6 @@ services:
     container_name: loader
     #entrypoint: [ "bash", "/app/run.sh" ]
     command: [ "--type", "loader" ]
-    depends_on: *depends_on
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -184,7 +181,7 @@ services:
       PATH_DATA: "data"
       # Redis URL
       #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
-      REDIS_URL: 'redis://darc:zft%4013917331612@r-j6cd2kyxmdmtwsuwwq.redis.rds.aliyuncs.com'
+      REDIS_URL: 'redis://r-j6c63g3ch2v493jm6r:Zft13917331612@r-j6c63g3ch2v493jm6r.redis.rds.aliyuncs.com'
       # database URL
       DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
@@ -268,19 +265,6 @@ services:
     restart: "always"
     networks: *networks
     volumes: *volumes
-
-  redis:
-    image: redis:darc
-    build:
-      context: .
-      dockerfile: extra/redis.dockerfile
-    container_name: redis
-    expose:
-      - 6379
-    restart: "always"
-    networks: *networks
-    volumes:
-      - /data/darc/redis:/data
 
 # network settings
 networks:
