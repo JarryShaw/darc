@@ -9,6 +9,7 @@ The :mod:`darc.crawl` module provides two types of crawlers.
 
 """
 
+import contextlib
 import math
 import os
 import shutil
@@ -25,6 +26,7 @@ import stem.process
 import stem.util.term
 import urllib3
 
+import darc.typing as typing
 from darc._compat import datetime
 from darc.const import FORCE, SE_EMPTY
 from darc.db import (drop_hostname, drop_requests, drop_selenium, have_hostname, save_requests,
@@ -39,7 +41,8 @@ from darc.requests import request_session
 from darc.save import save_headers
 from darc.selenium import request_driver
 from darc.sites import crawler_hook, loader_hook
-from darc.submit import submit_new_host, submit_requests, submit_selenium
+from darc.submit import SAVE_DB, submit_new_host, submit_requests, submit_selenium
+from darc.model import HostnameModel, URLModel
 
 
 def crawler(link: Link):
@@ -230,6 +233,19 @@ def crawler(link: Link):
             # add link to queue
             save_selenium(link, single=True, score=0, nx=True)
     except Exception:
+        if SAVE_DB:
+            with contextlib.suppress(Exception):
+                host: typing.Optional[HostnameModel] = HostnameModel.get_or_none(HostnameModel.hostname == link.host)
+                if host is not None:
+                    host.alive = False
+                    host.save()
+
+            with contextlib.suppress(Exception):
+                url: typing.Optional[URLModel] = URLModel.get_or_none(URLModel.hash == link.name)
+                if url is not None:
+                    url.alias = False
+                    url.save()
+
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
         print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
         save_requests(link, single=True)

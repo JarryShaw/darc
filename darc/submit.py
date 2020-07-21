@@ -505,6 +505,10 @@ def submit_requests(time: typing.Datetime, link: Link,
                 alive=False,
                 since=time,
             ))
+            if not model.alive:
+                model.alive = True
+                model.since = time
+                model.save()
 
             url, _ = URLModel.get_or_create(hash=link.name, defaults=dict(
                 url=link.url,
@@ -515,6 +519,10 @@ def submit_requests(time: typing.Datetime, link: Link,
                 alive=False,
                 since=time,
             ))
+            if not url.alive and response.ok:
+                url.alive = True
+                url.since = time
+                url.save()
 
             model = RequestsModel.create(
                 url=url,
@@ -522,7 +530,7 @@ def submit_requests(time: typing.Datetime, link: Link,
                 method=response.request.method,
                 document=content,
                 mime_type=mime_type,
-                is_html = html,
+                is_html=html,
                 status_code=response.status_code,
                 reason=response.reason,
                 cookies=response.cookies.get_dict(),

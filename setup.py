@@ -5,7 +5,7 @@ import sys
 import subprocess
 
 # version string
-__version__ = '0.6.3.post2'
+__version__ = '0.6.4'
 
 # setup attributes
 attrs = dict(
