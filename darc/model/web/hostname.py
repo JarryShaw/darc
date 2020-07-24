@@ -24,7 +24,13 @@ __all__ = ['HostnameModel']
 
 
 class HostnameModel(BaseModel):
-    """Data model for a hostname record."""
+    """Data model for a hostname record.
+
+    Important:
+        The *alive* of a hostname is toggled if :func:`~darc.crawl.crawler`
+        successfully requested a URL with such hostname.
+
+    """
 
     class Proxy(enum.IntEnum):
         """Proxy types supported by :mod:`darc`."""

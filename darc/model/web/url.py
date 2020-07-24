@@ -26,7 +26,14 @@ __all__ = ['URLModel']
 
 
 class URLModel(BaseModel):
-    """Data model for a requested URL."""
+    """Data model for a requested URL.
+
+    Important:
+        The *alive* of a URL is toggled if :func:`~darc.crawl.crawler`
+        successfully requested such URL and the status code is
+        :attr:`~flask.Response.ok`.
+
+    """
 
     class Proxy(enum.IntEnum):
         """Supported proxy type enumeration."""
