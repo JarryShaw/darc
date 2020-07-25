@@ -30,6 +30,10 @@ def check_call(*args, **kwargs):
                 return subprocess.check_call(*args, **kwargs)
             time.sleep(60)
 
+    with contextlib.suppress(subprocess.CalledProcessError):
+        return subprocess.check_call(['systemctl', 'restart', 'docker'])
+    subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check
+
 
 def upload(file, path, host, user):
     """Upload files."""

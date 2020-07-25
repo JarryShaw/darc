@@ -25,6 +25,10 @@ def check_call(*args, **kwargs):
                 return subprocess.check_call(*args, **kwargs)
             time.sleep(60)
 
+    with contextlib.suppress(subprocess.CalledProcessError):
+        return subprocess.check_call(['systemctl', 'restart', 'docker'])
+    subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check
+
 
 def check_output(*args, **kwargs):
     """Wraps :func:`subprocess.check_output`."""
@@ -32,6 +36,10 @@ def check_output(*args, **kwargs):
         with contextlib.suppress(subprocess.CalledProcessError):
             return subprocess.check_output(*args, **kwargs)
         time.sleep(60)
+
+    with contextlib.suppress(subprocess.CalledProcessError):
+        return subprocess.check_call(['systemctl', 'restart', 'docker'])
+    subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check
 
 
 def timestamp(container_id):
@@ -55,6 +63,7 @@ def healthcheck(file, interval, *services):
         return
 
     ts_dict = dict()
+    ps_dict = dict()
     while True:
         for container_id in container_id_list:
             try:
@@ -69,9 +78,16 @@ def healthcheck(file, interval, *services):
             status = info['State']['Status'].casefold()
             if status == 'paused':
                 # uploading...
-                continue
-                # check_call(['docker-compose', '--file', file, 'unpause'])
-                # print(f'[{datetime.datetime.now().isoformat()}] Unpaused container {container_id}')
+                last_ts = ps_dict.get(container_id)
+                then_ts = timestamp(container_id)
+                if last_ts is None:
+                    continue
+                if then_ts - last_ts >= interval:
+                    continue
+                del ps_dict[container_id]
+
+                check_call(['docker-compose', '--file', file, 'unpause'])
+                print(f'[{datetime.datetime.now().isoformat()}] Unpaused container {container_id}')
             if status == 'exited':
                 with open(f'logs/{time.strftime(r"%Y-%m-%d-%H-%M-%S")}.log', 'wb') as log_file:
                     check_call(['docker', 'logs', '-t', '--details', container_id],
