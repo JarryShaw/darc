@@ -58,6 +58,8 @@
         "prouter",
         "psycopg",
         "ptyprocess",
+        "pydanti",
+        "pydantic",
         "pygments",
         "pymysql",
         "pysocks",

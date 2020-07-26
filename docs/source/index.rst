@@ -13,6 +13,7 @@
    docker
    demo/api
    demo/model
+   demo/schema
    aux
 
 :mod:`darc` is designed as a swiss army knife for darkweb crawling.

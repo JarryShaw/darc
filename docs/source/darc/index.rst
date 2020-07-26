@@ -24,6 +24,7 @@ of such view.
    sites/index
    const
    error
+   model/index
 
 As the websites can be sometimes irritating for their anti-robots
 verification, login requirements, etc., the :mod:`darc` project

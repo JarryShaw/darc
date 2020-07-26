@@ -52,7 +52,7 @@ def new_host():
             "Sitemaps": [
                 {
                     // path of the file, relative path (to data root path ``PATH_DATA``) in container
-                    //   - <proxy>/<scheme>/<host>/sitemap_<name>.txt
+                    //   - <proxy>/<scheme>/<host>/sitemap_<name>.xml
                     "path": ...,
                     // content of the file (**base64** encoded)
                     "data": ...,
@@ -129,7 +129,7 @@ def from_requests():
             "Response": {
                 ...
             },
-            // Content type
+            // content type
             "Content-Type": ...,
             // requested file (if not exists, then ``null``)
             "Document": {

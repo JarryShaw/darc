@@ -1,0 +1,275 @@
+{
+  "title": "requests",
+  "description": "Data submission from :func:`darc.submit.submit_requests`.",
+  "type": "object",
+  "properties": {
+    "$PARTIAL$": {
+      "title": "$Partial$",
+      "description": "partial flag - true / false",
+      "type": "boolean"
+    },
+    "[metadata]": {
+      "title": "[Metadata]",
+      "description": "metadata of URL",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Metadata"
+        }
+      ]
+    },
+    "Timestamp": {
+      "title": "Timestamp",
+      "description": "requested timestamp in ISO format as in name of saved file",
+      "type": "string",
+      "format": "date-time"
+    },
+    "URL": {
+      "title": "Url",
+      "description": "original URL",
+      "minLength": 1,
+      "maxLength": 65536,
+      "format": "uri",
+      "type": "string"
+    },
+    "Method": {
+      "title": "Method",
+      "description": "request method",
+      "type": "string"
+    },
+    "Status-Code": {
+      "title": "Status-Code",
+      "description": "response status code",
+      "exclusiveMinimum": 0,
+      "type": "integer"
+    },
+    "Reason": {
+      "title": "Reason",
+      "description": "response reason",
+      "type": "string"
+    },
+    "Cookies": {
+      "title": "Cookies",
+      "description": "response cookies (if any)",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "Session": {
+      "title": "Session",
+      "description": "session cookies (if any)",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "Request": {
+      "title": "Request",
+      "description": "request headers (if any)",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "Response": {
+      "title": "Response",
+      "description": "response headers (if any)",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "Content-Type": {
+      "title": "Content-Type",
+      "description": "content type",
+      "pattern": "[a-zA-Z0-9.-]+/[a-zA-Z0-9.-]+",
+      "type": "string"
+    },
+    "Document": {
+      "title": "Document",
+      "description": "requested file (if not exists, then ``null``)",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RequestsDocument"
+        }
+      ]
+    },
+    "History": {
+      "title": "History",
+      "description": "redirection history (if any)",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/HistoryModel"
+      }
+    }
+  },
+  "required": [
+    "$PARTIAL$",
+    "[metadata]",
+    "Timestamp",
+    "URL",
+    "Method",
+    "Status-Code",
+    "Reason",
+    "Cookies",
+    "Session",
+    "Request",
+    "Response",
+    "Content-Type",
+    "History"
+  ],
+  "definitions": {
+    "Proxy": {
+      "title": "Proxy",
+      "description": "Proxy type.",
+      "enum": [
+        "null",
+        "tor",
+        "i2p",
+        "zeronet",
+        "freenet"
+      ],
+      "type": "string"
+    },
+    "Metadata": {
+      "title": "metadata",
+      "description": "Metadata of URL.",
+      "type": "object",
+      "properties": {
+        "url": {
+          "title": "Url",
+          "description": "original URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>",
+          "minLength": 1,
+          "maxLength": 65536,
+          "format": "uri",
+          "type": "string"
+        },
+        "proxy": {
+          "$ref": "#/definitions/Proxy"
+        },
+        "host": {
+          "title": "Host",
+          "description": "hostname / netloc, c.f. ``urllib.parse.urlparse``",
+          "type": "string"
+        },
+        "base": {
+          "title": "Base",
+          "description": "base folder, relative path (to data root path ``PATH_DATA``) in containter - <proxy>/<scheme>/<host>",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "description": "sha256 of URL as name for saved files (timestamp is in ISO format) - JSON log as this one: <base>/<name>_<timestamp>.json; - HTML from requests: <base>/<name>_<timestamp>_raw.html; - HTML from selenium: <base>/<name>_<timestamp>.html; - generic data files: <base>/<name>_<timestamp>.dat",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "proxy",
+        "host",
+        "base",
+        "name"
+      ]
+    },
+    "RequestsDocument": {
+      "title": "RequestsDocument",
+      "description": ":mod:`requests` document data.",
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "description": "path of the file, relative path (to data root path ``PATH_DATA``) in container - <proxy>/<scheme>/<host>/<name>_<timestamp>_raw.html; or if the document is of generic content type, i.e. not HTML - <proxy>/<scheme>/<host>/<name>_<timestamp>.dat",
+          "type": "string"
+        },
+        "data": {
+          "title": "Data",
+          "description": "content of the file (**base64** encoded)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "data"
+      ]
+    },
+    "HistoryModel": {
+      "title": "HistoryModel",
+      "description": ":mod:`requests` history data.",
+      "type": "object",
+      "properties": {
+        "URL": {
+          "title": "Url",
+          "description": "original URL",
+          "minLength": 1,
+          "maxLength": 65536,
+          "format": "uri",
+          "type": "string"
+        },
+        "Method": {
+          "title": "Method",
+          "description": "request method",
+          "type": "string"
+        },
+        "Status-Code": {
+          "title": "Status-Code",
+          "description": "response status code",
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        "Reason": {
+          "title": "Reason",
+          "description": "response reason",
+          "type": "string"
+        },
+        "Cookies": {
+          "title": "Cookies",
+          "description": "response cookies (if any)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "Session": {
+          "title": "Session",
+          "description": "session cookies (if any)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "Request": {
+          "title": "Request",
+          "description": "request headers (if any)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "Response": {
+          "title": "Response",
+          "description": "response headers (if any)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "Document": {
+          "title": "Document",
+          "description": "content of the file (**base64** encoded)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "URL",
+        "Method",
+        "Status-Code",
+        "Reason",
+        "Cookies",
+        "Session",
+        "Request",
+        "Response",
+        "Document"
+      ]
+    }
+  }
+}

@@ -23,6 +23,11 @@ There are three submission events:
    Submitted in :func:`~darc.crawl.loader` function call, after the
    loading process of the URL using :mod:`selenium`.
 
+.. seealso::
+
+   Please refer to :doc:`data schema </demo/schema>` for more
+   information about the submission data.
+
 """
 
 import base64
@@ -307,7 +312,7 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
             "Sitemaps": [
                 {
                     // path of the file, relative path (to data root path ``PATH_DATA``) in container
-                    //   - <proxy>/<scheme>/<host>/sitemap_<name>.txt
+                    //   - <proxy>/<scheme>/<host>/sitemap_<name>.xml
                     "path": ...,
                     // content of the file (**base64** encoded)
                     "data": ...,
@@ -468,7 +473,7 @@ def submit_requests(time: typing.Datetime, link: Link,
             "Response": {
                 ...
             },
-            // Content type
+            // content type
             "Content-Type": ...,
             // requested file (if not exists, then ``null``)
             "Document": {

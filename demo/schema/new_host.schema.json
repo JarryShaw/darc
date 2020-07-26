@@ -1,0 +1,184 @@
+{
+  "title": "new_host",
+  "description": "Data submission from :func:`darc.submit.submit_new_host`.",
+  "type": "object",
+  "properties": {
+    "$PARTIAL$": {
+      "title": "$Partial$",
+      "description": "partial flag - true / false",
+      "type": "boolean"
+    },
+    "[metadata]": {
+      "title": "[Metadata]",
+      "description": "metadata of URL",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Metadata"
+        }
+      ]
+    },
+    "Timestamp": {
+      "title": "Timestamp",
+      "description": "requested timestamp in ISO format as in name of saved file",
+      "type": "string",
+      "format": "date-time"
+    },
+    "URL": {
+      "title": "Url",
+      "description": "original URL",
+      "minLength": 1,
+      "maxLength": 65536,
+      "format": "uri",
+      "type": "string"
+    },
+    "Robots": {
+      "title": "Robots",
+      "description": "robots.txt from the host (if not exists, then ``null``)",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RobotsDocument"
+        }
+      ]
+    },
+    "Sitemaps": {
+      "title": "Sitemaps",
+      "description": "sitemaps from the host (if none, then ``null``)",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SitemapDocument"
+      }
+    },
+    "Hosts": {
+      "title": "Hosts",
+      "description": "hosts.txt from the host (if proxy type is ``i2p``; if not exists, then ``null``)",
+      "allOf": [
+        {
+          "$ref": "#/definitions/HostsDocument"
+        }
+      ]
+    }
+  },
+  "required": [
+    "$PARTIAL$",
+    "[metadata]",
+    "Timestamp",
+    "URL"
+  ],
+  "definitions": {
+    "Proxy": {
+      "title": "Proxy",
+      "description": "Proxy type.",
+      "enum": [
+        "null",
+        "tor",
+        "i2p",
+        "zeronet",
+        "freenet"
+      ],
+      "type": "string"
+    },
+    "Metadata": {
+      "title": "metadata",
+      "description": "Metadata of URL.",
+      "type": "object",
+      "properties": {
+        "url": {
+          "title": "Url",
+          "description": "original URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>",
+          "minLength": 1,
+          "maxLength": 65536,
+          "format": "uri",
+          "type": "string"
+        },
+        "proxy": {
+          "$ref": "#/definitions/Proxy"
+        },
+        "host": {
+          "title": "Host",
+          "description": "hostname / netloc, c.f. ``urllib.parse.urlparse``",
+          "type": "string"
+        },
+        "base": {
+          "title": "Base",
+          "description": "base folder, relative path (to data root path ``PATH_DATA``) in containter - <proxy>/<scheme>/<host>",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "description": "sha256 of URL as name for saved files (timestamp is in ISO format) - JSON log as this one: <base>/<name>_<timestamp>.json; - HTML from requests: <base>/<name>_<timestamp>_raw.html; - HTML from selenium: <base>/<name>_<timestamp>.html; - generic data files: <base>/<name>_<timestamp>.dat",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "proxy",
+        "host",
+        "base",
+        "name"
+      ]
+    },
+    "RobotsDocument": {
+      "title": "RobotsDocument",
+      "description": "``robots.txt`` document data.",
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "description": "path of the file, relative path (to data root path ``PATH_DATA``) in container - <proxy>/<scheme>/<host>/robots.txt",
+          "type": "string"
+        },
+        "data": {
+          "title": "Data",
+          "description": "content of the file (**base64** encoded)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "data"
+      ]
+    },
+    "SitemapDocument": {
+      "title": "SitemapDocument",
+      "description": "Sitemaps document data.",
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "description": "path of the file, relative path (to data root path ``PATH_DATA``) in container - <proxy>/<scheme>/<host>/sitemap_<name>.xml",
+          "type": "string"
+        },
+        "data": {
+          "title": "Data",
+          "description": "content of the file (**base64** encoded)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "data"
+      ]
+    },
+    "HostsDocument": {
+      "title": "HostsDocument",
+      "description": "``hosts.txt`` document data.",
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "description": "path of the file, relative path (to data root path ``PATH_DATA``) in container - <proxy>/<scheme>/<host>/hosts.txt",
+          "type": "string"
+        },
+        "data": {
+          "title": "Data",
+          "description": "content of the file (**base64** encoded)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "data"
+      ]
+    }
+  }
+}
