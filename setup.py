@@ -1,11 +1,30 @@
 # -*- coding: utf-8 -*-
-"""Darkweb crawler & search engine."""
+"""``darc`` - Darkweb Crawler Project
+========================================
+
+``darc`` is designed as a swiss army knife for darkweb crawling.
+It integrates ``requests`` to collect HTTP request and response
+information, such as cookies, header fields, etc. It also bundles
+``selenium`` to provide a fully rendered web page and screenshot
+of such view.
+
+The general process of ``darc`` can be described as following:
+
+There are two types of *workers*:
+
+* ``crawler`` -- runs the ``darc.crawl.crawler`` to provide a
+  fresh view of a link and test its connectability
+
+* ``loader`` -- run the ``darc.crawl.loader`` to provide an
+  in-depth view of a link and provide more visual information
+
+"""
 
 import sys
 import subprocess
 
 # version string
-__version__ = '0.6.4'
+__version__ = '0.6.4.post1'
 
 # setup attributes
 attrs = dict(

@@ -167,7 +167,7 @@ Usage
 
 The ``darc`` project provides a simple CLI::
 
-   usage: darc [-h] [-f FILE] ...
+   usage: darc [-h] [-v] -t {crawler,loader} [-f FILE] ...
 
    the darkweb crawling swiss army knife
 
@@ -176,6 +176,9 @@ The ``darc`` project provides a simple CLI::
 
    optional arguments:
      -h, --help            show this help message and exit
+     -v, --version         show program's version number and exit
+     -t {crawler,loader}, --type {crawler,loader}
+                           type of worker process
      -f FILE, --file FILE  read links from file
 
 It can also be called through module entrypoint::
