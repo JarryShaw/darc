@@ -76,11 +76,12 @@ gitlab-prep:
 	find gitlab -depth 1 | grep -v '.git' | xargs rm -rf
 	cp -rf \
 	    darc \
-		docker \
+	    demo \
+	    docker \
 	    docs \
 	    extra \
 	    text \
-		vendor \
+	    vendor \
 	    .coveragerc \
 	    .env \
 	    .dockerignore \
