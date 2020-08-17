@@ -6,7 +6,7 @@
 # Python packages
 pip==20.2.2
 setuptools==49.6.0
-wheel==0.34.2
+wheel==0.35.1
 
 # Python dependencies
 beautifulsoup4[html5lib]==4.9.1
