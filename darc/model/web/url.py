@@ -13,13 +13,11 @@ representing URLs, specifically from ``requests`` and
 
 """
 
-import enum
-
 import peewee
 
 import darc.typing as typing
 from darc.model.abc import BaseModelWeb as BaseModel
-from darc.model.utils import IntEnumField
+from darc.model.utils import IntEnumField, Proxy
 from darc.model.web.hostname import HostnameModel
 
 __all__ = ['URLModel']
@@ -34,20 +32,6 @@ class URLModel(BaseModel):
         :attr:`~flask.Response.ok`.
 
     """
-
-    class Proxy(enum.IntEnum):
-        """Supported proxy type enumeration."""
-
-        #: No proxy.
-        NULL = enum.auto()
-        #: Tor proxy.
-        TOR = enum.auto()
-        #: I2P proxy.
-        I2P = enum.auto()
-        #: ZeroNet proxy.
-        ZERONET = enum.auto()
-        #: Freenet proxy.
-        FREENET = enum.auto()
 
     #: Original URL (c.f. :attr:`link.url <darc.link.Link.url>`).
     url: str = peewee.TextField()

@@ -32,6 +32,7 @@ There are three submission events:
 
 import base64
 import dataclasses
+import datetime
 import glob
 import json
 import os
@@ -50,6 +51,7 @@ from darc.error import APIRequestFailed, DatabaseOperaionFailed, render_error
 from darc.link import Link
 from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, RequestsModel, RobotsModel,
                         SeleniumModel, SitemapModel, URLModel)
+from darc.model.utils import Proxy
 from darc.requests import null_session
 
 # type alias
@@ -77,6 +79,9 @@ if DEBUG:
     print(stem.util.term.format(f'REQUESTS: {API_REQUESTS}', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format(f'SELENIUM: {API_SELENIUM}', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+
+# UNIX epoch
+EPOCH = datetime.datetime(1970, 1, 1, 0, 0)  # 1970-01-01T00:00:00
 
 
 def get_metadata(link: Link) -> typing.Dict[str, str]:
@@ -352,11 +357,11 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
     if SAVE_DB:
         try:
             model, _ = _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults=dict(
-                proxy=HostnameModel.Proxy[link.proxy.upper()],
+                proxy=Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
                 alive=False,
-                since=time,
+                since=EPOCH,
             ))
 
             if robots is not None:
@@ -507,30 +512,32 @@ def submit_requests(time: typing.Datetime, link: Link,
     if SAVE_DB:
         try:
             model, _ = _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults=dict(
-                proxy=HostnameModel.Proxy[link.proxy.upper()],
+                proxy=Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
                 alive=False,
-                since=time,
+                since=EPOCH,
             ))
-            if not model.alive:
+            if not model.alive and response.ok:
                 model.alive = True
                 model.since = time
-                _db_operation(model.save)
+            model.last_seen = time
+            _db_operation(model.save)
 
             url, _ = _db_operation(URLModel.get_or_create, hash=link.name, defaults=dict(
                 url=link.url,
                 hostname=model,
-                proxy=URLModel.Proxy[link.proxy.upper()],
+                proxy=Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
                 alive=False,
-                since=time,
+                since=EPOCH,
             ))
-            if not url.alive and response.ok:
+            if not model.alive and response.ok:
                 url.alive = True
                 url.since = time
-                _db_operation(url.save)
+            url.last_seen = time
+            _db_operation(url.save)
 
             model = _db_operation(RequestsModel.create,
                                   url=url,
@@ -694,22 +701,32 @@ def submit_selenium(time: typing.Datetime, link: Link,
     if SAVE_DB:
         try:
             model, _ = _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults=dict(
-                proxy=HostnameModel.Proxy[link.proxy.upper()],
+                proxy=Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
-                alive=False,
+                alive=True,
                 since=time,
             ))
+            if not model.alive:
+                model.alive = True
+                model.since = time
+            model.last_seen = time
+            _db_operation(model.save)
 
             url, _ = _db_operation(URLModel.get_or_create, hash=link.name, defaults=dict(
                 url=link.url,
                 hostname=model,
-                proxy=URLModel.Proxy[link.proxy.upper()],
+                proxy=Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
-                alive=False,
+                alive=True,
                 since=time,
             ))
+            if not url.alive:
+                url.alive = True
+                url.since = time
+            url.last_seen = time
+            _db_operation(url.save)
 
             _db_operation(SeleniumModel.create,
                           url=url,

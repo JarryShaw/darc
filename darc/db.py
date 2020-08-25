@@ -144,7 +144,7 @@ def _redis_command(command: str, *args, **kwargs) -> typing.Any:
     return value
 
 
-def _db_operation(operation: typing.MethodType, *args, **kwargs) -> typing.Any:
+def _db_operation(operation: typing.Callable[..., typing.T], *args, **kwargs) -> typing.T:
     """Retry operation on database.
 
     Args:
@@ -168,7 +168,7 @@ def _db_operation(operation: typing.MethodType, *args, **kwargs) -> typing.Any:
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
-            model = operation.__self__.__class__.__name__
+            model = typing.cast(typing.MethodType, operation).__self__.__class__.__name__
             warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 168,
                                              f'{model}.{operation.__name__}({_arg_msg})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member

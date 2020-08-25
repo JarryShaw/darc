@@ -7,6 +7,7 @@ utility functions and data fields.
 
 """
 
+import enum
 import ipaddress
 import json
 import pickle  # nosec
@@ -19,7 +20,8 @@ import darc.typing as typing
 
 __all__ = ['table_function',
            'JSONField', 'IPField',
-           'IntEnumField', 'PickleField']
+           'IntEnumField', 'PickleField',
+           'Proxy']
 
 
 def table_function(model_class: peewee.Model) -> str:
@@ -77,25 +79,27 @@ class JSONField(playhouse.mysql_ext.JSONField):
 class IPField(peewee.IPField):
     """IP data field."""
 
-    def db_value(self, val: typing.Optional[typing.IPAddress]) -> typing.Optional[int]:  # pylint: disable=inconsistent-return-statements
+    def db_value(self, val: typing.Optional[typing.Union[str, typing.IPAddress]]) -> typing.Optional[int]:  # pylint: disable=inconsistent-return-statements
         """Dump the value for database storage.
 
         Args:
-            val: Source IP address instance.
+            value: Source IP address instance.
 
         Returns:
             Integral representation of the IP address.
 
         """
         if val is not None:
-            return int(val)
+            if isinstance(val, str):
+                val = ipaddress.ip_address(val)
+            return int(val)  # type: ignore
         return None
 
     def python_value(self, val: typing.Optional[int]) -> typing.Optional[typing.IPAddress]:  # pylint: disable=inconsistent-return-statements
         """Load the value from database storage.
 
         Args:
-            val: Integral representation of the IP address.
+            value: Integral representation of the IP address.
 
         Returns:
             Original IP address instance.
@@ -171,3 +175,18 @@ class PickleField(peewee.BlobField):
         if value is not None:
             return pickle.loads(value)  # nosec
         return None
+
+
+class Proxy(enum.IntEnum):
+    """Proxy types supported by :mod:`darc`."""
+
+    #: No proxy.
+    NULL = enum.auto()
+    #: Tor proxy.
+    TOR = enum.auto()
+    #: I2P proxy.
+    I2P = enum.auto()
+    #: ZeroNet proxy.
+    ZERONET = enum.auto()
+    #: Freenet proxy.
+    FREENET = enum.auto()

@@ -12,13 +12,11 @@ representing hostnames, specifically from ``new_host`` submission.
 
 """
 
-import enum
-
 import peewee
 
 import darc.typing as typing
 from darc.model.abc import BaseModelWeb as BaseModel
-from darc.model.utils import IntEnumField
+from darc.model.utils import IntEnumField, Proxy
 
 __all__ = ['HostnameModel']
 
@@ -31,20 +29,6 @@ class HostnameModel(BaseModel):
         successfully requested a URL with such hostname.
 
     """
-
-    class Proxy(enum.IntEnum):
-        """Proxy types supported by :mod:`darc`."""
-
-        #: No proxy.
-        NULL = enum.auto()
-        #: Tor proxy.
-        TOR = enum.auto()
-        #: I2P proxy.
-        I2P = enum.auto()
-        #: ZeroNet proxy.
-        ZERONET = enum.auto()
-        #: Freenet proxy.
-        FREENET = enum.auto()
 
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
     hostname: str = peewee.TextField()

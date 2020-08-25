@@ -10,6 +10,7 @@ import queue
 import subprocess  # nosec
 import types
 from typing import *
+import typing
 
 import peewee
 import requests_futures.sessions
@@ -23,6 +24,8 @@ import requests
 import selenium.common.exceptions
 import selenium.webdriver
 import selenium.webdriver.common.proxy
+
+T = typing.TypeVar('T')
 
 # argparse.ArgumentParser
 ArgumentParser = argparse.ArgumentParser
