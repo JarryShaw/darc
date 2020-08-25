@@ -23,7 +23,7 @@ LINK_MAP: typing.LinkMap = collections.defaultdict(
 )
 
 
-def register(proxy: str, session: typing.Callable[[], typing.Session],
+def register(proxy: str, session: typing.Callable[[bool], typing.Session],
              driver: typing.Callable[[], typing.Driver]):
     """Register new proxy type.
 

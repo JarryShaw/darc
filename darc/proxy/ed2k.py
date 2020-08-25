@@ -30,6 +30,6 @@ def save_ed2k(link: Link):
         link: Link object representing the ED2K magnet links.
 
     """
-    with LOCK:
+    with LOCK:  # type: ignore
         with open(PATH, 'a') as file:
             print(link.url, file=file)

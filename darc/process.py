@@ -51,12 +51,12 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
     if os.getpid() != getpid():
         return
 
-    if FLAG_MP:
+    if FLAG_MP and _WORKER_POOL:
         for proc in _WORKER_POOL:
             proc.kill()
             proc.join()
 
-    if FLAG_TH:
+    if FLAG_TH and _WORKER_POOL:
         for proc in _WORKER_POOL:
             proc._stop()  # pylint: disable=protected-access
             proc.join()
@@ -65,7 +65,7 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
         os.remove(PATH_ID)
 
     try:
-        sig = strsignal(signum) or signum
+        sig = strsignal(signum) if signum else signum
     except Exception:
         sig = signum
     print(stem.util.term.format(f'[DARC] Exit with signal: {sig} <{frame}>',
@@ -126,26 +126,26 @@ def process_loader():
     print('[LOADER] Stopping mainloop...')
 
 
-def _process(worker: typing.Union[process_crawler, process_loader]):
+def _process(worker: typing.Union[process_crawler, process_loader]):  # type: ignore
     """Wrapper function to start the worker process."""
-    global _WORKER_POOL
+    global _WORKER_POOL  # pylint: disable=global-statement
 
     if FLAG_MP:
-        _WORKER_POOL = [multiprocessing.Process(target=worker) for _ in range(DARC_CPU)]
+        _WORKER_POOL = [multiprocessing.Process(target=worker) for _ in range(DARC_CPU)]  # type: ignore
         for proc in _WORKER_POOL:
             proc.start()
         for proc in _WORKER_POOL:
             proc.join()
 
     elif FLAG_TH:
-        _WORKER_POOL = [threading.Thread(target=worker) for _ in range(DARC_CPU)]
+        _WORKER_POOL = [threading.Thread(target=worker) for _ in range(DARC_CPU)]  # type: ignore
         for proc in _WORKER_POOL:
             proc.start()
         for proc in _WORKER_POOL:
             proc.join()
 
     else:
-        worker()
+        worker()  # type: ignore
 
 
 def process(worker: typing.Literal['crawler', 'loader']):

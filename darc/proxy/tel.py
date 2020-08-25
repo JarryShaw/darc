@@ -30,6 +30,6 @@ def save_tel(link: Link):
         link: Link object representing the telephone number.
 
     """
-    with LOCK:
+    with LOCK:  # type: ignore
         with open(PATH, 'a') as file:
             print(link.url, file=file)

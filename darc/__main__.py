@@ -13,7 +13,7 @@ import stem.util.term
 
 import darc.typing as typing
 from darc.const import DB, DB_WEB, DEBUG, FLAG_DB, PATH_ID, PATH_LN
-from darc.db import _redis_command, save_requests
+from darc.db import _db_operation, _redis_command, save_requests
 from darc.error import DatabaseOperaionFailed, render_error
 from darc.link import parse_link
 from darc.model import (HostnameModel, HostnameQueueModel, HostsModel, RequestsHistoryModel,
@@ -92,7 +92,7 @@ def main():
         while True:
             try:
                 with DB:
-                    DB.create_tables([
+                    _db_operation(DB.create_tables, [
                         HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel,
                     ])
             except Exception as error:
@@ -106,7 +106,7 @@ def main():
         while True:
             try:
                 with DB_WEB:
-                    DB_WEB.create_tables([
+                    _db_operation(DB_WEB.create_tables, [
                         HostnameModel, URLModel,
                         RobotsModel, SitemapModel, HostsModel,
                         RequestsModel, RequestsHistoryModel, SeleniumModel,

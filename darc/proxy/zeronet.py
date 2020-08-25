@@ -11,7 +11,7 @@ import os
 import pprint
 import shlex
 import shutil
-import subprocess
+import subprocess  # nosec
 import sys
 import traceback
 import warnings
@@ -71,13 +71,13 @@ def _zeronet_bootstrap():
         * :data:`darc.proxy.zeronet._ZERONET_PROC`
 
     """
-    global _ZERONET_BS_FLAG, _ZERONET_PROC
+    global _ZERONET_BS_FLAG, _ZERONET_PROC  # pylint: disable=global-statement
 
     # launch Tor first
     tor_bootstrap()
 
     # launch ZeroNet process
-    _ZERONET_PROC = subprocess.Popen(
+    _ZERONET_PROC = subprocess.Popen(  # nosec
         _ZERONET_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 

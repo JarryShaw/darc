@@ -80,7 +80,7 @@ if DEBUG:
 
 def renew_tor_session():
     """Renew Tor session."""
-    global _TOR_CTRL
+    global _TOR_CTRL  # pylint: disable=global-statement
 
     try:
         # Tor controller process
@@ -127,7 +127,7 @@ def _tor_bootstrap():
         * :data:`darc.proxy.tor._TOR_CTRL`
 
     """
-    global _TOR_BS_FLAG, _TOR_PROC
+    global _TOR_BS_FLAG, _TOR_PROC  # pylint: disable=global-statement
 
     # launch Tor process
     _TOR_PROC = stem.process.launch_tor_with_config(

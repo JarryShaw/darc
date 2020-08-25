@@ -246,8 +246,8 @@ def crawler(link: Link):
                     url.alias = False
                     url.save()
 
-        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # type: ignore # pylint: disable=line-too-long
+        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # type: ignore # pylint: disable=no-member
         save_requests(link, single=True)
     print(f'[REQUESTS] Requested {link.url}')
 
@@ -355,7 +355,7 @@ def loader(link: Link):
             # add link to queue
             save_requests(extract_links(link, html), score=0, nx=True)
     except Exception:
-        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # type: ignore # pylint: disable=line-too-long
+        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # type: ignore # pylint: disable=no-member
         save_selenium(link, single=True)
     print(f'[SELENIUM] Loaded {link.url}')

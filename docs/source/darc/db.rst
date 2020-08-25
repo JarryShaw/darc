@@ -56,11 +56,11 @@
 
       Toggles the behaviour of :func:`darc.db.get_lock`.
 
-.. data:: darc.db.REDIS_RETRY
+.. data:: darc.db.RETRY_INTERVAL
    :type: int
 
    :default: ``10``
-   :environ: :envvar:`DARC_REDIS_RETRY`
+   :environ: :envvar:`DARC_RETRY`
 
    Retry interval between each Redis command failure.
 

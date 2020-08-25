@@ -27,10 +27,10 @@ try:
     from pathlib import PosixPath
     PosixPath(os.curdir)
 except NotImplementedError:
-    from pathlib import PurePosixPath as PosixPath
+    from pathlib import PurePosixPath as PosixPath  # type: ignore
 
 
-def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',
+def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',  # type: ignore
           encoding: typing.Optional[str] = None, errors: typing.Optional[str] = None) -> str:
     """Wrapper function for :func:`urllib.parse.quote`.
 
@@ -50,8 +50,8 @@ def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',
 
     """
     with contextlib.suppress(Exception):
-        return urllib.parse.quote(string, safe, encoding=encoding, errors=errors)
-    return string
+        return urllib.parse.quote(string, safe, encoding=encoding, errors=errors)  # type: ignore
+    return str(string)
 
 
 def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'replace') -> str:
@@ -72,8 +72,8 @@ def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'repla
 
     """
     with contextlib.suppress(Exception):
-        return urllib.parse.unquote(string, encoding=encoding, errors=errors)
-    return string
+        return urllib.parse.unquote(string, encoding=encoding, errors=errors)  # type: ignore
+    return str(string)
 
 
 def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = True) -> str:
@@ -94,8 +94,8 @@ def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = Tru
 
     """
     with contextlib.suppress(ValueError):
-        return urllib.parse.urljoin(base, url, allow_fragments=allow_fragments)
-    return f'{base}/{url}'
+        return urllib.parse.urljoin(base, url, allow_fragments=allow_fragments)  # type: ignore
+    return f'{str(base)}/{str(url)}'
 
 
 def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib.parse.ParseResult:
@@ -247,7 +247,7 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
 
     The ``base`` for parsed link :class:`~darc.link.Link` object is defined as
 
-    .. code::
+    .. code-block::
 
         <root>/<proxy>/<scheme>/<hostname>/
 
@@ -333,7 +333,7 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     return Link(
         url=link,
         url_parse=parse,
-        host=host,
+        host=host,  # type: ignore
         base=base,
         name=name,
         proxy=proxy_type,

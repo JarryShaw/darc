@@ -11,7 +11,7 @@ Health Check
    * Entry point: ``extra/healthcheck.py``
    * System V service: ``extra/healthcheck.service``
 
-.. code:: text
+.. code-block:: text
 
    usage: healthcheck [-h] [-f FILE] [-i INTERVAL] ...
 
@@ -43,7 +43,7 @@ Upload API Submission Files
    * Helper script: ``extra/upload.sh``
    * System V service: ``extra/upload.service``
 
-.. code:: text
+.. code-block:: text
 
    usage: upload [-h] [-f FILE] [-p PATH] [-i INTERVAL] -H HOST [-U USER]
 

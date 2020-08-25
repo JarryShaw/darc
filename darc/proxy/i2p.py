@@ -15,7 +15,7 @@ import pprint
 import re
 import shlex
 import shutil
-import subprocess
+import subprocess  # nosec
 import sys
 import traceback
 import warnings
@@ -104,10 +104,10 @@ def _i2p_bootstrap():
         * :data:`darc.proxy.i2p._I2P_PROC`
 
     """
-    global _I2P_BS_FLAG, _I2P_PROC
+    global _I2P_BS_FLAG, _I2P_PROC  # pylint: disable=global-statement
 
     # launch I2P process
-    _I2P_PROC = subprocess.Popen(
+    _I2P_PROC = subprocess.Popen(  # nosec
         _I2P_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 
@@ -176,7 +176,7 @@ def i2p_bootstrap():
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, typing.Union[str, typing.ByteString]]]:  # pylint: disable=inconsistent-return-statements
+def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, str]]:  # pylint: disable=inconsistent-return-statements
     """Read ``hosts.txt``.
 
     Args:
@@ -198,7 +198,7 @@ def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, typing.Union[str, 
     """
     path = os.path.join(link.base, 'hosts.txt')
     if not os.path.isfile(path):
-        return
+        return None
     with open(path, 'rb') as file:
         content = file.read()
     data = dict(

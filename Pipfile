@@ -16,12 +16,13 @@ verify_ssl = true
 [dev-packages]
 python-darc = {editable = true,path = ".",extras = ["mysql"]}
 autopep8 = "*"
+bandit = "*"
+mypy = "*"
 pylint = "*"
 ipython = "*"
 coverage = "*"
 codecov = "*"
 sphinx = "*"
-sphinxcontrib-napoleon = "*"
 doc8 = "*"
 rstcheck = "*"
 Flask = "*"

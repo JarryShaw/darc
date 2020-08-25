@@ -13,7 +13,7 @@ import platform
 import pprint
 import shlex
 import shutil
-import subprocess
+import subprocess  # nosec
 import sys
 import traceback
 import warnings
@@ -85,10 +85,10 @@ def _freenet_bootstrap():
         * :data:`darc.proxy.freenet._FREENET_PROC`
 
     """
-    global _FREENET_BS_FLAG, _FREENET_PROC
+    global _FREENET_BS_FLAG, _FREENET_PROC  # pylint: disable=global-statement
 
     # launch Freenet process
-    _FREENET_PROC = subprocess.Popen(
+    _FREENET_PROC = subprocess.Popen(  # nosec
         _FREENET_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 

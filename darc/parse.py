@@ -168,7 +168,7 @@ def _check_ng(temp_list: typing.List[Link]) -> typing.List[Link]:
     """
     from darc.crawl import request_session  # pylint: disable=import-outside-toplevel
 
-    session_map = dict()
+    session_map: typing.Dict[str, typing.FuturesSession] = dict()
     result_list = list()
     for link in temp_list:
         if match_host(link.host):
@@ -188,7 +188,7 @@ def _check_ng(temp_list: typing.List[Link]) -> typing.List[Link]:
         print(f'[HEAD] Checking content type from {link.url}')
 
     link_list = list()
-    for result in concurrent.futures.as_completed(result_list):
+    for result in concurrent.futures.as_completed(result_list):  # type: ignore
         try:
             response: typing.Response = result.result()
         except requests.RequestException as error:
@@ -206,7 +206,7 @@ def _check_ng(temp_list: typing.List[Link]) -> typing.List[Link]:
 
         if match_mime(ct_type):
             continue
-        temp_link = parse_link(response.request.url)
+        temp_link = parse_link(response.request.url)  # type: ignore
         link_list.append(temp_link)
     return link_list
 

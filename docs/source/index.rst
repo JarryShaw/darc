@@ -138,7 +138,7 @@ Installation
    .. |walrus| replace:: ``walrus``
    .. _walrus: https://github.com/pybpc/walrus
 
-.. code:: shell
+.. code-block:: shell
 
    pip install darc
 
@@ -169,7 +169,7 @@ Please see :doc:`/docker`  for more information.
 
 Or, you may refer to and/or install from the `Docker Hub`_ repository:
 
-.. code:: shell
+.. code-block:: shell
 
    docker pull jsnbzh/darc[:TAGNAME]
 
@@ -397,7 +397,7 @@ Data Storage
 
       Toggles the behaviour of :func:`darc.db.get_lock`.
 
-.. envvar:: REDIS_RETRY
+.. envvar:: RETRY_INTERVAL
 
    :type: :obj:`int`
    :default: ``10``

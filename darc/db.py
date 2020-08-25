@@ -34,7 +34,7 @@ import contextlib
 import datetime
 import math
 import os
-import pickle
+import pickle  # nosec
 import pprint
 import shutil
 import sys
@@ -62,14 +62,14 @@ from darc.parse import _check
 REDIS_LOCK = bool(int(os.getenv('DARC_REDIS_LOCK', '0')))
 
 # Redis retry interval
-REDIS_RETRY = float(os.getenv('DARC_REDIS_RETRY', '10'))
-if not math.isfinite(REDIS_RETRY):
-    REDIS_RETRY = None
+RETRY_INTERVAL = float(os.getenv('DARC_RETRY', '10'))
+if not math.isfinite(RETRY_INTERVAL):
+    RETRY_INTERVAL = None  # type: ignore
 
 # lock blocking timeout
 LOCK_TIMEOUT = float(os.getenv('DARC_LOCK_TIMEOUT', '10'))
 if not math.isfinite(LOCK_TIMEOUT):
-    LOCK_TIMEOUT = None
+    LOCK_TIMEOUT = None  # type: ignore
 
 # bulk size
 BULK_SIZE = int(os.getenv('DARC_BULK_SIZE', '100'))
@@ -78,6 +78,28 @@ BULK_SIZE = int(os.getenv('DARC_BULK_SIZE', '100'))
 MAX_POOL = float(os.getenv('DARC_MAX_POOL', '100'))
 if math.isfinite(MAX_POOL):
     MAX_POOL = math.floor(MAX_POOL)
+
+
+def _gen_arg_msg(*args, **kwargs) -> str:
+    """Sanitise arguments representation string.
+
+    Args:
+        *args: Arbitrary arguments.
+
+    Keyword Args:
+        **kwargs: Arbitrary keyword arguments.
+
+    Returns:
+        Sanitised arguments representation string.
+
+    """
+    _args = ', '.join(map(repr, args))
+    _kwargs = ', '.join(f'{k}={v!r}' for k, v in kwargs.items())
+    if _kwargs:
+        if _args:
+            _args += ', '
+        _args += _kwargs
+    return textwrap.shorten(_args, shutil.get_terminal_size().columns)
 
 
 def _redis_command(command: str, *args, **kwargs) -> typing.Any:
@@ -97,7 +119,7 @@ def _redis_command(command: str, *args, **kwargs) -> typing.Any:
         RedisCommandFailed: Warns at each round when the command failed.
 
     See Also:
-        Between each retry, the function sleeps for :data:`~darc.db.REDIS_RETRY`
+        Between each retry, the function sleeps for :data:`~darc.db.RETRY_INTERVAL`
         second(s) if such value is **NOT** :data:`None`.
 
     """
@@ -109,20 +131,50 @@ def _redis_command(command: str, *args, **kwargs) -> typing.Any:
             value = method(*args, **kwargs)
         except Exception as error:
             if _arg_msg is None:
-                _args = ', '.join(map(repr, args))
-                _kwargs = ', '.join(f'{k}={v!r}' for k, v in kwargs.items())
-                if _kwargs:
-                    if _args:
-                        _args += ', '
-                    _args += _kwargs
-                _arg_msg = textwrap.shorten(_args, shutil.get_terminal_size().columns)
+                _arg_msg = _gen_arg_msg(*args, **kwargs)
 
-            warning = warnings.formatwarning(error, RedisCommandFailed, __file__, 85,
+            warning = warnings.formatwarning(str(error), RedisCommandFailed, __file__, 131,
                                              f'value = redis.{command}({_arg_msg})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            if REDIS_RETRY is not None:
-                time.sleep(REDIS_RETRY)
+            if RETRY_INTERVAL is not None:
+                time.sleep(RETRY_INTERVAL)
+            continue
+        break
+    return value
+
+
+def _db_operation(operation: typing.MethodType, *args, **kwargs) -> typing.Any:
+    """Retry operation on database.
+
+    Args:
+        operation: Callable / method to perform.
+        *args: Arbitrary positional arguments.
+
+    Keyword Args:
+        **kwargs: Arbitrary keyword arguments.
+
+    Returns:
+        Any return value from a successful
+        ``operation`` call.
+
+    """
+    _arg_msg = None
+
+    while True:
+        try:
+            value = operation(*args, **kwargs)
+        except Exception as error:
+            if _arg_msg is None:
+                _arg_msg = _gen_arg_msg(*args, **kwargs)
+
+            model = operation.__self__.__class__.__name__
+            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 168,
+                                             f'{model}.{operation.__name__}({_arg_msg})')
+            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+
+            if RETRY_INTERVAL is not None:
+                time.sleep(RETRY_INTERVAL)
             continue
         break
     return value
@@ -133,7 +185,7 @@ def _redis_get_lock(name: str,
                     sleep: float = 0.1,
                     blocking_timeout: typing.Optional[float] = None,
                     lock_class: typing.Optional[redis_lock.Lock] = None,
-                    thread_local: bool = True) -> typing.Union[redis_lock.Lock, nullcontext]:
+                    thread_local: bool = True) -> typing.Union[redis_lock.Lock, nullcontext]:  # type: ignore
     """Get a lock for Redis operations.
 
     Args:
@@ -183,7 +235,7 @@ def have_hostname(link: Link) -> typing.Tuple[bool, bool]:
             try:
                 return _have_hostname_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 183,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 238,
                                                  f'_have_hostname_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return False, False
@@ -210,7 +262,7 @@ def _have_hostname_db(link: Link) -> typing.Tuple[bool, bool]:
     else:
         threshold = timestamp - TIME_CACHE
 
-    model, created = HostnameQueueModel.get_or_create(hostname=link.host, defaults=dict(
+    model, created = _db_operation(HostnameQueueModel.get_or_create, hostname=link.host, defaults=dict(
         timestamp=timestamp,
     ))
     if created:
@@ -238,7 +290,7 @@ def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
     else:
         threshold = new_score - TIME_CACHE.total_seconds()
 
-    with _redis_get_lock('lock_queue_hostname'):
+    with _redis_get_lock('lock_queue_hostname'):  # type: ignore
         score = _redis_command('zscore', 'queue_hostname', link.name)
         _redis_command('zadd', 'queue_hostname', {
             link.host: new_score,
@@ -265,7 +317,7 @@ def drop_hostname(link: Link):  # pylint: disable=inconsistent-return-statements
             try:
                 return _drop_hostname_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 249,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 318,
                                                  f'_drop_hostname_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -281,7 +333,8 @@ def _drop_hostname_db(link: Link):
         link: Link to be removed.
 
     """
-    model: HostnameQueueModel = HostnameQueueModel.get_or_none(HostnameQueueModel.hostname == link.host)
+    model: HostnameQueueModel = _db_operation(HostnameQueueModel.get_or_none,
+                                              HostnameQueueModel.hostname == link.host)
     if model is None:
         return
     model.delete_instance()
@@ -296,7 +349,7 @@ def _drop_hostname_redis(link: Link):
         link: Link to be removed.
 
     """
-    with _redis_get_lock('lock_queue_hostname'):
+    with _redis_get_lock('lock_queue_hostname'):  # type: ignore
         _redis_command('zrem', 'queue_hostname', link.host)
 
 
@@ -316,7 +369,7 @@ def drop_requests(link: Link):  # pylint: disable=inconsistent-return-statements
             try:
                 return _drop_requests_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 299,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 370,
                                                  f'_drop_requests_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -332,7 +385,8 @@ def _drop_requests_db(link: Link):
         link: Link to be removed.
 
     """
-    model: RequestsQueueModel = RequestsQueueModel.get_or_none(RequestsQueueModel.text == link.url)
+    model: RequestsQueueModel = _db_operation(RequestsQueueModel.get_or_none,
+                                              RequestsQueueModel.text == link.url)
     if model is None:
         return
     model.delete_instance()
@@ -347,7 +401,7 @@ def _drop_requests_redis(link: Link):
         link: Link to be removed.
 
     """
-    with _redis_get_lock('lock_queue_requests'):
+    with _redis_get_lock('lock_queue_requests'):  # type: ignore
         _redis_command('zrem', 'queue_requests', link.name)
 
 
@@ -367,7 +421,7 @@ def drop_selenium(link: Link):  # pylint: disable=inconsistent-return-statements
             try:
                 return _drop_selenium_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 349,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 422,
                                                  f'_drop_selenium_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -383,7 +437,8 @@ def _drop_selenium_db(link: Link):
         link: Link to be removed.
 
     """
-    model: SeleniumQueueModel = SeleniumQueueModel.get_or_none(SeleniumQueueModel.text == link.url)
+    model: SeleniumQueueModel = _db_operation(SeleniumQueueModel.get_or_none,
+                                              SeleniumQueueModel.text == link.url)
     if model is None:
         return
     model.delete_instance()
@@ -398,11 +453,11 @@ def _drop_selenium_redis(link: Link):
         link: Link to be removed.
 
     """
-    with _redis_get_lock('lock_queue_selenium'):
-        _redis_command('zrem', 'queue_selenium', link.names)
+    with _redis_get_lock('lock_queue_selenium'):  # type: ignore
+        _redis_command('zrem', 'queue_selenium', link.name)
 
 
-def save_requests(entries: typing.List[Link], single: bool = False,  # pylint: disable=inconsistent-return-statements
+def save_requests(entries: typing.Union[Link, typing.List[Link]], single: bool = False,  # pylint: disable=inconsistent-return-statements
                   score=None, nx=False, xx=False):
     """Save link to the :mod:`requests` database.
 
@@ -438,14 +493,14 @@ def save_requests(entries: typing.List[Link], single: bool = False,  # pylint: d
             try:
                 return _save_requests_db(entries, single, score, nx, xx)
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 419,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 494,
                                                  '_save_requests_db(...)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
     return _save_requests_redis(entries, single, score, nx, xx)
 
 
-def _save_requests_db(entries: typing.List[Link], single: bool = False,
+def _save_requests_db(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
                       score=None, nx=False, xx=False):
     """Save link to the :mod:`requests` database.
 
@@ -470,6 +525,9 @@ def _save_requests_db(entries: typing.List[Link], single: bool = False,
         score = datetime.datetime.now()
 
     if not single:
+        if typing.TYPE_CHECKING:
+            entries = typing.cast(typing.List[Link], entries)
+
         if nx:
             with database.atomic():
                 insert_many = [dict(
@@ -479,18 +537,18 @@ def _save_requests_db(entries: typing.List[Link], single: bool = False,
                     timestamp=score,
                 ) for link in entries]
                 for batch in peewee.chunked(insert_many, BULK_SIZE):
-                    (RequestsQueueModel
-                     .insert_many(insert_many)
-                     .on_conflict_ignore()
-                     .execute())
+                    _db_operation(RequestsQueueModel
+                                  .insert_many(insert_many)
+                                  .on_conflict_ignore()
+                                  .execute)
             return
 
         if xx:
             entries_text = [link.url for link in entries]
-            (RequestsQueueModel
-             .update(timestamp=score)
-             .where(RequestsQueueModel.text.in_(entries_text))
-             .execute())
+            _db_operation(RequestsQueueModel
+                          .update(timestamp=score)
+                          .where(typing.cast(peewee.TextField, RequestsQueueModel.text).in_(entries_text))
+                          .execute)
             return
 
         with database.atomic():
@@ -501,36 +559,38 @@ def _save_requests_db(entries: typing.List[Link], single: bool = False,
                 timestamp=score
             ) for link in entries]
             for batch in peewee.chunked(replace_many, BULK_SIZE):
-                RequestsQueueModel.replace_many(batch).execute()
+                _db_operation(RequestsQueueModel.replace_many(batch).execute)
         return
 
+    if typing.TYPE_CHECKING:
+        entries = typing.cast(Link, entries)
+
     if nx:
-        RequestsQueueModel.get_or_create(
-            text=entries.url,
-            defaults=dict(
-                hash=entries.name,
-                link=entries,
-                timestamp=score,
-            )
-        )
+        _db_operation(RequestsQueueModel.get_or_create,
+                      text=entries.url,
+                      defaults=dict(
+                          hash=entries.name,
+                          link=entries,
+                          timestamp=score,
+                      ))
         return
 
     if xx:
         with contextlib.suppress(peewee.DoesNotExist):
-            model = RequestsQueueModel.get(RequestsQueueModel.text == entries.url)
+            model = _db_operation(RequestsQueueModel.get, RequestsQueueModel.text == entries.url)
             model.timestamp = score
-            model.save()
+            _db_operation(model.save)
         return
 
-    RequestsQueueModel.replace(
+    _db_operation(RequestsQueueModel.replace(
         text=entries.url,
         hash=entries.name,
         link=entries,
         timestamp=score
-    ).execute()
+    ).execute)
 
 
-def _save_requests_redis(entries: typing.List[Link], single: bool = False,
+def _save_requests_redis(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
                          score=None, nx=False, xx=False):
     """Save link to the :mod:`requests` database.
 
@@ -553,6 +613,9 @@ def _save_requests_redis(entries: typing.List[Link], single: bool = False,
         score = time.time()
 
     if not single:
+        if typing.TYPE_CHECKING:
+            entries = typing.cast(typing.List[Link], entries)
+
         for chunk in peewee.chunked(entries, BULK_SIZE):
             pool = list(filter(lambda link: isinstance(link, Link), chunk))
             for link in pool:
@@ -560,19 +623,22 @@ def _save_requests_redis(entries: typing.List[Link], single: bool = False,
             mapping = {
                 link.name: score for link in pool
             }
-            with _redis_get_lock('lock_queue_requests'):
+            with _redis_get_lock('lock_queue_requests'):  # type: ignore
                 _redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
         return
+
+    if typing.TYPE_CHECKING:
+        entries = typing.cast(Link, entries)
 
     _redis_command('set', entries.name, pickle.dumps(entries), nx=True)
     mapping = {
         entries.name: score,
     }
-    with _redis_get_lock('lock_queue_requests'):
+    with _redis_get_lock('lock_queue_requests'):  # type: ignore
         _redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
 
 
-def save_selenium(entries: typing.List[Link], single: bool = False,  # pylint: disable=inconsistent-return-statements
+def save_selenium(entries: typing.Union[Link, typing.List[Link]], single: bool = False,  # pylint: disable=inconsistent-return-statements
                   score=None, nx=False, xx=False):
     """Save link to the :mod:`selenium` database.
 
@@ -606,14 +672,14 @@ def save_selenium(entries: typing.List[Link], single: bool = False,  # pylint: d
             try:
                 return _save_selenium_db(entries, single, score, nx, xx)
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 582,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 673,
                                                  '_save_selenium_db(...)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
     return _save_selenium_redis(entries, single, score, nx, xx)
 
 
-def _save_selenium_db(entries: typing.List[Link], single: bool = False,
+def _save_selenium_db(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
                       score=None, nx=False, xx=False):
     """Save link to the :mod:`selenium` database.
 
@@ -638,6 +704,9 @@ def _save_selenium_db(entries: typing.List[Link], single: bool = False,
         score = datetime.datetime.now()
 
     if not single:
+        if typing.TYPE_CHECKING:
+            entries = typing.cast(typing.List[Link], entries)
+
         if nx:
             with database.atomic():
                 insert_many = [dict(
@@ -647,18 +716,18 @@ def _save_selenium_db(entries: typing.List[Link], single: bool = False,
                     timestamp=score,
                 ) for link in entries]
                 for batch in peewee.chunked(insert_many, BULK_SIZE):
-                    (SeleniumQueueModel
-                     .insert_many(insert_many)
-                     .on_conflict_ignore()
-                     .execute())
+                    _db_operation(SeleniumQueueModel
+                                  .insert_many(insert_many)
+                                  .on_conflict_ignore()
+                                  .execute)
             return
 
         if xx:
             entries_text = [link.url for link in entries]
-            (SeleniumQueueModel
-             .update(timestamp=score)
-             .where(SeleniumQueueModel.text.in_(entries_text))
-             .execute())
+            _db_operation(SeleniumQueueModel
+                          .update(timestamp=score)
+                          .where(typing.cast(peewee.TextField, SeleniumQueueModel.text).in_(entries_text))
+                          .execute)
             return
 
         with database.atomic():
@@ -669,36 +738,38 @@ def _save_selenium_db(entries: typing.List[Link], single: bool = False,
                 timestamp=score
             ) for link in entries]
             for batch in peewee.chunked(replace_many, BULK_SIZE):
-                SeleniumQueueModel.replace_many(batch).execute()
+                _db_operation(SeleniumQueueModel.replace_many(batch).execute)
         return
 
+    if typing.TYPE_CHECKING:
+        entries = typing.cast(Link, entries)
+
     if nx:
-        SeleniumQueueModel.get_or_create(
-            text=entries.url,
-            defaults=dict(
-                hash=entries.name,
-                link=entries,
-                timestamp=score,
-            )
-        )
+        _db_operation(SeleniumQueueModel.get_or_create,
+                      text=entries.url,
+                      defaults=dict(
+                          hash=entries.name,
+                          link=entries,
+                          timestamp=score,
+                      ))
         return
 
     if xx:
         with contextlib.suppress(peewee.DoesNotExist):
-            model = SeleniumQueueModel.get(SeleniumQueueModel.text == entries.url)
+            model = _db_operation(SeleniumQueueModel.get, SeleniumQueueModel.text == entries.url)
             model.timestamp = score
-            model.save()
+            _db_operation(model.save)
         return
 
-    SeleniumQueueModel.replace(
+    _db_operation(SeleniumQueueModel.replace(
         text=entries.url,
         hash=entries.name,
         link=entries,
         timestamp=score
-    ).execute()
+    ).execute)
 
 
-def _save_selenium_redis(entries: typing.List[Link], single: bool = False,
+def _save_selenium_redis(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
                          score=None, nx=False, xx=False):
     """Save link to the :mod:`selenium` database.
 
@@ -731,6 +802,9 @@ def _save_selenium_redis(entries: typing.List[Link], single: bool = False,
         score = time.time()
 
     if not single:
+        if typing.TYPE_CHECKING:
+            entries = typing.cast(typing.List[Link], entries)
+
         for chunk in peewee.chunked(entries, BULK_SIZE):
             pool = list(filter(lambda link: isinstance(link, Link), chunk))
             for link in pool:
@@ -738,15 +812,18 @@ def _save_selenium_redis(entries: typing.List[Link], single: bool = False,
             mapping = {
                 link.name: score for link in pool
             }
-            with _redis_get_lock('lock_queue_selenium'):
+            with _redis_get_lock('lock_queue_selenium'):  # type: ignore
                 _redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
         return
+
+    if typing.TYPE_CHECKING:
+        entries = typing.cast(Link, entries)
 
     _redis_command('set', entries.name, pickle.dumps(entries), nx=True)
     mapping = {
         entries.name: score,
     }
-    with _redis_get_lock('lock_queue_selenium'):
+    with _redis_get_lock('lock_queue_selenium'):  # type: ignore
         _redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
 
 
@@ -774,7 +851,7 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
             try:
                 link_pool = _load_requests_db()
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 745,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 852,
                                                  '_load_requests_db()')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 link_pool = list()
@@ -816,12 +893,13 @@ def _load_requests_db() -> typing.List[Link]:
         max_score = now - sec_delta
 
     with database.atomic():
-        query: typing.List[RequestsQueueModel] = (
+        query: typing.List[RequestsQueueModel] = _db_operation(
             RequestsQueueModel
             .select(RequestsQueueModel.link)
             .where(RequestsQueueModel.timestamp <= max_score)
             .order_by(RequestsQueueModel.timestamp)
             .limit(MAX_POOL)
+            .execute
         )
         link_pool = [model.link for model in query]
 
@@ -853,10 +931,10 @@ def _load_requests_redis() -> typing.List[Link]:
         max_score = now - sec_delta
 
     try:
-        with _redis_get_lock('lock_queue_requests', blocking_timeout=LOCK_TIMEOUT):
-            temp_pool = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_requests',
-                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
-            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]
+        with _redis_get_lock('lock_queue_requests', blocking_timeout=LOCK_TIMEOUT):  # type: ignore
+            temp_pool: typing.List[bytes] = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_requests',  # pylint: disable=line-too-long
+                                                                                                    min=0, max=max_score, start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
+            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]  # nosec
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 _save_requests_redis(link_pool, score=new_score)  # force update records
@@ -892,7 +970,7 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
             try:
                 link_pool = _load_selenium_db()
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 862,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 971,
                                                  '_load_selenium_db()')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 link_pool = list()
@@ -934,12 +1012,13 @@ def _load_selenium_db() -> typing.List[Link]:
         max_score = now - sec_delta
 
     with database.atomic():
-        query: typing.List[SeleniumQueueModel] = (
+        query: typing.List[SeleniumQueueModel] = _db_operation(
             SeleniumQueueModel
             .select(SeleniumQueueModel.link)
             .where(SeleniumQueueModel.timestamp <= max_score)
             .order_by(SeleniumQueueModel.timestamp)
             .limit(MAX_POOL)
+            .query
         )
         link_pool = [model.link for model in query]
 
@@ -975,10 +1054,10 @@ def _load_selenium_redis() -> typing.List[Link]:
         max_score = now - sec_delta
 
     try:
-        with _redis_get_lock('lock_queue_selenium', blocking_timeout=LOCK_TIMEOUT):
-            temp_pool = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_selenium',
-                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
-            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]
+        with _redis_get_lock('lock_queue_selenium', blocking_timeout=LOCK_TIMEOUT):  # type: ignore
+            temp_pool: typing.List[bytes] = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_selenium',  # pylint: disable=line-too-long
+                                                                                                    min=0, max=max_score, start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
+            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]  # nosec
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 _save_selenium_redis(link_pool, score=new_score)  # force update records

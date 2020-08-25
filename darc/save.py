@@ -118,10 +118,10 @@ def save_link(link: Link):
         * :data:`darc.save._SAVE_LOCK`
 
     """
-    with _SAVE_LOCK:
+    with _SAVE_LOCK:  # type: ignore
         with open(PATH_LN, 'a') as file:
             print(f'{link.proxy},{link.url_parse.scheme},{os.path.split(link.base)[1]},'
-                  f'{link.name},{quote(link)}', file=file)
+                  f'{link.name},{quote(link.url)}', file=file)
 
 
 def save_headers(time: typing.Datetime, link: Link,
@@ -140,7 +140,7 @@ def save_headers(time: typing.Datetime, link: Link,
 
     The JSON data saved is as following:
 
-    .. code:: json
+    .. code-block:: json
 
         {
             "[metadata]": {

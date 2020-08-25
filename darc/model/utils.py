@@ -9,7 +9,7 @@ utility functions and data fields.
 
 import ipaddress
 import json
-import pickle
+import pickle  # nosec
 
 import peewee
 import playhouse.mysql_ext
@@ -57,6 +57,7 @@ class JSONField(playhouse.mysql_ext.JSONField):
         """
         if value is not None:
             return json.dumps(value)
+        return None
 
     def python_value(self, value: typing.Optional[str]) -> typing.Any:  # pylint: disable=inconsistent-return-statements
         """Load the value from database storage.
@@ -70,6 +71,7 @@ class JSONField(playhouse.mysql_ext.JSONField):
         """
         if value is not None:
             return json.loads(value)
+        return None
 
 
 class IPField(peewee.IPField):
@@ -87,6 +89,7 @@ class IPField(peewee.IPField):
         """
         if val is not None:
             return int(val)
+        return None
 
     def python_value(self, val: typing.Optional[int]) -> typing.Optional[typing.IPAddress]:  # pylint: disable=inconsistent-return-statements
         """Load the value from database storage.
@@ -100,6 +103,7 @@ class IPField(peewee.IPField):
         """
         if val is not None:
             return ipaddress.ip_address(val)
+        return None
 
 
 class IntEnumField(peewee.IntegerField):
@@ -132,7 +136,8 @@ class IntEnumField(peewee.IntegerField):
 
         """
         if value is not None:
-            return self.choices(value)
+            return self.choices(value)  # type: ignore
+        return None
 
 
 class PickleField(peewee.BlobField):
@@ -164,4 +169,5 @@ class PickleField(peewee.BlobField):
         """
         value = super().python_value(value)
         if value is not None:
-            return pickle.loads(value)
+            return pickle.loads(value)  # nosec
+        return None

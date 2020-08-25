@@ -64,7 +64,7 @@ def request_session(link: Link, futures: bool = False) -> typing.Union[typing.Se
     if factory is None:
         raise UnsupportedLink(link.url)
 
-    return factory(futures=futures)
+    return factory(futures=futures)  # type: ignore
 
 
 def i2p_session(futures: bool = False) -> typing.Union[typing.Session, typing.FuturesSession]:

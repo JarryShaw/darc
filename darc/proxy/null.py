@@ -43,7 +43,7 @@ def save_invalid(link: Link):
         link: Link object representing the link with invalid scheme.
 
     """
-    with LOCK:
+    with LOCK:  # type: ignore
         with open(PATH, 'a') as file:
             print(link.url, file=file)
 

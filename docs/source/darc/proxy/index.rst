@@ -30,7 +30,7 @@ mapping dictionarty.
 .. data:: darc.proxy.LINK_MAP
    :type: DefaultDict[str, Tuple[types.FunctionType, types.FunctionType]]
 
-   .. code:: python
+   .. code-block:: python
 
       LINK_MAP = collections.defaultdict(
           lambda: (darc.requests.null_session, darc.selenium.null_driver),

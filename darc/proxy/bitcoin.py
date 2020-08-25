@@ -30,6 +30,6 @@ def save_bitcoin(link: Link):
         link: Link object representing the bitcoin address.
 
     """
-    with LOCK:
+    with LOCK:  # type: ignore
         with open(PATH, 'a') as file:
             print(link.url_parse.path, file=file)

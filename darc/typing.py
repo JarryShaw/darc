@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Typing declrations."""
-# pylint: disable=unused-wildcard-import
+# pylint: disable=all
 
 import argparse
 import datetime
 import enum
 import ipaddress
 import queue
-import subprocess
+import subprocess  # nosec
 import types
 from typing import *
 
@@ -17,7 +17,7 @@ import stem
 import stem.control
 import stem.process
 import stem.util.term
-from typing_extensions import *
+from typing_extensions import *  # type: ignore
 
 import requests
 import selenium.common.exceptions
@@ -65,8 +65,11 @@ ModuleType = types.ModuleType
 # types.FrameType
 FrameType = types.FrameType
 
+# types.MethodType
+MethodType = types.MethodType
+
 # Dict[str, Tuple[Callable, Callable]]
-LinkMap = Dict[str, Tuple[Callable[[], Session], Callable[[], Driver]]]
+LinkMap = Dict[str, Tuple[Callable[[bool], Session], Callable[[], Driver]]]  # type: ignore
 
 # enum.IntEnum
 IntEnum = enum.IntEnum

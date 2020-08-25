@@ -45,7 +45,7 @@ CWD = os.path.realpath(os.curdir)
 # process number
 DARC_CPU = os.getenv('DARC_CPU')
 if DARC_CPU is not None:
-    DARC_CPU = int(DARC_CPU)
+    DARC_CPU = int(DARC_CPU)  # type: ignore
 
 # use multiprocessing?
 FLAG_MP = bool(int(os.getenv('DARC_MULTIPROCESSING', '1')))
@@ -143,7 +143,7 @@ _TIME_CACHE = float(os.getenv('TIME_CACHE', '60'))
 if math.isfinite(_TIME_CACHE):
     TIME_CACHE = datetime.timedelta(seconds=_TIME_CACHE)
 else:
-    TIME_CACHE = None
+    TIME_CACHE = None  # type: ignore
 del _TIME_CACHE
 
 # selenium wait time
@@ -151,7 +151,7 @@ _SE_WAIT = float(os.getenv('SE_WAIT', '60'))
 if math.isfinite(_SE_WAIT):
     SE_WAIT = _SE_WAIT
 else:
-    SE_WAIT = None
+    SE_WAIT = None  # type: ignore
 del _SE_WAIT
 
 # selenium empty page
@@ -162,7 +162,7 @@ _DARC_WAIT = float(os.getenv('DARC_WAIT', '60'))
 if math.isfinite(_DARC_WAIT):
     DARC_WAIT = _DARC_WAIT
 else:
-    DARC_WAIT = None
+    DARC_WAIT = None  # type: ignore
 del _DARC_WAIT
 
 # Redis client
@@ -180,8 +180,8 @@ if _DB_URL is None:
     DB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/sqlite/darc.db')
     DB_WEB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/sqlite/darcweb.db')
 else:
-    DB: typing.Database = playhouse.db_url.connect(f'{_DB_URL}/darc', unquote_password=True)
-    DB_WEB: typing.Database = playhouse.db_url.connect(f'{_DB_URL}/darcweb', unquote_password=True)
+    DB: typing.Database = playhouse.db_url.connect(f'{_DB_URL}/darc', unquote_password=True)  # type: ignore
+    DB_WEB: typing.Database = playhouse.db_url.connect(f'{_DB_URL}/darcweb', unquote_password=True)  # type: ignore
 del _DB_URL
 
 
@@ -205,7 +205,7 @@ def getpid() -> int:
     return -1
 
 
-def get_lock() -> typing.Union[multiprocessing.Lock, threading.Lock, nullcontext]:
+def get_lock() -> typing.Union[multiprocessing.Lock, threading.Lock, nullcontext]:  # type: ignore
     """Get a lock.
 
     Returns:

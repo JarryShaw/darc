@@ -107,7 +107,7 @@ image. Environment variables can be set as described in the
    :envvar:`DARC_REBOOT` and/or :data:`~darc.const.REBOOT`
    as :data:`True`, you may wish to change the entrypoint to
 
-   .. code:: shell
+   .. code-block:: shell
 
       bash /app/run.sh
 

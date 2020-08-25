@@ -126,7 +126,7 @@ Installation
    .. |walrus| replace:: ``walrus``
    .. _walrus: https://github.com/pybpc/walrus
 
-.. code:: shell
+.. code-block:: shell
 
    pip install python-darc
 
@@ -155,7 +155,7 @@ Please see the project root for relevant files and more information.
 
 Or, you may refer to and/or install from the `Docker Hub`_ repository:
 
-.. code:: shell
+.. code-block:: shell
 
    docker pull jsnbzh/darc[:TAGNAME]
 

@@ -45,6 +45,7 @@ import stem.util.term
 
 import darc.typing as typing
 from darc.const import DEBUG, PATH_DB
+from darc.db import _db_operation
 from darc.error import APIRequestFailed, DatabaseOperaionFailed, render_error
 from darc.link import Link
 from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, RequestsModel, RobotsModel,
@@ -52,7 +53,7 @@ from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, Request
 from darc.requests import null_session
 
 # type alias
-File = typing.Dict[str, typing.Union[str, typing.ByteString]]
+File = typing.Dict[str, typing.AnyStr]
 Domain = typing.Literal['new_host', 'requests', 'selenium']
 
 # save submitted data to database
@@ -122,7 +123,7 @@ def get_robots(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsis
     """
     path = os.path.join(link.base, 'robots.txt')
     if not os.path.isfile(path):
-        return
+        return None
     with open(path, 'rb') as file:
         content = file.read()
     data = dict(
@@ -132,7 +133,7 @@ def get_robots(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsis
     return data
 
 
-def get_sitemap(link: Link) -> typing.Optional[typing.List[File]]:  # pylint: disable=inconsistent-return-statements
+def get_sitemaps(link: Link) -> typing.Optional[typing.List[File]]:  # pylint: disable=inconsistent-return-statements
     """Read sitemaps.
 
     Args:
@@ -154,7 +155,7 @@ def get_sitemap(link: Link) -> typing.Optional[typing.List[File]]:  # pylint: di
     """
     path_list = glob.glob(os.path.join(link.base, 'sitemap_*.xml'))
     if not path_list:
-        return
+        return None
 
     data_list = list()
     for path in path_list:
@@ -189,11 +190,11 @@ def get_hosts(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsist
 
     """
     if link.proxy != 'i2p':
-        return
+        return None
 
     path = os.path.join(link.base, 'hosts.txt')
     if not os.path.isfile(path):
-        return
+        return None
     with open(path, 'rb') as file:
         content = file.read()
     data = dict(
@@ -252,7 +253,7 @@ def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]):
                 if response.ok:
                     return
             except requests.RequestException as error:
-                warning = warnings.formatwarning(error, APIRequestFailed, __file__, 150,
+                warning = warnings.formatwarning(str(error), APIRequestFailed, __file__, 252,
                                                  f'[{domain.upper()}] response = requests.post(api, json=data)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     save_submit(domain, data)
@@ -274,7 +275,9 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
     If :data:`~darc.submit.API_NEW_HOST` is :data:`None`, the data for submission
     will directly be save through :func:`~darc.submit.save_submit`.
 
-    The data submitted should have following format::
+    The data submitted should have following format:
+
+    .. code-block:: jsonc
 
         {
             // partial flag - true / false
@@ -335,7 +338,7 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
         * :func:`darc.submit.save_submit`
         * :func:`darc.submit.get_metadata`
         * :func:`darc.submit.get_robots`
-        * :func:`darc.submit.get_sitemap`
+        * :func:`darc.submit.get_sitemaps`
         * :func:`darc.submit.get_hosts`
 
     """
@@ -343,12 +346,12 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
     ts = time.isoformat()
 
     robots = get_robots(link)
-    sitemap = get_sitemap(link)
+    sitemaps = get_sitemaps(link)
     hosts = get_hosts(link)
 
     if SAVE_DB:
         try:
-            model, _ = HostnameModel.get_or_create(hostname=link.host, defaults=dict(
+            model, _ = _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults=dict(
                 proxy=HostnameModel.Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
@@ -357,27 +360,25 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
             ))
 
             if robots is not None:
-                RobotsModel.create(
-                    host=model,
-                    timestamp=time,
-                    document=base64.b64decode(robots['data']).decode(),
-                )
+                _db_operation(RobotsModel.create,
+                              host=model,
+                              timestamp=time,
+                              document=base64.b64decode(robots['data']).decode())
 
-            if sitemap is not None:
-                SitemapModel.create(
-                    host=model,
-                    timestamp=time,
-                    document=base64.b64decode(sitemap['data']).decode(),
-                )
+            if sitemaps is not None:
+                for sitemap in sitemaps:
+                    _db_operation(SitemapModel.create,
+                                  host=model,
+                                  timestamp=time,
+                                  document=base64.b64decode(sitemap['data']).decode())
 
             if hosts is not None:
-                HostsModel.create(
-                    host=model,
-                    timestamp=time,
-                    document=base64.b64decode(hosts['data']).decode(),
-                )
+                _db_operation(HostsModel.create,
+                              host=model,
+                              timestamp=time,
+                              document=base64.b64decode(hosts['data']).decode())
         except Exception as error:
-            warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 347,
+            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 354,
                                              'submit_new_host(...)')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -387,7 +388,7 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
         'Timestamp': ts,
         'URL': link.host,
         'Robots': robots,
-        'Sitemaps': sitemap,
+        'Sitemaps': sitemaps,
         'Hosts': hosts,
     }
 
@@ -427,7 +428,9 @@ def submit_requests(time: typing.Datetime, link: Link,
     If :data:`~darc.submit.API_REQUESTS` is :data:`None`, the data for submission
     will directly be save through :func:`~darc.submit.save_submit`.
 
-    The data submitted should have following format::
+    The data submitted should have following format:
+
+    .. code-block:: jsonc
 
         {
             // metadata of URL
@@ -503,7 +506,7 @@ def submit_requests(time: typing.Datetime, link: Link,
     """
     if SAVE_DB:
         try:
-            model, _ = HostnameModel.get_or_create(hostname=link.host, defaults=dict(
+            model, _ = _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults=dict(
                 proxy=HostnameModel.Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
@@ -513,9 +516,9 @@ def submit_requests(time: typing.Datetime, link: Link,
             if not model.alive:
                 model.alive = True
                 model.since = time
-                model.save()
+                _db_operation(model.save)
 
-            url, _ = URLModel.get_or_create(hash=link.name, defaults=dict(
+            url, _ = _db_operation(URLModel.get_or_create, hash=link.name, defaults=dict(
                 url=link.url,
                 hostname=model,
                 proxy=URLModel.Proxy[link.proxy.upper()],
@@ -527,39 +530,37 @@ def submit_requests(time: typing.Datetime, link: Link,
             if not url.alive and response.ok:
                 url.alive = True
                 url.since = time
-                url.save()
+                _db_operation(url.save)
 
-            model = RequestsModel.create(
-                url=url,
-                timestamp=time,
-                method=response.request.method,
-                document=content,
-                mime_type=mime_type,
-                is_html=html,
-                status_code=response.status_code,
-                reason=response.reason,
-                cookies=response.cookies.get_dict(),
-                session=response.cookies.get_dict(),
-                request=dict(response.request.headers),
-                response=dict(response.headers),
-            )
+            model = _db_operation(RequestsModel.create,
+                                  url=url,
+                                  timestamp=time,
+                                  method=response.request.method,
+                                  document=content,
+                                  mime_type=mime_type,
+                                  is_html=html,
+                                  status_code=response.status_code,
+                                  reason=response.reason,
+                                  cookies=response.cookies.get_dict(),
+                                  session=response.cookies.get_dict(),
+                                  request=dict(response.request.headers),
+                                  response=dict(response.headers))
 
             for index, history in enumerate(response.history):
-                RequestsHistoryModel.create(
-                    index=index,
-                    model=model,
-                    url=history.url,
-                    timestamp=time,
-                    method=history.request.method,
-                    document=history.content,
-                    status_code=history.status_code,
-                    reason=history.reason,
-                    cookies=history.cookies.get_dict(),
-                    request=dict(history.request.headers),
-                    response=dict(history.headers),
-                )
+                _db_operation(RequestsHistoryModel.create,
+                              index=index,
+                              model=model,
+                              url=history.url,
+                              timestamp=time,
+                              method=history.request.method,
+                              document=history.content,
+                              status_code=history.status_code,
+                              reason=history.reason,
+                              cookies=history.cookies.get_dict(),
+                              request=dict(history.request.headers),
+                              response=dict(history.headers))
         except Exception as error:
-            warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 502,
+            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 509,
                                              'submit_requests(...)')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -636,7 +637,9 @@ def submit_selenium(time: typing.Datetime, link: Link,
         :mod:`requests` is HTML, status code not between ``400`` and ``600``, and
         HTML data not empty.
 
-    The data submitted should have following format::
+    The data submitted should have following format:
+
+    .. code-block:: jsonc
 
         {
             // metadata of URL
@@ -690,7 +693,7 @@ def submit_selenium(time: typing.Datetime, link: Link,
     """
     if SAVE_DB:
         try:
-            model, _ = HostnameModel.get_or_create(hostname=link.host, defaults=dict(
+            model, _ = _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults=dict(
                 proxy=HostnameModel.Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
@@ -698,7 +701,7 @@ def submit_selenium(time: typing.Datetime, link: Link,
                 since=time,
             ))
 
-            url, _ = URLModel.get_or_create(hash=link.name, defaults=dict(
+            url, _ = _db_operation(URLModel.get_or_create, hash=link.name, defaults=dict(
                 url=link.url,
                 hostname=model,
                 proxy=URLModel.Proxy[link.proxy.upper()],
@@ -708,14 +711,13 @@ def submit_selenium(time: typing.Datetime, link: Link,
                 since=time,
             ))
 
-            SeleniumModel.create(
-                url=url,
-                timestamp=time,
-                document=html,
-                screenshot=base64.b64decode(screenshot),
-            )
+            _db_operation(SeleniumModel.create,
+                          url=url,
+                          timestamp=time,
+                          document=html,
+                          screenshot=base64.b64decode(screenshot) if screenshot else None)
         except Exception as error:
-            warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 681,
+            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 696,
                                              'submit_selenium(...)')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -753,4 +755,4 @@ def submit_selenium(time: typing.Datetime, link: Link,
         return
 
     # submit data
-    submit(API_REQUESTS, 'selenium', data)
+    submit(API_SELENIUM, 'selenium', data)

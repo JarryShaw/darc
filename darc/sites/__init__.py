@@ -91,7 +91,7 @@ def crawler_hook(link: Link, session: typing.Session) -> typing.Response:
 
     """
     spec = _get_spec(link)
-    return spec.crawler(session, link)
+    return spec.crawler(session, link)  # type: ignore
 
 
 def loader_hook(link: Link, driver: typing.Driver) -> typing.Driver:
@@ -111,4 +111,4 @@ def loader_hook(link: Link, driver: typing.Driver) -> typing.Driver:
 
     """
     spec = _get_spec(link)
-    return spec.loader(driver, link)
+    return spec.loader(driver, link)  # type: ignore

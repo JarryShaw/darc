@@ -30,6 +30,6 @@ def save_script(link: Link):
         link: Link object representing the JavaScript link.
 
     """
-    with LOCK:
+    with LOCK:  # type: ignore
         with open(PATH, 'a') as file:
             print(link.url, file=file)
