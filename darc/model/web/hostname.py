@@ -43,15 +43,22 @@ class HostnameModel(BaseModel):
 
     @cached_property
     def alive(self) -> bool:
-        """If the hostname is still active."""
-        for url in self.urls:  # pylint: disable=no-member
-            if url.alive:
-                return True
-        return False
+        """If the hostname is still active.
+
+        We consider the hostname as *inactive*, only if all
+        subsidiary URLs are *inactive*.
+
+        """
+        return any(map(lambda url: url.alive, self.urls))  # pylint: disable=no-member
 
     @cached_property
     def since(self) -> typing.Datetime:
-        """The hostname is active/inactive since such timestamp."""
+        """The hostname is active/inactive since such timestamp.
+
+        We confider the timestamp by the earlies timestamp
+        of related subsidiary *active/inactive* URLs.
+
+        """
         if self.alive:
             filtering = lambda url: url.alive
         else:
