@@ -521,6 +521,9 @@ def submit_requests(time: typing.Datetime, link: Link,
             if not model.alive and response.ok:
                 model.alive = True
                 model.since = time
+            elif model.alive and not response.ok:
+                model.alive = False
+                model.since = time
             model.last_seen = time
             _db_operation(model.save)
 
@@ -533,8 +536,11 @@ def submit_requests(time: typing.Datetime, link: Link,
                 alive=False,
                 since=EPOCH,
             ))
-            if not model.alive and response.ok:
+            if not url.alive and response.ok:
                 url.alive = True
+                url.since = time
+            elif url.alive and not response.ok:
+                url.alive = False
                 url.since = time
             url.last_seen = time
             _db_operation(url.save)

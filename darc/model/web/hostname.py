@@ -42,5 +42,5 @@ class HostnameModel(BaseModel):
 
     #: If the hostname is still active.
     alive: bool = peewee.BooleanField()
-    #: The hostname is active since this timestamp.
+    #: The hostname is active/inactive since this timestamp.
     since: typing.Datetime = peewee.DateTimeField()
