@@ -360,8 +360,6 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
                 proxy=Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
-                alive=False,
-                since=EPOCH,
             ))
 
             if robots is not None:
@@ -515,8 +513,6 @@ def submit_requests(time: typing.Datetime, link: Link,
                 proxy=Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
-                alive=False,
-                since=EPOCH,
             ))
             if not model_created:
                 model.last_seen = time
@@ -706,8 +702,6 @@ def submit_selenium(time: typing.Datetime, link: Link,
                 proxy=Proxy[link.proxy.upper()],
                 discovery=time,
                 last_seen=time,
-                alive=True,
-                since=time,
             ))
             if not model_created:
                 model.last_seen = time
