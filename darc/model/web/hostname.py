@@ -15,6 +15,7 @@ representing hostnames, specifically from ``new_host`` submission.
 import peewee
 
 import darc.typing as typing
+from darc._compat import cached_property
 from darc.model.abc import BaseModelWeb as BaseModel
 from darc.model.utils import IntEnumField, Proxy
 
@@ -40,7 +41,22 @@ class HostnameModel(BaseModel):
     #: Timestamp of last related submission.
     last_seen: typing.Datetime = peewee.DateTimeField()
 
-    #: If the hostname is still active.
-    alive: bool = peewee.BooleanField()
-    #: The hostname is active/inactive since this timestamp.
-    since: typing.Datetime = peewee.DateTimeField()
+    @cached_property
+    def alive(self) -> bool:
+        """If the hostname is still active."""
+        for url in self.urls:  # pylint: disable=no-member
+            if url.alive:
+                return True
+        return False
+
+    @cached_property
+    def since(self) -> typing.Datetime:
+        """The hostname is active/inactive since such timestamp."""
+        if self.alive:
+            filtering = lambda url: url.alive
+        else:
+            filtering = lambda url: not url.alive
+
+        return min(*filter(
+            filtering, self.urls  # pylint: disable=no-member
+        ), key=lambda url: url.since)
