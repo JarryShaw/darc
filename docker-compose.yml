@@ -11,13 +11,10 @@ services:
     container_name: crawler
     #entrypoint: [ "bash", "/app/run.sh" ]
     command: [ "--type", "crawler",
-               "--file", "/app/text/market.txt",
-               "--file", "/app/text/top-20k.txt",
+               "--file", "/app/text/tor.txt",
                "--file", "/app/text/i2p.txt",
                "--file", "/app/text/zeronet.txt",
-               "--file", "/app/text/freenet.txt",
-               "--file", "/app/text/ahmia.fi_onions.txt",
-               "--file", "/app/text/tor.new.txt" ]
+               "--file", "/app/text/freenet.txt" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
@@ -123,7 +120,7 @@ services:
       # content type fallback flag
       MIME_FALLBACK: 0
       # proxy type white list
-      PROXY_WHITE_LIST: '[ "tor", "i2p", "freenet", "zeronet" ]'
+      PROXY_WHITE_LIST: '[ "tor", "i2p", "freenet", "zeronet", "tor.sh" ]'
       # proxy type black list
       PROXY_BLACK_LIST: '[ "null", "data" ]'
       # proxy type fallback flag

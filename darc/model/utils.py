@@ -190,3 +190,5 @@ class Proxy(enum.IntEnum):
     ZERONET = enum.auto()
     #: Freenet proxy.
     FREENET = enum.auto()
+    #: Proxied Tor (no proxy).
+    TOR_SH = enum.auto()

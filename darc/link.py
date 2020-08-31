@@ -242,7 +242,9 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
            :func:`~darc.link.parse_link` will parse the ``hostname`` as
            ``USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE``.
 
-    14. If none of the cases above satisfied, the ``proxy`` will be set
+    14. If the host is an proxied onion (``.onion.sh``) address,
+        set ``proxy`` to ``tor.sh``.
+    15. If none of the cases above satisfied, the ``proxy`` will be set
         as ``null``, marking it a plain normal link.
 
     The ``base`` for parsed link :class:`~darc.link.Link` object is defined as
@@ -302,6 +304,8 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
         proxy_type = 'null'
     elif re.fullmatch(r'.*?\.onion', host):
         proxy_type = 'tor'
+    elif re.fullmatch(r'.*?\.onion.sh', host):
+        proxy_type = 'tor.sh'
     elif re.fullmatch(r'.*?\.i2p', host):
         proxy_type = 'i2p'
     elif host in ['127.0.0.1:7657', '127.0.0.1:7658',

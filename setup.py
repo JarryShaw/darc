@@ -21,7 +21,7 @@ There are two types of *workers*:
 """
 
 import sys
-import subprocess
+import subprocess  # nosec
 
 # version string
 __version__ = '0.6.7'
@@ -132,7 +132,7 @@ try:
     version_info = sys.version_info[:2]
 
     attrs.update(dict(
-        include_package_data=True,
+        include_package_data=True,  # type: ignore
         # libraries
         # headers
         # ext_package
@@ -153,8 +153,8 @@ class build(build_py):
 
     def run(self):
         if version_info < (3, 8):
-            subprocess.check_call(
-                ['walrus', '--no-archive', 'darc']
+            subprocess.check_call(  # nosec
+                [sys.executable, '-m', 'walrus', '--no-archive', 'darc']
             )
         build_py.run(self)
 
