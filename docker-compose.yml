@@ -52,8 +52,7 @@ services:
       # save data submitssion
       SAVE_DB: 0
       # Redis URL
-      #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
-      REDIS_URL: 'redis://r-j6c63g3ch2v493jm6r:Zft13917331612@r-j6c63g3ch2v493jm6r.redis.rds.aliyuncs.com'
+      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
       # database URL
       #DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
@@ -178,10 +177,9 @@ services:
       # data storage
       PATH_DATA: "data"
       # Redis URL
-      #REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
-      REDIS_URL: 'redis://r-j6c63g3ch2v493jm6r:Zft13917331612@r-j6c63g3ch2v493jm6r.redis.rds.aliyuncs.com'
+      REDIS_URL: 'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'
       # database URL
-      DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
+      #DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'
       # max pool
       DARC_MAX_POOL: 10
       # save data submitssion
