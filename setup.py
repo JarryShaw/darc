@@ -24,7 +24,7 @@ import sys
 import subprocess  # nosec
 
 # version string
-__version__ = '0.6.7'
+__version__ = '0.6.8'
 
 # setup attributes
 attrs = dict(
