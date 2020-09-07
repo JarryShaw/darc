@@ -1,6 +1,6 @@
 # Python packages
 pip==20.2.2
-setuptools==50.0.0
+setuptools==50.3.0
 wheel==0.35.1
 
 # Python dependencies
