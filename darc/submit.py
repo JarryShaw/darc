@@ -264,7 +264,7 @@ def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]):
     save_submit(domain, data)
 
 
-def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
+def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False, force: bool = False):
     """Submit new host.
 
     When a new host is discovered, the :mod:`darc` crawler will submit the
@@ -276,6 +276,8 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
         link: Link object of submission.
         partial: If the data is not complete, i.e. failed when fetching
             ``robots.txt``, ``hosts.txt`` and/or sitemaps.
+        force: If the data is force re-fetched, i.e. cache expired when
+            checking with :func:`darc.db.have_hostname`.
 
     If :data:`~darc.submit.API_NEW_HOST` is :data:`None`, the data for submission
     will directly be save through :func:`~darc.submit.save_submit`.
@@ -287,6 +289,8 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
         {
             // partial flag - true / false
             "$PARTIAL$": ...,
+            // force flag - true / false
+            "$FORCE$": ...,
             // metadata of URL
             "[metadata]": {
                 // original URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
@@ -387,6 +391,7 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False):
 
     data = {
         '$PARTIAL$': partial,
+        '$FORCE$': force,
         '[metadata]': metadata,
         'Timestamp': ts,
         'URL': link.host,

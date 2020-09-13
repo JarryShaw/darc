@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
 LABEL Name=darc \
-      Version=0.6.8
+      Version=0.6.9
 
 STOPSIGNAL SIGINT
 HEALTHCHECK --interval=1h --timeout=1m \
@@ -61,10 +61,10 @@ RUN retry apt-get install --yes --no-install-recommends i2p
 COPY extra/i2p.bionic /etc/defaults/i2p
 
 ## ZeroNet
-COPY vendor/ZeroNet-py3-linux64.tar.gz /tmp
+COPY vendor/ZeroNet-linux-dist-linux64.tar.gz /tmp
 RUN set -x \
  && cd /tmp \
- && tar xvpfz ZeroNet-py3-linux64.tar.gz \
+ && tar xvpfz ZeroNet-linux-dist-linux64.tar.gz \
  && mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
 COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
 
@@ -93,11 +93,11 @@ RUN set -x \
 #  && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 #  && dpkg-reconfigure -f noninteractive tzdata
 
-COPY vendor/chromedriver_linux64-79.0.3945.36.zip \
+COPY vendor/chromedriver_linux64.zip \
      vendor/google-chrome-stable_current_amd64.deb /tmp/
 RUN set -x \
  ## ChromeDriver
- && unzip -d /usr/bin /tmp/chromedriver_linux64-79.0.3945.36.zip \
+ && unzip -d /usr/bin /tmp/chromedriver_linux64.zip \
  && which chromedriver \
  ## Google Chrome
  && ( dpkg --install /tmp/google-chrome-stable_current_amd64.deb || true ) \
@@ -117,13 +117,13 @@ RUN set -x \
         /tmp/requirements.txt \
         /tmp/pip \
         ## ChromeDriver
-        /tmp/chromedriver_linux64-79.0.3945.36.zip \
+        /tmp/chromedriver_linux64.zip \
         ## Google Chrome
         /tmp/google-chrome-stable_current_amd64.deb \
         ## Vendors
         /tmp/new_installer_offline.jar \
         /tmp/noip-duc-linux.tar.gz \
-        /tmp/ZeroNet-py3-linux64.tar.gz \
+        /tmp/ZeroNet-linux-dist-linux64.tar.gz \
  #&& apt-get remove --auto-remove --yes \
  #       software-properties-common \
  #       unzip \

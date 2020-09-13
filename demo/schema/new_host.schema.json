@@ -8,6 +8,11 @@
       "description": "partial flag - true / false",
       "type": "boolean"
     },
+    "$RELOAD$": {
+      "title": "$Reload$",
+      "description": "reload flag - true / false",
+      "type": "boolean"
+    },
     "[metadata]": {
       "title": "[Metadata]",
       "description": "metadata of URL",
@@ -60,6 +65,7 @@
   },
   "required": [
     "$PARTIAL$",
+    "$RELOAD$",
     "[metadata]",
     "Timestamp",
     "URL"

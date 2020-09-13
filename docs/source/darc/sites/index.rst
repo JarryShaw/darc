@@ -52,12 +52,12 @@ such module to the :data:`~darc.sites.SITEMAP` mapping dictionary.
    .. code-block:: python
 
       SITEMAP = collections.defaultdict(lambda: 'default', {
-          # 'www.sample.com': 'sample',  # darc.sites.sample
+          # 'www.sample.com': 'sample',  # local customised module
       })
 
    The mapping dictionary for hostname to sites customisation
    modules.
 
-   The fallback value is ``default``, c.f. :mod:`darc.sites.default`.
+   The fallback value is :mod:`darc.sites.default`.
 
 .. autofunction:: darc.sites._get_spec

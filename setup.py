@@ -24,7 +24,7 @@ import sys
 import subprocess  # nosec
 
 # version string
-__version__ = '0.6.8'
+__version__ = '0.6.9'
 
 # setup attributes
 attrs = dict(
@@ -108,6 +108,9 @@ attrs = dict(
         'selenium',
         'stem',
         'typing_extensions',
+        # version compatibility
+        'python-walrus; python_version < "3.8"',
+        'dataclasses; python_version < "3.7"',
     ],
     entry_points={
         'console_scripts': [
@@ -119,10 +122,10 @@ attrs = dict(
         'SQLite': ['pysqlite3'],
         'MySQL': ['PyMySQL[rsa]'],
         'PostgreSQL': ['psycopg2'],
-        # version compatibility
-        ':python_version < "3.8"': ['python-walrus'],
-        ':python_version < "3.7"': ['dataclasses'],
     },
+    setup_requires=[
+        'python-walrus; python_version < "3.8"',
+    ]
 )
 
 try:
@@ -153,9 +156,14 @@ class build(build_py):
 
     def run(self):
         if version_info < (3, 8):
-            subprocess.check_call(  # nosec
-                [sys.executable, '-m', 'walrus', '--no-archive', 'darc']
-            )
+            try:
+                subprocess.check_call(  # nosec
+                    [sys.executable, '-m', 'walrus', '--no-archive', 'darc']
+                )
+            except subprocess.CalledProcessError as error:
+                print('Failed to perform assignment expression backport compiling.'
+                      'Please consider manually install `python-walrus` and try again.', file=sys.stderr)
+                sys.exit(error.returncode)
         build_py.run(self)
 
 

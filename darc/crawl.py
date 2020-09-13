@@ -133,40 +133,53 @@ def crawler(link: Link):
         # timestamp
         timestamp = datetime.now()
 
-        # if it's a new host
-        flag_have, force_fetch = have_hostname(link)
-        if not flag_have or force_fetch:
-            partial = False
+        # get the session object in advance
+        session = request_session(link)
 
-            if link.proxy not in ('zeronet', 'freenet'):
-                # fetch sitemap.xml
-                try:
-                    fetch_sitemap(link, force=force_fetch)
-                except Exception:
-                    error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-                    partial = True
+        # check whether schema supported by :mod:`requests`
+        try:
+            session.get_adapter(link.url)  # test for adapter
+            requests_supported = True
+        except requests.exceptions.InvalidSchema:
+            requests_supported = False
 
-            if link.proxy == 'i2p':
-                # fetch hosts.txt
-                try:
-                    fetch_hosts(link, force=force_fetch)
-                except Exception:
-                    error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                    print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
-                    partial = True
+        # if need to test for new host
+        if requests_supported:
+            # if it's a new host
+            flag_have, force_fetch = have_hostname(link)
+            if not flag_have or force_fetch:
+                partial = False
 
-            # submit data / drop hostname from db
-            if partial:
-                drop_hostname(link)
-            submit_new_host(timestamp, link, partial=partial)
+                if link.proxy not in ('zeronet', 'freenet'):
+                    # fetch sitemap.xml
+                    try:
+                        fetch_sitemap(link, force=force_fetch)
+                    except Exception:
+                        error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                        partial = True
 
-        if not FORCE and not check_robots(link):
-            print(render_error(f'[REQUESTS] Robots disallowed link from {link.url}',
-                               stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
-            return
+                if link.proxy == 'i2p':
+                    # fetch hosts.txt
+                    try:
+                        fetch_hosts(link, force=force_fetch)
+                    except Exception:
+                        error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
+                        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                        partial = True
 
-        with request_session(link) as session:
+                # submit data / drop hostname from db
+                if partial:
+                    drop_hostname(link)
+                submit_new_host(timestamp, link, partial=partial, force=force_fetch)
+
+            if not FORCE and not check_robots(link):
+                print(render_error(f'[REQUESTS] Robots disallowed link from {link.url}',
+                                stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                return
+
+        # reuse the session object
+        with session:
             try:
                 # requests session hook
                 response = crawler_hook(link, session)

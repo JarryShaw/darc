@@ -20,16 +20,16 @@ from darc.link import Link
 
 SITEMAP = collections.defaultdict(lambda: 'default', {
     # misc/special links
-    '(data)': 'data',
-    '(script)': 'script',
-    '(bitcoin)': 'bitcoin',
-    '(ed2k)': 'ed2k',
-    '(magnet)': 'magnet',
-    '(mail)': 'mail',
-    '(tel)': 'tel',
-    '(irc)': 'irc',
+    '(data)': 'darc.sites.data',
+    '(script)': 'darc.sites.script',
+    '(bitcoin)': 'darc.sites.bitcoin',
+    '(ed2k)': 'darc.sites.ed2k',
+    '(magnet)': 'darc.sites.magnet',
+    '(mail)': 'darc.sites.mail',
+    '(tel)': 'darc.sites.tel',
+    '(irc)': 'darc.sites.irc',
 
-    # 'www.sample.com': 'sample',  # darc.sites.sample
+    # 'www.sample.com': 'sample',  # local customised module
 })
 
 
@@ -65,10 +65,7 @@ def _get_spec(link: Link) -> typing.ModuleType:
     """
     spec = SITEMAP[link.host.casefold()]
     try:
-        try:
-            return importlib.import_module(f'darc.sites.{spec}')
-        except ImportError:
-            return importlib.import_module(spec)
+        return importlib.import_module(spec)
     except ImportError:
         warnings.warn(f'site customisation not found: {spec}', SiteNotFoundWarning)
         return importlib.import_module('darc.sites.default')

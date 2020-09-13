@@ -149,6 +149,9 @@ class NewHostModel(pydantic.BaseModel):
     partial: bool = pydantic.Field(
         alias='$PARTIAL$',
         description='partial flag - true / false')
+    reload: bool = pydantic.Field(
+        alias='$RELOAD$',
+        description='reload flag - true / false')
     metadata: Metadata = pydantic.Field(
         alias='[metadata]',
         description='metadata of URL')

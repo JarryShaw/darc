@@ -19,6 +19,8 @@ def new_host():
         {
             // partial flag - true / false
             "$PARTIAL$": ...,
+            // force flag - true / false
+            "$FORCE$": ...,
             // metadata of URL
             "[metadata]": {
                 // original URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
@@ -217,4 +219,4 @@ def from_selenium():
 
 
 if __name__ == "__main__":
-    sys.exit(app.run())
+    sys.exit(app.run())  # type: ignore

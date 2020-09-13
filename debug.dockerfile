@@ -12,7 +12,7 @@
 FROM ubuntu:bionic
 
 LABEL Name=darc \
-      Version=0.6.8
+      Version=0.6.9
 #EXPOSE 9050
 
 STOPSIGNAL SIGINT
@@ -88,10 +88,10 @@ RUN retry apt-get install --yes i2p
 COPY extra/i2p.bionic /etc/defaults/i2p
 
 ## ZeroNet
-COPY vendor/ZeroNet-py3-linux64.tar.gz /tmp
+COPY vendor/ZeroNet-linux-dist-linux64.tar.gz /tmp
 RUN set -x \
  && cd /tmp \
- && tar xvpfz ZeroNet-py3-linux64.tar.gz \
+ && tar xvpfz ZeroNet-linux-dist-linux64.tar.gz \
  && mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
 COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
 
@@ -122,11 +122,11 @@ RUN set -x \
 
 # ADD tbb/tor-browser-linux64-8.5.5_en-US.tar.gz /
 # ADD driver/geckodriver-v0.26.0-linux64.tar.gz /usr/local/bin
-COPY vendor/chromedriver_linux64-79.0.3945.36.zip \
+COPY vendor/chromedriver_linux64.zip \
      vendor/google-chrome-stable_current_amd64.deb /tmp/
 RUN set -x \
  ## ChromeDriver
- && unzip -d /usr/bin /tmp/chromedriver_linux64-79.0.3945.36.zip \
+ && unzip -d /usr/bin /tmp/chromedriver_linux64.zip \
  && which chromedriver \
  ## Google Chrome
  && (dpkg --install /tmp/google-chrome-stable_current_amd64.deb || true) \

@@ -235,7 +235,7 @@ def have_hostname(link: Link) -> typing.Tuple[bool, bool]:
             try:
                 return _have_hostname_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 238,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 236,
                                                  f'_have_hostname_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return False, False
@@ -291,14 +291,28 @@ def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
         threshold = new_score - TIME_CACHE.total_seconds()
 
     with _redis_get_lock('lock_queue_hostname'):  # type: ignore
-        score = _redis_command('zscore', 'queue_hostname', link.name)
+        score = _redis_command('zscore', 'queue_hostname', link.host)
+        if score is None:
+            have_flag = False
+            force_fetch = False
+
+            # update Redis record
+            redis_update = True
+        else:
+            have_flag = True
+            force_fetch = score < threshold
+
+            # update Redis record (only if re-fetch)
+            redis_update = force_fetch
+
+    if redis_update:
         _redis_command('zadd', 'queue_hostname', {
             link.host: new_score,
         })
-
-    if score is None:
-        return False, False
-    return True, score < threshold
+    with open(os.path.join('data', 'db.log'), 'at') as file:
+        print(link.host, score, _redis_command('zscore', 'queue_hostname',
+                                               link.host), have_flag, force_fetch, redis_update, file=file)
+    return have_flag, force_fetch
 
 
 def drop_hostname(link: Link):  # pylint: disable=inconsistent-return-statements
@@ -317,7 +331,7 @@ def drop_hostname(link: Link):  # pylint: disable=inconsistent-return-statements
             try:
                 return _drop_hostname_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 318,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 322,
                                                  f'_drop_hostname_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -369,7 +383,7 @@ def drop_requests(link: Link):  # pylint: disable=inconsistent-return-statements
             try:
                 return _drop_requests_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 370,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 384,
                                                  f'_drop_requests_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -421,7 +435,7 @@ def drop_selenium(link: Link):  # pylint: disable=inconsistent-return-statements
             try:
                 return _drop_selenium_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 422,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 436,
                                                  f'_drop_selenium_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -493,7 +507,7 @@ def save_requests(entries: typing.Union[Link, typing.List[Link]], single: bool =
             try:
                 return _save_requests_db(entries, single, score, nx, xx)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 494,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 508,
                                                  '_save_requests_db(...)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -672,7 +686,7 @@ def save_selenium(entries: typing.Union[Link, typing.List[Link]], single: bool =
             try:
                 return _save_selenium_db(entries, single, score, nx, xx)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 673,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 687,
                                                  '_save_selenium_db(...)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -851,7 +865,7 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
             try:
                 link_pool = _load_requests_db()
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 852,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 866,
                                                  '_load_requests_db()')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 link_pool = list()
@@ -940,7 +954,7 @@ def _load_requests_redis() -> typing.List[Link]:
                 _save_requests_redis(link_pool, score=new_score)  # force update records
     except redis_lock.LockError:
         warning = warnings.formatwarning(f'[REQUESTS] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 250, "_redis_get_lock('lock_queue_requests')")
+                                         LockWarning, __file__, 948, "_redis_get_lock('lock_queue_requests')")
         print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
         link_pool = list()
     return link_pool
@@ -970,7 +984,7 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
             try:
                 link_pool = _load_selenium_db()
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 971,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 985,
                                                  '_load_selenium_db()')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 link_pool = list()
@@ -1063,7 +1077,7 @@ def _load_selenium_redis() -> typing.List[Link]:
                 _save_selenium_redis(link_pool, score=new_score)  # force update records
     except redis_lock.LockError:
         warning = warnings.formatwarning(f'[SELENIUM] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 299, "_redis_get_lock('lock_queue_selenium')")
+                                         LockWarning, __file__, 1071, "_redis_get_lock('lock_queue_selenium')")
         print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
         link_pool = list()
     return link_pool

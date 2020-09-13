@@ -1,6 +1,12 @@
 ``darc`` - Darkweb Crawler Project
 ==================================
 
+   For any technical and/or maintenance information,
+   please kindly refer to the |docs|_.
+
+.. |docs| replace:: **Official Documentation**
+.. _docs: https://darc.jarryshaw.me
+
 ``darc`` is designed as a swiss army knife for darkweb crawling.
 It integrates ``requests`` to collect HTTP request and response
 information, such as cookies, header fields, etc. It also bundles
@@ -59,7 +65,7 @@ The general process can be described as following for *workers* of ``crawler`` t
 
    **NOTE:**
 
-      If :exc:`requests.exceptions.InvalidSchema` is raised, the link
+      If `requests.exceptions.InvalidSchema` is raised, the link
       will be saved by ``darc.proxy.null.save_invalid``. Further
       processing is dropped.
 
