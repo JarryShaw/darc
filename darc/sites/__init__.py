@@ -15,10 +15,11 @@ import importlib
 import warnings
 
 import darc.typing as typing
+import darc.sites.default as default  # import as cache
 from darc.error import SiteNotFoundWarning
 from darc.link import Link
 
-SITEMAP = collections.defaultdict(lambda: 'default', {
+SITEMAP = collections.defaultdict(lambda: default, {
     # misc/special links
     '(data)': 'darc.sites.data',
     '(script)': 'darc.sites.script',
@@ -30,22 +31,27 @@ SITEMAP = collections.defaultdict(lambda: 'default', {
     '(irc)': 'darc.sites.irc',
 
     # 'www.sample.com': 'sample',  # local customised module
-})
+})  # type: typing.DefaultDict[str, typing.Union[str, typing.ModuleType]]
 
 
-def register(domain: str, module: str):
+def register(domain: str, module: typing.Union[str, typing.ModuleType]):
     """Register new site map.
 
     Args:
         domain: Domain name (case insensitive).
         module: Full qualified module name.
 
+    Raises:
+        ImportError: If failed to import the specified module name.
+
     """
+    if isinstance(module, str):
+        module = importlib.import_module(module)
     SITEMAP[domain.casefold()] = module
 
 
-def _get_spec(link: Link) -> typing.ModuleType:
-    """Load spec if any.
+def _get_module(link: Link) -> typing.ModuleType:
+    """Load module if any.
 
     If the sites customisation failed to import, it will
     fallback to the default hooks, :mod:`~darc.sites.default`.
@@ -63,12 +69,16 @@ def _get_spec(link: Link) -> typing.ModuleType:
         * :data:`darc.sites.SITEMAP`
 
     """
-    spec = SITEMAP[link.host.casefold()]
-    try:
-        return importlib.import_module(spec)
-    except ImportError:
-        warnings.warn(f'site customisation not found: {spec}', SiteNotFoundWarning)
-        return importlib.import_module('darc.sites.default')
+    domain = link.host.casefold()
+    module = SITEMAP[domain]
+    if isinstance(module, str):
+        try:
+            module = importlib.import_module(module)
+        except ImportError:
+            warnings.warn(f'site customisation not found: {module}', SiteNotFoundWarning)
+            module = default
+        SITEMAP[domain] = module  # set for cache
+    return module
 
 
 def crawler_hook(link: Link, session: typing.Session) -> typing.Response:
@@ -83,12 +93,12 @@ def crawler_hook(link: Link, session: typing.Session) -> typing.Response:
 
     See Also:
         * :data:`darc.sites.SITE_MAP`
-        * :func:`darc.sites._get_spec`
+        * :func:`darc.sites._get_module`
         * :func:`darc.crawl.crawler`
 
     """
-    spec = _get_spec(link)
-    return spec.crawler(session, link)  # type: ignore
+    module = _get_module(link)
+    return module.crawler(session, link)  # type: ignore
 
 
 def loader_hook(link: Link, driver: typing.Driver) -> typing.Driver:
@@ -103,9 +113,9 @@ def loader_hook(link: Link, driver: typing.Driver) -> typing.Driver:
 
     See Also:
         * :data:`darc.sites.SITE_MAP`
-        * :func:`darc.sites._get_spec`
+        * :func:`darc.sites._get_module`
         * :func:`darc.crawl.loader`
 
     """
-    spec = _get_spec(link)
-    return spec.loader(driver, link)  # type: ignore
+    module = _get_module(link)
+    return module.loader(driver, link)  # type: ignore

@@ -9,6 +9,7 @@ project.
 """
 
 import getpass
+import os
 import platform
 import shutil
 
@@ -20,6 +21,19 @@ from darc.error import UnsupportedLink, UnsupportedPlatform, UnsupportedProxy
 from darc.link import Link
 from darc.proxy.i2p import I2P_PORT, I2P_SELENIUM_PROXY
 from darc.proxy.tor import TOR_PORT, TOR_SELENIUM_PROXY
+
+# Google Chrome binary location.
+BINARY_LOCATION = os.getenv('CHROME_BINARY_LOCATION')
+if BINARY_LOCATION is None:
+    _system = platform.system()
+
+    if _system == 'Darwin':
+        BINARY_LOCATION = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    elif _system == 'Linux':
+        BINARY_LOCATION = shutil.which('google-chrome')
+    else:
+        raise UnsupportedPlatform(f'`CHROME_BINARY_LOCATION\' is required on system: {_system}')
+    del _system
 
 
 def request_driver(link: Link) -> typing.Driver:
@@ -58,7 +72,8 @@ def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefi
 
     Raises:
         UnsupportedPlatform: If the operation system is **NOT**
-            macOS or Linux.
+            macOS or Linux and :envvar:`CHROME_BINARY_LOCATION`
+            is **NOT** set.
         UnsupportedProxy: If the proxy type is **NOT**
             ``null``, ``tor`` or ``i2p``.
 
@@ -84,25 +99,20 @@ def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefi
 
     # initiate options
     options = selenium.webdriver.ChromeOptions()
+    if BINARY_LOCATION is None:
+        raise UnsupportedPlatform(f'unsupported system: {_system}')
+    options.binary_location = BINARY_LOCATION
 
     # https://peter.sh/experiments/chromium-command-line-switches/
-    if _system == 'Darwin':
-        options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-
-        if not DEBUG:
-            options.add_argument('--headless')
-    elif _system == 'Linux':
-        options.binary_location = shutil.which('google-chrome')
+    if not DEBUG:
         options.add_argument('--headless')
-
+    if _system == 'Linux':
         # c.f. https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
         if getpass.getuser() == 'root':
             options.add_argument('--no-sandbox')
 
         # c.f. http://crbug.com/715363
         options.add_argument('--disable-dev-shm-usage')
-    else:
-        raise UnsupportedPlatform(f'unsupported system: {_system}')
 
     if type != 'null':
         if type == 'tor':

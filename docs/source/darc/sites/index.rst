@@ -47,7 +47,7 @@ module it should use for a certain hostname, you can register
 such module to the :data:`~darc.sites.SITEMAP` mapping dictionary.
 
 .. data:: darc.sites.SITEMAP
-   :type: DefaultDict[str, str]
+   :type: DefaultDict[str, Union[str, types.ModuleType]]
 
    .. code-block:: python
 
@@ -60,4 +60,4 @@ such module to the :data:`~darc.sites.SITEMAP` mapping dictionary.
 
    The fallback value is :mod:`darc.sites.default`.
 
-.. autofunction:: darc.sites._get_spec
+.. autofunction:: darc.sites._get_module

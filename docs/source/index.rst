@@ -357,7 +357,7 @@ Data Storage
 
 .. envvar:: LOCK_TIMEOUT
 
-   :type: ``float``
+   :type: :obj:`float`
    :default: ``10``
 
    Lock blocking timeout.
@@ -417,7 +417,7 @@ Web Crawlers
 
 .. envvar:: DARC_WAIT
 
-   :type: ``float``
+   :type: :obj:`float`
    :default: ``60``
 
    Time interval between each round when the :mod:`requests` and/or
@@ -463,7 +463,7 @@ Web Crawlers
 
 .. envvar:: TIME_CACHE
 
-   :type: ``float``
+   :type: :obj:`float`
    :default: ``60``
 
    Time delta for caches in seconds.
@@ -479,7 +479,7 @@ Web Crawlers
 
 .. envvar:: SE_WAIT
 
-   :type: ``float``
+   :type: :obj:`float`
    :default: ``60``
 
    Time to wait for :mod:`selenium` to finish loading pages.
@@ -493,6 +493,21 @@ Web Crawlers
 
    .. |event| replace:: ``DOMContentLoaded``
    .. _event: https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event
+
+.. envvar:: CHROME_BINARY_LOCATION
+
+   :type: :obj:`str`
+   :default: ``google-chrome``
+
+   Path to the Google Chrome binary location.
+
+   .. note::
+
+      This environment variable is mandatory for non *macOS* and/or *Linux* systems.
+
+   .. seealso::
+
+      See :mod:`darc.selenium` for more information.
 
 White / Black Lists
 -------------------
@@ -682,7 +697,7 @@ Tor Proxy Configuration
 
 .. envvar:: TOR_WAIT
 
-   :type: ``float``
+   :type: :obj:`float`
    :default: ``90``
 
    Time after which the attempt to start Tor is aborted.
@@ -728,7 +743,7 @@ I2P Proxy Configuration
 
 .. envvar:: I2P_WAIT
 
-   :type: ``float``
+   :type: :obj:`float`
    :default: ``90``
 
    Time after which the attempt to start I2P is aborted.
@@ -778,7 +793,7 @@ ZeroNet Proxy Configuration
 
 .. envvar:: ZERONET_WAIT
 
-   :type: ``float``
+   :type: :obj:`float`
    :default: ``90``
 
    Time after which the attempt to start ZeroNet is aborted.
@@ -832,7 +847,7 @@ Freenet Proxy Configuration
 
 .. envvar:: FREENET_WAIT
 
-   :type: ``float``
+   :type: :obj:`float`
    :default: ``90``
 
    Time after which the attempt to start Freenet is aborted.

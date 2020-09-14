@@ -29,8 +29,10 @@ def register(proxy: str, session: typing.Callable[[bool], typing.Session],
 
     Args:
         proxy: Proxy type.
-        session: Session factory function.
-        driver: Driver factory function.
+        session: Session factory function, c.f.
+            :func:`darc.requests.null_session`.
+        driver: Driver factory function, c.f.
+            :func:`darc.selenium.null_driver`.
 
     """
     LINK_MAP[proxy] = (session, driver)
