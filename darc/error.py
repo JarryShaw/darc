@@ -11,8 +11,13 @@ The :mod:`darc` project provides following custom exceptions:
 * :exc:`~darc.error.UnsupportedLink`
 * :exc:`~darc.error.UnsupportedPlatform`
 * :exc:`~darc.error.UnsupportedProxy`
+* :exc:`~darc.error.WorkerBreak`
 
-The :mod:`darc` project provides following custom exceptions:
+.. note::
+
+   All exceptions are inherited from :exc:`~darc.error._BaseException`.
+
+The :mod:`darc` project provides following custom warnings:
 
 * :exc:`~darc.error.TorBootstrapFailed`
 * :exc:`~darc.error.I2PBootstrapFailed`
@@ -23,6 +28,11 @@ The :mod:`darc` project provides following custom exceptions:
 * :exc:`~darc.error.LockWarning`
 * :exc:`~darc.error.TorRenewFailed`
 * :exc:`~darc.error.RedisCommandFailed`
+* :exc:`~darc.error.HookExecutionFailed`
+
+.. note::
+
+   All warnings are inherited from :exc:`~darc.error._BaseWarning`.
 
 """
 
@@ -31,60 +41,76 @@ import stem.util.term
 import darc.typing as typing
 
 
-class LinkNoReturn(Exception):
+class _BaseException(Exception):
+    """Base exception class for :mod:`darc` module."""
+
+
+class LinkNoReturn(_BaseException):
     """The link has no return value from the hooks."""
 
 
-class UnsupportedLink(Exception):
+class UnsupportedLink(_BaseException):
     """The link is not supported."""
 
 
-class UnsupportedPlatform(Exception):
+class UnsupportedPlatform(_BaseException):
     """The platform is not supported."""
 
 
-class UnsupportedProxy(Exception):
+class UnsupportedProxy(_BaseException):
     """The proxy is not supported."""
 
 
-class TorBootstrapFailed(Warning):
+class WorkerBreak(_BaseException):
+    """Break from the worker loop."""
+
+
+class _BaseWarning(Warning):
+    """Base warning for :mod:`darc` module."""
+
+
+class TorBootstrapFailed(_BaseWarning):
     """Tor bootstrap process failed."""
 
 
-class TorRenewFailed(Warning):
+class TorRenewFailed(_BaseWarning):
     """Tor renew request failed."""
 
 
-class I2PBootstrapFailed(Warning):
+class I2PBootstrapFailed(_BaseWarning):
     """I2P bootstrap process failed."""
 
 
-class ZeroNetBootstrapFailed(Warning):
+class ZeroNetBootstrapFailed(_BaseWarning):
     """ZeroNet bootstrap process failed."""
 
 
-class FreenetBootstrapFailed(Warning):
+class FreenetBootstrapFailed(_BaseWarning):
     """Freenet bootstrap process failed."""
 
 
-class RedisCommandFailed(Warning):
+class RedisCommandFailed(_BaseWarning):
     """Redis command execution failed."""
 
 
-class DatabaseOperaionFailed(Warning):
+class DatabaseOperaionFailed(_BaseWarning):
     """Database operation execution failed."""
 
 
-class APIRequestFailed(Warning):
+class APIRequestFailed(_BaseWarning):
     """API submit failed."""
 
 
-class SiteNotFoundWarning(ImportWarning):
+class SiteNotFoundWarning(_BaseWarning, ImportWarning):
     """Site customisation not found."""
 
 
-class LockWarning(Warning):
+class LockWarning(_BaseWarning):
     """Failed to acquire Redis lock."""
+
+
+class HookExecutionFailed(_BaseWarning):
+    """Failed to execute hook function."""
 
 
 def render_error(message: str, colour: typing.Color) -> str:

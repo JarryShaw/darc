@@ -12,6 +12,7 @@ import os
 import signal
 import threading
 import time
+import warnings
 
 import stem
 import stem.control
@@ -22,7 +23,9 @@ import darc.typing as typing
 from darc._compat import strsignal
 from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, PATH_ID, REBOOT, getpid
 from darc.crawl import crawler, loader
+from darc.error import HookExecutionFailed, WorkerBreak
 from darc.db import load_requests, load_selenium
+from darc.link import Link
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap
 from darc.proxy.i2p import _I2P_BS_FLAG, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, renew_tor_session, tor_bootstrap
@@ -31,6 +34,42 @@ from darc.proxy.zeronet import _ZERONET_BS_FLAG, zeronet_bootstrap
 #: List[Union[multiprocessing.Process, threading.Thread]]: List of
 #: active child processes and/or threads.
 _WORKER_POOL = None
+
+#: List[Callable[[Literal['crawler', 'loader'], List[Link]]]: List of hook functions to
+#: be called between each *round*.
+_HOOK_REGISTRY = list()  # type: typing.List[typing.Callable[[typing.Literal['crawler', 'loader'], Link], None]]
+
+
+def register(hook: typing.Callable[[typing.Literal['crawler', 'loader'], Link], None], *, _index: typing.Optional[int] = None):
+    """Register hook function.
+
+    Args:
+        hook: Hook function to be registered.
+
+    Keyword Args:
+        _index: Position index for the hook function.
+
+    The hook function takes two parameters:
+
+    1. a :obj:`str` object indicating the type of worker,
+       i.e. ``'crawler'`` or ``'loader'``;
+    2. a :obj:`list` object containing :class:`~darc.link.Link`
+       objects, as the current processed link pool.
+
+    The hook function may raises :exc:`~darc.error.WorkerBreak`
+    so that the worker shall break from its indefinite loop upon
+    finishing of current *round*. Any value returned from the
+    hook function will be ignored by the workers.
+
+    See Also:
+        The hook functions will be saved into
+        :data:`~darc.process._HOOK_REGISTRY`.
+
+    """
+    if _index is None:
+        _HOOK_REGISTRY.append(hook)
+    else:
+        _HOOK_REGISTRY.insert(_index, hook)
 
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
@@ -73,7 +112,12 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
 
 
 def process_crawler():
-    """A worker to run the :func:`~darc.crawl.crawler` process."""
+    """A worker to run the :func:`~darc.crawl.crawler` process.
+
+    Warns:
+        HookExecutionFailed: When hook function raises an error.
+
+    """
     print('[CRAWLER] Starting first round...')
 
     # start mainloop
@@ -88,6 +132,19 @@ def process_crawler():
         for link in link_pool:
             crawler(link)
 
+        time2break = False
+        for hook in _HOOK_REGISTRY:
+            try:
+                hook('crawler', link_pool)
+            except WorkerBreak:
+                time2break = True
+            except Exception as error:
+                warnings.warn(f'[CRAWLER] hook execution failed: {error}', HookExecutionFailed)
+
+        # marked to break by hook function
+        if time2break:
+            break
+
         # quit in reboot mode
         if REBOOT:
             break
@@ -100,7 +157,12 @@ def process_crawler():
 
 
 def process_loader():
-    """A worker to run the :func:`~darc.crawl.loader` process."""
+    """A worker to run the :func:`~darc.crawl.loader` process.
+
+    Warns:
+        HookExecutionFailed: When hook function raises an error.
+
+    """
     print('[LOADER] Starting first round...')
 
     # start mainloop
@@ -114,6 +176,19 @@ def process_loader():
 
         for link in link_pool:
             loader(link)
+
+        time2break = False
+        for hook in _HOOK_REGISTRY:
+            try:
+                hook('loader', link_pool)
+            except WorkerBreak:
+                time2break = True
+            except Exception as error:
+                warnings.warn(f'[LOADER] hook execution failed: {error}', HookExecutionFailed)
+
+        # marked to break by hook function
+        if time2break:
+            break
 
         # quit in reboot mode
         if REBOOT:
@@ -259,6 +334,11 @@ def process(worker: typing.Literal['crawler', 'loader']):
        Later, :func:`~darc.parse.extract_links` will be called then to
        extract all possible links from the HTML document and save such
        links into the :mod:`requests` database (c.f. :func:`~darc.db.save_requests`).
+
+    After each *round*, :mod:`darc` will call registered hook functions in
+    sequential order, with the type of worker (``'crawler'`` or ``'loader'``)
+    and the current link pool as its parameters, see :func:`~darc.process.register`
+    for more information.
 
     If in reboot mode, i.e. :data:`~darc.const.REBOOT` is :data:`True`, the function
     will exit after first round. If not, it will renew the Tor connections (if

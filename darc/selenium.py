@@ -31,8 +31,6 @@ if BINARY_LOCATION is None:
         BINARY_LOCATION = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     elif _system == 'Linux':
         BINARY_LOCATION = shutil.which('google-chrome')
-    else:
-        raise UnsupportedPlatform(f'`CHROME_BINARY_LOCATION\' is required on system: {_system}')
     del _system
 
 
@@ -76,6 +74,14 @@ def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefi
             is **NOT** set.
         UnsupportedProxy: If the proxy type is **NOT**
             ``null``, ``tor`` or ``i2p``.
+
+    Important:
+        The function raises :exc:`UnsupportedPlatform` in cases where
+        :data:`~darc.selenium.BINARY_LOCATION` is :data:`None`.
+
+        Please provide :envvar:`CHROME_BINARY_LOCATION` when running
+        :mod:`darc` in ``loader`` mode on non *macOS* and/or *Linux*
+        systems.
 
     See Also:
         * :data:`darc.proxy.tor.TOR_PORT`
