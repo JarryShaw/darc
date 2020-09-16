@@ -1,0 +1,1 @@
+10 0 * * * /path/to/python3 /path/to/darc/extra/upload.py --host ftp://hostname --user username:password
