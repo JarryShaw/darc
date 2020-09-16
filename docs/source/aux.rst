@@ -41,20 +41,17 @@ Upload API Submission Files
 :File location:
    * Entry point: ``extra/upload.py``
    * Helper script: ``extra/upload.sh``
-   * System V service: ``extra/upload.service``
+   * Cron sample: ``extra/upload.cron``
 
 .. code-block:: text
 
-   usage: upload [-h] [-f FILE] [-p PATH] [-i INTERVAL] -H HOST [-U USER]
+   usage: upload [-h] [-p PATH] -H HOST [-U USER]
 
    upload API submission files
 
    optional arguments:
      -h, --help            show this help message and exit
-     -f FILE, --file FILE  path to compose file
      -p PATH, --path PATH  path to data storage
-     -i INTERVAL, --interval INTERVAL
-                           interval (in seconds) to upload
      -H HOST, --host HOST  upstream hostname
      -U USER, --user USER  upstream user credential
 
@@ -62,8 +59,13 @@ This script will automatically upload API submission files, c.f.
 :mod:`darc.submit`, using :manpage:`curl(1)`. The ``--user`` option is
 supplied for the same option of :manpage:`curl(1)`.
 
-When uploading, the script will *pause* the running containers and it will
-*unpause* them upon completion.
+.. important::
+
+   As the :func:`darc.submit.save_submit` is categorising saved API
+   submission files by its actual date, the script is also uploading
+   such files by the saved dates. Therefore, as the :manpage:`cron(8)`
+   sample suggests, the script should better be run everyday *slightly
+   after* **12:00 AM** (*0:00* in 24-hour format).
 
 Remove Repeated Lines
 ---------------------
