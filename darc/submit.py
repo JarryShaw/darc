@@ -216,6 +216,10 @@ def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]):
         domain (``'new_host'``, ``'requests'`` or ``'selenium'``): Domain of the submit data.
         data: Submit data.
 
+    Notes:
+        The saved files will be categorised by the actual runtime day
+        for better maintenance.
+
     See Also:
         * :data:`darc.submit.PATH_API`
         * :func:`darc.submit.submit`
@@ -224,11 +228,13 @@ def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]):
         * :func:`darc.submit.submit_selenium`
 
     """
+    today = datetime.date.today().isoformat()
+
     metadata = data['[metadata]']
     name = metadata['name']
     ts = data['Timestamp']
 
-    root = os.path.join(PATH_API, metadata['base'], domain)
+    root = os.path.join(PATH_API, today, metadata['base'], domain)
     os.makedirs(root, exist_ok=True)
 
     with open(os.path.join(root, f'{name}_{ts}.json'), 'w') as file:

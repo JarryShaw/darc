@@ -7,7 +7,7 @@ import contextlib
 import datetime
 import os
 import shutil
-import subprocess
+import subprocess  # nosec
 import sys
 import time
 
@@ -15,44 +15,33 @@ import time
 ROOT = os.path.dirname(os.path.abspath(__file__))
 # script path
 SCPT = os.path.join(ROOT, 'upload.sh')
+# time delta
+ONEDAY = datetime.timedelta(days=1)
 
 
-def check_call(*args, **kwargs):
-    """Wraps :func:`subprocess.check_call`."""
-    with open('logs/upload.log', 'at', buffering=1) as file:
-        if 'stdout' not in kwargs:
-            kwargs['stdout'] = file
-        if 'stderr' not in kwargs:
-            kwargs['stderr'] = subprocess.STDOUT
-
-        for _ in range(3):
-            with contextlib.suppress(subprocess.CalledProcessError):
-                return subprocess.check_call(*args, **kwargs)
-            time.sleep(60)
-
-    with contextlib.suppress(subprocess.CalledProcessError):
-        return subprocess.check_call(['systemctl', 'restart', 'docker'])
-    subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check
-
-
-def upload(file, path, host, user):
+def upload(path, host, user):
     """Upload files."""
-    path_api = os.path.join(path, 'api')
-    if not os.path.isdir(path_api):
-        return
-    print(f'[{datetime.datetime.now().isoformat()}] Archiving & uploading APi submission files...')
+    today = datetime.date.today()
+    today_str = today.isoformat()
+    yesterday = (today - ONEDAY).isoformat()
 
-    check_call(['docker-compose', '--file', file, 'pause'])
+    path_api = os.path.join(path, 'api')
+    if not os.path.isdir(os.path.join(path_api, today_str)):
+        print(f'[{datetime.datetime.now().isoformat()}] Today\'s API submission files not found...')
+        return
+    if not os.path.isdir(os.path.join(path_api, yesterday)):
+        print(f'[{datetime.datetime.now().isoformat()}] Yesterday\'s API submission files not found...')
+        return
+
+    print(f'[{datetime.datetime.now().isoformat()}] Archiving & uploading API submission files...')
     with open('logs/upload.log', 'at', buffering=1) as log_file:
         with contextlib.suppress(subprocess.CalledProcessError):
-            subprocess.check_call(['bash', SCPT], env=os.environ.update(dict(
+            subprocess.check_call(['bash', SCPT], env=os.environ.update(dict(  # nosec
                 HOST=host,
                 USER=user,
+                DATE=yesterday,
             )), cwd=path, stdout=log_file, stderr=subprocess.STDOUT)
-    os.makedirs(path_api, exist_ok=True)
-    check_call(['docker-compose', '--file', file, 'unpause'])
-
-    print(f'[{datetime.datetime.now().isoformat()}] Uploaded APi submission files...')
+    print(f'[{datetime.datetime.now().isoformat()}] Uploaded API submission files...')
 
 
 def get_parser():
@@ -60,11 +49,7 @@ def get_parser():
     parser = argparse.ArgumentParser('upload',
                                      description='upload API submission files')
 
-    parser.add_argument('-f', '--file', default='docker-compose.yml', help='path to compose file')
-
     parser.add_argument('-p', '--path', default='data', help='path to data storage')
-    parser.add_argument('-i', '--interval', default='3600', type=float, help='interval (in seconds) to upload')
-
     parser.add_argument('-H', '--host', required=True, help='upstream hostname')
     parser.add_argument('-U', '--user', default='', help='upstream user credential')
 
@@ -79,12 +64,6 @@ def main():
     if shutil.which('curl') is None:
         parser.error('curl: command not found')
 
-    if not os.path.isfile(args.file):
-        parser.error('compose file not found')
-
-    if args.interval <= 0:
-        parser.error('invalid interval')
-
     os.makedirs('logs', exist_ok=True)
     if os.path.isfile('logs/upload.log'):
         os.rename('logs/upload.log', f'logs/upload-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
@@ -96,16 +75,7 @@ def main():
         print('-' * len(date), file=file)
 
         with contextlib.redirect_stdout(file), contextlib.redirect_stderr(file):
-            ## sleep before first round
-            #time.sleep(args.interval)
-
-            while True:
-                try:
-                    with contextlib.suppress(Exception):
-                        upload(args.file, args.path, args.host, args.user)
-                except KeyboardInterrupt:
-                    break
-                time.sleep(args.interval)
+            upload(args.path, args.host, args.user)
     return 0
 
 

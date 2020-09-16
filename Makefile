@@ -10,13 +10,13 @@ commit: github-commit gitlab-commit
 
 reload:
 	git pull
-	sudo systemctl stop darc-upload
+	#sudo systemctl stop darc-upload
 	sudo systemctl stop darc-healthcheck
 	sudo docker-compose stop
 	sudo docker-compose logs -t > logs/$(shell date +%Y-%m-%d-%H-%M-%S).log
 	sudo docker system prune --volumes -f
 	sudo docker-compose up -d --build
-	sudo systemctl start darc-upload
+	#sudo systemctl start darc-upload
 	sudo systemctl start darc-healthcheck
 
 uniq: uniq-requests uniq-selenium

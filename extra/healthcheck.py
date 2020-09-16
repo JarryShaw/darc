@@ -7,7 +7,7 @@ import contextlib
 import datetime
 import json
 import os
-import subprocess
+import subprocess  # nosec
 import sys
 import time
 
@@ -22,24 +22,24 @@ def check_call(*args, **kwargs):
 
         for _ in range(3):
             with contextlib.suppress(subprocess.CalledProcessError):
-                return subprocess.check_call(*args, **kwargs)
+                return subprocess.check_call(*args, **kwargs)  # nosec
             time.sleep(60)
 
     with contextlib.suppress(subprocess.CalledProcessError):
-        return subprocess.check_call(['systemctl', 'restart', 'docker'])
-    subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check
+        return subprocess.check_call(['systemctl', 'restart', 'docker'])  # nosec
+    subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check  # nosec
 
 
 def check_output(*args, **kwargs):
     """Wraps :func:`subprocess.check_output`."""
     for _ in range(3):
         with contextlib.suppress(subprocess.CalledProcessError):
-            return subprocess.check_output(*args, **kwargs)
+            return subprocess.check_output(*args, **kwargs)  # nosec
         time.sleep(60)
 
     with contextlib.suppress(subprocess.CalledProcessError):
-        return subprocess.check_call(['systemctl', 'restart', 'docker'])
-    subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check
+        return subprocess.check_call(['systemctl', 'restart', 'docker'])  # nosec
+    subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check  # nosec
 
 
 def timestamp(container_id):
@@ -67,7 +67,7 @@ def healthcheck(file, interval, *services):
     while True:
         for container_id in container_id_list:
             try:
-                inspect = subprocess.check_output(['docker', 'container', 'inspect', container_id],
+                inspect = subprocess.check_output(['docker', 'container', 'inspect', container_id],  # nosec
                                                   encoding='utf-8').strip()
             except subprocess.CalledProcessError:
                 container_id_list = check_output(ps_args, encoding='utf-8').strip().split()

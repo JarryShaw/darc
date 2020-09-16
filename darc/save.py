@@ -10,15 +10,16 @@ is typically as following::
 
     data
     ├── api
-    │   └── <proxy>
-    │       └── <scheme>
-    │           └── <hostname>
-    │               ├── new_host
-    │               │   └── <hash>_<timestamp>.json
-    │               ├── requests
-    │               │   └── <hash>_<timestamp>.json
-    │               └── selenium
-    │                   └── <hash>_<timestamp>.json
+    |   └── <date>
+    │       └── <proxy>
+    │           └── <scheme>
+    │               └── <hostname>
+    │                   ├── new_host
+    │                   │   └── <hash>_<timestamp>.json
+    │                   ├── requests
+    │                   │   └── <hash>_<timestamp>.json
+    │                   └── selenium
+    │                       └── <hash>_<timestamp>.json
     ├── link.csv
     ├── misc
     │   ├── bitcoin.txt
