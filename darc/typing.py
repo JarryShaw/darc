@@ -13,17 +13,14 @@ from typing import *
 import typing
 
 import peewee
+import requests
 import requests_futures.sessions
+import selenium.webdriver
 import stem
 import stem.control
 import stem.process
 import stem.util.term
 from typing_extensions import *  # type: ignore
-
-import requests
-import selenium.common.exceptions
-import selenium.webdriver
-import selenium.webdriver.common.proxy
 
 T = typing.TypeVar('T')
 

@@ -13,7 +13,7 @@ import os
 import platform
 import shutil
 
-import selenium
+import selenium.webdriver
 
 import darc.typing as typing
 from darc.const import DEBUG
@@ -113,6 +113,9 @@ def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefi
     if not DEBUG:
         options.add_argument('--headless')
     if _system == 'Linux':
+        if os.path.isfile('/.dockerenv'):  # check if in Docker
+            options.headless = True  # force headless option in Docker environment
+
         # c.f. https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152
         if getpass.getuser() == 'root':
             options.add_argument('--no-sandbox')
