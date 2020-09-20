@@ -22,6 +22,8 @@ information, such as cookies, header fields, etc. It also bundles
 :mod:`selenium` to provide a fully rendered web page and screenshot
 of such view.
 
+.. image:: ../img/darc.jpeg
+
 There are two types of *workers*:
 
 * ``crawler`` -- runs the :func:`darc.crawl.crawler` to provide a

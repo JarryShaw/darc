@@ -13,6 +13,8 @@ information, such as cookies, header fields, etc. It also bundles
 ``selenium`` to provide a fully rendered web page and screenshot
 of such view.
 
+.. image:: docs/img/darc.jpeg
+
 The general process of ``darc`` can be described as following:
 
 There are two types of *workers*:
