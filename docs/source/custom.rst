@@ -198,7 +198,7 @@ defined as following:
 
             """
             # land on login page
-            driver.get('https://%s/login' % url.host)
+            driver.get('https://%s/login' % link.host)
 
             # animate login attempt
             form = driver.find_element_by_id('login-form')
@@ -218,3 +218,9 @@ defined as following:
     # register sites
     register('mysite.com', MySite)
     register('www.mysite.com', MySite)
+
+.. important::
+
+   Please note that you may raise :exc:`darc.error.LinkNoReturn` in the ``crawler``
+   and/or ``loader`` methods to indicate that such link should be ignored and removed
+   from the task queues, e.g. :mod:`darc.sites.data`.
