@@ -1,4 +1,4 @@
-Darkweb Crawler Project
+Technical Documentation
 =======================
 
 .. module:: darc
@@ -82,4 +82,4 @@ global namespace, see below:
       The function is renamed from :func:`darc.sites.register`.
 
 For more information on the hooks, please refer to the
-:doc:`customisation <custom>` documentations.
+:doc:`customisation </custom>` documentations.

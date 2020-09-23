@@ -6,6 +6,14 @@
 ``darc`` - Darkweb Crawler Project
 ==================================
 
+:mod:`darc` is designed as a swiss army knife for darkweb crawling.
+It integrates :mod:`requests` to collect HTTP request and response
+information, such as cookies, header fields, etc. It also bundles
+:mod:`selenium` to provide a fully rendered web page and screenshot
+of such view.
+
+.. image:: ../img/darc.jpeg
+
 .. toctree::
    :maxdepth: 2
 
@@ -18,13 +26,9 @@
    demo/schema
    aux
 
-:mod:`darc` is designed as a swiss army knife for darkweb crawling.
-It integrates :mod:`requests` to collect HTTP request and response
-information, such as cookies, header fields, etc. It also bundles
-:mod:`selenium` to provide a fully rendered web page and screenshot
-of such view.
-
-.. image:: ../img/darc.jpeg
+---------
+Rationale
+---------
 
 There are two types of *workers*:
 
