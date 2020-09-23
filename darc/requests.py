@@ -44,7 +44,7 @@ def request_session(link: Link, futures: bool = False) -> typing.Union[typing.Se
 
     Args:
         link: Link requesting for requests.Session.
-        futures: If returns a requests_futures.FuturesSession.
+        futures: If returns a :class:`requests_futures.FuturesSession`.
 
     Returns:
         Union[requests.Session, requests_futures.FuturesSession]:
@@ -71,7 +71,7 @@ def i2p_session(futures: bool = False) -> typing.Union[typing.Session, typing.Fu
     """I2P (.i2p) session.
 
     Args:
-        futures: If returns a requests_futures.FuturesSession.
+        futures: If returns a :class:`requests_futures.FuturesSession`.
 
     Returns:
         Union[requests.Session, requests_futures.FuturesSession]:
@@ -95,7 +95,7 @@ def tor_session(futures: bool = False) -> typing.Union[typing.Session, typing.Fu
     """Tor (.onion) session.
 
     Args:
-        futures: If returns a requests_futures.FuturesSession.
+        futures: If returns a :class:`requests_futures.FuturesSession`.
 
     Returns:
         Union[requests.Session, requests_futures.FuturesSession]:
@@ -119,7 +119,7 @@ def null_session(futures: bool = False) -> typing.Union[typing.Session, typing.F
     """No proxy session.
 
     Args:
-        futures: If returns a requests_futures.FuturesSession.
+        futures: If returns a :class:`requests_futures.FuturesSession`.
 
     Returns:
         Union[requests.Session, requests_futures.FuturesSession]:

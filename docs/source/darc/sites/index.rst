@@ -51,7 +51,7 @@ such module to the :data:`~darc.sites.SITEMAP` mapping dictionary.
 
    .. code-block:: python
 
-      SITEMAP = collections.defaultdict(lambda: 'default', {
+      SITEMAP = collections.defaultdict(lambda: 'darc.sites.default', {
           # 'www.sample.com': 'sample',  # local customised module
       })
 

@@ -55,3 +55,31 @@ main entrypoint function :func:`darc.process.process` is exported
 in global namespace (and renamed to :func:`darc.darc`), see below:
 
 .. autofunction:: darc.darc
+
+   .. seealso::
+
+      The function is renamed from :func:`darc.process.process`.
+
+And we also exported the necessary hook registration functions to the
+global namespace, see below:
+
+.. autofunction:: darc.register_hooks
+
+   .. seealso::
+
+      The function is renamed from :func:`darc.process.register`.
+
+.. autofunction:: darc.register_proxy
+
+   .. seealso::
+
+      The function is renamed from :func:`darc.proxy.register`.
+
+.. autofunction:: darc.register_sites
+
+   .. seealso::
+
+      The function is renamed from :func:`darc.sites.register`.
+
+For more information on the hooks, please refer to the
+:doc:`customisation <custom>` documentations.
