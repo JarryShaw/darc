@@ -8,6 +8,12 @@ its content, the :mod:`darc.sites` module provides sites
 customisation hooks to both :mod:`requests` and :mod:`selenium`
 crawling processes.
 
+.. important::
+
+   To create a sites customisation, define your class by inheriting
+   :class:`darc.sites.BaseSite` and register it to the :mod:`darc`
+   module through :func:`darc.sites.register`.
+
 .. toctree::
 
    _abc

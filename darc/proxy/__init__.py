@@ -23,8 +23,8 @@ LINK_MAP: typing.LinkMap = collections.defaultdict(
 )
 
 
-def register(proxy: str, session: typing.Callable[[bool], typing.Session],
-             driver: typing.Callable[[], typing.Driver]):
+def register(proxy: str, session: typing.Callable[[bool], typing.Session] = null_session,
+             driver: typing.Callable[[], typing.Driver] = null_driver):
     """Register new proxy type.
 
     Args:
@@ -35,4 +35,4 @@ def register(proxy: str, session: typing.Callable[[bool], typing.Session],
             :func:`darc.selenium.null_driver`.
 
     """
-    LINK_MAP[proxy] = (session, driver)
+    LINK_MAP[proxy] = (session, driver)  # type: ignore
