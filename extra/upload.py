@@ -61,6 +61,9 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
 
+    if shutil.which('bash') is None:
+        parser.error('bash: command not found')
+
     if shutil.which('curl') is None:
         parser.error('curl: command not found')
 

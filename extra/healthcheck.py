@@ -147,10 +147,6 @@ def main():
     if args.interval <= 0:
         parser.error('invalid interval')
 
-    os.makedirs('logs', exist_ok=True)
-    if os.path.isfile('logs/healthcheck.log'):
-        os.rename('logs/healthcheck.log', f'logs/healthcheck-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
-
     with open('logs/healthcheck.log', 'at', buffering=1) as file:
         date = datetime.datetime.now().ctime()
         print('-' * len(date), file=file)
