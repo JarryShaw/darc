@@ -11,28 +11,33 @@ import darc.typing as typing
 from darc.error import LinkNoReturn
 from darc.link import Link
 from darc.proxy.ed2k import save_ed2k
+from darc.sites._abc import BaseSite
 
 
-def crawler(session: typing.Session, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
-    """Crawler hook for ED2K magnet links.
+class ED2K(BaseSite):
+    """ED2K magnet links."""
 
-    Args:
-        session (:class:`requests.Session`): Session object with proxy settings.
-        link: Link object to be crawled.
+    @staticmethod
+    def crawler(session: typing.Session, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
+        """Crawler hook for ED2K magnet links.
 
-    Raises:
-        LinkNoReturn: This link has no return response.
+        Args:
+            session (:class:`requests.Session`): Session object with proxy settings.
+            link: Link object to be crawled.
 
-    """
-    save_ed2k(link)
-    raise LinkNoReturn
+        Raises:
+            LinkNoReturn: This link has no return response.
 
+        """
+        save_ed2k(link)
+        raise LinkNoReturn
 
-def loader(driver: typing.Driver, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
-    """Not implemented.
+    @staticmethod
+    def loader(driver: typing.Driver, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
+        """Not implemented.
 
-    Raises:
-        LinkNoReturn: This hook is not implemented.
+        Raises:
+            LinkNoReturn: This hook is not implemented.
 
-    """
-    raise LinkNoReturn
+        """
+        raise LinkNoReturn

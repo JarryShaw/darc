@@ -151,21 +151,25 @@ the target link.
 By default, :mod:`darc` uses :mod:`darc.sites.default` as the *no op*
 for both :mod:`requests` sessions and :mod:`selenium` drivers. However,
 you may use your own sites customisation by registering and/or customising
-the corresponding modules (and/or classes, since it works as well and
-much easier to implement).
+the corresponding classes, which inherited from :class:`~darc.sites._abc.BaseSite`.
 
 A typical sites customisation class (for better demonstration) can be
 defined as following:
 
 .. code-block:: python
 
+    import time
+
     from darc.const import SE_WAIT
-    from darc.sites import register
+    from darc.sites import BaseSite, register
 
 
-    class MySite:
+    class MySite(BaseSite):
         """This is a site customisation class for demonstration purpose.
         You may implement a module as well should you prefer."""
+
+        #: List[str]: Hostnames the sites customisation is designed for.
+        hostname = ['mysite.com', 'www.mysite.com']
 
         @staticmethod
         def crawler(session, link):
@@ -173,7 +177,7 @@ defined as following:
 
             Args:
                 session (requests.Session): Session object with proxy settings.
-                link: Link object to be crawled.
+                link (darc.link.Link): Link object to be crawled.
 
             Returns:
                 requests.Response: The final response object with crawled data.
@@ -191,7 +195,7 @@ defined as following:
 
             Args:
                 driver (selenium.webdriver.Chrome): Web driver object with proxy settings.
-                link: Link object to be loaded.
+                link (darc.link.Link): Link object to be loaded.
 
             Returns:
                 selenium.webdriver.Chrome: The web driver object with loaded data.
@@ -216,8 +220,7 @@ defined as following:
 
 
     # register sites
-    register('mysite.com', MySite)
-    register('www.mysite.com', MySite)
+    register(MySite)
 
 .. important::
 

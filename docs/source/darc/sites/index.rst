@@ -10,6 +10,7 @@ crawling processes.
 
 .. toctree::
 
+   _abc
    default
    bitcoin
    data
@@ -20,9 +21,14 @@ crawling processes.
    script
    tel
 
+To start with, you just need to define your sites customisation by
+inheriting :class:`~darc.sites._abc.BaseSite` and overload corresponding
+:meth:`~darc.sites._abc.BaseSite.crawler` and/or
+:meth:`~darc.sites._abc.BaseSite.loader` methods.
+
 To customise behaviours over :mod:`requests`, you sites customisation
-module should have a :func:`crawler` function, e.g.
-:func:`~darc.sites.default.crawler`.
+class should have a :func:`crawler` method, e.g.
+:meth:`DefaultSite.crawler <darc.sites.default.DefaultSite.crawler>`.
 
 The function takes the :class:`requests.Session` object with proxy settings and
 a :class:`~darc.link.Link` object representing the link to be
@@ -32,8 +38,8 @@ data of the crawling process.
 .. autofunction:: darc.sites.crawler_hook
 
 To customise behaviours over :mod:`selenium`, you sites customisation
-module should have a :func:`loader` function, e.g.
-:func:`~darc.sites.default.loader`.
+class should have a :func:`loader` method, e.g.
+:meth:`DefaultSite.loader <darc.sites.default.DefaultSite.loader>`.
 
 The function takes the :class:`~selenium.webdriver.chrome.webdriver.WebDriver`
 object with proxy settings and a :class:`~darc.link.Link` object representing
@@ -44,20 +50,29 @@ object containing the final data of the loading process.
 
 To tell the :mod:`darc` project which sites customisation
 module it should use for a certain hostname, you can register
-such module to the :data:`~darc.sites.SITEMAP` mapping dictionary.
+such module to the :data:`~darc.sites.SITEMAP` mapping dictionary
+through :func:`~darc.sites.register`:
+
+.. autofunction:: darc.sites.register
 
 .. data:: darc.sites.SITEMAP
-   :type: DefaultDict[str, Union[str, types.ModuleType]]
+   :type: DefaultDict[str, Type[darc.sites._abc.BaseSite]]
 
    .. code-block:: python
 
-      SITEMAP = collections.defaultdict(lambda: 'darc.sites.default', {
-          # 'www.sample.com': 'sample',  # local customised module
+      from darc.sites.default import DefaultSite
+
+      SITEMAP = collections.defaultdict(lambda: DefaultSite, {
+          # 'www.sample.com': SampleSite,  # local customised class
       })
 
    The mapping dictionary for hostname to sites customisation
-   modules.
+   classes.
 
-   The fallback value is :mod:`darc.sites.default`.
+   The fallback value is :class:`darc.sites.default.DefaultSite`.
 
-.. autofunction:: darc.sites._get_module
+.. autofunction:: darc.sites._get_site
+
+.. seealso::
+
+   Please refer to :doc:`/custom` for more examples and explanations.
