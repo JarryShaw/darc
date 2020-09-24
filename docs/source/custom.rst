@@ -133,7 +133,7 @@ defined as following:
 
 
     # register proxy
-    register(socks5_session, socks5_session)
+    register('socks5', socks5_session, socks5_driver)
 
 Sites Customisation
 -------------------
