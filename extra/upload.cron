@@ -1,1 +1,1 @@
-10 0 * * * ( cd && /path/to/python3 extra/upload.py --host ftp://hostname --user username:password ) >> logs/cron/darc-upload.log 2>&1
+10 0 * * * ( cd /path/to/darc/ && /path/to/python3 /path/to/darc/extra/upload.py --host ftp://hostname --user username:password ) >> /path/to/darc/logs/cron/darc-upload.log 2>&1
