@@ -80,8 +80,8 @@ IPAddress = Union[ipaddress.IPv4Address, ipaddress.IPv6Address]
 # peewee.Database
 Database = peewee.Database
 
-# Dict[str, str]
-Cookies = Dict[str, str]
+# List[Dict[str, Any]]
+Cookies = List[Dict[str, Any]]
 
 # Dict[str, str]
 Headers = Dict[str, str]

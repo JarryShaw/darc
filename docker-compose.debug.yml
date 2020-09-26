@@ -22,7 +22,7 @@ services:
       # mail
       - mailto:jarryshaw@icloud.com
       # normal
-      - https://httpbin.org
+      - https://www.tek-id.com
       # Tor
       - https://www.nytimes3xbfgragh.onion
       # I2P

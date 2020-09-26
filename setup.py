@@ -125,7 +125,7 @@ attrs = dict(
     },
     setup_requires=[
         'python-walrus; python_version < "3.8"',
-    ]
+    ],
 )
 
 try:
