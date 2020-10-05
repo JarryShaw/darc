@@ -4,7 +4,7 @@ setuptools==50.3.0
 wheel==0.35.1
 
 # Python dependencies
-beautifulsoup4[html5lib]==4.9.2
+beautifulsoup4[html5lib]==4.9.3
 certifi==2020.6.20
 cffi==1.14.3
 chardet==3.0.4
