@@ -21,6 +21,7 @@ A typical hook function can be defined as following:
 
 .. code-block:: python
 
+    from darc.error import WorkerBreak
     from darc.process import register
 
 
@@ -76,8 +77,11 @@ defined as following:
 
 .. code-block:: python
 
+    import requests
+    import requests_futures.sessions
     import selenium.webdriver
     import selenium.webdriver.common.proxy
+    from darc.const import DARC_CPU
     from darc.proxy import register
     from darc.requests import default_user_agent
     from darc.selenium import BINARY_LOCATION
@@ -101,8 +105,8 @@ defined as following:
 
         session.headers['User-Agent'] = default_user_agent(proxy='Socks5')
         session.proxies.update(dict(
-            'http':  'socks5h://localhost:9293',
-            'https': 'socks5h://localhost:9293',
+            http='socks5h://localhost:9293',
+            https='socks5h://localhost:9293',
         ))
         return session
 

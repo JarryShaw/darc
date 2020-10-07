@@ -17,6 +17,7 @@ of such view.
 .. toctree::
    :maxdepth: 2
 
+   howto/index
    darc/index
    config
    custom

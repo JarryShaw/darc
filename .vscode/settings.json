@@ -36,6 +36,7 @@
         "facebookcorewwwi",
         "gecos",
         "genutils",
+        "howto",
         "idna",
         "inited",
         "isdigit",
@@ -102,5 +103,7 @@
         "zscan",
         "zscore"
     ],
-    "restructuredtext.confPath": "${workspaceFolder}/docs/conf.py"
+    "restructuredtext.confPath": "${workspaceFolder}/docs/conf.py",
+    "python.pythonPath": ".venv/bin/python3.8",
+    "python.dataScience.jupyterServerURI": "local"
 }
