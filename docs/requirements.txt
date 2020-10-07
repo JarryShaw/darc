@@ -24,9 +24,3 @@ sphinxcontrib-htmlhelp==1.0.3
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
-
-# sphinxcontrib-napoleon
-sphinxcontrib-napoleon==0.7
-pockets==0.9.1
-six==1.15.0
-six==1.15.0

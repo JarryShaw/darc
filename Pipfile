@@ -23,9 +23,7 @@ ipython = "*"
 coverage = "*"
 codecov = "*"
 sphinx = "*"
-doc8 = "*"
 rstcheck = "*"
-jupyterlab = "*"
 Flask = "*"
 pydantic = {extras = ["dotenv", "email", "typing_extensions"], version = "*"}
 

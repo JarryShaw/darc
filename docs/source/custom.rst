@@ -61,7 +61,8 @@ Custom Proxy
 
 .. seealso::
 
-   See :func:`darc.proxy.register` for technical information.
+   * :doc:`howto/proxy`
+   * See :func:`darc.proxy.register` for technical information.
 
 Sometimes, we need proxies to connect to certain targers, such as the Tor
 network and I2P proxy. :mod:`darc` decides if it need to use a proxy for
@@ -99,7 +100,7 @@ defined as following:
 
         """
         if futures:
-         session = requests_futures.sessions.FuturesSession(max_workers=DARC_CPU)
+            session = requests_futures.sessions.FuturesSession(max_workers=DARC_CPU)
         else:
             session = requests.Session()
 
@@ -144,7 +145,8 @@ Sites Customisation
 
 .. seealso::
 
-   See :func:`darc.sites.register` for technical information.
+   * :doc:`howto/sites`
+   * See :func:`darc.sites.register` for technical information.
 
 Since websites may require authentication and/or anti-robot checks,
 we need to insert certain cookies, animate some user interactions to

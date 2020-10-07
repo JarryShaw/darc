@@ -287,8 +287,9 @@ as below:
     if __name__ == '__main__':
         sys.exit(main())
 
-And now, you can start :mod:`darc` through ``python mysite.py`` instead of
-``python -m darc`` with your sites customisation registered to the system.
+And now, you can start :mod:`darc` through ``python mysite.py [...]`` instead
+of ``python -m darc [...]`` with your sites customisation registered to the
+system.
 
 .. seealso::
 
