@@ -23,8 +23,7 @@ jobs:
         name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=darc
-          DOCKER_IMAGE_DEBUG="darc-debug"
+          DOCKER_IMAGE=jarryshaw/darc
           VERSION=noop
           if [ "${{ github.event_name }}" = "schedule" ]; then
             VERSION=nightly
@@ -39,19 +38,16 @@ jobs:
             VERSION=pr-${{ github.event.number }}
           fi
           TAGS="${DOCKER_IMAGE}:${VERSION}"
-          DEBUG_TAGS="${DOCKER_IMAGE_DEBUG}:${VERSION}"
           if [[ $VERSION =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
             MINOR=${VERSION%.*}
             MAJOR=${MINOR%.*}
             TAGS="$TAGS,${DOCKER_IMAGE}:${MINOR},${DOCKER_IMAGE}:${MAJOR},${DOCKER_IMAGE}:latest"
-            DEBUG_TAGS="$TAGS,${DOCKER_IMAGE_DEBUG}:${MINOR},${DOCKER_IMAGE_DEBUG}:${MAJOR},${DOCKER_IMAGE_DEBUG}:latest"
           elif [ "${{ github.event_name }}" = "push" ]; then
             TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
-            DEBUG_TAGS="$TAGS,${DOCKER_IMAGE_DEBUG}:sha-${GITHUB_SHA::8}"
           fi
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=debug_tags::${DEBUG_TAGS}
+          echo ::set-output name=debug_tags::$(echo $TAGS | sed s/darc/darc-debug/g)
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
       -
         name: Set up QEMU
@@ -92,6 +88,7 @@ jobs:
             org.opencontainers.image.created=${{ steps.prep.outputs.created }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+          pull: true
       -
         name: Build and push - Debug image
         id: docker_build_debug
@@ -111,3 +108,4 @@ jobs:
             org.opencontainers.image.created=${{ steps.prep.outputs.created }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+          pull: true
