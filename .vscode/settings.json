@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "AQACAAE",
+        "Buildx",
         "DFOC",
         "Ffacebookcorewwwi",
         "GIFs",
@@ -36,6 +37,7 @@
         "facebookcorewwwi",
         "gecos",
         "genutils",
+        "ghcr",
         "howto",
         "idna",
         "inited",
@@ -75,6 +77,7 @@
         "sess",
         "shuf",
         "signum",
+        "spdx",
         "sqlite",
         "srem",
         "systemd",
