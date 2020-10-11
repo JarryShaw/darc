@@ -23,7 +23,7 @@ jobs:
         name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=jarryshaw/darc
+          DOCKER_IMAGE=ghcr.io/jarryshaw/darc
           VERSION=noop
           if [ "${{ github.event_name }}" = "schedule" ]; then
             VERSION=nightly
