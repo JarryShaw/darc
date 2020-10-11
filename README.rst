@@ -13,7 +13,7 @@ information, such as cookies, header fields, etc. It also bundles
 ``selenium`` to provide a fully rendered web page and screenshot
 of such view.
 
-.. image:: docs/img/darc.jpeg
+.. image:: https://darc.jarryshaw.me/en/latest/_images/darc.jpeg
 
 The general process of ``darc`` can be described as following:
 
