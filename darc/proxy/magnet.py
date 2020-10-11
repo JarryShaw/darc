@@ -20,7 +20,7 @@ PATH = os.path.join(PATH_MISC, 'magnet.txt')
 LOCK = get_lock()
 
 
-def save_magnet(link: Link):
+def save_magnet(link: Link) -> None:
     """Save magnet link.
 
     The function will save magnet link to the file

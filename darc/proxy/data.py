@@ -24,7 +24,7 @@ PATH = os.path.join(PATH_MISC, 'data')
 os.makedirs(PATH, exist_ok=True)
 
 
-def save_data(link: Link):
+def save_data(link: Link) -> None:
     """Save data URI.
 
     The function will save data URIs to the data storage

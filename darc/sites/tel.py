@@ -2,7 +2,7 @@
 """Telephone Numbers
 =======================
 
-The :mod:`darc.sites.script` module is customised to
+The :mod:`darc.sites.tel` module is customised to
 handle telephone numbers.
 
 """

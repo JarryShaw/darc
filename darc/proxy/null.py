@@ -33,7 +33,7 @@ PATH = os.path.join(PATH_MISC, 'invalid.txt')
 LOCK = get_lock()
 
 
-def save_invalid(link: Link):
+def save_invalid(link: Link) -> None:
     """Save link with invalid scheme.
 
     The function will save link with invalid scheme to the file
@@ -223,7 +223,7 @@ def read_sitemap(link: Link, text: str, check: bool = CHECK) -> typing.List[Link
     return temp_list
 
 
-def fetch_sitemap(link: Link, force: bool = False):
+def fetch_sitemap(link: Link, force: bool = False) -> None:
     """Fetch sitemap.
 
     The function will first fetch the ``robots.txt``, then

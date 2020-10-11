@@ -20,7 +20,7 @@ PATH = os.path.join(PATH_MISC, 'bitcoin.txt')
 LOCK = get_lock()
 
 
-def save_bitcoin(link: Link):
+def save_bitcoin(link: Link) -> None:
     """Save bitcoin address.
 
     The function will save bitcoin address to the file

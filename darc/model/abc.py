@@ -48,7 +48,7 @@ class BaseModel(peewee.Model):
     #: Basic metadata for data models.
     Meta = BaseMeta
 
-    def to_dict(self, keep_id: bool = False):
+    def to_dict(self, keep_id: bool = False) -> None:
         """Convert record to :obj:`dict`.
 
         Args:

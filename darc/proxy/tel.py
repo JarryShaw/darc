@@ -20,7 +20,7 @@ PATH = os.path.join(PATH_MISC, 'tel.txt')
 LOCK = get_lock()
 
 
-def save_tel(link: Link):
+def save_tel(link: Link) -> None:
     """Save telephone number.
 
     The function will save telephone number to the file

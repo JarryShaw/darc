@@ -30,9 +30,9 @@ from darc.submit import SAVE_DB
 _WAIT_REDIS = bool(int(os.getenv('DARC_REDIS', '1')))
 
 
-def _exit():
+def _exit() -> None:
     """Gracefully exit."""
-    def caller(target: typing.Optional[typing.Union[typing.Queue, typing.Popen]], function: str):
+    def caller(target: typing.Optional[typing.Union[typing.Queue, typing.Popen]], function: str) -> None:
         """Wrapper caller."""
         if target is None:
             return
@@ -74,7 +74,7 @@ def get_parser() -> typing.ArgumentParser:
     return parser
 
 
-def main():
+def main() -> None:
     """Entrypoint."""
     parser = get_parser()
     args = parser.parse_args()

@@ -209,7 +209,7 @@ def get_hosts(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsist
     return data
 
 
-def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]):
+def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]) -> None:
     """Save failed submit data.
 
     Args:
@@ -241,7 +241,7 @@ def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]):
         json.dump(data, file, indent=2)
 
 
-def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]):
+def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]) -> None:
     """Submit data.
 
     Args:
@@ -270,7 +270,7 @@ def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]):
     save_submit(domain, data)
 
 
-def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False, force: bool = False):
+def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False, force: bool = False) -> None:
     """Submit new host.
 
     When a new host is discovered, the :mod:`darc` crawler will submit the
@@ -423,7 +423,7 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False, fo
 
 def submit_requests(time: typing.Datetime, link: Link,
                     response: typing.Response, session: typing.Session,
-                    content: bytes, mime_type: str, html: bool = True):
+                    content: bytes, mime_type: str, html: bool = True) -> None:
     """Submit requests data.
 
     When crawling, we'll first fetch the URl using :mod:`requests`, to check
@@ -632,7 +632,7 @@ def submit_requests(time: typing.Datetime, link: Link,
 
 
 def submit_selenium(time: typing.Datetime, link: Link,
-                    html: str, screenshot: typing.Optional[str]):
+                    html: str, screenshot: typing.Optional[str]) -> None:
     """Submit selenium data.
 
     After crawling with :mod:`requests`, we'll then render the URl using

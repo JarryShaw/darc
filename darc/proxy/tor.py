@@ -78,7 +78,7 @@ if DEBUG:
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def renew_tor_session():
+def renew_tor_session() -> None:
     """Renew Tor session."""
     global _TOR_CTRL  # pylint: disable=global-statement
 
@@ -89,12 +89,12 @@ def renew_tor_session():
             _TOR_CTRL.authenticate(TOR_PASS)
         _TOR_CTRL.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
     except Exception as error:
-        warning = warnings.formatwarning(error, TorRenewFailed, __file__, 88,
+        warning = warnings.formatwarning(str(error), TorRenewFailed, __file__, 88,
                                          '_TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))')
         print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
-def print_bootstrap_lines(line: str):
+def print_bootstrap_lines(line: str) -> None:
     """Print Tor bootstrap lines.
 
     Args:
@@ -109,7 +109,7 @@ def print_bootstrap_lines(line: str):
         print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
 
 
-def _tor_bootstrap():
+def _tor_bootstrap() -> None:
     """Tor bootstrap.
 
     The bootstrap configuration is defined as
@@ -141,7 +141,7 @@ def _tor_bootstrap():
     _TOR_BS_FLAG = True
 
 
-def tor_bootstrap():
+def tor_bootstrap() -> None:
     """Bootstrap wrapper for Tor.
 
     The function will bootstrap the Tor proxy. It will retry for
@@ -174,7 +174,7 @@ def tor_bootstrap():
                 message = '[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, TorBootstrapFailed, __file__, 170, 'tor_bootstrap()')
+            warning = warnings.formatwarning(str(error), TorBootstrapFailed, __file__, 170, 'tor_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member

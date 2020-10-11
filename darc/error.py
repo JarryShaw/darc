@@ -113,7 +113,7 @@ class HookExecutionFailed(_BaseWarning):
     """Failed to execute hook function."""
 
 
-def render_error(message: str, colour: typing.Color) -> str:
+def render_error(message: typing.AnyStr, colour: typing.Color) -> str:
     """Render error message.
 
     The function wraps the :func:`stem.util.term.format` function to

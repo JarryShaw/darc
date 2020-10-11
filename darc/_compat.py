@@ -30,13 +30,13 @@ else:
             # Perform operation, using optional_cm if condition is True
         """
 
-        def __init__(self, enter_result=None):
+        def __init__(self, enter_result=None):  # type: ignore
             self.enter_result = enter_result
 
-        def __enter__(self):
+        def __enter__(self):  # type: ignore
             return self.enter_result
 
-        def __exit__(self, *excinfo):  # pylint: disable=arguments-differ
+        def __exit__(self, *excinfo):  # type: ignore # pylint: disable=arguments-differ
             pass
 
 # urllib.robotparser.RobotFileParser.site_maps added in 3.8
@@ -73,13 +73,13 @@ else:
     _NOT_FOUND = object()
 
     class cached_property:  # type: ignore
-        def __init__(self, func):
+        def __init__(self, func):  # type: ignore
             self.func = func
             self.attrname = None
             self.__doc__ = func.__doc__
             self.lock = RLock()
 
-        def __set_name__(self, owner, name):
+        def __set_name__(self, owner, name):  # type: ignore
             if self.attrname is None:
                 self.attrname = name
             elif name != self.attrname:
@@ -88,7 +88,7 @@ else:
                     f"({self.attrname!r} and {name!r})."
                 )
 
-        def __get__(self, instance, owner=None):
+        def __get__(self, instance, owner=None):  # type: ignore
             if instance is None:
                 return self
             if self.attrname is None:

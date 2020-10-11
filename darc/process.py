@@ -37,10 +37,11 @@ _WORKER_POOL = None
 
 #: List[Callable[[Literal['crawler', 'loader'], List[Link]]]: List of hook functions to
 #: be called between each *round*.
-_HOOK_REGISTRY = list()  # type: typing.List[typing.Callable[[typing.Literal['crawler', 'loader'], Link], None]]
+_HOOK_REGISTRY = list()  # type: typing.List[typing.Callable[[typing.Literal['crawler', 'loader'], typing.List[Link]], None]]  # pylint: disable=line-too-long
 
 
-def register(hook: typing.Callable[[typing.Literal['crawler', 'loader'], Link], None], *, _index: typing.Optional[int] = None):
+def register(hook: typing.Callable[[typing.Literal['crawler', 'loader'], typing.List[Link]], None],
+             *, _index: typing.Optional[int] = None) -> None:
     """Register hook function.
 
     Args:
@@ -73,7 +74,7 @@ def register(hook: typing.Callable[[typing.Literal['crawler', 'loader'], Link], 
 
 
 def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
-                    frame: typing.Optional[typing.FrameType] = None):  # pylint: disable=unused-argument
+                    frame: typing.Optional[typing.FrameType] = None) -> None:  # pylint: disable=unused-argument
     """Signal handler.
 
     If the current process is not the main process, the function
@@ -91,12 +92,12 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
         return
 
     if FLAG_MP and _WORKER_POOL:
-        for proc in _WORKER_POOL:
+        for proc in _WORKER_POOL:  # type: ignore
             proc.kill()
             proc.join()
 
     if FLAG_TH and _WORKER_POOL:
-        for proc in _WORKER_POOL:
+        for proc in _WORKER_POOL:  # type: ignore
             proc._stop()  # pylint: disable=protected-access
             proc.join()
 
@@ -111,7 +112,7 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def process_crawler():
+def process_crawler() -> None:
     """A worker to run the :func:`~darc.crawl.crawler` process.
 
     Warns:
@@ -156,7 +157,7 @@ def process_crawler():
     print('[CRAWLER] Stopping mainloop...')
 
 
-def process_loader():
+def process_loader() -> None:
     """A worker to run the :func:`~darc.crawl.loader` process.
 
     Warns:
@@ -201,7 +202,7 @@ def process_loader():
     print('[LOADER] Stopping mainloop...')
 
 
-def _process(worker: typing.Union[process_crawler, process_loader]):  # type: ignore
+def _process(worker: typing.Union[process_crawler, process_loader]) -> None:  # type: ignore
     """Wrapper function to start the worker process."""
     global _WORKER_POOL  # pylint: disable=global-statement
 
@@ -223,7 +224,7 @@ def _process(worker: typing.Union[process_crawler, process_loader]):  # type: ig
         worker()  # type: ignore
 
 
-def process(worker: typing.Literal['crawler', 'loader']):
+def process(worker: typing.Literal['crawler', 'loader']) -> None:
     """Main process.
 
     The function will register :func:`~darc.process._signal_handler` for ``SIGTERM``,

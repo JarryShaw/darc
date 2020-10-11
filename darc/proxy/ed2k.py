@@ -20,7 +20,7 @@ PATH = os.path.join(PATH_MISC, 'ed2k.txt')
 LOCK = get_lock()
 
 
-def save_ed2k(link: Link):
+def save_ed2k(link: Link) -> None:
     """Save ed2k magnet link.
 
     The function will save ED2K magnet link to the file

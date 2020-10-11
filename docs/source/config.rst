@@ -65,6 +65,25 @@ General Configurations
    (when calling :func:`~darc.parse.extract_links`,
    :func:`~darc.proxy.null.read_sitemap` and :func:`~darc.proxy.i2p.read_hosts`).
 
+.. envvar:: DARC_URL_PAT
+
+   :type: List[Tuple[:obj:`str`, :obj:`int`]] (JSON)
+   :default: ``[]``
+
+   Regular expression patterns to match all reasonable URLs.
+
+   The environment variable should be **JSON** encoded, as an *array* of
+   *two-element pairs*. In each pair, it contains one Python regular
+   expression string (:obj:`str`) as described in the builtin :mod:`re`
+   module and one numeric value (:obj:`int`) representing the flags
+   as defined in the builtin :mod:`re` module as well.
+
+   .. important::
+
+      The patterns **must** have a named match group ``url``, e.g.
+      ``(?P<url>bitcoin:\w+)`` so that the function can extract matched
+      URLs from the given pattern.
+
 .. envvar:: DARC_CPU
 
    :type: :obj:`int`

@@ -11,7 +11,9 @@ lists.
 """
 
 import concurrent.futures
+import json
 import os
+import re
 
 import bs4
 import magic
@@ -24,7 +26,17 @@ from darc.const import (CHECK, CHECK_NG, LINK_BLACK_LIST, LINK_FALLBACK, LINK_WH
                         MIME_BLACK_LIST, MIME_FALLBACK, MIME_WHITE_LIST, PROXY_BLACK_LIST,
                         PROXY_FALLBACK, PROXY_WHITE_LIST)
 from darc.error import render_error
-from darc.link import Link, parse_link, urljoin
+from darc.link import Link, parse_link, urljoin, urlsplit
+
+# Regular expression patterns to match all reasonable URLs.
+URL_PAT = [
+    # HTTP(S) and other *regular* URLs, e.g. WebSocket, IRC, etc.
+    re.compile(r'(?P<url>((https?|wss?|irc):)?(//)?\w+(\.\w+)+/?\S*)', re.UNICODE),
+    # bitcoin / data / ed2k / magnet / mail / script / tel, etc.
+    re.compile(r'(?P<url>(bitcoin|data|ed2k|magnet|mailto|script|tel):\w+)', re.ASCII),
+]
+URL_PAT.extend(re.compile(pattern, re.RegexFlag(flags))  # pattern string + compiling flags
+               for pattern, flags in json.loads(os.getenv('DARC_URL_PAT', '[]')))
 
 
 def match_proxy(proxy: str) -> bool:
@@ -82,7 +94,7 @@ def match_host(host: str) -> bool:
     """
     # invalid hostname
     if host is None:
-        return True
+        return True  # type: ignore
 
     # any matching black list
     if any(pattern.fullmatch(host) is not None for pattern in LINK_BLACK_LIST):
@@ -298,7 +310,47 @@ def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHEC
         temp_link = parse_link(urljoin(link.url, href))
         temp_list.append(temp_link)
 
+    # extract links from text
+    temp_list.extend(extract_links_from_text(link, soup.text))
+
     # check content / proxy type
     if check:
         return _check(temp_list)
+    return temp_list
+
+
+def extract_links_from_text(link: Link, text: str) -> typing.List[Link]:
+    """Extract links from raw text source.
+
+    Args:
+        link: Original link of the source document.
+        text: Content of source text document.
+
+    Returns:
+        List of extracted links.
+
+    Important:
+        The extraction is **NOT** as reliable since we did not
+        perform `TLD`_ checks on the extracted links and we cannot
+        guarantee all links to be extracted.
+
+        .. _TLD: https://pypi.org/project/tld/
+
+        The URL patterns used to extract links are defined by
+        :data:`darc.parse.URL_PAT` and you may register your
+        own expressions by :envvar:`DARC_URL_PAT`.
+
+    """
+    temp_list = list()
+    for part in text.split():
+        for pattern in URL_PAT:
+            for match in pattern.finditer(part):
+                match_url = match.group('url')
+
+                # add scheme if not exist
+                if not urlsplit(match_url).scheme:
+                    match_url = f'{link.url_parse.scheme}:{match_url}'
+
+                temp_link = parse_link(match_url)
+                temp_list.append(temp_link)
     return temp_list

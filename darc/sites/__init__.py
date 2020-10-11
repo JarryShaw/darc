@@ -31,6 +31,7 @@ from darc.sites.magnet import Magnet
 from darc.sites.mail import Email
 from darc.sites.script import Script
 from darc.sites.tel import Tel
+from darc.sites.ws import WebSocket
 
 SITEMAP = collections.defaultdict(lambda: DefaultSite, {
     # misc/special links
@@ -42,10 +43,11 @@ SITEMAP = collections.defaultdict(lambda: DefaultSite, {
     '(mail)': Email,
     '(tel)': Tel,
     '(irc)': IRC,
+    '(ws)': WebSocket,
 })  # type: typing.DefaultDict[str, typing.Type[BaseSite]]
 
 
-def register(site: typing.Type[BaseSite], *hostname):
+def register(site: typing.Type[BaseSite], *hostname) -> None:  # type: ignore
     """Register new site map.
 
     Args:
@@ -57,7 +59,7 @@ def register(site: typing.Type[BaseSite], *hostname):
 
     """
     if site.hostname is None:
-        site.hostname = hostname
+        site.hostname = hostname   # type: ignore
 
     for domain in hostname:
         SITEMAP[domain.casefold()] = site
@@ -106,7 +108,7 @@ def crawler_hook(link: Link, session: typing.Session) -> typing.Response:
 
     """
     site = _get_site(link)
-    return site.crawler(session, link)  # type: ignore
+    return site.crawler(session, link)
 
 
 def loader_hook(link: Link, driver: typing.Driver) -> typing.Driver:
@@ -126,4 +128,4 @@ def loader_hook(link: Link, driver: typing.Driver) -> typing.Driver:
 
     """
     site = _get_site(link)
-    return site.loader(driver, link)  # type: ignore
+    return site.loader(driver, link)

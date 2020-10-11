@@ -40,4 +40,4 @@ from darc.proxy import register as register_proxy  # pylint: disable=unused-impo
 from darc.sites import register as register_sites  # pylint: disable=unused-import
 
 __all__ = ['darc']
-__version__ = '0.8.0'
+__version__ = '0.8.1'

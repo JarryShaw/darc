@@ -20,6 +20,7 @@ import warnings
 
 import stem.util.term
 
+import darc.typing as typing
 from darc.const import DARC_USER, DEBUG, VERBOSE
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform, render_error
 
@@ -70,7 +71,7 @@ if DEBUG:
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def _freenet_bootstrap():
+def _freenet_bootstrap() -> None:
     """Freenet bootstrap.
 
     The bootstrap arguments are defined as :data:`~darc.proxy.freenet._FREENET_ARGS`.
@@ -103,16 +104,16 @@ def _freenet_bootstrap():
         print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
 
     returncode = _FREENET_PROC.returncode
-    if returncode is not None and returncode != 0:
+    if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _FREENET_ARGS,
-                                            _FREENET_PROC.stdout,
-                                            _FREENET_PROC.stderr)
+                                            typing.cast(typing.IO[bytes], _FREENET_PROC.stdout).read(),
+                                            typing.cast(typing.IO[bytes], _FREENET_PROC.stderr).read())
 
     # update flag
     _FREENET_BS_FLAG = True
 
 
-def freenet_bootstrap():
+def freenet_bootstrap() -> None:
     """Bootstrap wrapper for Freenet.
 
     The function will bootstrap the Freenet proxy. It will retry for
@@ -151,7 +152,7 @@ def freenet_bootstrap():
                 message = '[Error bootstraping Freenet proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, FreenetBootstrapFailed, __file__, 147, 'freenet_bootstrap()')
+            warning = warnings.formatwarning(str(error), FreenetBootstrapFailed, __file__, 147, 'freenet_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member

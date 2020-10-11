@@ -100,7 +100,7 @@ def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylin
     return f'{path}_{ts}.html'
 
 
-def save_link(link: Link):
+def save_link(link: Link) -> None:
     """Save link hash database ``link.csv``.
 
     The CSV file has following fields:

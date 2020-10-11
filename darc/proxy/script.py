@@ -20,7 +20,7 @@ PATH = os.path.join(PATH_MISC, 'script.txt')
 LOCK = get_lock()
 
 
-def save_script(link: Link):
+def save_script(link: Link) -> None:
     """Save JavaScript link.
 
     The function will save JavaScript link to the file

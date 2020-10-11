@@ -20,7 +20,7 @@ PATH = os.path.join(PATH_MISC, 'mail.txt')
 LOCK = get_lock()
 
 
-def save_mail(link: Link):
+def save_mail(link: Link) -> None:
     """Save email address.
 
     The function will save email address to the file

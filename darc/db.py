@@ -80,7 +80,7 @@ if math.isfinite(MAX_POOL):
     MAX_POOL = math.floor(MAX_POOL)
 
 
-def _gen_arg_msg(*args, **kwargs) -> str:
+def _gen_arg_msg(*args, **kwargs) -> str:  # type: ignore
     """Sanitise arguments representation string.
 
     Args:
@@ -102,7 +102,7 @@ def _gen_arg_msg(*args, **kwargs) -> str:
     return textwrap.shorten(_args, shutil.get_terminal_size().columns)
 
 
-def _redis_command(command: str, *args, **kwargs) -> typing.Any:
+def _redis_command(command: str, *args, **kwargs) -> typing.Any:  # type: ignore
     """Wrapper function for Redis command.
 
     Args:
@@ -144,7 +144,7 @@ def _redis_command(command: str, *args, **kwargs) -> typing.Any:
     return value
 
 
-def _db_operation(operation: typing.Callable[..., typing.T], *args, **kwargs) -> typing.T:
+def _db_operation(operation: typing.Callable[..., typing.T], *args, **kwargs) -> typing.T:  # type: ignore
     """Retry operation on database.
 
     Args:
@@ -169,7 +169,7 @@ def _db_operation(operation: typing.Callable[..., typing.T], *args, **kwargs) ->
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
             model = typing.cast(typing.MethodType, operation).__self__.__class__.__name__
-            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 168,
+            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 166,
                                              f'{model}.{operation.__name__}({_arg_msg})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -258,7 +258,7 @@ def _have_hostname_db(link: Link) -> typing.Tuple[bool, bool]:
     """
     timestamp = datetime.datetime.now()
     if TIME_CACHE is None:
-        threshold = math.inf
+        threshold = math.inf  # type: ignore
     else:
         threshold = timestamp - TIME_CACHE
 
@@ -286,7 +286,7 @@ def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
     """
     new_score = time.time()
     if TIME_CACHE is None:
-        threshold = math.inf
+        threshold = math.inf  # type: ignore
     else:
         threshold = new_score - TIME_CACHE.total_seconds()
 
@@ -315,7 +315,7 @@ def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
     return have_flag, force_fetch
 
 
-def drop_hostname(link: Link):  # pylint: disable=inconsistent-return-statements
+def drop_hostname(link: Link) -> None:  # pylint: disable=inconsistent-return-statements
     """Remove link from the hostname database.
 
     Args:
@@ -338,7 +338,7 @@ def drop_hostname(link: Link):  # pylint: disable=inconsistent-return-statements
     return _drop_hostname_redis(link)
 
 
-def _drop_hostname_db(link: Link):
+def _drop_hostname_db(link: Link) -> None:
     """Remove link from the hostname database.
 
     The function updates the :class:`~darc.models.tasks.hostname.HostnameQueueModel` table.
@@ -350,11 +350,11 @@ def _drop_hostname_db(link: Link):
     model: HostnameQueueModel = _db_operation(HostnameQueueModel.get_or_none,
                                               HostnameQueueModel.hostname == link.host)
     if model is None:
-        return
+        return  # type: ignore
     model.delete_instance()
 
 
-def _drop_hostname_redis(link: Link):
+def _drop_hostname_redis(link: Link) -> None:
     """Remove link from the hostname database.
 
     The function updates the ``queue_hostname`` database.
@@ -367,7 +367,7 @@ def _drop_hostname_redis(link: Link):
         _redis_command('zrem', 'queue_hostname', link.host)
 
 
-def drop_requests(link: Link):  # pylint: disable=inconsistent-return-statements
+def drop_requests(link: Link) -> None:  # pylint: disable=inconsistent-return-statements
     """Remove link from the :mod:`requests` database.
 
     Args:
@@ -390,7 +390,7 @@ def drop_requests(link: Link):  # pylint: disable=inconsistent-return-statements
     return _drop_requests_redis(link)
 
 
-def _drop_requests_db(link: Link):
+def _drop_requests_db(link: Link) -> None:
     """Remove link from the :mod:`requests` database.
 
     The function updates the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.
@@ -402,11 +402,11 @@ def _drop_requests_db(link: Link):
     model: RequestsQueueModel = _db_operation(RequestsQueueModel.get_or_none,
                                               RequestsQueueModel.text == link.url)
     if model is None:
-        return
+        return  # type: ignore
     model.delete_instance()
 
 
-def _drop_requests_redis(link: Link):
+def _drop_requests_redis(link: Link) -> None:
     """Remove link from the :mod:`requests` database.
 
     The function updates the ``queue_requests`` database.
@@ -419,7 +419,7 @@ def _drop_requests_redis(link: Link):
         _redis_command('zrem', 'queue_requests', link.name)
 
 
-def drop_selenium(link: Link):  # pylint: disable=inconsistent-return-statements
+def drop_selenium(link: Link) -> None:  # pylint: disable=inconsistent-return-statements
     """Remove link from the :mod:`selenium` database.
 
     Args:
@@ -442,7 +442,7 @@ def drop_selenium(link: Link):  # pylint: disable=inconsistent-return-statements
     return _drop_selenium_redis(link)
 
 
-def _drop_selenium_db(link: Link):
+def _drop_selenium_db(link: Link) -> None:
     """Remove link from the :mod:`selenium` database.
 
     The function updates the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.
@@ -454,11 +454,11 @@ def _drop_selenium_db(link: Link):
     model: SeleniumQueueModel = _db_operation(SeleniumQueueModel.get_or_none,
                                               SeleniumQueueModel.text == link.url)
     if model is None:
-        return
+        return  # type: ignore
     model.delete_instance()
 
 
-def _drop_selenium_redis(link: Link):
+def _drop_selenium_redis(link: Link) -> None:
     """Remove link from the :mod:`selenium` database.
 
     The function updates the ``queue_selenium`` database.
@@ -472,7 +472,7 @@ def _drop_selenium_redis(link: Link):
 
 
 def save_requests(entries: typing.Union[Link, typing.List[Link]], single: bool = False,  # pylint: disable=inconsistent-return-statements
-                  score=None, nx=False, xx=False):
+                  score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`requests` database.
 
     The function updates the ``queue_requests`` database.
@@ -515,7 +515,7 @@ def save_requests(entries: typing.Union[Link, typing.List[Link]], single: bool =
 
 
 def _save_requests_db(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
-                      score=None, nx=False, xx=False):
+                      score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`requests` database.
 
     The function updates the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.
@@ -536,7 +536,7 @@ def _save_requests_db(entries: typing.Union[Link, typing.List[Link]], single: bo
     if not entries:
         return
     if score is None:
-        score = datetime.datetime.now()
+        score = datetime.datetime.now()  # type: ignore
 
     if not single:
         if typing.TYPE_CHECKING:
@@ -605,7 +605,7 @@ def _save_requests_db(entries: typing.Union[Link, typing.List[Link]], single: bo
 
 
 def _save_requests_redis(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
-                         score=None, nx=False, xx=False):
+                         score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`requests` database.
 
     The function updates the ``queue_requests`` database.
@@ -653,7 +653,7 @@ def _save_requests_redis(entries: typing.Union[Link, typing.List[Link]], single:
 
 
 def save_selenium(entries: typing.Union[Link, typing.List[Link]], single: bool = False,  # pylint: disable=inconsistent-return-statements
-                  score=None, nx=False, xx=False):
+                  score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`selenium` database.
 
     Args:
@@ -694,7 +694,7 @@ def save_selenium(entries: typing.Union[Link, typing.List[Link]], single: bool =
 
 
 def _save_selenium_db(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
-                      score=None, nx=False, xx=False):
+                      score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`selenium` database.
 
     The function updates the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.
@@ -715,7 +715,7 @@ def _save_selenium_db(entries: typing.Union[Link, typing.List[Link]], single: bo
     if not entries:
         return
     if score is None:
-        score = datetime.datetime.now()
+        score = datetime.datetime.now()  # type: ignore
 
     if not single:
         if typing.TYPE_CHECKING:
@@ -784,7 +784,7 @@ def _save_selenium_db(entries: typing.Union[Link, typing.List[Link]], single: bo
 
 
 def _save_selenium_redis(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
-                         score=None, nx=False, xx=False):
+                         score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`selenium` database.
 
     The function updates the ``queue_selenium`` database.
@@ -900,7 +900,7 @@ def _load_requests_db() -> typing.List[Link]:
     """
     now = datetime.datetime.now()
     if TIME_CACHE is None:
-        sec_delta = 0
+        sec_delta = 0  # type: ignore
         max_score = now
     else:
         sec_delta = TIME_CACHE
@@ -917,9 +917,10 @@ def _load_requests_db() -> typing.List[Link]:
         )
         link_pool = [model.link for model in query]
 
+        # force update records
         if TIME_CACHE is not None:
             new_score = now + sec_delta
-            _save_requests_db(link_pool, score=new_score)  # force update records
+            _save_requests_db(link_pool, score=new_score)  # type: ignore
     return link_pool
 
 
@@ -938,7 +939,7 @@ def _load_requests_redis() -> typing.List[Link]:
     """
     now = time.time()
     if TIME_CACHE is None:
-        sec_delta = 0
+        sec_delta = 0  # type: ignore
         max_score = now
     else:
         sec_delta = TIME_CACHE.total_seconds()
@@ -954,7 +955,7 @@ def _load_requests_redis() -> typing.List[Link]:
                 _save_requests_redis(link_pool, score=new_score)  # force update records
     except redis_lock.LockError:
         warning = warnings.formatwarning(f'[REQUESTS] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 948, "_redis_get_lock('lock_queue_requests')")
+                                         LockWarning, __file__, 949, "_redis_get_lock('lock_queue_requests')")
         print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
         link_pool = list()
     return link_pool
@@ -984,7 +985,7 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
             try:
                 link_pool = _load_selenium_db()
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 985,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 986,
                                                  '_load_selenium_db()')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 link_pool = list()
@@ -1019,7 +1020,7 @@ def _load_selenium_db() -> typing.List[Link]:
     """
     now = datetime.datetime.now()
     if TIME_CACHE is None:
-        sec_delta = 0
+        sec_delta = 0  # type: ignore
         max_score = now
     else:
         sec_delta = TIME_CACHE
@@ -1036,9 +1037,10 @@ def _load_selenium_db() -> typing.List[Link]:
         )
         link_pool = [model.link for model in query]
 
+        # force update records
         if TIME_CACHE is not None:
             new_score = now + sec_delta
-            _save_selenium_db(link_pool, score=new_score)  # force update records
+            _save_selenium_db(link_pool, score=new_score)  # type: ignore
     return link_pool
 
 
@@ -1061,7 +1063,7 @@ def _load_selenium_redis() -> typing.List[Link]:
     """
     now = time.time()
     if TIME_CACHE is None:
-        sec_delta = 0
+        sec_delta = 0  # type: ignore
         max_score = now
     else:
         sec_delta = TIME_CACHE.total_seconds()
@@ -1077,7 +1079,7 @@ def _load_selenium_redis() -> typing.List[Link]:
                 _save_selenium_redis(link_pool, score=new_score)  # force update records
     except redis_lock.LockError:
         warning = warnings.formatwarning(f'[SELENIUM] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 1071, "_redis_get_lock('lock_queue_selenium')")
+                                         LockWarning, __file__, 1073, "_redis_get_lock('lock_queue_selenium')")
         print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
         link_pool = list()
     return link_pool

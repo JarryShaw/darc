@@ -1,4 +1,4 @@
-# pylint: disable=import-outside-toplevel,bad-continuation,bad-whitespace,compare-to-empty-string
+# pylint: disable=import-outside-toplevel,compare-to-empty-string
 """ robotparser.py
 
     Copyright (C) 2000  Bastian Kleineidam
@@ -26,7 +26,7 @@ class RobotFileParser:
 
     """
 
-    def __init__(self, url=''):
+    def __init__(self, url=''):  # type: ignore
         self.entries = []
         self.sitemaps = []
         self.default_entry = None
@@ -35,7 +35,7 @@ class RobotFileParser:
         self.set_url(url)
         self.last_checked = 0
 
-    def mtime(self):
+    def mtime(self):  # type: ignore
         """Returns the time the robots.txt file was last fetched.
 
         This is useful for long-running web spiders that need to
@@ -44,24 +44,24 @@ class RobotFileParser:
         """
         return self.last_checked
 
-    def modified(self):
+    def modified(self):  # type: ignore
         """Sets the time the robots.txt file was last fetched to the
         current time.
 
         """
         import time
-        self.last_checked = time.time()
+        self.last_checked = time.time()  # type: ignore
 
-    def set_url(self, url):
+    def set_url(self, url):  # type: ignore
         """Sets the URL referring to a robots.txt file."""
         self.url = url
         self.host, self.path = urllib.parse.urlparse(url)[1:3]
 
-    def read(self):
+    def read(self):  # type: ignore
         """Reads the robots.txt URL and feeds it to the parser."""
         try:
-            f = urllib.request.urlopen(self.url)
-        except urllib.error.HTTPError as err:
+            f = urllib.request.urlopen(self.url)  # nosec
+        except urllib.error.HTTPError as err:  # type: ignore
             if err.code in (401, 403):
                 self.disallow_all = True
             elif err.code >= 400 and err.code < 500:
@@ -70,7 +70,7 @@ class RobotFileParser:
             raw = f.read()
             self.parse(raw.decode("utf-8").splitlines())
 
-    def _add_entry(self, entry):
+    def _add_entry(self, entry):  # type: ignore
         if "*" in entry.useragents:
             # the default entry is considered last
             if self.default_entry is None:
@@ -79,7 +79,7 @@ class RobotFileParser:
         else:
             self.entries.append(entry)
 
-    def parse(self, lines):
+    def parse(self, lines):  # type: ignore
         """Parse the input lines from a robots.txt file.
 
         We allow that a user-agent: line is not preceded by
@@ -152,7 +152,7 @@ class RobotFileParser:
         if state == 2:
             self._add_entry(entry)
 
-    def can_fetch(self, useragent, url):
+    def can_fetch(self, useragent, url):  # type: ignore
         """using the parsed robots.txt decide if useragent can fetch url"""
         if self.disallow_all:
             return False
@@ -181,7 +181,7 @@ class RobotFileParser:
         # agent not found ==> access granted
         return True
 
-    def crawl_delay(self, useragent):
+    def crawl_delay(self, useragent):  # type: ignore
         if not self.mtime():
             return None
         for entry in self.entries:
@@ -191,7 +191,7 @@ class RobotFileParser:
             return self.default_entry.delay
         return None
 
-    def request_rate(self, useragent):
+    def request_rate(self, useragent):  # type: ignore
         if not self.mtime():
             return None
         for entry in self.entries:
@@ -201,12 +201,12 @@ class RobotFileParser:
             return self.default_entry.req_rate
         return None
 
-    def site_maps(self):
+    def site_maps(self):  # type: ignore
         if not self.sitemaps:
             return None
         return self.sitemaps
 
-    def __str__(self):
+    def __str__(self):  # type: ignore
         entries = self.entries
         if self.default_entry is not None:
             entries = entries + [self.default_entry]
@@ -216,7 +216,7 @@ class RobotFileParser:
 class RuleLine:
     """A rule line is a single "Allow:" (allowance==True) or "Disallow:"
        (allowance==False) followed by a path."""
-    def __init__(self, path, allowance):
+    def __init__(self, path, allowance):  # type: ignore
         if path == '' and not allowance:
             # an empty value means allow all
             allowance = True
@@ -224,22 +224,22 @@ class RuleLine:
         self.path = urllib.parse.quote(path)
         self.allowance = allowance
 
-    def applies_to(self, filename):
+    def applies_to(self, filename):  # type: ignore
         return self.path == "*" or filename.startswith(self.path)
 
-    def __str__(self):
+    def __str__(self):  # type: ignore
         return ("Allow" if self.allowance else "Disallow") + ": " + self.path
 
 
 class Entry:
     """An entry has one or more user-agents and zero or more rulelines"""
-    def __init__(self):
+    def __init__(self):  # type: ignore
         self.useragents = []
         self.rulelines = []
         self.delay = None
         self.req_rate = None
 
-    def __str__(self):
+    def __str__(self):  # type: ignore
         ret = []
         for agent in self.useragents:
             ret.append(f"User-agent: {agent}")
@@ -251,7 +251,7 @@ class Entry:
         ret.extend(map(str, self.rulelines))
         return '\n'.join(ret)
 
-    def applies_to(self, useragent):
+    def applies_to(self, useragent):  # type: ignore
         """check if this entry applies to the specified agent"""
         # split the name token and make it lower case
         useragent = useragent.split("/")[0].lower()
@@ -264,7 +264,7 @@ class Entry:
                 return True
         return False
 
-    def allowance(self, filename):
+    def allowance(self, filename):  # type: ignore
         """Preconditions:
         - our agent applies to this entry
         - filename is URL decoded"""

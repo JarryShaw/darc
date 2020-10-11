@@ -45,7 +45,7 @@ from darc.submit import SAVE_DB, submit_new_host, submit_requests, submit_seleni
 from darc.model import HostnameModel, URLModel
 
 
-def crawler(link: Link):
+def crawler(link: Link) -> None:
     """Single :mod:`requests` crawler for a entry link.
 
     Args:
@@ -265,7 +265,7 @@ def crawler(link: Link):
     print(f'[REQUESTS] Requested {link.url}')
 
 
-def loader(link: Link):
+def loader(link: Link) -> None:
     """Single :mod:`selenium` loader for a entry link.
 
     Args:

@@ -5,9 +5,9 @@
 from datetime import datetime as _datetime
 
 try:
-    from datetime import _parse_isoformat_date
+    from datetime import _parse_isoformat_date  # type: ignore
 except ImportError:
-    def _parse_isoformat_date(dtstr):
+    def _parse_isoformat_date(dtstr):  # type: ignore
         # It is assumed that this function will only be called with a
         # string of length exactly 10, and (though this is not used) ASCII-only
         year = int(dtstr[0:4])
@@ -24,9 +24,9 @@ except ImportError:
         return [year, month, day]
 
 try:
-    from datetime import _parse_hh_mm_ss_ff
+    from datetime import _parse_hh_mm_ss_ff  # type: ignore
 except ImportError:
-    def _parse_hh_mm_ss_ff(tstr):
+    def _parse_hh_mm_ss_ff(tstr):  # type: ignore
         # Parses things of the form HH[:MM[:SS[.fff[fff]]]]
         len_str = len(tstr)
 
@@ -66,11 +66,11 @@ except ImportError:
         return time_comps
 
 try:
-    from datetime import _parse_isoformat_time
+    from datetime import _parse_isoformat_time  # type: ignore
 except ImportError:
     from datetime import timezone, timedelta
 
-    def _parse_isoformat_time(tstr):
+    def _parse_isoformat_time(tstr):  # type: ignore
         # Format supported is HH[:MM[:SS[.fff[fff]]]][+HH:MM[:SS[.ffffff]]]
         len_str = len(tstr)
         if len_str < 2:
@@ -113,7 +113,7 @@ except ImportError:
 class datetime(_datetime):
 
     @classmethod
-    def fromisoformat(cls, date_string):
+    def fromisoformat(cls, date_string):  # type: ignore
         """Construct a datetime from the output of datetime.isoformat()."""
         if hasattr(_datetime, 'fromisoformat'):
             return _datetime.fromisoformat(date_string)
@@ -128,13 +128,13 @@ class datetime(_datetime):
         try:
             date_components = _parse_isoformat_date(dstr)
         except ValueError:
-            raise ValueError(f'Invalid isoformat string: {date_string!r}')
+            raise ValueError(f'Invalid isoformat string: {date_string!r}')  # pylint: disable=raise-missing-from
 
         if tstr:
             try:
                 time_components = _parse_isoformat_time(tstr)
             except ValueError:
-                raise ValueError(f'Invalid isoformat string: {date_string!r}')
+                raise ValueError(f'Invalid isoformat string: {date_string!r}')  # pylint: disable=raise-missing-from
         else:
             time_components = [0, 0, 0, 0, None]
 

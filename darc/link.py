@@ -121,6 +121,29 @@ def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib
     return urllib.parse.ParseResult(scheme=scheme, netloc='', path=url, params='', query='', fragment='')
 
 
+def urlsplit(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib.parse.SplitResult:
+    """Wrapper function for :func:`urllib.parse.urlsplit`.
+
+    Args:
+        url: URL to be split
+        scheme: URL scheme
+        allow_fragments: if allow fragments
+
+    Returns:
+        The split result.
+
+    Note:
+        The function suppressed possible errors when calling
+        :func:`urllib.parse.urlsplit`. If any, it will return
+        ``urllib.parse.SplitResult(scheme=scheme, netloc='', path=url, params='', query='', fragment='')``
+        directly.
+
+    """
+    with contextlib.suppress(ValueError):
+        return urllib.parse.urlsplit(url, scheme, allow_fragments=allow_fragments)
+    return urllib.parse.SplitResult(scheme=scheme, netloc='', path=url, query='', fragment='')
+
+
 @dataclasses.dataclass
 @functools.total_ordering
 class Link:
@@ -160,19 +183,19 @@ class Link:
     #: hashed link for saving files
     name: str
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """Provide hash support to the :class:`~darc.link.Link` object."""
         return hash(self.url)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.url
 
-    def __eq__(self, value):
+    def __eq__(self, value: typing.Any) -> bool:
         if isinstance(value, Link):
             return self.url == value.url
         return False
 
-    def __lt__(self, value):
+    def __lt__(self, value: typing.Any) -> bool:
         if isinstance(value, Link):
             return self.url < value.url
         raise TypeError(f"'<' not supported between instances of 'Link' and {type(value).__name__!r}")
@@ -296,6 +319,9 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     elif scheme == 'irc':
         proxy_type = 'irc'
         host = '(irc)'
+    elif scheme in ('ws', 'wss'):
+        proxy_type = scheme
+        host = '(ws)'
     elif scheme not in ['http', 'https']:
         proxy_type = scheme
     # proxy type by hostname

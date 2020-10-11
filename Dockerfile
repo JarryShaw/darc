@@ -1,7 +1,11 @@
 FROM ubuntu:bionic
 
-LABEL Name=darc \
-      Version=0.8.0
+LABEL org.opencontainers.image.title="darc" \
+      org.opencontainers.image.description="Darkweb Crawler Project" \
+      org.opencontainers.image.url="https://darc.jarryshaw.me/" \
+      org.opencontainers.image.source="https://github.com/JarryShaw/darc" \
+      org.opencontainers.image.version="0.8.1" \
+      org.opencontainers.image.licenses='BSD 3-Clause "New" or "Revised" License'
 
 STOPSIGNAL SIGINT
 HEALTHCHECK --interval=1h --timeout=1m \

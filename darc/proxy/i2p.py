@@ -89,7 +89,7 @@ if DEBUG:
 I2P_REGEX = re.compile(r'.*\.i2p', re.IGNORECASE)
 
 
-def _i2p_bootstrap():
+def _i2p_bootstrap() -> None:
     """I2P bootstrap.
 
     The bootstrap arguments are defined as :data:`~darc.proxy.i2p._I2P_ARGS`.
@@ -122,16 +122,16 @@ def _i2p_bootstrap():
         print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
 
     returncode = _I2P_PROC.returncode
-    if returncode is not None and returncode != 0:
+    if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _I2P_ARGS,
-                                            _I2P_PROC.stdout,
-                                            _I2P_PROC.stderr)
+                                            typing.cast(typing.IO[bytes], _I2P_PROC.stdout).read(),
+                                            typing.cast(typing.IO[bytes], _I2P_PROC.stderr).read())
 
     # update flag
     _I2P_BS_FLAG = True
 
 
-def i2p_bootstrap():
+def i2p_bootstrap() -> None:
     """Bootstrap wrapper for I2P.
 
     The function will bootstrap the I2P proxy. It will retry for
@@ -170,7 +170,7 @@ def i2p_bootstrap():
                 message = '[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc()
                 print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(error, I2PBootstrapFailed, __file__, 166, 'i2p_bootstrap()')
+            warning = warnings.formatwarning(str(error), I2PBootstrapFailed, __file__, 166, 'i2p_bootstrap()')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
@@ -278,7 +278,7 @@ def read_hosts(text: str, check: bool = CHECK) -> typing.List[Link]:
     return temp_list
 
 
-def fetch_hosts(link: Link, force: bool = False):
+def fetch_hosts(link: Link, force: bool = False) -> None:
     """Fetch ``hosts.txt``.
 
     Args:
