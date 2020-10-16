@@ -23,8 +23,10 @@ There are two types of *workers*:
 import sys
 import subprocess  # nosec
 
+version_info = sys.version_info[:2]
+
 # version string
-__version__ = '0.8.1'
+__version__ = '0.8.1.post1'
 
 # setup attributes
 attrs = dict(
@@ -109,7 +111,7 @@ attrs = dict(
         'stem',
         'typing_extensions',
         # version compatibility
-        'python-walrus; python_version < "3.8"',
+        #'bpc-walrus; python_version < "3.8"',
         'dataclasses; python_version < "3.7"',
     ],
     entry_points={
@@ -124,15 +126,13 @@ attrs = dict(
         'PostgreSQL': ['psycopg2'],
     },
     setup_requires=[
-        'python-walrus; python_version < "3.8"',
+        'bpc-walrus; python_version < "3.8"',
     ],
 )
 
 try:
     from setuptools import setup
     from setuptools.command.build_py import build_py
-
-    version_info = sys.version_info[:2]
 
     attrs.update(dict(
         include_package_data=True,  # type: ignore
@@ -154,7 +154,7 @@ except ImportError:
 class build(build_py):
     """Add on-build backport code conversion."""
 
-    def run(self):
+    def run(self):  # type: ignore[no-untyped-def]
         if version_info < (3, 8):
             try:
                 subprocess.check_call(  # nosec
@@ -162,7 +162,7 @@ class build(build_py):
                 )
             except subprocess.CalledProcessError as error:
                 print('Failed to perform assignment expression backport compiling.'
-                      'Please consider manually install `python-walrus` and try again.', file=sys.stderr)
+                      'Please consider manually install `bpc-walrus` and try again.', file=sys.stderr)
                 sys.exit(error.returncode)
         build_py.run(self)
 
