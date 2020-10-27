@@ -111,7 +111,6 @@ attrs = dict(
         'stem',
         'typing_extensions',
         # version compatibility
-        #'bpc-walrus; python_version < "3.8"',
         'dataclasses; python_version < "3.7"',
     ],
     entry_points={
@@ -126,7 +125,8 @@ attrs = dict(
         'PostgreSQL': ['psycopg2'],
     },
     setup_requires=[
-        'bpc-walrus; python_version < "3.8"',
+        #'bpc-walrus; python_version < "3.8"',
+        'walrus; python_version < "3.8"',
     ],
 )
 

@@ -1,7 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-vendor/jdk-11.0.8_linux-x64_bin.tar.gz filter=lfs diff=lfs merge=lfs -text
+vendor/jdk-11.0.9_linux-x64_bin.tar.gz filter=lfs diff=lfs merge=lfs -text
 vendor/google-chrome-stable_current_amd64.deb filter=lfs diff=lfs merge=lfs -text
 
 docs/img/darc.jpeg binary
