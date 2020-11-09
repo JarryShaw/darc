@@ -35,7 +35,7 @@ from darc.db import _redis_command, save_requests, save_selenium
 from darc.error import LinkNoReturn
 from darc.link import Link, parse_link
 from darc.sites import SITEMAP
-from darc.sites.default import DefaultSite
+from darc.sites._abc import BaseSite
 
 #: Optional[int]: Timeout for cached cookies information.
 #: Set :data:`None` to disable caching, but it may impact
@@ -53,7 +53,7 @@ class CacheRecord(typing.TypedDict):
     cookies: typing.Dict[str, str]
 
 
-class MarketSite(DefaultSite):
+class MarketSite(BaseSite):
     """Market hooks.
 
     The sites customisation is the abstract base hook for market sites.
@@ -168,7 +168,7 @@ class MarketSite(DefaultSite):
             session.cookies.set(name, value)
 
         response = session.get(homepage, allow_redirects=True)
-        cls.process_crawler(response)
+        cls.process_crawler(session, response)
 
         home = parse_link(homepage)
         save_requests(home, single=True)
@@ -178,10 +178,12 @@ class MarketSite(DefaultSite):
 
     @staticmethod
     @abc.abstractmethod
-    def process_crawler(response: typing.Response) -> None:
+    def process_crawler(session: typing.Session, response: typing.Response) -> None:
         """Process the :class:`~requests.Response` object.
 
         Args:
+            session (requests.Session): Session object with proxy settings
+                and cookies storage.
             response: The final response object with crawled data.
 
         """

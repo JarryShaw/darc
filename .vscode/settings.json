@@ -99,6 +99,7 @@
         "urlunparse",
         "urlunsplit",
         "uzja",
+        "virtualenv",
         "wcwidth",
         "xbfgragh",
         "xenial",
