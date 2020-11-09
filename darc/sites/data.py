@@ -38,7 +38,7 @@ class DataURI(BaseSite):
         except ValueError as error:
             print(render_error(f'[REQUESTS] Failed to save data URI from {link.url} <{error}>',
                             stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
-        raise LinkNoReturn
+        raise LinkNoReturn(link)
 
     @staticmethod
     def loader(driver: typing.Driver, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
@@ -48,4 +48,4 @@ class DataURI(BaseSite):
             LinkNoReturn: This hook is not implemented.
 
         """
-        raise LinkNoReturn
+        raise LinkNoReturn(link)

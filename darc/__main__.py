@@ -74,10 +74,18 @@ def get_parser() -> typing.ArgumentParser:
     return parser
 
 
-def main() -> None:
-    """Entrypoint."""
+def main(argv: typing.Optional[typing.List[str]] = None) -> int:
+    """Entrypoint.
+
+    Args:
+        argv: Optional command line arguments.
+
+    Returns:
+        Exit code.
+
+    """
     parser = get_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     pid = os.getpid()
     with open(PATH_ID, 'w') as file:
@@ -96,7 +104,7 @@ def main() -> None:
                         HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel,
                     ])
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 94,
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 102,  # type: ignore[arg-type]
                                                  'DB.create_tables([HostnameQueueModel, ...])')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 continue
@@ -112,7 +120,7 @@ def main() -> None:
                         RequestsModel, RequestsHistoryModel, SeleniumModel,
                     ])
             except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 108,
+                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 117,  # type: ignore[arg-type]
                                                  'DB.create_tables([HostnameModel, ...])')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 continue
@@ -128,7 +136,7 @@ def main() -> None:
             _redis_command('delete', 'queue_selenium')
 
     link_list = list()
-    for link in filter(None, map(lambda s: s.strip(), args.link)):
+    for link in filter(None, map(lambda s: s.strip(), args.link)):  # type: ignore[name-defined,var-annotated]
         if DEBUG:
             print(stem.util.term.format(link, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
         link_list.append(link)
@@ -160,6 +168,8 @@ def main() -> None:
     except BaseException:
         traceback.print_exc()
     _exit()
+
+    return 0
 
 
 if __name__ == "__main__":

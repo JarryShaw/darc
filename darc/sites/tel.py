@@ -30,7 +30,7 @@ class Tel(BaseSite):
 
         """
         save_tel(link)
-        raise LinkNoReturn
+        raise LinkNoReturn(link)
 
     @staticmethod
     def loader(driver: typing.Driver, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
@@ -40,4 +40,4 @@ class Tel(BaseSite):
             LinkNoReturn: This hook is not implemented.
 
         """
-        raise LinkNoReturn
+        raise LinkNoReturn(link)

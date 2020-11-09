@@ -30,7 +30,7 @@ class ED2K(BaseSite):
 
         """
         save_ed2k(link)
-        raise LinkNoReturn
+        raise LinkNoReturn(link)
 
     @staticmethod
     def loader(driver: typing.Driver, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
@@ -40,4 +40,4 @@ class ED2K(BaseSite):
             LinkNoReturn: This hook is not implemented.
 
         """
-        raise LinkNoReturn
+        raise LinkNoReturn(link)

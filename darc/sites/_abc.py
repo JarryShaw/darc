@@ -36,7 +36,7 @@ class BaseSite:
             LinkNoReturn: This link has no return response.
 
         """
-        raise LinkNoReturn
+        raise LinkNoReturn(link)
 
     @staticmethod
     def loader(driver: typing.Driver, link: Link) -> typing.Union[typing.NoReturn, typing.Driver]:  # pylint: disable=unused-argument
@@ -50,4 +50,4 @@ class BaseSite:
             LinkNoReturn: This link has no return response.
 
         """
-        raise LinkNoReturn
+        raise LinkNoReturn(link)

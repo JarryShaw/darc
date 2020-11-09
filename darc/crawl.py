@@ -194,10 +194,11 @@ def crawler(link: Link) -> None:
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_requests(link, single=True)
                 return
-            except LinkNoReturn:
+            except LinkNoReturn as error:
                 print(render_error(f'[REQUESTS] Removing from database: {link.url}',
                                    stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
-                drop_requests(link)
+                if error.drop:
+                    drop_requests(link)
                 return
 
             # save headers
@@ -331,10 +332,11 @@ def loader(link: Link) -> None:
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_selenium(link, single=True)
                 return
-            except LinkNoReturn:
+            except LinkNoReturn as error:
                 print(render_error(f'[SELENIUM] Removing from database: {link.url}',
                                    stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
-                drop_selenium(link)
+                if error.drop:
+                    drop_selenium(link)
                 return
 
             # get HTML source

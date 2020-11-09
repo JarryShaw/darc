@@ -46,7 +46,20 @@ class _BaseException(Exception):
 
 
 class LinkNoReturn(_BaseException):
-    """The link has no return value from the hooks."""
+    """The link has no return value from the hooks.
+
+    Args:
+        link (darc.link.Link): Original link object.
+
+    Keyword Args:
+        drop: If drops the ``link`` from task queues.
+
+    """
+
+    def __init__(self, link=None, *, drop: bool = True) -> None:  # type: ignore[no-untyped-def]
+        self.link = link
+        self.drop = drop
+        super().__init__()
 
 
 class UnsupportedLink(_BaseException):
