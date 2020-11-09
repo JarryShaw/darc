@@ -8,5 +8,6 @@ articles, please create an issue at the
 .. toctree::
    :maxdepth: 2
 
+   deploy
    sites
    proxy
