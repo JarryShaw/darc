@@ -226,14 +226,14 @@ class as
         @staticmethod
         def crawler(session, link):
             if link.host == 'www.mysite.com':
-                raise LinkNoReturn
+                raise LinkNoReturn(link)
 
             ...
 
         @staticmethod
         def loader(driver, link):
             if link.host == 'www.mysite.com':
-                raise LinkNoReturn
+                raise LinkNoReturn(link)
 
             ...
 
