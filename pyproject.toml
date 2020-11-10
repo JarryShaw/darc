@@ -2,5 +2,5 @@
 # These are the assumed default build requirements from pip:
 # https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
 #requires = ["setuptools", "wheel", "bpc-walrus; python_version < '3.8'"]
-requires = ["setuptools", "wheel", "python-walrus; python_version < '3.8'"]
+requires = ["setuptools", "wheel", "python-walrus==0.1.5rc1; python_version < '3.8'"]
 build-backend = "setuptools.build_meta"

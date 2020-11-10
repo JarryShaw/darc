@@ -126,7 +126,7 @@ attrs = dict(
     },
     setup_requires=[
         #'bpc-walrus; python_version < "3.8"',
-        'python-walrus; python_version < "3.8"',
+        'python-walrus==0.1.5rc1; python_version < "3.8"',
     ],
 )
 
