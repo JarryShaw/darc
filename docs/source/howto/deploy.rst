@@ -136,7 +136,8 @@ Deploy with Customisations
 .. important::
 
    I've made a sample customisation at |demo-deploy|_ folder,
-   please check it out before moving forwards.
+   which can be used directly as a new repository to start with
+   your customisation, please check it out before moving forwards.
 
    .. |demo-deploy| replace:: ``demo/deploy/``
    .. _demo-deploy: https://github.com/jarryshaw/darc/tree/master/demo/deploy

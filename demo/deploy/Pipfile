@@ -1,0 +1,30 @@
+[[source]]
+name = "tuna"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+verify_ssl = true
+
+[[source]]
+name = "sjtu"
+url = "https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple"
+verify_ssl = true
+
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+autopep8 = "*"
+bandit = "*"
+mypy = "*"
+pylint = "*"
+ipython = "*"
+coverage = "*"
+codecov = "*"
+rstcheck = "*"
+
+[packages]
+python-darc = {git = "https://github.com/JarryShaw/darc.git"}
+
+[requires]
+python_version = "3.8"
