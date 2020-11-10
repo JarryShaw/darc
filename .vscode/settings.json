@@ -113,6 +113,5 @@
         "zscore"
     ],
     "restructuredtext.confPath": "${workspaceFolder}/docs/conf.py",
-    "python.pythonPath": ".venv/bin/python3.8",
     "python.dataScience.jupyterServerURI": "local"
 }
