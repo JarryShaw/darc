@@ -11,11 +11,7 @@ services:
     container_name: crawler
     #entrypoint: [ "bash", "/app/run.sh" ]
     command: [ "--type", "crawler",
-               "--file", "/app/text/tor.txt",
-               "--file", "/app/text/tor2web.txt",
-               "--file", "/app/text/i2p.txt",
-               "--file", "/app/text/zeronet.txt",
-               "--file", "/app/text/freenet.txt" ]
+               "--file", "/market/text/market.txt" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1
