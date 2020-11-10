@@ -162,7 +162,7 @@ class build(build_py):
                 )
             except subprocess.CalledProcessError as error:
                 print('Failed to perform assignment expression backport compiling.'
-                      'Please consider manually install `bpc-walrus` and try again.', file=sys.stderr)
+                      'Please consider manually install `walrus` and try again.', file=sys.stderr)
                 sys.exit(error.returncode)
         build_py.run(self)
 
