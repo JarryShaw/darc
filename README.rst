@@ -169,6 +169,14 @@ Or, you may refer to and/or install from the `Docker Hub`_ repository:
 
 .. _Docker Hub: https://hub.docker.com/r/jsnbzh/darc
 
+or GitHub Container Registry, with more updated and comprehensive images:
+
+.. code-block:: shell
+
+   docker pull ghcr.io/jarryshaw/darc[:TAGNAME]
+   # or the debug image
+   docker pull ghcr.io/jarryshaw/darc-debug[:TAGNAME]
+
 -----
 Usage
 -----
