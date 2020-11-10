@@ -126,7 +126,7 @@ attrs = dict(
     },
     setup_requires=[
         #'bpc-walrus; python_version < "3.8"',
-        'walrus; python_version < "3.8"',
+        'python-walrus; python_version < "3.8"',
     ],
 )
 
@@ -162,7 +162,7 @@ class build(build_py):
                 )
             except subprocess.CalledProcessError as error:
                 print('Failed to perform assignment expression backport compiling.'
-                      'Please consider manually install `walrus` and try again.', file=sys.stderr)
+                      'Please consider manually install `python-walrus` and try again.', file=sys.stderr)
                 sys.exit(error.returncode)
         build_py.run(self)
 
