@@ -16,6 +16,7 @@ authentication methods of the market sites.
 import abc
 import json
 import math
+import time
 import sys
 
 import bs4
@@ -24,7 +25,7 @@ import stem.util.term
 
 import darc.typing as typing
 from darc._compat import datetime
-from darc.const import CHECK, SE_EMPTY
+from darc.const import CHECK, SE_EMPTY, SE_WAIT
 from darc.db import _redis_command, save_requests, save_selenium
 from darc.error import LinkNoReturn, render_error
 from darc.link import Link, parse_link, urljoin
@@ -325,6 +326,10 @@ class MarketSite(BaseSite):
         """
         timestamp = datetime.now()
         driver.get(link.url)
+
+        # wait for page to finish loading
+        if SE_WAIT is not None:
+            time.sleep(SE_WAIT)
 
         # get HTML source
         html = driver.page_source
