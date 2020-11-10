@@ -135,8 +135,11 @@ Deploy with Customisations
 
 .. important::
 
-   I made a sample customisation at ``demo/deploy`` folder,
+   I've made a sample customisation at |demo-deploy|_ folder,
    please check it out before moving forwards.
+
+   .. |demo-deploy| replace:: ``demo/deploy/``
+   .. _demo-deploy: https://github.com/jarryshaw/darc/tree/master/demo/deploy
 
 As in the sample customisation, you can simply use the ``Dockerfile``
 there as your Docker environment declration. And the entrypoint file
