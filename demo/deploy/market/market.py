@@ -210,7 +210,7 @@ class MarketSite(BaseSite):
         return cached
 
     @classmethod
-    def crawler(cls, session: typing.Session, link: Link) -> typing.Response:
+    def crawler(cls, timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.Response:
         """Default crawler hook.
 
         The hook fetches cookies information first. If no cookies found, the hook
@@ -226,6 +226,7 @@ class MarketSite(BaseSite):
         :exc:`LinkNoReturn` to drop the further processing.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             session (requests.Session): Session object with proxy settings.
             link: Link object to be crawled.
 
@@ -244,21 +245,21 @@ class MarketSite(BaseSite):
         for name, value in cookies.items():
             session.cookies.set(name, value)
 
-        cls.process_crawler(session, link, cached)
+        cls.process_crawler(timestamp, session, link, cached)
         raise LinkNoReturn(link=link, drop=False)
 
     @classmethod
-    def process_crawler(cls, session: typing.Session, link: Link, record: CacheRecord) -> None:  # pylint: disable=unused-argument
+    def process_crawler(cls, timestamp: typing.Datetime, session: typing.Session, link: Link, record: CacheRecord) -> None:  # pylint: disable=unused-argument,line-too-long
         """Process the :class:`~requests.Response` object.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             session (requests.Session): Session object with proxy settings
                 and cookies storage.
             link: Link object to be loaded.
             record: Cached record from the remote database.
 
         """
-        timestamp = datetime.now()
         response = session.get(link.url)
 
         ct_type = get_content_type(response)
@@ -275,7 +276,7 @@ class MarketSite(BaseSite):
         save_selenium(link, single=True, score=0, nx=True)
 
     @classmethod
-    def loader(cls, driver: typing.Driver, link: Link) -> typing.NoReturn:
+    def loader(cls, timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.NoReturn:
         """Market loader hook.
 
         The hook fetches cookies information first. If no cookies found, the hook
@@ -292,6 +293,7 @@ class MarketSite(BaseSite):
         :exc:`LinkNoReturn` to drop the further processing.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             driver (selenium.webdriver.Chrome): Web driver object with proxy settings.
             link: Link object to be loaded.
 
@@ -310,21 +312,21 @@ class MarketSite(BaseSite):
                 'value': value,
             })
 
-        cls.process_loader(driver, link, cached)
+        cls.process_loader(timestamp, driver, link, cached)
         raise LinkNoReturn(link=link, drop=False)
 
     @classmethod
-    def process_loader(cls, driver: typing.Driver, link: Link, record: CacheRecord) -> None:  # pylint: disable=unused-argument
+    def process_loader(cls, timestamp: typing.Datetime, driver: typing.Driver, link: Link, record: CacheRecord) -> None:  # pylint: disable=unused-argument
         """Process the :class:`WebDriver <selenium.webdriver.Chrome>` object.
 
         Args:
-            driver:  Web driver object with proxy settings
+            timestamp: Timestamp of the worker node reference.
+            driver (selenium.webdriver.Chrome): Web driver object with proxy settings
                 and cookies presets.
             link: Link object to be loaded.
             record: Cached record from the remote database.
 
         """
-        timestamp = datetime.now()
         driver.get(link.url)
 
         # wait for page to finish loading

@@ -309,9 +309,6 @@ def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
         _redis_command('zadd', 'queue_hostname', {
             link.host: new_score,
         })
-    with open(os.path.join('data', 'db.log'), 'at') as file:
-        print(link.host, score, _redis_command('zscore', 'queue_hostname',
-                                               link.host), have_flag, force_fetch, redis_update, file=file)
     return have_flag, force_fetch
 
 
@@ -331,7 +328,7 @@ def drop_hostname(link: Link) -> None:  # pylint: disable=inconsistent-return-st
             try:
                 return _drop_hostname_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 322,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 329,
                                                  f'_drop_hostname_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -383,7 +380,7 @@ def drop_requests(link: Link) -> None:  # pylint: disable=inconsistent-return-st
             try:
                 return _drop_requests_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 384,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 381,
                                                  f'_drop_requests_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -435,7 +432,7 @@ def drop_selenium(link: Link) -> None:  # pylint: disable=inconsistent-return-st
             try:
                 return _drop_selenium_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 436,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 433,
                                                  f'_drop_selenium_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -507,7 +504,7 @@ def save_requests(entries: typing.Union[Link, typing.List[Link]], single: bool =
             try:
                 return _save_requests_db(entries, single, score, nx, xx)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 508,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 505,
                                                  '_save_requests_db(...)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -686,7 +683,7 @@ def save_selenium(entries: typing.Union[Link, typing.List[Link]], single: bool =
             try:
                 return _save_selenium_db(entries, single, score, nx, xx)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 687,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 684,
                                                  '_save_selenium_db(...)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return
@@ -865,7 +862,7 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
             try:
                 link_pool = _load_requests_db()
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 866,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 863,
                                                  '_load_requests_db()')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 link_pool = list()
@@ -985,7 +982,7 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
             try:
                 link_pool = _load_selenium_db()
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 986,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 983,
                                                  '_load_selenium_db()')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 link_pool = list()

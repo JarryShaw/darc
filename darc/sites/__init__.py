@@ -91,12 +91,13 @@ def _get_site(link: Link) -> typing.Type[BaseSite]:
     return site
 
 
-def crawler_hook(link: Link, session: typing.Session) -> typing.Response:
+def crawler_hook(timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.Response:
     """Customisation as to :mod:`requests` sessions.
 
     Args:
-        link: Link object to be crawled.
+        timestamp: Timestamp of the worker node reference.
         session (requests.Session): Session object with proxy settings.
+        link: Link object to be crawled.
 
     Returns:
         requests.Response: The final response object with crawled data.
@@ -108,15 +109,16 @@ def crawler_hook(link: Link, session: typing.Session) -> typing.Response:
 
     """
     site = _get_site(link)
-    return site.crawler(session, link)
+    return site.crawler(timestamp, session, link)
 
 
-def loader_hook(link: Link, driver: typing.Driver) -> typing.Driver:
+def loader_hook(timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.Driver:
     """Customisation as to :mod:`selenium` drivers.
 
     Args:
-        link: Link object to be loaded.
+        timestamp: Timestamp of the worker node reference.
         driver (selenium.webdriver.Chrome): Web driver object with proxy settings.
+        link: Link object to be loaded.
 
     Returns:
         selenium.webdriver.Chrome: The web driver object with loaded data.
@@ -128,4 +130,4 @@ def loader_hook(link: Link, driver: typing.Driver) -> typing.Driver:
 
     """
     site = _get_site(link)
-    return site.loader(driver, link)
+    return site.loader(timestamp, driver, link)

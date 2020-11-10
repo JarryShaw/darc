@@ -182,7 +182,7 @@ def crawler(link: Link) -> None:
         with session:
             try:
                 # requests session hook
-                response = crawler_hook(link, session)
+                response = crawler_hook(timestamp, session, link)
             except requests.exceptions.InvalidSchema as error:
                 print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
@@ -321,7 +321,7 @@ def loader(link: Link) -> None:
         with request_driver(link) as driver:
             try:
                 # selenium driver hook
-                driver = loader_hook(link, driver)
+                driver = loader_hook(timestamp, driver, link)
             except urllib3.exceptions.HTTPError as error:
                 print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
                                    stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member

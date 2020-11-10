@@ -34,10 +34,10 @@ methods will be discussed in following sections.
         hostname = ['mysite.com', 'www.mysite.com']
 
         @staticmethod
-        def crawler(session, link): ...
+        def crawler(timestamp, session, link): ...
 
         @staticmethod
-        def loader(driver, link): ...
+        def loader(timestamp, driver, link): ...
 
 Should your sites customisation be associated with multiple sites, you can
 just add them all to the :attr:`hostname` attribute; when you call
@@ -84,10 +84,11 @@ the ``crawler`` method as below.
 .. code-block:: python
 
         @staticmethod
-        def crawler(session, link):
+        def crawler(timestamp, session, link):
             """Crawler hook for my site.
 
             Args:
+                timestamp (datetime.datetime): Timestamp of the worker node reference.
                 session (requests.Session): Session object with proxy settings.
                 link (darc.link.Link): Link object to be crawled.
 
@@ -133,10 +134,11 @@ method as below.
 .. code-block:: python
 
         @staticmethod
-        def loader(driver, link):
+        def loader(timestamp, driver, link):
             """Loader hook for my site.
 
             Args:
+                timestamp: Timestamp of the worker node reference.
                 driver (selenium.webdriver.Chrome): Web driver object with proxy settings.
                 link (darc.link.Link): Link object to be loaded.
 
@@ -224,14 +226,14 @@ class as
         ...
 
         @staticmethod
-        def crawler(session, link):
+        def crawler(timestamp, session, link):
             if link.host == 'www.mysite.com':
                 raise LinkNoReturn(link)
 
             ...
 
         @staticmethod
-        def loader(driver, link):
+        def loader(timestamp, driver, link):
             if link.host == 'www.mysite.com':
                 raise LinkNoReturn(link)
 

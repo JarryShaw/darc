@@ -25,10 +25,11 @@ class BaseSite:
     hostname: typing.List[str] = None  # type: ignore
 
     @staticmethod
-    def crawler(session: typing.Session, link: Link) -> typing.Union[typing.NoReturn, typing.Response]:  # pylint: disable=unused-argument
+    def crawler(timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.Union[typing.NoReturn, typing.Response]:  # pylint: disable=unused-argument,line-too-long
         """Crawler hook for my site.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             session: Session object with proxy settings.
             link: Link object to be crawled.
 
@@ -39,10 +40,11 @@ class BaseSite:
         raise LinkNoReturn(link)
 
     @staticmethod
-    def loader(driver: typing.Driver, link: Link) -> typing.Union[typing.NoReturn, typing.Driver]:  # pylint: disable=unused-argument
+    def loader(timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.Union[typing.NoReturn, typing.Driver]:  # pylint: disable=unused-argument,line-too-long
         """Loader hook for my site.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             driver (selenium.webdriver.Chrome): Web driver object with proxy settings.
             link: Link object to be loaded.
 

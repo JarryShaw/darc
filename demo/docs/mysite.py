@@ -16,10 +16,11 @@ class MySite(BaseSite):
     hostname = ['mysite.com', 'www.mysite.com']
 
     @staticmethod
-    def crawler(session, link):
+    def crawler(timestamp, session, link):
         """Crawler hook for my site.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             session (requests.Session): Session object with proxy settings.
             link (darc.link.Link): Link object to be crawled.
 
@@ -34,10 +35,11 @@ class MySite(BaseSite):
         return response
 
     @staticmethod
-    def loader(driver, link):
+    def loader(timestamp, driver, link):
         """Loader hook for my site.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             driver (selenium.webdriver.Chrome): Web driver object with proxy settings.
             link (darc.link.Link): Link object to be loaded.
 

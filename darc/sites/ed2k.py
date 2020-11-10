@@ -18,10 +18,11 @@ class ED2K(BaseSite):
     """ED2K magnet links."""
 
     @staticmethod
-    def crawler(session: typing.Session, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
+    def crawler(timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
         """Crawler hook for ED2K magnet links.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             session (:class:`requests.Session`): Session object with proxy settings.
             link: Link object to be crawled.
 
@@ -33,7 +34,7 @@ class ED2K(BaseSite):
         raise LinkNoReturn(link)
 
     @staticmethod
-    def loader(driver: typing.Driver, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
+    def loader(timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
         """Not implemented.
 
         Raises:

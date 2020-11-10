@@ -19,10 +19,11 @@ class DefaultSite(BaseSite):
     """Default hooks."""
 
     @staticmethod
-    def crawler(session: typing.Session, link: Link) -> typing.Response:
+    def crawler(timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.Response:  # pylint: disable=unused-argument
         """Default crawler hook.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             session (requests.Session): Session object with proxy settings.
             link: Link object to be crawled.
 
@@ -37,7 +38,7 @@ class DefaultSite(BaseSite):
         return response
 
     @staticmethod
-    def loader(driver: typing.Driver, link: Link) -> typing.Driver:
+    def loader(timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.Driver:  # pylint: disable=unused-argument
         """Default loader hook.
 
         When loading, if :data:`~darc.const.SE_WAIT` is a valid time lapse,
@@ -45,6 +46,7 @@ class DefaultSite(BaseSite):
         loading contents.
 
         Args:
+            timestamp: Timestamp of the worker node reference.
             driver (selenium.webdriver.Chrome): Web driver object with proxy settings.
             link: Link object to be loaded.
 
