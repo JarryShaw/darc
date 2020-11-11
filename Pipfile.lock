@@ -267,8 +267,8 @@
         },
         "selenium": {
             "hashes": [
-                "sha256:804c5e4dd37c5e9a0196d8b9fc84e10b403379956abe926936a329dfa150958b",
                 "sha256:2d7131d7bc5a5b99a2d9b04aaf2612c411b03b8ca1b1ee8d3de5845a9be2cb3c",
+                "sha256:804c5e4dd37c5e9a0196d8b9fc84e10b403379956abe926936a329dfa150958b",
                 "sha256:deaf32b60ad91a4611b98d8002757f29e6f2c2d5fcaf202e1c9ad06d6772300d"
             ],
             "index": "tuna",
@@ -355,11 +355,11 @@
         },
         "babel": {
             "hashes": [
-                "sha256:1aac2ae2d0d8ea368fa90906567f5c08463d98ade155c0c4bfedd6a0f7160e38",
-                "sha256:d670ea0b10f8b723672d3a6abeb87b565b244da220d76b4dba1b66269ec152d4"
+                "sha256:820c195271534e8a86f564ba9ef2c207f356cfeb7e94d2bdc6b57897c4233837",
+                "sha256:be432f50d6c38c705ea45a0c05a4bbb22a70742a93888fbae5e7948da1635d23"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-            "version": "==2.8.0"
+            "version": "==2.8.1"
         },
         "backcall": {
             "hashes": [
@@ -824,7 +824,6 @@
                 "sha256:2c1673633ad1eea78b1c5c420a47cd48717d2ef214c8230d96ca2591e9e00958",
                 "sha256:388c0c26c574ff49bad7d0fd6ed82fbccd86a0473fa3900397d3354c533d6ebb",
                 "sha256:4ba6b903e1b7bd3eb5df0e78d7364b7e831ed8b4cd781ebc3c4f1077fbcb72a4",
-                "sha256:5ffebaec567960e4a6690c09f1e20e99d492ed990f2e1ac843bc0dff6f81ff30",
                 "sha256:6665f7ab7fbbf4d3c1040925ff4d42d7549a8c15fe041164adfe4fc2134d4cce",
                 "sha256:95d4410c4e429480c736bba0db6cce5aaa311304aea685ebcf9ee47571bfd7c8",
                 "sha256:a2fc7bf77ed4a7a961d7684afe177ff59971828141e608f142e4af858e07dddc",
@@ -960,8 +959,8 @@
         },
         "selenium": {
             "hashes": [
-                "sha256:804c5e4dd37c5e9a0196d8b9fc84e10b403379956abe926936a329dfa150958b",
                 "sha256:2d7131d7bc5a5b99a2d9b04aaf2612c411b03b8ca1b1ee8d3de5845a9be2cb3c",
+                "sha256:804c5e4dd37c5e9a0196d8b9fc84e10b403379956abe926936a329dfa150958b",
                 "sha256:deaf32b60ad91a4611b98d8002757f29e6f2c2d5fcaf202e1c9ad06d6772300d"
             ],
             "index": "tuna",
@@ -1001,8 +1000,7 @@
         "sphinx": {
             "hashes": [
                 "sha256:1c21e7c5481a31b531e6cbf59c3292852ccde175b504b00ce2ff0b8f4adc3649",
-                "sha256:3abdb2c57a65afaaa4f8573cbabd5465078eb6fd282c1e4f87f006875a7ec0c7",
-                "sha256:60bbc197df45a6cd7a5de47c7b1f6d5f840f6603974512c0d3d1b6de8f7b5c87"
+                "sha256:3abdb2c57a65afaaa4f8573cbabd5465078eb6fd282c1e4f87f006875a7ec0c7"
             ],
             "index": "tuna",
             "version": "==3.3.0"
@@ -1161,11 +1159,10 @@
             "version": "==1.0.1"
         },
         "wrapt": {
-            "editable": true,
-            "extras": [
-                "mysql"
+            "hashes": [
+                "sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7"
             ],
-            "path": "."
+            "version": "==1.12.1"
         }
     }
 }
