@@ -12,10 +12,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup Pipenv
         run: |
-          brew install pipenv
+          brew install pipenv python@3.8
           export PIPENV_SKIP_LOCK=1
           export PIPENV_VENV_IN_PROJECT=1
-          pipenv install --dev --python $(brew --prefix python@3.9)/bin/python3.9
+          pipenv install --dev --python $(brew --prefix python@3.8)/bin/python3.8
           while true; do
             echo '+ pipenv install --dev'
             pipenv install --dev && break
