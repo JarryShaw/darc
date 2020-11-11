@@ -1,3 +1,7 @@
+# November 11, 2020
+
+- [ ] prepare to bump version *1.x*
+
 # November 3, 2020
 
 - [x] ~rewrite proxy processing partially with ``requests`` proxy dispatching (mount adapters)~
