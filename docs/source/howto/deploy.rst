@@ -188,7 +188,7 @@ Simply type the following command:
 
 and add the cron job into the file opened:
 
-.. code--block:: shell
+.. code-block:: cron
 
    10 0 * * * ( cd /path/to/darc/ && /path/to/python3 /path/to/darc/extra/upload.py --host ftp://hostname --user username:password ) >> /path/to/darc/logs/cron/darc-upload.log 2>&1
 
