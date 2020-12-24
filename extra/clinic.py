@@ -148,10 +148,7 @@ def main() -> int:
     if not os.path.isfile(args.file):
         parser.error('compose file not found')
 
-    if args.interval <= 0:
-        parser.error('invalid interval')
-
-    if args.timeout < 0:
+    if args.timeout <= 0:
         parser.error('invalid timeout')
 
     client = redis.Redis.from_url(args.redis, decode_components=True)
