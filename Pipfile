@@ -20,9 +20,12 @@ bandit = "*"
 mypy = "*"
 pylint = "*"
 ipython = "*"
+isort = "*"
+vermin = "*"
 coverage = "*"
 codecov = "*"
 sphinx = "*"
+snooty = "*"
 rstcheck = "*"
 Flask = "*"
 pydantic = {extras = ["dotenv", "email", "typing_extensions"], version = "*"}
@@ -42,3 +45,6 @@ typing-extensions = "*"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true

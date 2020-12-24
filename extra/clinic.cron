@@ -1,0 +1,1 @@
+0 12 * * 1 ( cd /path/to/darc/ && /path/to/python3 /path/to/darc/extra/clinic.py --file /path/to/darc/docker-compose.yml --timeout 60 ) >> /path/to/darc/logs/cron/darc-clinic.log 2>&1

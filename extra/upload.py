@@ -19,7 +19,7 @@ SCPT = os.path.join(ROOT, 'upload.sh')
 ONEDAY = datetime.timedelta(days=1)
 
 
-def upload(path, host, user):
+def upload(path: str, host: str, user: str) -> None:
     """Upload files."""
     today = datetime.date.today()
     today_str = today.isoformat()
@@ -44,7 +44,7 @@ def upload(path, host, user):
     print(f'[{datetime.datetime.now().isoformat()}] Uploaded API submission files...')
 
 
-def get_parser():
+def get_parser() -> argparse.ArgumentParser:
     """Argument parser."""
     parser = argparse.ArgumentParser('upload',
                                      description='upload API submission files')
@@ -56,7 +56,7 @@ def get_parser():
     return parser
 
 
-def main():
+def main() -> int:
     """Entryprocess."""
     parser = get_parser()
     args = parser.parse_args()

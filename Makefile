@@ -19,6 +19,9 @@ reload:
 	#sudo systemctl start darc-upload
 	sudo systemctl start darc-healthcheck
 
+isort:
+	pipenv run isort -l100 -pdarc darc extra
+
 uniq: uniq-requests uniq-selenium
 
 uniq-requests:

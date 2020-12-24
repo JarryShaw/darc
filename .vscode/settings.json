@@ -61,6 +61,7 @@
         "noip",
         "nytimes",
         "parso",
+        "pdarc",
         "pexpect",
         "pformat",
         "posixpath",

@@ -10,9 +10,10 @@ import os
 import subprocess  # nosec
 import sys
 import time
+from typing import Any, Dict
 
 
-def check_call(*args, **kwargs):
+def check_call(*args: Any, **kwargs: Any) -> int:
     """Wraps :func:`subprocess.check_call`."""
     with open('logs/healthcheck.log', 'at', buffering=1) as file:
         if 'stdout' not in kwargs:
@@ -26,11 +27,13 @@ def check_call(*args, **kwargs):
             time.sleep(60)
 
     with contextlib.suppress(subprocess.CalledProcessError):
-        return subprocess.check_call(['systemctl', 'restart', 'docker'])  # nosec
+        subprocess.check_call(['systemctl', 'restart', 'docker'])  # nosec
+        raise RuntimeError
     subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check  # nosec
+    raise RuntimeError
 
 
-def check_output(*args, **kwargs):
+def check_output(*args: Any, **kwargs: Any) -> str:
     """Wraps :func:`subprocess.check_output`."""
     for _ in range(3):
         with contextlib.suppress(subprocess.CalledProcessError):
@@ -38,11 +41,13 @@ def check_output(*args, **kwargs):
         time.sleep(60)
 
     with contextlib.suppress(subprocess.CalledProcessError):
-        return subprocess.check_call(['systemctl', 'restart', 'docker'])  # nosec
+        subprocess.check_call(['systemctl', 'restart', 'docker'])  # nosec
+        raise RuntimeError
     subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check  # nosec
+    raise RuntimeError
 
 
-def timestamp(container_id):
+def timestamp(container_id: str) -> float:
     """Get timestamp from last line."""
     line = check_output(['docker', 'logs', '--timestamps', '--tail=1', container_id],
                         encoding='utf-8', stderr=subprocess.STDOUT).strip()
@@ -53,7 +58,7 @@ def timestamp(container_id):
     return time.mktime(pt)
 
 
-def healthcheck(file, interval, *services):
+def healthcheck(file: str, interval: float, *services: str) -> None:
     """Health check."""
     ps_args = ['docker-compose', '--file', file, 'ps', '--quiet']
     ps_args.extend(services)
@@ -62,8 +67,8 @@ def healthcheck(file, interval, *services):
     if not container_id_list:
         return
 
-    ts_dict = dict()
-    ps_dict = dict()
+    ts_dict = dict()  # type: Dict[str, float]
+    ps_dict = dict()  # type: Dict[str, float]
     while True:
         for container_id in container_id_list:
             try:
@@ -124,7 +129,7 @@ def healthcheck(file, interval, *services):
         time.sleep(interval)
 
 
-def get_parser():
+def get_parser() -> argparse.ArgumentParser:
     """Argument parser."""
     parser = argparse.ArgumentParser('healthcheck',
                                      description='health check running container')
@@ -136,7 +141,7 @@ def get_parser():
     return parser
 
 
-def main():
+def main() -> int:
     """Entryprocess."""
     parser = get_parser()
     args = parser.parse_args()
