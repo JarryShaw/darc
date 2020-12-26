@@ -15,7 +15,8 @@ services:
                "--file", "/app/text/tor2web.txt",
                "--file", "/app/text/i2p.txt",
                "--file", "/app/text/zeronet.txt",
-               "--file", "/app/text/freenet.txt" ]
+               "--file", "/app/text/freenet.txt",
+               "--file", "/app/text/clinic.txt" ]
     environment:
       ## [PYTHON] force the stdout and stderr streams to be unbuffered
       PYTHONUNBUFFERED: 1

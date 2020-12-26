@@ -74,3 +74,39 @@ Remove Repeated Lines
 
 This script works the same as :manpage:`uniq(1)`, except it filters one input
 line at a time without putting pressure onto memory utilisation.
+
+Redis Clinic
+------------
+
+:File location:
+   * Entry point: ``extra/clinic.py``
+   * Helper script: ``extra/clinic.lua``
+   * Cron sample: ``extra/clinic.cron``
+
+.. code-block:: text
+
+   usage: clinic [-h] -r REDIS [-f FILE] [-t TIMEOUT] ...
+
+   memory clinic for Redis
+
+   positional arguments:
+     services              name of services
+
+   optional arguments:
+     -h, --help            show this help message and exit
+     -r REDIS, --redis REDIS
+                           URI to the Redis server
+     -f FILE, --file FILE  path to compose file
+     -t TIMEOUT, --timeout TIMEOUT
+                           shutdown timeout in seconds
+
+Since Redis may take more and more memory as the growth of crawled
+data and task queues, this script will truncate the Redis task queues
+(``queue_requests & ``queue_selenium``), as well as the corresponding
+:mod:`pickle` caches of :class:`darc.link.Link`.
+
+.. note::
+
+   We used Lua scrpit to slightly accelerate the whole procedure, as
+   it may bring burden to the host server if running through Redis
+   client.

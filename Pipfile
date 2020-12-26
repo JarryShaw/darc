@@ -25,7 +25,7 @@ vermin = "*"
 coverage = "*"
 codecov = "*"
 sphinx = "*"
-snooty = "*"
+snooty-lextudio = "*"
 rstcheck = "*"
 Flask = "*"
 pydantic = {extras = ["dotenv", "email", "typing_extensions"], version = "*"}

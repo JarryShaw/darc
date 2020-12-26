@@ -13,14 +13,34 @@ import shutil
 import warnings
 import time
 from typing import Any, AnyStr
+#from typing import List
 
 import redis
 import stem.util.term
+
+# Redis client
+REDIS: redis.Redis = None  # type: ignore[assignment]
+# script object
+SCPT: redis.client.Script = None  # type: ignore[assignment]
 
 # Redis retry interval
 RETRY_INTERVAL = float(os.getenv('DARC_RETRY', '10'))
 if not math.isfinite(RETRY_INTERVAL):
     RETRY_INTERVAL = None  # type: ignore
+
+# max pool
+#MAX_POOL = float(os.getenv('DARC_MAX_POOL', '500'))
+#if math.isfinite(MAX_POOL):
+#    MAX_POOL = math.floor(MAX_POOL)
+
+# root path
+ROOT = os.path.dirname(os.path.abspath(__file__))
+# script path
+SCPT_PATH = os.path.join(ROOT, 'clinic.lua')
+with open(SCPT_PATH) as scpt_file:
+    SCPT_TEXT = scpt_file.read()
+# link path
+POOL_PATH = os.path.join(ROOT, '..', 'text', 'clinic.txt')
 
 
 class RedisCommandFailed(Warning):
@@ -69,11 +89,10 @@ def _gen_arg_msg(*args, **kwargs) -> str:  # type: ignore
     return textwrap.shorten(_args, shutil.get_terminal_size().columns)
 
 
-def _redis_command(client: redis.Redis, command: str, *args: Any, **kwargs: Any) -> Any:
+def _redis_command(command: str, *args: Any, **kwargs: Any) -> Any:
     """Wrapper function for Redis command.
 
     Args:
-        client: Redis client.
         command: Command name.
         *args: Arbitrary arguments for the Redis command.
 
@@ -93,7 +112,7 @@ def _redis_command(client: redis.Redis, command: str, *args: Any, **kwargs: Any)
     """
     _arg_msg = None
 
-    method = getattr(client, command)
+    method = getattr(REDIS, command)
     while True:
         try:
             value = method(*args, **kwargs)
@@ -112,19 +131,58 @@ def _redis_command(client: redis.Redis, command: str, *args: Any, **kwargs: Any)
     return value
 
 
-def clinic(client: redis.Redis, file: str, timeout: int, *services: str) -> None:
+def check_call(*args: Any, **kwargs: Any) -> int:
+    """Wraps :func:`subprocess.check_call`."""
+    with open('logs/clinic.log', 'at', buffering=1) as file:
+        if 'stdout' not in kwargs:
+            kwargs['stdout'] = file
+        if 'stderr' not in kwargs:
+            kwargs['stderr'] = subprocess.STDOUT
+
+        for _ in range(3):
+            with contextlib.suppress(subprocess.CalledProcessError):
+                return subprocess.check_call(*args, **kwargs)  # nosec
+            time.sleep(60)
+
+    with contextlib.suppress(subprocess.CalledProcessError):
+        subprocess.check_call(['systemctl', 'restart', 'docker'])  # nosec
+        raise RuntimeError
+    subprocess.run(['reboot'])   # pylint: disable=subprocess-run-check  # nosec
+    raise RuntimeError
+
+
+def clinic(file: str, timeout: int, *services: str) -> None:
     """Memory clinic."""
+    print(f'[{datetime.datetime.now().isoformat()}] Stopping DARC services')
+    check_call(['docker-compose', '--file', file, 'stop', '--timeout', str(timeout), *services])
+    check_call(['docker', 'system', 'prune', '--volumes', '-f'])
+    print(f'[{datetime.datetime.now().isoformat()}] Stopped DARC services')
+
     print(f'[{datetime.datetime.now().isoformat()}] Cleaning out task queues')
-    _redis_command(client, 'delete', 'queue_hostname')
-    _redis_command(client, 'delete', 'queue_requests')
-    _redis_command(client, 'delete', 'queue_selenium')
+    _redis_command('eval', SCPT, 1, 'queue_requests', 0, time.time())
+    _redis_command('eval', SCPT, 1, 'queue_selenium', 0, time.time())
+    #while True:
+    #    pool: List[bytes] = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_requests',  # pylint: disable=line-too-long
+    #                                                                                min=0, max=time.time(), start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
+    #    if not pool:
+    #        break
+    #    _redis_command('delete', *pool)
+    #while True:
+    #    pool: List[bytes] = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_selenium',  # type: ignore[no-redef] # pylint: disable=line-too-long
+    #                                                                                min=0, max=time.time(), start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
+    #    if not pool:
+    #        break
+    #    _redis_command('delete', *pool)
+    _redis_command('delete', 'queue_requests', 'queue_selenium')
+
+    with open(POOL_PATH, 'w') as pool_file:
+        for hostname in _redis_command('smembers', 'queue_hostname'):
+            print(f'http://{hostname}', file=pool_file)
     print(f'[{datetime.datetime.now().isoformat()}] Cleaned out task queues')
 
-    print(f'[{datetime.datetime.now().isoformat()}] Restarting DARC services')
-    subprocess.check_call([  # nosec
-        'docker-compose', '--file', file, 'restart', '--timeout', str(timeout), *services,
-    ])
-    print(f'[{datetime.datetime.now().isoformat()}] Restarted DARC services')
+    print(f'[{datetime.datetime.now().isoformat()}] Starting DARC services')
+    check_call(['docker-compose', '--file', file, 'up', '--detach', *services])
+    print(f'[{datetime.datetime.now().isoformat()}] Started DARC services')
 
 
 def get_parser() -> argparse.ArgumentParser:
@@ -142,6 +200,8 @@ def get_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     """Entrypoint."""
+    global REDIS, SCPT  # pylint: disable=global-statement
+
     parser = get_parser()
     args = parser.parse_args()
 
@@ -151,7 +211,8 @@ def main() -> int:
     if args.timeout <= 0:
         parser.error('invalid timeout')
 
-    client = redis.Redis.from_url(args.redis, decode_components=True)
+    REDIS = redis.Redis.from_url(args.redis, decode_components=True)
+    SCPT = REDIS.register_script(SCPT_TEXT)
     with open('logs/clinic.log', 'at', buffering=1) as file:
         date = datetime.datetime.now().ctime()
         print('-' * len(date), file=file)
@@ -159,7 +220,7 @@ def main() -> int:
         print('-' * len(date), file=file)
 
         with contextlib.redirect_stdout(file), contextlib.redirect_stderr(file):
-            clinic(client, args.file, args.timeout, *args.services)
+            clinic(args.file, args.timeout, *args.services)
     return 0
 
 
