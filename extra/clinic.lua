@@ -9,6 +9,6 @@ while start <= #keys do
     start = start + 5000
 end
 
-return redis.status_reply("ok")
+return #keys
 
 -- 1 key min max

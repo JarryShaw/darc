@@ -6,17 +6,18 @@ import contextlib
 import datetime
 import math
 import os
+import shutil
 import subprocess  # nosec
 import sys
 import textwrap
-import shutil
-import warnings
 import time
+import warnings
 from typing import Any, AnyStr
-#from typing import List
 
 import redis
 import stem.util.term
+
+#from typing import List
 
 # Redis client
 REDIS: redis.Redis = None  # type: ignore[assignment]
@@ -159,8 +160,8 @@ def clinic(file: str, timeout: int, *services: str) -> None:
     print(f'[{datetime.datetime.now().isoformat()}] Stopped DARC services')
 
     print(f'[{datetime.datetime.now().isoformat()}] Cleaning out task queues')
-    _redis_command('eval', SCPT, 1, 'queue_requests', 0, time.time())
-    _redis_command('eval', SCPT, 1, 'queue_selenium', 0, time.time())
+    number_requests = _redis_command('eval', SCPT, 1, 'queue_requests', 0, time.time())
+    number_selenium = _redis_command('eval', SCPT, 1, 'queue_selenium', 0, time.time())
     #while True:
     #    pool: List[bytes] = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_requests',  # pylint: disable=line-too-long
     #                                                                                min=0, max=time.time(), start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
@@ -176,9 +177,10 @@ def clinic(file: str, timeout: int, *services: str) -> None:
     _redis_command('delete', 'queue_requests', 'queue_selenium')
 
     with open(POOL_PATH, 'w') as pool_file:
-        for hostname in _redis_command('smembers', 'queue_hostname'):
+        maxn = _redis_command('zcard',  'queue_hostname')
+        for hostname in _redis_command('zrange', 'queue_hostname', 0, maxn):
             print(f'http://{hostname}', file=pool_file)
-    print(f'[{datetime.datetime.now().isoformat()}] Cleaned out task queues')
+    print(f'[{datetime.datetime.now().isoformat()}] Cleaned out task queues: {maxn} hostnames, {number_requests} crawler URLs, {number_selenium} loader URLs')
 
     print(f'[{datetime.datetime.now().isoformat()}] Starting DARC services')
     check_call(['docker-compose', '--file', file, 'up', '--detach', *services])
