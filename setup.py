@@ -88,6 +88,9 @@ attrs = dict(
             'LICENSE',
             'README.md',
         ],
+        'darc': [
+            'py.typed',
+        ],
     },
     # include_package_data
     # libraries
