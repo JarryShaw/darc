@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Data Submission
 =====================
 
@@ -32,7 +33,6 @@ There are three submission events:
 
 import base64
 import dataclasses
-import datetime
 import glob
 import json
 import os
@@ -40,23 +40,31 @@ import pprint
 import shutil
 import sys
 import warnings
+from datetime import date
+from typing import TYPE_CHECKING, cast
 
 import requests
 import stem.util.term
 
-import darc.typing as typing
+from darc._compat import datetime
 from darc.const import DEBUG, PATH_DB
 from darc.db import _db_operation
 from darc.error import APIRequestFailed, DatabaseOperaionFailed, render_error
-from darc.link import Link
 from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, RequestsModel, RobotsModel,
                         SeleniumModel, SitemapModel, URLModel)
 from darc.model.utils import Proxy
 from darc.requests import null_session
 
-# type alias
-File = typing.Dict[str, typing.AnyStr]
-Domain = typing.Literal['new_host', 'requests', 'selenium']
+if TYPE_CHECKING:
+    from typing import Any, Dict, List, Optional, Tuple
+
+    from requests import Response, Session
+    from typing_extensions import Literal
+
+    from darc._typing import File
+    from darc.link import Link
+
+    Domain = Literal['new_host', 'requests', 'selenium']
 
 # save submitted data to database
 SAVE_DB = bool(int(os.getenv('SAVE_DB', '1')))
@@ -81,10 +89,10 @@ if DEBUG:
     print(stem.util.term.format('-' * shutil.get_terminal_size().columns, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 # UNIX epoch
-EPOCH = datetime.datetime(1970, 1, 1, 0, 0)  # 1970-01-01T00:00:00
+EPOCH = datetime(1970, 1, 1, 0, 0)  # 1970-01-01T00:00:00
 
 
-def get_metadata(link: Link) -> typing.Dict[str, str]:
+def get_metadata(link: 'Link') -> 'Dict[str, str]':
     """Generate metadata field.
 
     Args:
@@ -106,7 +114,7 @@ def get_metadata(link: Link) -> typing.Dict[str, str]:
     return metadata
 
 
-def get_robots(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsistent-return-statements
+def get_robots(link: 'Link') -> 'Optional[File]':
     """Read ``robots.txt``.
 
     Args:
@@ -131,14 +139,13 @@ def get_robots(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsis
         return None
     with open(path, 'rb') as file:
         content = file.read()
-    data = dict(
-        path=os.path.relpath(path, PATH_DB),
-        data=base64.b64encode(content).decode(),
-    )
-    return data
+    return {
+        'path': os.path.relpath(path, PATH_DB),
+        'data': base64.b64encode(content).decode(),
+    }
 
 
-def get_sitemaps(link: Link) -> typing.Optional[typing.List[File]]:  # pylint: disable=inconsistent-return-statements
+def get_sitemaps(link: 'Link') -> 'Optional[List[File]]':
     """Read sitemaps.
 
     Args:
@@ -162,19 +169,18 @@ def get_sitemaps(link: Link) -> typing.Optional[typing.List[File]]:  # pylint: d
     if not path_list:
         return None
 
-    data_list = list()
+    data_list = []  # type: List[File]
     for path in path_list:
         with open(path, 'rb') as file:
             content = file.read()
-        data = dict(
-            path=os.path.relpath(path, PATH_DB),
-            data=base64.b64encode(content).decode(),
-        )
-        data_list.append(data)
+        data_list.append({
+            'path': os.path.relpath(path, PATH_DB),
+            'data': base64.b64encode(content).decode(),
+        })
     return data_list
 
 
-def get_hosts(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsistent-return-statements
+def get_hosts(link: 'Link') -> 'Optional[File]':
     """Read ``hosts.txt``.
 
     Args:
@@ -202,14 +208,13 @@ def get_hosts(link: Link) -> typing.Optional[File]:  # pylint: disable=inconsist
         return None
     with open(path, 'rb') as file:
         content = file.read()
-    data = dict(
-        path=os.path.relpath(path, PATH_DB),
-        data=base64.b64encode(content).decode(),
-    )
-    return data
+    return {
+        'path': os.path.relpath(path, PATH_DB),
+        'data': base64.b64encode(content).decode(),
+    }
 
 
-def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]) -> None:
+def save_submit(domain: 'Domain', data: 'Dict[str, Any]') -> None:
     """Save failed submit data.
 
     Args:
@@ -228,7 +233,7 @@ def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]) -> None:
         * :func:`darc.submit.submit_selenium`
 
     """
-    today = datetime.date.today().isoformat()
+    today = date.today().isoformat()
 
     metadata = data['[metadata]']
     name = metadata['name']
@@ -241,7 +246,7 @@ def save_submit(domain: Domain, data: typing.Dict[str, typing.Any]) -> None:
         json.dump(data, file, indent=2)
 
 
-def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]) -> None:
+def submit(api: str, domain: 'Domain', data: 'Dict[str, Any]') -> None:
     """Submit data.
 
     Args:
@@ -264,13 +269,13 @@ def submit(api: str, domain: Domain, data: typing.Dict[str, typing.Any]) -> None
                 if response.ok:
                     return
             except requests.RequestException as error:
-                warning = warnings.formatwarning(str(error), APIRequestFailed, __file__, 252,
+                warning = warnings.formatwarning(str(error), APIRequestFailed, __file__, 262,
                                                  f'[{domain.upper()}] response = requests.post(api, json=data)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     save_submit(domain, data)
 
 
-def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False, force: bool = False) -> None:
+def submit_new_host(time: 'datetime', link: 'Link', partial: bool = False, force: bool = False) -> None:
     """Submit new host.
 
     When a new host is discovered, the :mod:`darc` crawler will submit the
@@ -366,11 +371,12 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False, fo
 
     if SAVE_DB:
         try:
-            model, _ = _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults=dict(
-                proxy=Proxy[link.proxy.upper()],
-                discovery=time,
-                last_seen=time,
-            ))
+            model, _ = cast('Tuple[HostnameModel, bool]',
+                            _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults={
+                                'proxy': Proxy[link.proxy.upper()],
+                                'discovery': time,
+                                'last_seen': time,
+                            }))
 
             if robots is not None:
                 _db_operation(RobotsModel.create,
@@ -391,7 +397,7 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False, fo
                               timestamp=time,
                               document=base64.b64decode(hosts['data']).decode())
         except Exception as error:
-            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 354,
+            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 371,
                                              'submit_new_host(...)')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -421,8 +427,8 @@ def submit_new_host(time: typing.Datetime, link: Link, partial: bool = False, fo
     submit(API_NEW_HOST, 'new_host', data)
 
 
-def submit_requests(time: typing.Datetime, link: Link,
-                    response: typing.Response, session: typing.Session,
+def submit_requests(time: 'datetime', link: 'Link',
+                    response: 'Response', session: 'Session',
                     content: bytes, mime_type: str, html: bool = True) -> None:
     """Submit requests data.
 
@@ -520,24 +526,26 @@ def submit_requests(time: typing.Datetime, link: Link,
     """
     if SAVE_DB:
         try:
-            model, model_created = _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults=dict(
-                proxy=Proxy[link.proxy.upper()],
-                discovery=time,
-                last_seen=time,
-            ))
+            model, model_created = cast('Tuple[HostnameModel, bool]',
+                                        _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults={
+                                            'proxy': Proxy[link.proxy.upper()],
+                                            'discovery': time,
+                                            'last_seen': time,
+                                        }))
             if not model_created:
                 model.last_seen = time
                 _db_operation(model.save)
 
-            url, url_created = _db_operation(URLModel.get_or_create, hash=link.name, defaults=dict(
-                url=link.url,
-                hostname=model,
-                proxy=Proxy[link.proxy.upper()],
-                discovery=time,
-                last_seen=time,
-                alive=False,
-                since=EPOCH,
-            ))
+            url, url_created = cast('Tuple[URLModel, bool]',
+                                    _db_operation(URLModel.get_or_create, hash=link.name, defaults={
+                                        'url': link.url,
+                                        'hostname': model,
+                                        'proxy': Proxy[link.proxy.upper()],
+                                        'discovery': time,
+                                        'last_seen': time,
+                                        'alive': False,
+                                        'since': EPOCH,
+                                    }))
             if not url.alive and response.ok:
                 url.alive = True
                 url.since = time
@@ -548,19 +556,20 @@ def submit_requests(time: typing.Datetime, link: Link,
                 url.last_seen = time
             _db_operation(url.save)
 
-            model = _db_operation(RequestsModel.create,
-                                  url=url,
-                                  timestamp=time,
-                                  method=response.request.method,
-                                  document=content,
-                                  mime_type=mime_type,
-                                  is_html=html,
-                                  status_code=response.status_code,
-                                  reason=response.reason,
-                                  cookies=response.cookies.get_dict(),
-                                  session=response.cookies.get_dict(),
-                                  request=dict(response.request.headers),
-                                  response=dict(response.headers))
+            model = cast('RequestsModel',
+                         _db_operation(RequestsModel.create,
+                                       url=url,
+                                       timestamp=time,
+                                       method=response.request.method,
+                                       document=content,
+                                       mime_type=mime_type,
+                                       is_html=html,
+                                       status_code=response.status_code,
+                                       reason=response.reason,
+                                       cookies=response.cookies.get_dict(),
+                                       session=response.cookies.get_dict(),
+                                       request=dict(response.request.headers),
+                                       response=dict(response.headers)))
 
             for index, history in enumerate(response.history):
                 _db_operation(RequestsHistoryModel.create,
@@ -576,7 +585,7 @@ def submit_requests(time: typing.Datetime, link: Link,
                               request=dict(history.request.headers),
                               response=dict(history.headers))
         except Exception as error:
-            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 509,
+            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 528,
                                              'submit_requests(...)')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -600,10 +609,10 @@ def submit_requests(time: typing.Datetime, link: Link,
         'Request': dict(response.request.headers),
         'Response': dict(response.headers),
         'Content-Type': mime_type,
-        'Document': dict(
-            path=os.path.relpath(path, PATH_DB),
-            data=base64.b64encode(content).decode(),
-        ),
+        'Document': {
+            'path': os.path.relpath(path, PATH_DB),
+            'data': base64.b64encode(content).decode(),
+        },
         'History': [{
             'URL': history.url,
             'Method': history.request.method,
@@ -631,8 +640,8 @@ def submit_requests(time: typing.Datetime, link: Link,
     submit(API_REQUESTS, 'requests', data)
 
 
-def submit_selenium(time: typing.Datetime, link: Link,
-                    html: str, screenshot: typing.Optional[str]) -> None:
+def submit_selenium(time: 'datetime', link: 'Link',
+                    html: str, screenshot: 'Optional[str]') -> None:
     """Submit selenium data.
 
     After crawling with :mod:`requests`, we'll then render the URl using
@@ -709,24 +718,26 @@ def submit_selenium(time: typing.Datetime, link: Link,
     """
     if SAVE_DB:
         try:
-            model, model_created = _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults=dict(
-                proxy=Proxy[link.proxy.upper()],
-                discovery=time,
-                last_seen=time,
-            ))
+            model, model_created = cast('Tuple[HostnameModel, bool]',
+                                        _db_operation(HostnameModel.get_or_create, hostname=link.host, defaults={
+                                            'proxy': Proxy[link.proxy.upper()],
+                                            'discovery': time,
+                                            'last_seen': time,
+                                        }))
             if not model_created:
                 model.last_seen = time
                 _db_operation(model.save)
 
-            url, url_created = _db_operation(URLModel.get_or_create, hash=link.name, defaults=dict(
-                url=link.url,
-                hostname=model,
-                proxy=Proxy[link.proxy.upper()],
-                discovery=time,
-                last_seen=time,
-                alive=True,
-                since=time,
-            ))
+            url, url_created = cast('Tuple[URLModel, bool]',
+                                    _db_operation(URLModel.get_or_create, hash=link.name, defaults={
+                                        'url': link.url,
+                                        'hostname': model,
+                                        'proxy': Proxy[link.proxy.upper()],
+                                        'discovery': time,
+                                        'last_seen': time,
+                                        'alive': True,
+                                        'since': time,
+                                    }))
             if not url.alive:
                 url.alive = True
                 url.since = time
@@ -740,7 +751,7 @@ def submit_selenium(time: typing.Datetime, link: Link,
                           document=html,
                           screenshot=base64.b64decode(screenshot) if screenshot else None)
         except Exception as error:
-            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 696,
+            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 720,
                                              'submit_selenium(...)')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -748,21 +759,21 @@ def submit_selenium(time: typing.Datetime, link: Link,
     ts = time.isoformat()
 
     if screenshot is None:
-        ss = None
+        ss = None  # type: Optional[File]
     else:
-        ss = dict(
-            path=os.path.relpath(f'{link.base}/{link.name}_{ts}.png', PATH_DB),
-            data=screenshot,
-        )
+        ss = {
+            'path': os.path.relpath(f'{link.base}/{link.name}_{ts}.png', PATH_DB),
+            'data': screenshot,
+        }
 
     data = {
         '[metadata]': metadata,
         'Timestamp': ts,
         'URL': link.url,
-        'Document': dict(
-            path=os.path.relpath(f'{link.base}/{link.name}_{ts}.html', PATH_DB),
-            data=base64.b64encode(html.encode()).decode(),
-        ),
+        'Document': {
+            'path': os.path.relpath(f'{link.base}/{link.name}_{ts}.html', PATH_DB),
+            'data': base64.b64encode(html.encode()).decode(),
+        },
         'Screenshot': ss,
     }
 

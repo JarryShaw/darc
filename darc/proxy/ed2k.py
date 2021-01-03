@@ -12,15 +12,18 @@ links extracted to the data storage file
 """
 
 import os
+from typing import TYPE_CHECKING
 
 from darc.const import PATH_MISC, get_lock
-from darc.link import Link
+
+if TYPE_CHECKING:
+    from darc.link import Link
 
 PATH = os.path.join(PATH_MISC, 'ed2k.txt')
 LOCK = get_lock()
 
 
-def save_ed2k(link: Link) -> None:
+def save_ed2k(link: 'Link') -> None:
     """Save ed2k magnet link.
 
     The function will save ED2K magnet link to the file
@@ -30,6 +33,6 @@ def save_ed2k(link: Link) -> None:
         link: Link object representing the ED2K magnet links.
 
     """
-    with LOCK:  # type: ignore
+    with LOCK:  # type: ignore[union-attr]
         with open(PATH, 'a') as file:
             print(link.url, file=file)

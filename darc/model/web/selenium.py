@@ -13,11 +13,17 @@ from ``selenium`` submission.
 
 """
 
-import peewee
+from typing import TYPE_CHECKING
 
-import darc.typing as typing
+from peewee import BlobField, DateTimeField, ForeignKeyField, TextField
+
 from darc.model.abc import BaseModelWeb as BaseModel
 from darc.model.web.url import URLModel
+
+if TYPE_CHECKING:
+    from typing import Optional
+
+    from darc._compat import datetime
 
 __all__ = ['SeleniumModel']
 
@@ -26,11 +32,11 @@ class SeleniumModel(BaseModel):
     """Data model for documents from ``selenium`` submission."""
 
     #: Original URL (c.f. :attr:`link.url <darc.link.Link.url>`).
-    url: URLModel = peewee.ForeignKeyField(URLModel, backref='selenium')
+    url: 'URLModel' = ForeignKeyField(URLModel, backref='selenium')
     #: Timestamp of the submission.
-    timestamp: typing.Datetime = peewee.DateTimeField()
+    timestamp: 'datetime' = DateTimeField()
 
     #: Document data as :obj:`str`.
-    document: str = peewee.TextField()
+    document: str = TextField()
     #: Screenshot in PNG format as :obj:`bytes`.
-    screenshot: typing.Optional[bytes] = peewee.BlobField(null=True)
+    screenshot: 'Optional[bytes]' = BlobField(null=True)

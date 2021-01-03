@@ -61,10 +61,10 @@ with other presets same as the default factory function, c.f.
             session = requests.Session()
 
         session.headers['User-Agent'] = default_user_agent(proxy='Socks5')
-        session.proxies.update(dict(
-            http='socks5h://localhost:9293',
-            https='socks5h://localhost:9293',
-        ))
+        session.proxies.update({
+            'http': 'socks5h://localhost:9293',
+            'https': 'socks5h://localhost:9293',
+        })
         return session
 
 In this case when :mod:`darc` needs to use a Socks5 session for its *crawler*

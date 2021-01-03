@@ -13,12 +13,22 @@ from ``requests`` submission.
 
 """
 
-import peewee
+from typing import TYPE_CHECKING
 
-import darc.typing as typing
+from peewee import (BlobField, BooleanField, CharField, DateTimeField, ForeignKeyField,
+                    IntegerField, TextField)
+
 from darc.model.abc import BaseModelWeb as BaseModel
 from darc.model.utils import JSONField
 from darc.model.web.url import URLModel
+
+if TYPE_CHECKING:
+    from typing import Any, Dict, List
+
+    from darc._compat import datetime
+
+    Cookies = List[Dict[str, Any]]
+    Headers = Dict[str, str]
 
 __all__ = ['RequestsModel']
 
@@ -26,64 +36,68 @@ __all__ = ['RequestsModel']
 class RequestsModel(BaseModel):
     """Data model for documents from ``requests`` submission."""
 
+    #: List of redirect history, back reference from
+    #: :attr:`RequestsHistoryModel.model <darc.model.web.requests.RequestsHistoryModel.model>`.
+    history: 'List[RequestsHistoryModel]'
+
     #: Original URL (c.f. :attr:`link.url <darc.link.Link.url>`).
-    url: URLModel = peewee.ForeignKeyField(URLModel, backref='requests')
+    url: 'URLModel' = ForeignKeyField(URLModel, backref='requests')
     #: Timestamp of the submission.
-    timestamp: typing.Datetime = peewee.DateTimeField()
+    timestamp: 'datetime' = DateTimeField()
 
     #: Request method (normally ``GET``).
-    method: str = peewee.CharField()
+    method: str = CharField()
     #: Document data as :obj:`bytes`.
-    document: bytes = peewee.BlobField()
+    document: bytes = BlobField()
 
     #: Conetent type.
-    mime_type: str = peewee.CharField()
+    mime_type: str = CharField()
     #: If document is HTML or miscellaneous data.
-    is_html: bool = peewee.BooleanField()
+    is_html: bool = BooleanField()
 
     #: Status code.
-    status_code: int = peewee.IntegerField()
+    status_code: int = IntegerField()
     #: Response reason string.
-    reason: str = peewee.TextField()
+    reason: str = TextField()
 
     #: Response cookies.
-    cookies: typing.Cookies = JSONField()
+    cookies: 'Cookies' = JSONField()
     #: Session cookies.
-    session: typing.Cookies = JSONField()
+    session: 'Cookies' = JSONField()
 
     #: Request headers.
-    request: typing.Headers = JSONField()
+    request: 'Headers' = JSONField()
     #: Response headers.
-    response: typing.Headers = JSONField()
+    response: 'Headers' = JSONField()
 
 
 class RequestsHistoryModel(BaseModel):
     """Data model for history records from ``requests`` submission."""
 
     #: History index number.
-    index: int = peewee.IntegerField()
+    index: int = IntegerField()
     #: Original record.
-    model: RequestsModel = peewee.ForeignKeyField(RequestsModel, backref='history')
+    model: RequestsModel = ForeignKeyField(RequestsModel, backref='history')
 
     #: Request URL.
-    url: str = peewee.TextField()
+    url: str = TextField()
     #: Timestamp of the submission.
-    timestamp: typing.Datetime = peewee.DateTimeField()
+    timestamp: 'datetime' = DateTimeField()
 
     #: Request method (normally ``GET``).
-    method: str = peewee.CharField()
+    method: str = CharField()
     #: Document data as :obj:`bytes`.
-    document: bytes = peewee.BlobField()
+    document: bytes = BlobField()
 
     #: Status code.
-    status_code: int = peewee.IntegerField()
+    status_code: int = IntegerField()
     #: Response reason string.
-    reason: str = peewee.TextField()
+    reason: str = TextField()
 
     #: Response cookies.
-    cookies: typing.Cookies = JSONField()
+    cookies: 'Cookies' = JSONField()
 
     #: Request headers.
-    request: typing.Headers = JSONField()
+    request: 'Headers' = JSONField()
     #: Response headers.
-    response: typing.Headers = JSONField()
+    response: 'Headers' = JSONField()

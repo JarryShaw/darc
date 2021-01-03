@@ -34,10 +34,10 @@ mapping dictionarty.
 
       LINK_MAP = collections.defaultdict(
           lambda: (darc.requests.null_session, darc.selenium.null_driver),
-          dict(
-              tor=(darc.requests.tor_session, darc.selenium.tor_driver),
-              i2p=(darc.requests.i2p_session, darc.selenium.i2p_driver),
-          )
+          {
+              'tor': (darc.requests.tor_session, darc.selenium.tor_driver),
+              'i2p': (darc.requests.i2p_session, darc.selenium.i2p_driver),
+          }
       )
 
    The mapping dictionary for proxy type to its corresponding :class:`requests.Session`

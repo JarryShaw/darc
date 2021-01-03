@@ -15,6 +15,7 @@ import os
 import shutil
 import sys
 import traceback
+from typing import TYPE_CHECKING
 
 import requests
 import selenium.common.exceptions
@@ -24,15 +25,14 @@ import stem
 import stem.control
 import stem.process
 import stem.util.term
-import urllib3
+import urllib3.exceptions
 
-import darc.typing as typing
 from darc._compat import datetime
 from darc.const import FORCE, SE_EMPTY
 from darc.db import (drop_hostname, drop_requests, drop_selenium, have_hostname, save_requests,
                      save_selenium)
 from darc.error import LinkNoReturn, render_error
-from darc.link import Link
+from darc.model import HostnameModel, URLModel
 from darc.parse import (check_robots, extract_links, get_content_type, match_host, match_mime,
                         match_proxy)
 from darc.proxy.i2p import fetch_hosts, read_hosts
@@ -42,10 +42,14 @@ from darc.save import save_headers
 from darc.selenium import request_driver
 from darc.sites import crawler_hook, loader_hook
 from darc.submit import SAVE_DB, submit_new_host, submit_requests, submit_selenium
-from darc.model import HostnameModel, URLModel
+
+if TYPE_CHECKING:
+    from typing import Optional
+
+    from darc.link import Link
 
 
-def crawler(link: Link) -> None:
+def crawler(link: 'Link') -> None:
     """Single :mod:`requests` crawler for a entry link.
 
     Args:
@@ -249,13 +253,13 @@ def crawler(link: Link) -> None:
     except Exception:
         if SAVE_DB:
             with contextlib.suppress(Exception):
-                host: typing.Optional[HostnameModel] = HostnameModel.get_or_none(HostnameModel.hostname == link.host)
+                host = HostnameModel.get_or_none(HostnameModel.hostname == link.host)  # type: Optional[HostnameModel]
                 if host is not None:
                     host.alive = False
                     host.save()
 
             with contextlib.suppress(Exception):
-                url: typing.Optional[URLModel] = URLModel.get_or_none(URLModel.hash == link.name)
+                url = URLModel.get_or_none(URLModel.hash == link.name)  # type: Optional[URLModel]
                 if url is not None:
                     url.alias = False
                     url.save()
@@ -266,7 +270,7 @@ def crawler(link: Link) -> None:
     print(f'[REQUESTS] Requested {link.url}')
 
 
-def loader(link: Link) -> None:
+def loader(link: 'Link') -> None:
     """Single :mod:`selenium` loader for a entry link.
 
     Args:

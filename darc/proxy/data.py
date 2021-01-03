@@ -13,18 +13,21 @@ schemes extracted to the data storage path
 
 import mimetypes
 import os
+from typing import TYPE_CHECKING
 
 import datauri
 
 from darc._compat import datetime
 from darc.const import PATH_MISC
-from darc.link import Link
+
+if TYPE_CHECKING:
+    from darc.link import Link
 
 PATH = os.path.join(PATH_MISC, 'data')
 os.makedirs(PATH, exist_ok=True)
 
 
-def save_data(link: Link) -> None:
+def save_data(link: 'Link') -> None:
     """Save data URI.
 
     The function will save data URIs to the data storage

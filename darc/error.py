@@ -36,9 +36,14 @@ The :mod:`darc` project provides following custom warnings:
 
 """
 
+from typing import TYPE_CHECKING
+
 import stem.util.term
 
-import darc.typing as typing
+if TYPE_CHECKING:
+    from typing import AnyStr
+
+    from stem.util.term import Color
 
 
 class _BaseException(Exception):
@@ -126,7 +131,7 @@ class HookExecutionFailed(_BaseWarning):
     """Failed to execute hook function."""
 
 
-def render_error(message: typing.AnyStr, colour: typing.Color) -> str:
+def render_error(message: 'AnyStr', colour: 'Color') -> str:
     """Render error message.
 
     The function wraps the :func:`stem.util.term.format` function to

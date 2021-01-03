@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=unsubscriptable-object,ungrouped-imports
 """URL Utilities
 ===================
 
@@ -19,19 +20,24 @@ import hashlib
 import os
 import re
 import urllib.parse
+from typing import TYPE_CHECKING
 
-import darc.typing as typing
 from darc.const import PATH_DB
 
 try:
     from pathlib import PosixPath
     PosixPath(os.curdir)
 except NotImplementedError:
-    from pathlib import PurePosixPath as PosixPath  # type: ignore
+    from pathlib import PurePosixPath as PosixPath  # type: ignore[misc]
+
+if TYPE_CHECKING:
+    from typing import Any, AnyStr, Optional, Union
+    from urllib.parse import ParseResult
+
+    _Str = Union[bytes, str]
 
 
-def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',  # type: ignore
-          encoding: typing.Optional[str] = None, errors: typing.Optional[str] = None) -> str:
+def quote(string: str, safe: '_Str' = '/', encoding: 'Optional[str]' = None, errors: 'Optional[str]' = None) -> str:
     """Wrapper function for :func:`urllib.parse.quote`.
 
     Args:
@@ -50,11 +56,11 @@ def quote(string: typing.AnyStr, safe: typing.AnyStr = '/',  # type: ignore
 
     """
     with contextlib.suppress(Exception):
-        return urllib.parse.quote(string, safe, encoding=encoding, errors=errors)  # type: ignore
+        return urllib.parse.quote(string, safe, encoding=encoding, errors=errors)
     return str(string)
 
 
-def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'replace') -> str:
+def unquote(string: str, encoding: str = 'utf-8', errors: str = 'replace') -> str:
     """Wrapper function for :func:`urllib.parse.unquote`.
 
     Args:
@@ -72,11 +78,11 @@ def unquote(string: typing.AnyStr, encoding: str = 'utf-8', errors: str = 'repla
 
     """
     with contextlib.suppress(Exception):
-        return urllib.parse.unquote(string, encoding=encoding, errors=errors)  # type: ignore
+        return urllib.parse.unquote(string, encoding=encoding, errors=errors)
     return str(string)
 
 
-def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = True) -> str:
+def urljoin(base: 'AnyStr', url: 'AnyStr', allow_fragments: bool = True) -> 'AnyStr':
     """Wrapper function for :func:`urllib.parse.urljoin`.
 
     Args:
@@ -94,11 +100,13 @@ def urljoin(base: typing.AnyStr, url: typing.AnyStr, allow_fragments: bool = Tru
 
     """
     with contextlib.suppress(ValueError):
-        return urllib.parse.urljoin(base, url, allow_fragments=allow_fragments)  # type: ignore
-    return f'{str(base)}/{str(url)}'
+        return urllib.parse.urljoin(base, url, allow_fragments=allow_fragments)
+    if isinstance(base, bytes):
+        return b'%s/%s' % (base, url)
+    return f'{base}/{url}'
 
 
-def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib.parse.ParseResult:
+def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> 'ParseResult':
     """Wrapper function for :func:`urllib.parse.urlparse`.
 
     Args:
@@ -177,7 +185,7 @@ class Link:
     url_parse: urllib.parse.ParseResult
 
     #: URL's hostname
-    host: str
+    host: 'Optional[str]'
     #: base folder for saving files
     base: str
     #: hashed link for saving files
@@ -190,18 +198,18 @@ class Link:
     def __str__(self) -> str:
         return self.url
 
-    def __eq__(self, value: typing.Any) -> bool:
+    def __eq__(self, value: 'Any') -> bool:
         if isinstance(value, Link):
             return self.url == value.url
         return False
 
-    def __lt__(self, value: typing.Any) -> bool:
+    def __lt__(self, value: 'Any') -> bool:
         if isinstance(value, Link):
             return self.url < value.url
         raise TypeError(f"'<' not supported between instances of 'Link' and {type(value).__name__!r}")
 
 
-def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
+def parse_link(link: str, host: 'Optional[str]' = None) -> 'Link':
     """Parse link.
 
     Args:
@@ -356,14 +364,14 @@ def parse_link(link: str, host: typing.Optional[str] = None) -> Link:
     else:
         proxy_type = 'null'
 
-    # <proxy>/<scheme>/<host>/<hash>-<timestamp>.html
+    # <proxy>/<scheme>/<hostname>/<hash>-<timestamp>.html
     base = os.path.join(PATH_DB, proxy_type, scheme, hostname)
     name = hashlib.sha256(link.encode()).hexdigest()
 
     return Link(
         url=link,
         url_parse=parse,
-        host=host,  # type: ignore
+        host=host,
         base=base,
         name=name,
         proxy=proxy_type,

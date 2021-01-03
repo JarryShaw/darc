@@ -7,9 +7,13 @@ import contextlib
 import datetime
 import os
 import shutil
-import subprocess  # nosec
+import subprocess  # nosec: B404
 import sys
 import time
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from argparse import ArgumentParser
 
 # root path
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -36,15 +40,15 @@ def upload(path: str, host: str, user: str) -> None:
     print(f'[{datetime.datetime.now().isoformat()}] Archiving & uploading API submission files...')
     with open('logs/upload.log', 'at', buffering=1) as log_file:
         with contextlib.suppress(subprocess.CalledProcessError):
-            subprocess.check_call(['bash', SCPT], env=os.environ.update(dict(  # nosec
-                HOST=host,
-                USER=user,
-                DATE=yesterday,
-            )), cwd=path, stdout=log_file, stderr=subprocess.STDOUT)
+            subprocess.check_call(['bash', SCPT], env=os.environ.update({  # nosec
+                'HOST': host,
+                'USER': user,
+                'DATE': yesterday,
+            }), cwd=path, stdout=log_file, stderr=subprocess.STDOUT)
     print(f'[{datetime.datetime.now().isoformat()}] Uploaded API submission files...')
 
 
-def get_parser() -> argparse.ArgumentParser:
+def get_parser() -> 'ArgumentParser':
     """Argument parser."""
     parser = argparse.ArgumentParser('upload',
                                      description='upload API submission files')

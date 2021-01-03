@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """ZeroNet Proxy
 ====================
 
@@ -11,17 +12,20 @@ import os
 import pprint
 import shlex
 import shutil
-import subprocess  # nosec
+import subprocess  # nosec: B404
 import sys
 import traceback
 import warnings
+from typing import TYPE_CHECKING, cast
 
 import stem.util.term
 
-import darc.typing as typing
 from darc.const import DEBUG, VERBOSE
 from darc.error import ZeroNetBootstrapFailed, render_error
 from darc.proxy.tor import tor_bootstrap
+
+if TYPE_CHECKING:
+    from typing import IO
 
 # ZeroNet args
 ZERONET_ARGS = shlex.split(os.getenv('ZERONET_ARGS', ''))
@@ -95,8 +99,8 @@ def _zeronet_bootstrap() -> None:
     returncode = _ZERONET_PROC.returncode
     if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _ZERONET_ARGS,
-                                            typing.cast(typing.IO[bytes], _ZERONET_PROC.stdout).read(),
-                                            typing.cast(typing.IO[bytes], _ZERONET_PROC.stderr).read())
+                                            cast('IO[bytes]', _ZERONET_PROC.stdout).read(),
+                                            cast('IO[bytes]', _ZERONET_PROC.stderr).read())
 
     # update flag
     _ZERONET_BS_FLAG = True

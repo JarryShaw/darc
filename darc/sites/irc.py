@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """IRC Addresses
 ===================
 
@@ -7,18 +8,27 @@ handle IRC addresses.
 
 """
 
-import darc.typing as typing
+from typing import TYPE_CHECKING
+
 from darc.error import LinkNoReturn
-from darc.link import Link
 from darc.proxy.irc import save_irc
 from darc.sites._abc import BaseSite
+
+if TYPE_CHECKING:
+    from typing import NoReturn
+
+    from requests import Session
+    from selenium.webdriver import Chrome as Driver
+
+    from darc._compat import datetime
+    from darc.link import Link
 
 
 class IRC(BaseSite):
     """IRC addresses."""
 
     @staticmethod
-    def crawler(timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
+    def crawler(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'NoReturn':  # pylint: disable=unused-argument
         """Crawler hook for IRC addresses.
 
         Args:
@@ -34,7 +44,7 @@ class IRC(BaseSite):
         raise LinkNoReturn(link)
 
     @staticmethod
-    def loader(timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
+    def loader(timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'NoReturn':  # pylint: disable=unused-argument
         """Not implemented.
 
         Raises:

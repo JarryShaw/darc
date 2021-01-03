@@ -10,10 +10,14 @@ import os
 import subprocess  # nosec
 import sys
 import time
-from typing import Any, Dict
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from argparse import ArgumentParser
+    from typing import Any, Dict
 
 
-def check_call(*args: Any, **kwargs: Any) -> int:
+def check_call(*args: 'Any', **kwargs: 'Any') -> int:
     """Wraps :func:`subprocess.check_call`."""
     with open('logs/healthcheck.log', 'at', buffering=1) as file:
         if 'stdout' not in kwargs:
@@ -33,7 +37,7 @@ def check_call(*args: Any, **kwargs: Any) -> int:
     raise RuntimeError
 
 
-def check_output(*args: Any, **kwargs: Any) -> str:
+def check_output(*args: 'Any', **kwargs: 'Any') -> str:
     """Wraps :func:`subprocess.check_output`."""
     for _ in range(3):
         with contextlib.suppress(subprocess.CalledProcessError):
@@ -67,8 +71,8 @@ def healthcheck(file: str, interval: float, *services: str) -> None:
     if not container_id_list:
         return
 
-    ts_dict = dict()  # type: Dict[str, float]
-    ps_dict = dict()  # type: Dict[str, float]
+    ts_dict = {}  # type: Dict[str, float]
+    ps_dict = {}  # type: Dict[str, float]
     while True:
         for container_id in container_id_list:
             try:
@@ -129,7 +133,7 @@ def healthcheck(file: str, interval: float, *services: str) -> None:
         time.sleep(interval)
 
 
-def get_parser() -> argparse.ArgumentParser:
+def get_parser() -> 'ArgumentParser':
     """Argument parser."""
     parser = argparse.ArgumentParser('healthcheck',
                                      description='health check running container')

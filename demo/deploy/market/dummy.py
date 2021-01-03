@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
-#: pylint: disable=import-error,no-name-in-module
+#: pylint: disable=import-error
 """Hooks for a dummy site (example)."""
 
+from typing import TYPE_CHECKING
+
 import bs4
+from market import MarketSite
 
-import darc.typing as typing
-from darc.link import Link, urljoin
+from darc.link import urljoin
 
-from market import MarketSite  # pylint: disable=wrong-import-order
+if TYPE_CHECKING:
+    from typing import List, Union
+
+    from darc.link import Link
 
 
 class DummySite(MarketSite):
@@ -21,7 +26,7 @@ class DummySite(MarketSite):
     ]
 
     @staticmethod
-    def extract_links(link: Link, html: typing.Union[str, bytes]) -> typing.List[str]:
+    def extract_links(link: 'Link', html: 'Union[str, bytes]') -> 'List[str]':
         """Extract links from HTML document.
 
         Args:
@@ -39,7 +44,7 @@ class DummySite(MarketSite):
         """
         soup = bs4.BeautifulSoup(html, 'html5lib')
 
-        link_list = list()
+        link_list = []
         for child in soup.find_all(lambda tag: tag.has_attr('href') or tag.has_attr('src')):
             if (href := child.get('href', child.get('src'))) is None:
                 continue

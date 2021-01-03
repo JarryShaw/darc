@@ -12,15 +12,18 @@ numbers extracted to the data storage file
 """
 
 import os
+from typing import TYPE_CHECKING
 
 from darc.const import PATH_MISC, get_lock
-from darc.link import Link
+
+if TYPE_CHECKING:
+    from darc.link import Link
 
 PATH = os.path.join(PATH_MISC, 'tel.txt')
 LOCK = get_lock()
 
 
-def save_tel(link: Link) -> None:
+def save_tel(link: 'Link') -> None:
     """Save telephone number.
 
     The function will save telephone number to the file
@@ -30,6 +33,6 @@ def save_tel(link: Link) -> None:
         link: Link object representing the telephone number.
 
     """
-    with LOCK:  # type: ignore
+    with LOCK:  # type: ignore[union-attr]
         with open(PATH, 'a') as file:
             print(link.url, file=file)

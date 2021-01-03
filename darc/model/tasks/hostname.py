@@ -14,10 +14,14 @@ defined for the hostname queue.
 
 """
 
-import peewee
+from typing import TYPE_CHECKING
 
-import darc.typing as typing
+from peewee import DateTimeField, TextField
+
 from darc.model.abc import BaseModel
+
+if TYPE_CHECKING:
+    from darc._compat import datetime
 
 __all__ = ['HostnameQueueModel']
 
@@ -26,6 +30,6 @@ class HostnameQueueModel(BaseModel):
     """Hostname task queue."""
 
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
-    hostname: typing.Union[str, peewee.TextField] = peewee.TextField()
+    hostname: str = TextField()
     #: Timestamp of last update.
-    timestamp: typing.Union[typing.Datetime, peewee.DateTimeField] = peewee.DateTimeField()
+    timestamp: 'datetime' = DateTimeField()

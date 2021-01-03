@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Selenium Wrapper
 ======================
 
@@ -12,15 +13,22 @@ import getpass
 import os
 import platform
 import shutil
+from typing import TYPE_CHECKING
 
 import selenium.webdriver
 
-import darc.typing as typing
 from darc.const import DEBUG
 from darc.error import UnsupportedLink, UnsupportedPlatform, UnsupportedProxy
-from darc.link import Link
 from darc.proxy.i2p import I2P_PORT, I2P_SELENIUM_PROXY
 from darc.proxy.tor import TOR_PORT, TOR_SELENIUM_PROXY
+
+if TYPE_CHECKING:
+    from typing import Dict
+
+    from selenium.webdriver import Chrome as Driver
+    from selenium.webdriver.chrome.options import Options
+
+    from darc.link import Link
 
 # Google Chrome binary location.
 BINARY_LOCATION = os.getenv('CHROME_BINARY_LOCATION')
@@ -34,7 +42,7 @@ if BINARY_LOCATION is None:
     del _system
 
 
-def request_driver(link: Link) -> typing.Driver:
+def request_driver(link: 'Link') -> 'Driver':
     """Get selenium driver.
 
     Args:
@@ -59,7 +67,7 @@ def request_driver(link: Link) -> typing.Driver:
     return driver()
 
 
-def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefined-builtin
+def get_options(type: str = 'null') -> 'Options':  # pylint: disable=redefined-builtin
     """Generate options.
 
     Args:
@@ -137,7 +145,7 @@ def get_options(type: str = 'null') -> typing.Options:  # pylint: disable=redefi
     return options
 
 
-def get_capabilities(type: str = 'null') -> dict:  # pylint: disable=redefined-builtin
+def get_capabilities(type: str = 'null') -> 'Dict[str, str]':  # pylint: disable=redefined-builtin
     """Generate desied capabilities.
 
     Args:
@@ -169,7 +177,7 @@ def get_capabilities(type: str = 'null') -> dict:  # pylint: disable=redefined-b
     return capabilities
 
 
-def i2p_driver() -> typing.Driver:
+def i2p_driver() -> 'Driver':
     """I2P (``.i2p``) driver.
 
     Returns:
@@ -189,7 +197,7 @@ def i2p_driver() -> typing.Driver:
     return driver
 
 
-def tor_driver() -> typing.Driver:
+def tor_driver() -> 'Driver':
     """Tor (``.onion``) driver.
 
     Returns:
@@ -209,7 +217,7 @@ def tor_driver() -> typing.Driver:
     return driver
 
 
-def null_driver() -> typing.Driver:
+def null_driver() -> 'Driver':
     """No proxy driver.
 
     Returns:

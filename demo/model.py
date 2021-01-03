@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 
-import datetime
 import os
+from typing import TYPE_CHECKING
 
 import peewee
 import playhouse.shortcuts
+
+if TYPE_CHECKING:
+    from datetime import datetime
+    from typing import Any, Dict
 
 # database client
 DB = playhouse.db_url.connect(os.getenv('DB_URL', 'mysql://127.0.0.1'))
@@ -24,7 +29,7 @@ def table_function(model_class: peewee.Model) -> str:
         Generated table name.
 
     """
-    name: str = model_class.__name__
+    name = model_class.__name__  # type: str
     if name.endswith('Model'):
         name = name[:-5]  # strip ``Model`` suffix
     return peewee.make_snake_case(name)
@@ -52,7 +57,7 @@ class BaseModel(peewee.Model):
     #: Basic metadata for data models.
     Meta = BaseMeta
 
-    def to_dict(self, keep_id: bool = False):
+    def to_dict(self, keep_id: bool = False) -> 'Dict[str, Any]':
         """Convert record to :obj:`dict`.
 
         Args:
@@ -80,18 +85,18 @@ class HostnameModel(BaseModel):
     proxy: str = peewee.CharField(max_length=8)
 
     #: Timestamp of first ``new_host`` submission.
-    discovery: datetime.datetime = peewee.DateTimeField()
+    discovery: 'datetime' = peewee.DateTimeField()
     #: Timestamp of last related submission.
-    last_seen: datetime.datetime = peewee.DateTimeField()
+    last_seen: 'datetime' = peewee.DateTimeField()
 
 
 class RobotsModel(BaseModel):
     """Data model for ``robots.txt`` data."""
 
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
-    host: HostnameModel = peewee.ForeignKeyField(HostnameModel, backref='robots')
+    host: 'HostnameModel' = peewee.ForeignKeyField(HostnameModel, backref='robots')
     #: Timestamp of the submission.
-    timestamp: datetime.datetime = peewee.DateTimeField()
+    timestamp: 'datetime' = peewee.DateTimeField()
 
     #: Document data as :obj:`bytes`.
     data: bytes = peewee.BlobField()
@@ -103,9 +108,9 @@ class SitemapModel(BaseModel):
     """Data model for ``sitemap.xml`` data."""
 
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
-    host: HostnameModel = peewee.ForeignKeyField(HostnameModel, backref='sitemaps')
+    host: 'HostnameModel' = peewee.ForeignKeyField(HostnameModel, backref='sitemaps')
     #: Timestamp of the submission.
-    timestamp: datetime.datetime = peewee.DateTimeField()
+    timestamp: 'datetime' = peewee.DateTimeField()
 
     #: Document data as :obj:`bytes`.
     data: bytes = peewee.BlobField()
@@ -117,9 +122,9 @@ class HostsModel(BaseModel):
     """Data model for ``hosts.txt`` data."""
 
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
-    host: HostnameModel = peewee.ForeignKeyField(HostnameModel, backref='hosts')
+    host: 'HostnameModel' = peewee.ForeignKeyField(HostnameModel, backref='hosts')
     #: Timestamp of the submission.
-    timestamp: datetime.datetime = peewee.DateTimeField()
+    timestamp: 'datetime' = peewee.DateTimeField()
 
     #: Document data as :obj:`bytes`.
     data: bytes = peewee.BlobField()
@@ -131,7 +136,7 @@ class URLModel(BaseModel):
     """Data model for a requested URL."""
 
     #: Timestamp of last related submission.
-    last_seen: datetime.datetime = peewee.DateTimeField()
+    last_seen: 'datetime' = peewee.DateTimeField()
     #: Original URL (c.f. :attr:`link.url <darc.link.Link.url>`).
     url: str = peewee.TextField()
 
@@ -150,7 +155,7 @@ class RequestsDocumentModel(BaseModel):
     """Data model for documents from ``requests`` submission."""
 
     #: Original URL (c.f. :attr:`link.url <darc.link.Link.url>`).
-    url: URLModel = peewee.ForeignKeyField(URLModel, backref='requests')
+    url: 'URLModel' = peewee.ForeignKeyField(URLModel, backref='requests')
 
     #: Document data as :obj:`bytes`.
     data: bytes = peewee.BlobField()
@@ -162,7 +167,7 @@ class SeleniumDocumentModel(BaseModel):
     """Data model for documents from ``selenium`` submission."""
 
     #: Original URL (c.f. :attr:`link.url <darc.link.Link.url>`).
-    url: URLModel = peewee.ForeignKeyField(URLModel, backref='selenium')
+    url: 'URLModel' = peewee.ForeignKeyField(URLModel, backref='selenium')
 
     #: Document data as :obj:`bytes`.
     data: bytes = peewee.BlobField()

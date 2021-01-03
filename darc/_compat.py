@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Version compatibility."""
 
 import sys
+from typing import TYPE_CHECKING
 
 __all__ = [
     'nullcontext',
@@ -11,6 +13,11 @@ __all__ = [
     'cached_property',
 ]
 
+if TYPE_CHECKING:
+    from types import TracebackType  # isort: split
+    from signal import Signals  # isort: split # pylint: disable=no-name-in-module
+    from typing import Any, Callable, Optional, Type, Union
+
 version = sys.version_info[:2]
 
 # contextlib.nullcontext added in 3.7
@@ -19,7 +26,7 @@ if version >= (3, 7):
 else:
     from contextlib import AbstractContextManager
 
-    class nullcontext(AbstractContextManager):  # type: ignore
+    class nullcontext(AbstractContextManager):  # type: ignore[no-redef]
         """Context manager that does no additional processing.
 
         Used as a stand-in for a normal context manager, when a particular
@@ -30,26 +37,27 @@ else:
             # Perform operation, using optional_cm if condition is True
         """
 
-        def __init__(self, enter_result=None):  # type: ignore
+        def __init__(self, enter_result: 'Any' = None) -> None:
             self.enter_result = enter_result
 
-        def __enter__(self):  # type: ignore
+        def __enter__(self) -> 'Any':
             return self.enter_result
 
-        def __exit__(self, *excinfo):  # type: ignore # pylint: disable=arguments-differ
+        def __exit__(self, exc_type: 'Optional[Type[BaseException]]', exc_value: 'Optional[BaseException]',
+                     traceback: 'Optional[TracebackType]') -> None:
             pass
 
 # urllib.robotparser.RobotFileParser.site_maps added in 3.8
 if version >= (3, 8):
     from urllib.robotparser import RobotFileParser
 else:
-    from darc._robotparser import RobotFileParser  # type: ignore
+    from ._robotparser import RobotFileParser  # type: ignore[misc]
 
 # datetime.datetime.fromisoformat added in 3.7
 if version >= (3, 7):
     from datetime import datetime
 else:
-    from _datetime import datetime  # type: ignore
+    from ._datetime import datetime
 
 # signal.strsignal added in 3.8
 if version >= (3, 8):
@@ -58,28 +66,33 @@ else:
     import contextlib
     import signal
 
-    def strsignal(signalnum):  # type: ignore
+    def strsignal(__signalnum: 'Union[int, Signals]') -> 'Optional[str]':
         """Return the system description of the given signal."""
         with contextlib.suppress(ValueError):
-            sig = signal.Signals(signalnum)  # pylint: disable=no-member
+            sig = signal.Signals(__signalnum)  # pylint: disable=no-member
             return f'{sig.name}: {sig.value}'
+        return None
 
 # functools.cached_property added in 3.8
 if version >= (3, 8):
     from functools import cached_property
 else:
-    from _thread import RLock  # type: ignore
+    from _thread import RLock  # type: ignore[attr-defined]
+    from typing import Generic, TypeVar  # isort: split
+
+    _T = TypeVar("_T")
+    _S = TypeVar("_S")
 
     _NOT_FOUND = object()
 
-    class cached_property:  # type: ignore
-        def __init__(self, func):  # type: ignore
-            self.func = func
-            self.attrname = None
+    class cached_property(Generic[_T]):  # type: ignore[no-redef]
+        def __init__(self, func: 'Callable[[Any], _T]') -> None:
+            self.func = func  # type: Callable[[Any], _T]
+            self.attrname = None  # type: Optional[str]
             self.__doc__ = func.__doc__
             self.lock = RLock()
 
-        def __set_name__(self, owner, name):  # type: ignore
+        def __set_name__(self, owner: 'Type[Any]', name: str) -> None:
             if self.attrname is None:
                 self.attrname = name
             elif name != self.attrname:
@@ -88,9 +101,10 @@ else:
                     f"({self.attrname!r} and {name!r})."
                 )
 
-        def __get__(self, instance, owner=None):  # type: ignore
+        def __get__(self, instance: 'Optional[_S]',
+                    owner: 'Optional[Type[Any]]' = None) -> 'Union[cached_property[_T], _T]':
             if instance is None:
-                return self
+                return self  # type: ignore[return-value]
             if self.attrname is None:
                 raise TypeError(
                     "Cannot use cached_property instance without calling __set_name__ on it.")

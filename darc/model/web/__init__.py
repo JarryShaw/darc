@@ -14,7 +14,7 @@ to store the data crawled from the :mod:`darc` project.
 
 from darc.model.web.hostname import HostnameModel
 from darc.model.web.hosts import HostsModel
-from darc.model.web.requests import RequestsModel, RequestsHistoryModel
+from darc.model.web.requests import RequestsHistoryModel, RequestsModel
 from darc.model.web.robots import RobotsModel
 from darc.model.web.selenium import SeleniumModel
 from darc.model.web.sitemap import SitemapModel

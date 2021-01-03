@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Source Parsing
 ====================
 
@@ -14,19 +15,27 @@ import concurrent.futures
 import json
 import os
 import re
+from typing import TYPE_CHECKING
 
 import bs4
 import magic
 import requests
 import stem.util.term
 
-import darc.typing as typing
 from darc._compat import RobotFileParser
 from darc.const import (CHECK, CHECK_NG, LINK_BLACK_LIST, LINK_FALLBACK, LINK_WHITE_LIST,
                         MIME_BLACK_LIST, MIME_FALLBACK, MIME_WHITE_LIST, PROXY_BLACK_LIST,
                         PROXY_FALLBACK, PROXY_WHITE_LIST)
 from darc.error import render_error
-from darc.link import Link, parse_link, urljoin, urlsplit
+from darc.link import parse_link, urljoin, urlsplit
+
+if TYPE_CHECKING:
+    from typing import Dict, List, Optional, Union
+
+    from requests import Response
+    from requests_futures.sessions import FuturesSession
+
+    from darc.link import Link
 
 # Regular expression patterns to match all reasonable URLs.
 URL_PAT = [
@@ -73,7 +82,7 @@ def match_proxy(proxy: str) -> bool:
     return PROXY_FALLBACK
 
 
-def match_host(host: str) -> bool:
+def match_host(host: 'Optional[str]') -> bool:
     """Check if hostname in black list.
 
     Args:
@@ -94,7 +103,7 @@ def match_host(host: str) -> bool:
     """
     # invalid hostname
     if host is None:
-        return True  # type: ignore
+        return True
 
     # any matching black list
     if any(pattern.fullmatch(host) is not None for pattern in LINK_BLACK_LIST):
@@ -135,7 +144,7 @@ def match_mime(mime: str) -> bool:
     return MIME_FALLBACK
 
 
-def check_robots(link: Link) -> bool:
+def check_robots(link: 'Link') -> bool:
     """Check if ``link`` is allowed in ``robots.txt``.
 
     Args:
@@ -163,7 +172,7 @@ def check_robots(link: Link) -> bool:
     return True
 
 
-def _check_ng(temp_list: typing.List[Link]) -> typing.List[Link]:
+def _check_ng(temp_list: 'List[Link]') -> 'List[Link]':
     """Check content type of links through ``HEAD`` requests.
 
     Args:
@@ -180,8 +189,8 @@ def _check_ng(temp_list: typing.List[Link]) -> typing.List[Link]:
     """
     from darc.crawl import request_session  # pylint: disable=import-outside-toplevel
 
-    session_map: typing.Dict[str, typing.FuturesSession] = dict()
-    result_list = list()
+    session_map = {}  # type: Dict[str, FuturesSession]
+    result_list = []
     for link in temp_list:
         if match_host(link.host):
             continue
@@ -199,10 +208,10 @@ def _check_ng(temp_list: typing.List[Link]) -> typing.List[Link]:
 
         print(f'[HEAD] Checking content type from {link.url}')
 
-    link_list = list()
+    link_list = []
     for result in concurrent.futures.as_completed(result_list):  # type: ignore
         try:
-            response: typing.Response = result.result()
+            response = result.result()  # type: Response
         except requests.RequestException as error:
             if error.response is None:
                 print(render_error(f'[HEAD] Checking failed <{error}>',
@@ -223,7 +232,7 @@ def _check_ng(temp_list: typing.List[Link]) -> typing.List[Link]:
     return link_list
 
 
-def _check(temp_list: typing.List[Link]) -> typing.List[Link]:
+def _check(temp_list: 'List[Link]') -> 'List[Link]':
     """Check hostname and proxy type of links.
 
     Args:
@@ -245,7 +254,7 @@ def _check(temp_list: typing.List[Link]) -> typing.List[Link]:
     if CHECK_NG:
         return _check_ng(temp_list)
 
-    link_list = list()
+    link_list = []
     for link in temp_list:
         if match_host(link.host):
             continue
@@ -255,7 +264,7 @@ def _check(temp_list: typing.List[Link]) -> typing.List[Link]:
     return link_list
 
 
-def get_content_type(response: typing.Response) -> str:
+def get_content_type(response: 'Response') -> str:
     """Get content type from ``response``.
 
     Args:
@@ -284,7 +293,7 @@ def get_content_type(response: typing.Response) -> str:
     return ct_type.casefold().split(';', maxsplit=1)[0].strip()
 
 
-def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHECK) -> typing.List[Link]:
+def extract_links(link: 'Link', html: 'Union[str, bytes]', check: bool = CHECK) -> 'List[Link]':
     """Extract links from HTML document.
 
     Args:
@@ -303,7 +312,7 @@ def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHEC
     """
     soup = bs4.BeautifulSoup(html, 'html5lib')
 
-    temp_list = list()
+    temp_list = []
     for child in soup.find_all(lambda tag: tag.has_attr('href') or tag.has_attr('src')):
         if (href := child.get('href', child.get('src'))) is None:
             continue
@@ -319,7 +328,7 @@ def extract_links(link: Link, html: typing.Union[str, bytes], check: bool = CHEC
     return temp_list
 
 
-def extract_links_from_text(link: Link, text: str) -> typing.List[Link]:
+def extract_links_from_text(link: 'Link', text: str) -> 'List[Link]':
     """Extract links from raw text source.
 
     Args:
@@ -341,7 +350,7 @@ def extract_links_from_text(link: Link, text: str) -> typing.List[Link]:
         own expressions by :envvar:`DARC_URL_PAT`.
 
     """
-    temp_list = list()
+    temp_list = []
     for part in text.split():
         for pattern in URL_PAT:
             for match in pattern.finditer(part):

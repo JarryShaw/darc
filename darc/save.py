@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Source Saving
 ===================
 
@@ -42,17 +43,24 @@ is typically as following::
 import dataclasses
 import json
 import os
+from typing import TYPE_CHECKING
 
-import darc.typing as typing
 from darc._compat import datetime
 from darc.const import PATH_DB, PATH_LN, get_lock
-from darc.link import Link, quote
+from darc.link import quote
+
+if TYPE_CHECKING:
+    from typing import Optional
+
+    from requests import Response, Session
+
+    from darc.link import Link
 
 # lock for file I/O
 _SAVE_LOCK = get_lock()
 
 
-def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylint: disable=redefined-outer-name
+def sanitise(link: 'Link', time: 'Optional[datetime]' = None,
              raw: bool = False, data: bool = False,
              headers: bool = False, screenshot: bool = False) -> str:
     """Sanitise link to path.
@@ -100,7 +108,7 @@ def sanitise(link: Link, time: typing.Optional[typing.Datetime] = None,  # pylin
     return f'{path}_{ts}.html'
 
 
-def save_link(link: Link) -> None:
+def save_link(link: 'Link') -> None:
     """Save link hash database ``link.csv``.
 
     The CSV file has following fields:
@@ -125,8 +133,8 @@ def save_link(link: Link) -> None:
                   f'{link.name},{quote(link.url)}', file=file)
 
 
-def save_headers(time: typing.Datetime, link: Link,
-                 response: typing.Response, session: typing.Session) -> str:  # pylint: disable=redefined-outer-name
+def save_headers(time: 'datetime', link: 'Link',
+                 response: 'Response', session: 'Session') -> str:
     """Save HTTP response headers.
 
     Args:

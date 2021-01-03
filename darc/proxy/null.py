@@ -11,6 +11,7 @@ import gzip
 import io
 import os
 import sys
+from typing import TYPE_CHECKING
 
 import bs4
 import requests
@@ -19,21 +20,25 @@ import stem.control
 import stem.process
 import stem.util.term
 
-import darc.typing as typing
 from darc._compat import RobotFileParser
 from darc.const import CHECK, PATH_MISC, get_lock
 from darc.db import save_requests
 from darc.error import render_error
-from darc.link import Link, parse_link
+from darc.link import parse_link
 from darc.parse import _check, get_content_type, urljoin
 from darc.requests import request_session
 from darc.save import save_link
+
+if TYPE_CHECKING:
+    from typing import List, Optional
+
+    from darc.link import Link
 
 PATH = os.path.join(PATH_MISC, 'invalid.txt')
 LOCK = get_lock()
 
 
-def save_invalid(link: Link) -> None:
+def save_invalid(link: 'Link') -> None:
     """Save link with invalid scheme.
 
     The function will save link with invalid scheme to the file
@@ -48,7 +53,7 @@ def save_invalid(link: Link) -> None:
             print(link.url, file=file)
 
 
-def save_robots(link: Link, text: str) -> str:
+def save_robots(link: 'Link', text: str) -> str:
     """Save ``robots.txt``.
 
     Args:
@@ -74,7 +79,7 @@ def save_robots(link: Link, text: str) -> str:
     return path
 
 
-def save_sitemap(link: Link, text: str) -> str:
+def save_sitemap(link: 'Link', text: str) -> str:
     """Save sitemap.
 
     Args:
@@ -103,7 +108,7 @@ def save_sitemap(link: Link, text: str) -> str:
     return path
 
 
-def have_robots(link: Link) -> typing.Optional[str]:
+def have_robots(link: 'Link') -> 'Optional[str]':
     """Check if ``robots.txt`` already exists.
 
     Args:
@@ -120,7 +125,7 @@ def have_robots(link: Link) -> typing.Optional[str]:
     return path if os.path.isfile(path) else None
 
 
-def have_sitemap(link: Link) -> typing.Optional[str]:
+def have_sitemap(link: 'Link') -> 'Optional[str]':
     """Check if sitemap already exists.
 
     Args:
@@ -137,7 +142,7 @@ def have_sitemap(link: Link) -> typing.Optional[str]:
     return path if os.path.isfile(path) else None
 
 
-def read_robots(link: Link, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
+def read_robots(link: 'Link', text: str, host: 'Optional[str]' = None) -> 'List[Link]':
     """Read ``robots.txt`` to fetch link to sitemaps.
 
     Args:
@@ -167,7 +172,7 @@ def read_robots(link: Link, text: str, host: typing.Optional[str] = None) -> typ
     return [parse_link(urljoin(link.url, sitemap), host=host) for sitemap in sitemaps]
 
 
-def get_sitemap(link: Link, text: str, host: typing.Optional[str] = None) -> typing.List[Link]:
+def get_sitemap(link: 'Link', text: str, host: 'Optional[str]' = None) -> 'List[Link]':
     """Fetch link to other sitemaps from a sitemap.
 
     Args:
@@ -186,7 +191,7 @@ def get_sitemap(link: Link, text: str, host: typing.Optional[str] = None) -> typ
         .. [*] https://www.sitemaps.org/protocol.html#index
 
     """
-    sitemaps = list()
+    sitemaps = []
     soup = bs4.BeautifulSoup(text, 'html5lib')
 
     # https://www.sitemaps.org/protocol.html#index
@@ -195,7 +200,7 @@ def get_sitemap(link: Link, text: str, host: typing.Optional[str] = None) -> typ
     return [parse_link(sitemap, host=host) for sitemap in sitemaps]
 
 
-def read_sitemap(link: Link, text: str, check: bool = CHECK) -> typing.List[Link]:
+def read_sitemap(link: 'Link', text: str, check: bool = CHECK) -> 'List[Link]':
     """Read sitemap.
 
     Args:
@@ -223,7 +228,7 @@ def read_sitemap(link: Link, text: str, check: bool = CHECK) -> typing.List[Link
     return temp_list
 
 
-def fetch_sitemap(link: Link, force: bool = False) -> None:
+def fetch_sitemap(link: 'Link', force: bool = False) -> None:
     """Fetch sitemap.
 
     The function will first fetch the ``robots.txt``, then

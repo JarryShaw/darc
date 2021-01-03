@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Requests Wrapper
 ======================
 
@@ -8,18 +9,26 @@ project.
 
 """
 
+from typing import TYPE_CHECKING
+
 import requests
 import requests_futures.sessions
 
-import darc.typing as typing
 from darc.const import DARC_CPU
 from darc.error import UnsupportedLink
-from darc.link import Link
 from darc.proxy.i2p import I2P_REQUESTS_PROXY
 from darc.proxy.tor import TOR_REQUESTS_PROXY
 
+if TYPE_CHECKING:
+    from typing import Optional, Union
 
-def default_user_agent(name: str = 'python-darc', proxy: typing.Optional[str] = None) -> str:
+    from requests import Session
+    from requests_futures.sessions import FuturesSession
+
+    from darc.link import Link
+
+
+def default_user_agent(name: str = 'python-darc', proxy: 'Optional[str]' = None) -> str:
     """Generates the default user agent.
 
     Args:
@@ -39,7 +48,7 @@ def default_user_agent(name: str = 'python-darc', proxy: typing.Optional[str] = 
     return ua
 
 
-def request_session(link: Link, futures: bool = False) -> typing.Union[typing.Session, typing.FuturesSession]:
+def request_session(link: 'Link', futures: bool = False) -> 'Union[Session, FuturesSession]':
     """Get requests session.
 
     Args:
@@ -67,7 +76,7 @@ def request_session(link: Link, futures: bool = False) -> typing.Union[typing.Se
     return factory(futures=futures)  # type: ignore
 
 
-def i2p_session(futures: bool = False) -> typing.Union[typing.Session, typing.FuturesSession]:
+def i2p_session(futures: bool = False) -> 'Union[Session, FuturesSession]':
     """I2P (.i2p) session.
 
     Args:
@@ -91,7 +100,7 @@ def i2p_session(futures: bool = False) -> typing.Union[typing.Session, typing.Fu
     return session
 
 
-def tor_session(futures: bool = False) -> typing.Union[typing.Session, typing.FuturesSession]:
+def tor_session(futures: bool = False) -> 'Union[Session, FuturesSession]':
     """Tor (.onion) session.
 
     Args:
@@ -115,7 +124,7 @@ def tor_session(futures: bool = False) -> typing.Union[typing.Session, typing.Fu
     return session
 
 
-def null_session(futures: bool = False) -> typing.Union[typing.Session, typing.FuturesSession]:
+def null_session(futures: bool = False) -> 'Union[Session, FuturesSession]':
     """No proxy session.
 
     Args:

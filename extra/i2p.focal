@@ -1,0 +1,19 @@
+# Defaults for i2p initscript (/etc/init.d/i2p)
+# This is a posix shell fragment
+
+# [automatically edited by postinst, do not change line format ]
+# Run 'dpkg-reconfigure -plow i2p' to change these values.
+
+RUN_DAEMON="false"
+I2PUSER="i2psvc"
+ULIMIT=
+CONFINE_WITH_APPARMOR="true"
+# The next value is also wrapper.java.maxmemory in /etc/i2p/wrapper.config
+MEMORYLIMIT="128"
+
+# Running I2P as the root user is *not* recommended.
+# Please edit /etc/default/i2p and set the variable RUN_AS_USER.
+#RUN_AS_USER=www-data
+
+# To run as root anyway, edit /etc/default/i2p and set ALLOW_ROOT=true.
+ALLOW_ROOT=true

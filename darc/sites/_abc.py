@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Base Sites Customisation
 ==============================
 
@@ -13,19 +14,28 @@ Important:
 
 """
 
-import darc.typing as typing
+from typing import TYPE_CHECKING
+
 from darc.error import LinkNoReturn
-from darc.link import Link
+
+if TYPE_CHECKING:
+    from typing import List, NoReturn, Optional, Union
+
+    from requests import Response, Session
+    from selenium.webdriver import Chrome as Driver
+
+    from darc._compat import datetime
+    from darc.link import Link
 
 
 class BaseSite:
     """Abstract base class for sites customisation."""
 
     #: Hostnames (**case insensitive**) the sites customisation is designed for.
-    hostname: typing.List[str] = None  # type: ignore
+    hostname = None  # type: Optional[List[str]]
 
     @staticmethod
-    def crawler(timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.Union[typing.NoReturn, typing.Response]:  # pylint: disable=unused-argument,line-too-long
+    def crawler(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'Union[NoReturn, Response]':  # pylint: disable=unused-argument
         """Crawler hook for my site.
 
         Args:
@@ -40,7 +50,7 @@ class BaseSite:
         raise LinkNoReturn(link)
 
     @staticmethod
-    def loader(timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.Union[typing.NoReturn, typing.Driver]:  # pylint: disable=unused-argument,line-too-long
+    def loader(timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'Union[NoReturn, Driver]':  # pylint: disable=unused-argument
         """Loader hook for my site.
 
         Args:

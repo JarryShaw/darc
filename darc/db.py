@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Link Database
 ===================
 
@@ -31,23 +32,24 @@ models as backend.
 """
 
 import contextlib
-import datetime
 import math
 import os
-import pickle  # nosec
+import pickle  # nosec: B403
 import pprint
 import shutil
 import sys
 import textwrap
 import time
 import warnings
+from datetime import timedelta
+from typing import TYPE_CHECKING, TypeVar, cast
 
 import peewee
-import redis.lock as redis_lock
+import pottery.exceptions
+import pottery.redlock
 import stem.util.term
 
-import darc.typing as typing
-from darc._compat import nullcontext
+from darc._compat import datetime, nullcontext
 from darc.const import CHECK
 from darc.const import DB as database
 from darc.const import FLAG_DB
@@ -58,18 +60,37 @@ from darc.link import Link
 from darc.model.tasks import HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel
 from darc.parse import _check
 
-# use lock?
-REDIS_LOCK = bool(int(os.getenv('DARC_REDIS_LOCK', '0')))
+_T = TypeVar('_T')
+
+if TYPE_CHECKING:
+    from types import MethodType
+    from typing import Any, Callable, ContextManager, List, Optional, Tuple, Union
+
+    from peewee import TextField
+    from pottery.redlock import Redlock
+    from typing_extensions import Literal
 
 # Redis retry interval
 RETRY_INTERVAL = float(os.getenv('DARC_RETRY', '10'))
 if not math.isfinite(RETRY_INTERVAL):
-    RETRY_INTERVAL = None  # type: ignore
+    RETRY_INTERVAL = None  # type: ignore[assignment]
 
 # lock blocking timeout
-LOCK_TIMEOUT = float(os.getenv('DARC_LOCK_TIMEOUT', '10'))
-if not math.isfinite(LOCK_TIMEOUT):
-    LOCK_TIMEOUT = None  # type: ignore
+_LOCK_TIMEOUT = float(os.getenv('DARC_LOCK_TIMEOUT', '10'))
+if math.isfinite(_LOCK_TIMEOUT):
+    LOCK_TIMEOUT = int(_LOCK_TIMEOUT * 1_000)
+else:
+    LOCK_TIMEOUT = pottery.redlock.Redlock.AUTO_RELEASE_TIME  # type: ignore[attr-defined] # pylint: disable=no-member
+del _LOCK_TIMEOUT
+
+# use lock?
+REDIS_LOCK = bool(int(os.getenv('DARC_REDIS_LOCK', '0')))
+if redis is not None and REDIS_LOCK:
+    REDIS_LOCK_POOL = {
+        'queue_hostname': pottery.redlock.Redlock(key='queue_hostname', masters={redis}, auto_release_time=LOCK_TIMEOUT),  # pylint: disable=line-too-long
+        'queue_requests': pottery.redlock.Redlock(key='queue_requests', masters={redis}, auto_release_time=LOCK_TIMEOUT),  # pylint: disable=line-too-long
+        'queue_selenium': pottery.redlock.Redlock(key='queue_selenium', masters={redis}, auto_release_time=LOCK_TIMEOUT),  # pylint: disable=line-too-long
+    }
 
 # bulk size
 BULK_SIZE = int(os.getenv('DARC_BULK_SIZE', '100'))
@@ -80,7 +101,7 @@ if math.isfinite(MAX_POOL):
     MAX_POOL = math.floor(MAX_POOL)
 
 
-def _gen_arg_msg(*args, **kwargs) -> str:  # type: ignore
+def _gen_arg_msg(*args: 'Any', **kwargs: 'Any') -> str:
     """Sanitise arguments representation string.
 
     Args:
@@ -102,7 +123,7 @@ def _gen_arg_msg(*args, **kwargs) -> str:  # type: ignore
     return textwrap.shorten(_args, shutil.get_terminal_size().columns)
 
 
-def _redis_command(command: str, *args, **kwargs) -> typing.Any:  # type: ignore
+def _redis_command(command: str, *args: 'Any', **kwargs: 'Any') -> 'Any':
     """Wrapper function for Redis command.
 
     Args:
@@ -133,7 +154,7 @@ def _redis_command(command: str, *args, **kwargs) -> typing.Any:  # type: ignore
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
-            warning = warnings.formatwarning(str(error), RedisCommandFailed, __file__, 131,
+            warning = warnings.formatwarning(str(error), RedisCommandFailed, __file__, 153,
                                              f'value = redis.{command}({_arg_msg})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -144,7 +165,7 @@ def _redis_command(command: str, *args, **kwargs) -> typing.Any:  # type: ignore
     return value
 
 
-def _db_operation(operation: typing.Callable[..., typing.T], *args, **kwargs) -> typing.T:  # type: ignore
+def _db_operation(operation: 'Callable[..., _T]', *args: 'Any', **kwargs: 'Any') -> _T:
     """Retry operation on database.
 
     Args:
@@ -168,8 +189,8 @@ def _db_operation(operation: typing.Callable[..., typing.T], *args, **kwargs) ->
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
-            model = typing.cast(typing.MethodType, operation).__self__.__class__.__name__
-            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 166,
+            model = cast('MethodType', operation).__self__.__class__.__name__
+            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 188,
                                              f'{model}.{operation.__name__}({_arg_msg})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -180,28 +201,14 @@ def _db_operation(operation: typing.Callable[..., typing.T], *args, **kwargs) ->
     return value
 
 
-def _redis_get_lock(name: str,
-                    timeout: typing.Optional[float] = None,
-                    sleep: float = 0.1,
-                    blocking_timeout: typing.Optional[float] = None,
-                    lock_class: typing.Optional[redis_lock.Lock] = None,
-                    thread_local: bool = True) -> typing.Union[redis_lock.Lock, nullcontext]:  # type: ignore
+def _redis_get_lock(key: 'Literal["queue_hostname", "queue_requests", "queue_selenium"]') -> 'Union[Redlock, ContextManager]':  # pylint: disable=line-too-long
     """Get a lock for Redis operations.
 
     Args:
-        name: Lock name.
-        timeout: Maximum life for the lock.
-        sleep: Amount of time to sleep per loop iteration when the
-            lock is in blocking mode and another client is currently
-            holding the lock.
-        blocking_timeout: Maximum amount of time in seconds to spend
-            trying to acquire the lock.
-        lock_class: Lock implementation.
-        thread_local: Whether the lock token is placed in thread-local
-            storage.
+        key: Lock target key.
 
     Returns:
-        Return a new :class:`redis.lock.Lock` object using key ``name``
+        Return a new :class:`pottery.redlock.Redlock` object using key ``key``
         that mimics the behavior of :class:`threading.Lock`.
 
     Seel Also:
@@ -210,11 +217,11 @@ def _redis_get_lock(name: str,
 
     """
     if REDIS_LOCK:
-        return _redis_command('lock', name, timeout, sleep, blocking_timeout, lock_class, thread_local)
+        return REDIS_LOCK_POOL.get(key) or nullcontext()
     return nullcontext()
 
 
-def have_hostname(link: Link) -> typing.Tuple[bool, bool]:
+def have_hostname(link: 'Link') -> 'Tuple[bool, bool]':
     """Check if current link is a new host.
 
     Args:
@@ -235,14 +242,14 @@ def have_hostname(link: Link) -> typing.Tuple[bool, bool]:
             try:
                 return _have_hostname_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 236,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 244,
                                                  f'_have_hostname_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return False, False
     return _have_hostname_redis(link)
 
 
-def _have_hostname_db(link: Link) -> typing.Tuple[bool, bool]:
+def _have_hostname_db(link: 'Link') -> 'Tuple[bool, bool]':
     """Check if current link is a new host.
 
     The function checks the :class:`~darc.models.tasks.hostname.HostnameQueueModel` table.
@@ -256,21 +263,24 @@ def _have_hostname_db(link: Link) -> typing.Tuple[bool, bool]:
         refetch respectively.
 
     """
-    timestamp = datetime.datetime.now()
+    timestamp = datetime.now()
     if TIME_CACHE is None:
-        threshold = math.inf  # type: ignore
+        threshold = math.inf
     else:
-        threshold = timestamp - TIME_CACHE
+        threshold = (timestamp - TIME_CACHE).timestamp()
 
-    model, created = _db_operation(HostnameQueueModel.get_or_create, hostname=link.host, defaults=dict(
-        timestamp=timestamp,
-    ))
+    model, created = cast(
+        'Tuple[HostnameQueueModel, bool]',
+        _db_operation(HostnameQueueModel.get_or_create, hostname=link.host, defaults={
+            'timestamp': timestamp,
+        })
+    )
     if created:
         return False, False
-    return True, model.timestamp < threshold
+    return True, model.timestamp.timestamp() < threshold
 
 
-def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
+def _have_hostname_redis(link: 'Link') -> 'Tuple[bool, bool]':
     """Check if current link is a new host.
 
     The function checks the ``queue_hostname`` database.
@@ -286,12 +296,12 @@ def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
     """
     new_score = time.time()
     if TIME_CACHE is None:
-        threshold = math.inf  # type: ignore
+        threshold = math.inf
     else:
         threshold = new_score - TIME_CACHE.total_seconds()
 
-    with _redis_get_lock('lock_queue_hostname'):  # type: ignore
-        score = _redis_command('zscore', 'queue_hostname', link.host)
+    with _redis_get_lock('queue_hostname'):
+        score = _redis_command('zscore', 'queue_hostname', link.host)  # type: Optional[int]
         if score is None:
             have_flag = False
             force_fetch = False
@@ -312,7 +322,7 @@ def _have_hostname_redis(link: Link) -> typing.Tuple[bool, bool]:
     return have_flag, force_fetch
 
 
-def drop_hostname(link: Link) -> None:  # pylint: disable=inconsistent-return-statements
+def drop_hostname(link: 'Link') -> None:
     """Remove link from the hostname database.
 
     Args:
@@ -328,14 +338,14 @@ def drop_hostname(link: Link) -> None:  # pylint: disable=inconsistent-return-st
             try:
                 return _drop_hostname_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 329,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 340,
                                                  f'_drop_hostname_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-                return
+                return None
     return _drop_hostname_redis(link)
 
 
-def _drop_hostname_db(link: Link) -> None:
+def _drop_hostname_db(link: 'Link') -> None:
     """Remove link from the hostname database.
 
     The function updates the :class:`~darc.models.tasks.hostname.HostnameQueueModel` table.
@@ -344,14 +354,13 @@ def _drop_hostname_db(link: Link) -> None:
         link: Link to be removed.
 
     """
-    model: HostnameQueueModel = _db_operation(HostnameQueueModel.get_or_none,
-                                              HostnameQueueModel.hostname == link.host)
-    if model is None:
-        return  # type: ignore
-    model.delete_instance()
+    model = _db_operation(HostnameQueueModel.get_or_none,
+                          HostnameQueueModel.hostname == link.host)  # type: HostnameQueueModel
+    if model is not None:
+        model.delete_instance()
 
 
-def _drop_hostname_redis(link: Link) -> None:
+def _drop_hostname_redis(link: 'Link') -> None:
     """Remove link from the hostname database.
 
     The function updates the ``queue_hostname`` database.
@@ -360,11 +369,11 @@ def _drop_hostname_redis(link: Link) -> None:
         link: Link to be removed.
 
     """
-    with _redis_get_lock('lock_queue_hostname'):  # type: ignore
+    with _redis_get_lock('queue_hostname'):
         _redis_command('zrem', 'queue_hostname', link.host)
 
 
-def drop_requests(link: Link) -> None:  # pylint: disable=inconsistent-return-statements
+def drop_requests(link: 'Link') -> None:  # pylint: disable=inconsistent-return-statements
     """Remove link from the :mod:`requests` database.
 
     Args:
@@ -380,14 +389,14 @@ def drop_requests(link: Link) -> None:  # pylint: disable=inconsistent-return-st
             try:
                 return _drop_requests_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 381,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 391,
                                                  f'_drop_requests_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-                return
+                return None
     return _drop_requests_redis(link)
 
 
-def _drop_requests_db(link: Link) -> None:
+def _drop_requests_db(link: 'Link') -> None:
     """Remove link from the :mod:`requests` database.
 
     The function updates the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.
@@ -396,14 +405,13 @@ def _drop_requests_db(link: Link) -> None:
         link: Link to be removed.
 
     """
-    model: RequestsQueueModel = _db_operation(RequestsQueueModel.get_or_none,
-                                              RequestsQueueModel.text == link.url)
-    if model is None:
-        return  # type: ignore
-    model.delete_instance()
+    model = _db_operation(RequestsQueueModel.get_or_none,
+                          RequestsQueueModel.text == link.url)  # type: RequestsQueueModel
+    if model is not None:
+        model.delete_instance()
 
 
-def _drop_requests_redis(link: Link) -> None:
+def _drop_requests_redis(link: 'Link') -> None:
     """Remove link from the :mod:`requests` database.
 
     The function updates the ``queue_requests`` database.
@@ -412,11 +420,12 @@ def _drop_requests_redis(link: Link) -> None:
         link: Link to be removed.
 
     """
-    with _redis_get_lock('lock_queue_requests'):  # type: ignore
+    with _redis_get_lock('queue_requests'):
         _redis_command('zrem', 'queue_requests', link.name)
+    _redis_command('delete', link.name)
 
 
-def drop_selenium(link: Link) -> None:  # pylint: disable=inconsistent-return-statements
+def drop_selenium(link: 'Link') -> None:  # pylint: disable=inconsistent-return-statements
     """Remove link from the :mod:`selenium` database.
 
     Args:
@@ -432,14 +441,14 @@ def drop_selenium(link: Link) -> None:  # pylint: disable=inconsistent-return-st
             try:
                 return _drop_selenium_db(link)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 433,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 443,
                                                  f'_drop_selenium_db({link})')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-                return
+                return None
     return _drop_selenium_redis(link)
 
 
-def _drop_selenium_db(link: Link) -> None:
+def _drop_selenium_db(link: 'Link') -> None:
     """Remove link from the :mod:`selenium` database.
 
     The function updates the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.
@@ -448,14 +457,13 @@ def _drop_selenium_db(link: Link) -> None:
         link: Link to be removed.
 
     """
-    model: SeleniumQueueModel = _db_operation(SeleniumQueueModel.get_or_none,
-                                              SeleniumQueueModel.text == link.url)
-    if model is None:
-        return  # type: ignore
-    model.delete_instance()
+    model = _db_operation(SeleniumQueueModel.get_or_none,
+                          SeleniumQueueModel.text == link.url)  # type: SeleniumQueueModel
+    if model is not None:
+        model.delete_instance()
 
 
-def _drop_selenium_redis(link: Link) -> None:
+def _drop_selenium_redis(link: 'Link') -> None:
     """Remove link from the :mod:`selenium` database.
 
     The function updates the ``queue_selenium`` database.
@@ -464,12 +472,13 @@ def _drop_selenium_redis(link: Link) -> None:
         link: Link to be removed.
 
     """
-    with _redis_get_lock('lock_queue_selenium'):  # type: ignore
+    with _redis_get_lock('queue_selenium'):
         _redis_command('zrem', 'queue_selenium', link.name)
+    _redis_command('delete', link.name)
 
 
-def save_requests(entries: typing.Union[Link, typing.List[Link]], single: bool = False,  # pylint: disable=inconsistent-return-statements
-                  score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
+def save_requests(entries: 'Union[Link, List[Link]]', single: bool = False,
+                  score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`requests` database.
 
     The function updates the ``queue_requests`` database.
@@ -504,15 +513,15 @@ def save_requests(entries: typing.Union[Link, typing.List[Link]], single: bool =
             try:
                 return _save_requests_db(entries, single, score, nx, xx)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 505,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 515,
                                                  '_save_requests_db(...)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-                return
+                return None
     return _save_requests_redis(entries, single, score, nx, xx)
 
 
-def _save_requests_db(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
-                      score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
+def _save_requests_db(entries: 'Union[Link, List[Link]]', single: bool = False,
+                      score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`requests` database.
 
     The function updates the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.
@@ -531,78 +540,81 @@ def _save_requests_db(entries: typing.Union[Link, typing.List[Link]], single: bo
 
     """
     if not entries:
-        return
+        return None
     if score is None:
-        score = datetime.datetime.now()  # type: ignore
+        timestamp = datetime.now()
+    else:
+        timestamp = datetime.fromtimestamp(score)
 
     if not single:
-        if typing.TYPE_CHECKING:
-            entries = typing.cast(typing.List[Link], entries)
+        if TYPE_CHECKING:
+            entries = cast('List[Link]', entries)
 
         if nx:
             with database.atomic():
-                insert_many = [dict(
-                    text=link.url,
-                    hash=link.name,
-                    link=link,
-                    timestamp=score,
-                ) for link in entries]
+                insert_many = [{
+                    'text': link.url,
+                    'hash': link.name,
+                    'link': link,
+                    'timestamp': timestamp,
+                 } for link in entries]
                 for batch in peewee.chunked(insert_many, BULK_SIZE):
                     _db_operation(RequestsQueueModel
                                   .insert_many(insert_many)
                                   .on_conflict_ignore()
                                   .execute)
-            return
+            return None
 
         if xx:
             entries_text = [link.url for link in entries]
             _db_operation(RequestsQueueModel
-                          .update(timestamp=score)
-                          .where(typing.cast(peewee.TextField, RequestsQueueModel.text).in_(entries_text))
+                          .update(timestamp=timestamp)
+                          .where(cast('TextField', RequestsQueueModel.text).in_(entries_text))
                           .execute)
-            return
+            return None
 
         with database.atomic():
-            replace_many = [dict(
-                text=link.url,
-                hash=link.name,
-                link=link,
-                timestamp=score
-            ) for link in entries]
+            replace_many = [{
+                'text': link.url,
+                'hash': link.name,
+                'link': link,
+                'timestamp': timestamp,
+            } for link in entries]
             for batch in peewee.chunked(replace_many, BULK_SIZE):
                 _db_operation(RequestsQueueModel.replace_many(batch).execute)
-        return
+        return None
 
-    if typing.TYPE_CHECKING:
-        entries = typing.cast(Link, entries)
+    if TYPE_CHECKING:
+        entries = cast('Link', entries)
 
     if nx:
         _db_operation(RequestsQueueModel.get_or_create,
                       text=entries.url,
-                      defaults=dict(
-                          hash=entries.name,
-                          link=entries,
-                          timestamp=score,
-                      ))
-        return
+                      defaults={
+                          'hash': entries.name,
+                          'link': entries,
+                          'timestamp': timestamp,
+                      })
+        return None
 
     if xx:
         with contextlib.suppress(peewee.DoesNotExist):
-            model = _db_operation(RequestsQueueModel.get, RequestsQueueModel.text == entries.url)
-            model.timestamp = score
+            model = _db_operation(RequestsQueueModel.get, RequestsQueueModel.text == entries.url)  # type: RequestsQueueModel # pylint: disable=line-too-long
+            model.timestamp = timestamp
             _db_operation(model.save)
-        return
+        return None
 
     _db_operation(RequestsQueueModel.replace(
         text=entries.url,
         hash=entries.name,
         link=entries,
-        timestamp=score
+        timestamp=timestamp,
     ).execute)
+    return None
 
 
-def _save_requests_redis(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
-                         score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
+def _save_requests_redis(entries: 'Union[Link, List[Link]]', single: bool = False,
+                         score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`requests` database.
 
     The function updates the ``queue_requests`` database.
@@ -624,33 +636,32 @@ def _save_requests_redis(entries: typing.Union[Link, typing.List[Link]], single:
         score = time.time()
 
     if not single:
-        if typing.TYPE_CHECKING:
-            entries = typing.cast(typing.List[Link], entries)
+        if TYPE_CHECKING:
+            entries = cast('List[Link]', entries)
 
         for chunk in peewee.chunked(entries, BULK_SIZE):
-            pool = list(filter(lambda link: isinstance(link, Link), chunk))
+            pool = list(filter(lambda link: isinstance(link, Link), chunk))  # type: List[Link]
             for link in pool:
                 _redis_command('set', link.name, pickle.dumps(link), nx=True)
-            mapping = {
-                link.name: score for link in pool
-            }
-            with _redis_get_lock('lock_queue_requests'):  # type: ignore
-                _redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
-        return
+            with _redis_get_lock('queue_requests'):
+                _redis_command('zadd', 'queue_requests', {
+                    link.name: score for link in pool
+                }, nx=nx, xx=xx)
+        return None
 
-    if typing.TYPE_CHECKING:
-        entries = typing.cast(Link, entries)
+    if TYPE_CHECKING:
+        entries = cast('Link', entries)
 
     _redis_command('set', entries.name, pickle.dumps(entries), nx=True)
-    mapping = {
-        entries.name: score,
-    }
-    with _redis_get_lock('lock_queue_requests'):  # type: ignore
-        _redis_command('zadd', 'queue_requests', mapping, nx=nx, xx=xx)
+    with _redis_get_lock('queue_requests'):
+        _redis_command('zadd', 'queue_requests', {
+            entries.name: score,
+        }, nx=nx, xx=xx)
+    return None
 
 
-def save_selenium(entries: typing.Union[Link, typing.List[Link]], single: bool = False,  # pylint: disable=inconsistent-return-statements
-                  score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
+def save_selenium(entries: 'Union[Link, List[Link]]', single: bool = False,  # pylint: disable=inconsistent-return-statements
+                  score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`selenium` database.
 
     Args:
@@ -683,15 +694,15 @@ def save_selenium(entries: typing.Union[Link, typing.List[Link]], single: bool =
             try:
                 return _save_selenium_db(entries, single, score, nx, xx)
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 684,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 696,
                                                  '_save_selenium_db(...)')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-                return
+                return None
     return _save_selenium_redis(entries, single, score, nx, xx)
 
 
-def _save_selenium_db(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
-                      score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
+def _save_selenium_db(entries: 'Union[Link, List[Link]]', single: bool = False,
+                      score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`selenium` database.
 
     The function updates the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.
@@ -710,78 +721,81 @@ def _save_selenium_db(entries: typing.Union[Link, typing.List[Link]], single: bo
 
     """
     if not entries:
-        return
+        return None
     if score is None:
-        score = datetime.datetime.now()  # type: ignore
+        timestamp = datetime.now()
+    else:
+        timestamp = datetime.fromtimestamp(score)
 
     if not single:
-        if typing.TYPE_CHECKING:
-            entries = typing.cast(typing.List[Link], entries)
+        if TYPE_CHECKING:
+            entries = cast('List[Link]', entries)
 
         if nx:
             with database.atomic():
-                insert_many = [dict(
-                    text=link.url,
-                    hash=link.name,
-                    link=link,
-                    timestamp=score,
-                ) for link in entries]
+                insert_many = [{
+                    'text': link.url,
+                    'hash': link.name,
+                    'link': link,
+                    'timestamp': timestamp,
+                 } for link in entries]
                 for batch in peewee.chunked(insert_many, BULK_SIZE):
                     _db_operation(SeleniumQueueModel
                                   .insert_many(insert_many)
                                   .on_conflict_ignore()
                                   .execute)
-            return
+            return None
 
         if xx:
             entries_text = [link.url for link in entries]
             _db_operation(SeleniumQueueModel
-                          .update(timestamp=score)
-                          .where(typing.cast(peewee.TextField, SeleniumQueueModel.text).in_(entries_text))
+                          .update(timestamp=timestamp)
+                          .where(cast('TextField', SeleniumQueueModel.text).in_(entries_text))
                           .execute)
-            return
+            return None
 
         with database.atomic():
-            replace_many = [dict(
-                text=link.url,
-                hash=link.name,
-                link=link,
-                timestamp=score
-            ) for link in entries]
+            replace_many = [{
+                'text': link.url,
+                'hash': link.name,
+                'link': link,
+                'timestamp': timestamp,
+            } for link in entries]
             for batch in peewee.chunked(replace_many, BULK_SIZE):
                 _db_operation(SeleniumQueueModel.replace_many(batch).execute)
-        return
+        return None
 
-    if typing.TYPE_CHECKING:
-        entries = typing.cast(Link, entries)
+    if TYPE_CHECKING:
+        entries = cast('Link', entries)
 
     if nx:
         _db_operation(SeleniumQueueModel.get_or_create,
                       text=entries.url,
-                      defaults=dict(
-                          hash=entries.name,
-                          link=entries,
-                          timestamp=score,
-                      ))
-        return
+                      defaults={
+                          'hash': entries.name,
+                          'link': entries,
+                          'timestamp': timestamp,
+                      })
+        return None
 
     if xx:
         with contextlib.suppress(peewee.DoesNotExist):
-            model = _db_operation(SeleniumQueueModel.get, SeleniumQueueModel.text == entries.url)
-            model.timestamp = score
+            model = _db_operation(SeleniumQueueModel.get, SeleniumQueueModel.text == entries.url)  # type: SeleniumQueueModel # pylint: disable=line-too-long
+            model.timestamp = timestamp
             _db_operation(model.save)
-        return
+        return None
 
     _db_operation(SeleniumQueueModel.replace(
         text=entries.url,
         hash=entries.name,
         link=entries,
-        timestamp=score
+        timestamp=timestamp,
     ).execute)
+    return None
 
 
-def _save_selenium_redis(entries: typing.Union[Link, typing.List[Link]], single: bool = False,
-                         score: typing.Optional[float] = None, nx: bool = False, xx: bool = False) -> None:
+def _save_selenium_redis(entries: 'Union[Link, List[Link]]', single: bool = False,
+                         score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`selenium` database.
 
     The function updates the ``queue_selenium`` database.
@@ -808,37 +822,36 @@ def _save_selenium_redis(entries: typing.Union[Link, typing.List[Link]], single:
 
     """
     if not entries:
-        return
+        return None
     if score is None:
         score = time.time()
 
     if not single:
-        if typing.TYPE_CHECKING:
-            entries = typing.cast(typing.List[Link], entries)
+        if TYPE_CHECKING:
+            entries = cast('List[Link]', entries)
 
         for chunk in peewee.chunked(entries, BULK_SIZE):
-            pool = list(filter(lambda link: isinstance(link, Link), chunk))
+            pool = list(filter(lambda link: isinstance(link, Link), chunk))  # type: List[Link]
             for link in pool:
                 _redis_command('set', link.name, pickle.dumps(link), nx=True)
-            mapping = {
-                link.name: score for link in pool
-            }
-            with _redis_get_lock('lock_queue_selenium'):  # type: ignore
-                _redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
-        return
+            with _redis_get_lock('queue_selenium'):
+                _redis_command('zadd', 'queue_selenium', {
+                    link.name: score for link in pool
+                }, nx=nx, xx=xx)
+        return None
 
-    if typing.TYPE_CHECKING:
-        entries = typing.cast(Link, entries)
+    if TYPE_CHECKING:
+        entries = cast('Link', entries)
 
     _redis_command('set', entries.name, pickle.dumps(entries), nx=True)
-    mapping = {
-        entries.name: score,
-    }
-    with _redis_get_lock('lock_queue_selenium'):  # type: ignore
-        _redis_command('zadd', 'queue_selenium', mapping, nx=nx, xx=xx)
+    with _redis_get_lock('queue_selenium'):
+        _redis_command('zadd', 'queue_selenium', {
+            entries.name: score,
+        }, nx=nx, xx=xx)
+    return None
 
 
-def load_requests(check: bool = CHECK) -> typing.List[Link]:
+def load_requests(check: bool = CHECK) -> 'List[Link]':
     """Load link from the :mod:`requests` database.
 
     Args:
@@ -862,10 +875,10 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
             try:
                 link_pool = _load_requests_db()
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 863,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 877,
                                                  '_load_requests_db()')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-                link_pool = list()
+                link_pool = []
     else:
         link_pool = _load_requests_redis()
 
@@ -882,7 +895,7 @@ def load_requests(check: bool = CHECK) -> typing.List[Link]:
     return link_pool
 
 
-def _load_requests_db() -> typing.List[Link]:
+def _load_requests_db() -> 'List[Link]':
     """Load link from the :mod:`requests` database.
 
     The function reads the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.
@@ -895,33 +908,33 @@ def _load_requests_db() -> typing.List[Link]:
         at :data:`~darc.db.MAX_POOL` to limit the memory usage.
 
     """
-    now = datetime.datetime.now()
+    now = datetime.now()
     if TIME_CACHE is None:
-        sec_delta = 0  # type: ignore
+        sec_delta = timedelta(seconds=0)
         max_score = now
     else:
         sec_delta = TIME_CACHE
         max_score = now - sec_delta
 
     with database.atomic():
-        query: typing.List[RequestsQueueModel] = _db_operation(
+        query = _db_operation(
             RequestsQueueModel
             .select(RequestsQueueModel.link)
             .where(RequestsQueueModel.timestamp <= max_score)
             .order_by(RequestsQueueModel.timestamp)
             .limit(MAX_POOL)
             .execute
-        )
+        )  # type: List[RequestsQueueModel]
         link_pool = [model.link for model in query]
 
         # force update records
         if TIME_CACHE is not None:
-            new_score = now + sec_delta
-            _save_requests_db(link_pool, score=new_score)  # type: ignore
+            new_score = (now + sec_delta).timestamp()
+            _save_requests_db(link_pool, score=new_score)
     return link_pool
 
 
-def _load_requests_redis() -> typing.List[Link]:
+def _load_requests_redis() -> 'List[Link]':
     """Load link from the :mod:`requests` database.
 
     The function reads the ``queue_requests`` database.
@@ -936,29 +949,29 @@ def _load_requests_redis() -> typing.List[Link]:
     """
     now = time.time()
     if TIME_CACHE is None:
-        sec_delta = 0  # type: ignore
+        sec_delta = 0  # type: float
         max_score = now
     else:
         sec_delta = TIME_CACHE.total_seconds()
         max_score = now - sec_delta
 
     try:
-        with _redis_get_lock('lock_queue_requests', blocking_timeout=LOCK_TIMEOUT):  # type: ignore
-            temp_pool: typing.List[bytes] = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_requests',  # pylint: disable=line-too-long
-                                                                                                    min=0, max=max_score, start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
-            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]  # nosec
+        with _redis_get_lock('queue_requests'):
+            temp_pool = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_requests',
+                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]  # type: List[bytes] # pylint: disable=line-too-long
+            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]  # nosec: B301
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 _save_requests_redis(link_pool, score=new_score)  # force update records
-    except redis_lock.LockError:
+    except pottery.exceptions.PotteryError:
         warning = warnings.formatwarning(f'[REQUESTS] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 949, "_redis_get_lock('lock_queue_requests')")
+                                         LockWarning, __file__, 969, "_redis_get_lock('queue_requests')")
         print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-        link_pool = list()
+        link_pool = []
     return link_pool
 
 
-def load_selenium(check: bool = CHECK) -> typing.List[Link]:
+def load_selenium(check: bool = CHECK) -> 'List[Link]':
     """Load link from the :mod:`selenium` database.
 
     Args:
@@ -982,10 +995,10 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
             try:
                 link_pool = _load_selenium_db()
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 983,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 997,
                                                  '_load_selenium_db()')
                 print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-                link_pool = list()
+                link_pool = []
     else:
         link_pool = _load_selenium_redis()
 
@@ -1002,7 +1015,7 @@ def load_selenium(check: bool = CHECK) -> typing.List[Link]:
     return link_pool
 
 
-def _load_selenium_db() -> typing.List[Link]:
+def _load_selenium_db() -> 'List[Link]':
     """Load link from the :mod:`selenium` database.
 
     The function reads the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.
@@ -1015,33 +1028,33 @@ def _load_selenium_db() -> typing.List[Link]:
         at :data:`~darc.db.MAX_POOL` to limit the memory usage.
 
     """
-    now = datetime.datetime.now()
+    now = datetime.now()
     if TIME_CACHE is None:
-        sec_delta = 0  # type: ignore
+        sec_delta = timedelta(seconds=0)
         max_score = now
     else:
         sec_delta = TIME_CACHE
         max_score = now - sec_delta
 
     with database.atomic():
-        query: typing.List[SeleniumQueueModel] = _db_operation(
+        query = _db_operation(
             SeleniumQueueModel
             .select(SeleniumQueueModel.link)
             .where(SeleniumQueueModel.timestamp <= max_score)
             .order_by(SeleniumQueueModel.timestamp)
             .limit(MAX_POOL)
             .query
-        )
+        )  # type: List[SeleniumQueueModel]
         link_pool = [model.link for model in query]
 
         # force update records
         if TIME_CACHE is not None:
-            new_score = now + sec_delta
-            _save_selenium_db(link_pool, score=new_score)  # type: ignore
+            new_score = (now + sec_delta).timestamp()
+            _save_selenium_db(link_pool, score=new_score)
     return link_pool
 
 
-def _load_selenium_redis() -> typing.List[Link]:
+def _load_selenium_redis() -> 'List[Link]':
     """Load link from the :mod:`selenium` database.
 
     The function reads the ``queue_selenium`` database.
@@ -1060,23 +1073,23 @@ def _load_selenium_redis() -> typing.List[Link]:
     """
     now = time.time()
     if TIME_CACHE is None:
-        sec_delta = 0  # type: ignore
+        sec_delta = 0  # type: float
         max_score = now
     else:
         sec_delta = TIME_CACHE.total_seconds()
         max_score = now - sec_delta
 
     try:
-        with _redis_get_lock('lock_queue_selenium', blocking_timeout=LOCK_TIMEOUT):  # type: ignore
-            temp_pool: typing.List[bytes] = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_selenium',  # pylint: disable=line-too-long
-                                                                                                    min=0, max=max_score, start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
-            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]  # nosec
+        with _redis_get_lock('queue_selenium'):
+            temp_pool = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_selenium',
+                                                                                min=0, max=max_score, start=0, num=MAX_POOL)]  # type: List[bytes] # pylint: disable=line-too-long
+            link_pool = [pickle.loads(link) for link in filter(None, temp_pool)]  # nosec: B301
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 _save_selenium_redis(link_pool, score=new_score)  # force update records
-    except redis_lock.LockError:
+    except pottery.exceptions.PotteryError:
         warning = warnings.formatwarning(f'[SELENIUM] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 1073, "_redis_get_lock('lock_queue_selenium')")
+                                         LockWarning, __file__, 1084, "_redis_get_lock('queue_selenium')")
         print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-        link_pool = list()
+        link_pool = []
     return link_pool

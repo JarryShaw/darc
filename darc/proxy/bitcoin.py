@@ -12,15 +12,18 @@ addresses extracted to the data storage file
 """
 
 import os
+from typing import TYPE_CHECKING
 
 from darc.const import PATH_MISC, get_lock
-from darc.link import Link
+
+if TYPE_CHECKING:
+    from darc.link import Link
 
 PATH = os.path.join(PATH_MISC, 'bitcoin.txt')
 LOCK = get_lock()
 
 
-def save_bitcoin(link: Link) -> None:
+def save_bitcoin(link: 'Link') -> None:
     """Save bitcoin address.
 
     The function will save bitcoin address to the file
@@ -30,6 +33,6 @@ def save_bitcoin(link: Link) -> None:
         link: Link object representing the bitcoin address.
 
     """
-    with LOCK:  # type: ignore
+    with LOCK:  # type: ignore[union-attr]
         with open(PATH, 'a') as file:
             print(link.url_parse.path, file=file)

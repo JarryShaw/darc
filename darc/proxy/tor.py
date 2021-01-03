@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Tor Proxy
 ===============
 
@@ -15,6 +16,7 @@ import shutil
 import sys
 import traceback
 import warnings
+from typing import TYPE_CHECKING
 
 import selenium.webdriver
 import selenium.webdriver.common.proxy
@@ -24,6 +26,12 @@ import stem.util.term
 
 from darc.const import DEBUG
 from darc.error import TorBootstrapFailed, TorRenewFailed, render_error
+
+if TYPE_CHECKING:
+    from subprocess import Popen  # nosec: B404
+    from typing import Optional
+
+    from stem.control import Controller
 
 # Tor configs
 TOR_CFG = json.loads(os.getenv('TOR_CFG', '{}'))
@@ -60,9 +68,9 @@ _MNG_TOR = bool(int(os.getenv('DARC_TOR', '1')))
 # Tor bootstrapped flag
 _TOR_BS_FLAG = not _MNG_TOR  # only if Tor managed through stem
 # Tor controller
-_TOR_CTRL = None
+_TOR_CTRL = None  # type: Optional[Controller]
 # Tor daemon process
-_TOR_PROC = None
+_TOR_PROC = None  # type: Optional[Popen[bytes]]
 # Tor bootstrap config
 _TOR_CONFIG = {
     'SocksPort': TOR_PORT,

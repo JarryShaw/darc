@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#: pylint: disable=import-error,no-name-in-module
+# pylint: disable=import-error,ungrouped-imports
 """Market Hooks
 ===================
 
@@ -16,61 +16,69 @@ authentication methods of the market sites.
 import abc
 import json
 import math
-import time
 import sys
+import time
+from typing import TYPE_CHECKING
 
 import bs4
 import requests
 import stem.util.term
 
-import darc.typing as typing
 from darc._compat import datetime
 from darc.const import CHECK, SE_EMPTY, SE_WAIT
 from darc.db import _redis_command, save_requests, save_selenium
 from darc.error import LinkNoReturn, render_error
-from darc.link import Link, parse_link, urljoin
+from darc.link import parse_link, urljoin
 from darc.parse import _check, get_content_type
 from darc.sites._abc import BaseSite
 from darc.submit import submit_requests, submit_selenium
 
+if TYPE_CHECKING:
+    from typing import Dict, List, NoReturn, Optional, Union
+
+    from requests import Response, Session
+    from selenium.webdriver import Chrome as Driver
+    from typing_extensions import TypedDict
+
+    from darc.link import Link
+
+    class CacheRecord(TypedDict):
+        """Cache record."""
+
+        #: Home page URL (``homeUrl``).
+        homepage: str
+
+        #: Flag if the market site alive (isAlive).
+        alive: bool
+
+        #: Market name (``marketName``).
+        name: str
+
+        #: Cookies information (``cookie``).
+        cookies: Dict[str, str]
+
+        #: List of domains (``domain``).
+        domains: List[str]
+
+        #: Exit node (``exitNode``).
+        exit_node: str
+
+        #: Flag if the information is valid (``isValid``).
+        valid: bool
+
+        #: Timestamp last update (``updateTime``).
+        last_update: 'datetime'
+
+        #: Flag if the entry is deleted (``isDel``).
+        deleted: bool
+
+        #: List of history domains (``historyDomain``).
+        history_domains: List[str]
+
 #: Optional[int]: Timeout for cached cookies information.
 #: Set :data:`None` to disable caching, but it may impact
 #: the performance of the :mod:`darc` workers.
-CACHE_TIMEOUT = None  # type: typing.Optional[int]
-
-
-class CacheRecord(typing.TypedDict):
-    """Cache record."""
-
-    #: Home page URL (``homeUrl``).
-    homepage: str
-
-    #: Flag if the market site alive (isAlive).
-    alive: bool
-
-    #: Market name (``marketName``).
-    name: str
-
-    #: Cookies information (``cookie``).
-    cookies: typing.Dict[str, str]
-
-    #: List of domains (``domain``).
-    domains: typing.List[str]
-
-    #: Exit node (``exitNode``).
-    exit_node: str
-
-    #: Flag if the information is valid (``isValid``).
-    valid: bool
-
-    #: Timestamp last update (``updateTime``).
-    last_update: typing.Datetime
-
-    #: Flag if the entry is deleted (``isDel``).
-    deleted: bool
-
-    #: List of history domains (``historyDomain``).
-    history_domains: typing.List[str]
+CACHE_TIMEOUT = None  # type: Optional[int]
 
 
 class MarketSite(BaseSite):
@@ -88,7 +96,7 @@ class MarketSite(BaseSite):
 
     @staticmethod
     @abc.abstractmethod
-    def extract_links(link: Link, html: typing.Union[str, bytes]) -> typing.List[str]:
+    def extract_links(link: 'Link', html: 'Union[str, bytes]') -> 'List[str]':
         """Extract links from HTML document.
 
         Args:
@@ -106,7 +114,7 @@ class MarketSite(BaseSite):
         """
         soup = bs4.BeautifulSoup(html, 'html5lib')
 
-        link_list = list()
+        link_list = []
         for child in soup.find_all(lambda tag: tag.has_attr('href') or tag.has_attr('src')):
             if (href := child.get('href', child.get('src'))) is None:
                 continue
@@ -115,8 +123,8 @@ class MarketSite(BaseSite):
         return link_list
 
     @classmethod
-    def _extract_links(cls, link: Link, html: typing.Union[str, bytes],
-                                check: bool = CHECK) -> typing.List[Link]:
+    def _extract_links(cls, link: 'Link', html: 'Union[str, bytes]',
+                                check: bool = CHECK) -> 'List[Link]':
         """Extract links from HTML document.
 
         Args:
@@ -138,7 +146,7 @@ class MarketSite(BaseSite):
         return link_list
 
     @staticmethod
-    def cache_cookies(host: str) -> typing.Optional[CacheRecord]:
+    def cache_cookies(host: str) -> 'Optional[CacheRecord]':
         """Cache cookies information.
 
         The method sends a ``POST`` request to the `remote database`_ to
@@ -164,7 +172,7 @@ class MarketSite(BaseSite):
         response = requests.post('http://43.250.173.86:7899/cookie/all')
         data = response.json()['result']['cookies']
         for record in data:
-            domain_list = list(filter(None, record['domain'].split(',')))  # type: typing.List[str]
+            domain_list = list(filter(None, record['domain'].split(',')))  # type: List[str]
             cached_data = {
                 'homepage': record['homeUrl'],
                 'alive': record['isAlive'],
@@ -190,7 +198,7 @@ class MarketSite(BaseSite):
         return cached
 
     @classmethod
-    def get_cookies(cls, host: str) -> typing.Optional[CacheRecord]:
+    def get_cookies(cls, host: str) -> 'Optional[CacheRecord]':
         """Get cookies information.
 
         The method fetches cached cookies information from the Redis database.
@@ -204,13 +212,13 @@ class MarketSite(BaseSite):
             Cached cookies information if any.
 
         """
-        cached: typing.Optional[CacheRecord] = _redis_command('get', f'cookies:{host}')
+        cached = _redis_command('get', f'cookies:{host}')  # type: Optional[CacheRecord]
         if cached is None:
             cached = cls.cache_cookies(host)
         return cached
 
     @classmethod
-    def crawler(cls, timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.Response:
+    def crawler(cls, timestamp: 'datetime', session: 'Session', link: 'Link') -> 'Response':
         """Default crawler hook.
 
         The hook fetches cookies information first. If no cookies found, the hook
@@ -237,7 +245,7 @@ class MarketSite(BaseSite):
             * :func:`darc.crawl.crawler`
 
         """
-        cached = cls.get_cookies(link.host)
+        cached = cls.get_cookies(link.host or '<null>')
         if cached is None:
             raise LinkNoReturn(link=link)
 
@@ -249,7 +257,7 @@ class MarketSite(BaseSite):
         raise LinkNoReturn(link=link, drop=False)
 
     @classmethod
-    def process_crawler(cls, timestamp: typing.Datetime, session: typing.Session, link: Link, record: CacheRecord) -> None:  # pylint: disable=unused-argument,line-too-long
+    def process_crawler(cls, timestamp: 'datetime', session: 'Session', link: 'Link', record: 'CacheRecord') -> None:  # pylint: disable=unused-argument
         """Process the :class:`~requests.Response` object.
 
         Args:
@@ -276,7 +284,7 @@ class MarketSite(BaseSite):
         save_selenium(link, single=True, score=0, nx=True)
 
     @classmethod
-    def loader(cls, timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.NoReturn:
+    def loader(cls, timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'NoReturn':
         """Market loader hook.
 
         The hook fetches cookies information first. If no cookies found, the hook
@@ -301,7 +309,7 @@ class MarketSite(BaseSite):
             LinkNoReturn: This link has no return response.
 
         """
-        cached = cls.get_cookies(link.host)
+        cached = cls.get_cookies(link.host or '<null>')
         if cached is None:
             raise LinkNoReturn(link=link)
 
@@ -316,7 +324,7 @@ class MarketSite(BaseSite):
         raise LinkNoReturn(link=link, drop=False)
 
     @classmethod
-    def process_loader(cls, timestamp: typing.Datetime, driver: typing.Driver, link: Link, record: CacheRecord) -> None:  # pylint: disable=unused-argument
+    def process_loader(cls, timestamp: 'datetime', driver: 'Driver', link: 'Link', record: 'CacheRecord') -> None:  # pylint: disable=unused-argument
         """Process the :class:`WebDriver <selenium.webdriver.Chrome>` object.
 
         Args:

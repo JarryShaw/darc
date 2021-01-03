@@ -20,7 +20,7 @@ reload:
 	sudo systemctl start darc-healthcheck
 
 isort:
-	pipenv run isort -l100 -pdarc darc extra
+	pipenv run isort -l100 -pdarc darc extra demo
 
 uniq: uniq-requests uniq-selenium
 

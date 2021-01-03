@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
-#:  pylint: disable=no-else-raise
+# pylint: disable=ungrouped-imports
 """Fast implementation of the datetime type."""
 
 from datetime import datetime as _datetime
+from typing import TYPE_CHECKING
+
+__all__ = ['datetime']
+
+if TYPE_CHECKING:
+    from typing import List
 
 try:
-    from datetime import _parse_isoformat_date  # type: ignore
+    from datetime import _parse_isoformat_date  # type: ignore[attr-defined]
 except ImportError:
-    def _parse_isoformat_date(dtstr):  # type: ignore
+    def _parse_isoformat_date(dtstr: str) -> 'List[int]':
         # It is assumed that this function will only be called with a
         # string of length exactly 10, and (though this is not used) ASCII-only
         year = int(dtstr[0:4])
@@ -24,9 +30,9 @@ except ImportError:
         return [year, month, day]
 
 try:
-    from datetime import _parse_hh_mm_ss_ff  # type: ignore
+    from datetime import _parse_hh_mm_ss_ff  # type: ignore[attr-defined]
 except ImportError:
-    def _parse_hh_mm_ss_ff(tstr):  # type: ignore
+    def _parse_hh_mm_ss_ff(tstr: str) -> 'List[int]':
         # Parses things of the form HH[:MM[:SS[.fff[fff]]]]
         len_str = len(tstr)
 
@@ -50,7 +56,7 @@ except ImportError:
             pos += 1
 
         if pos < len_str:
-            if tstr[pos] != '.':
+            if tstr[pos] != '.':  # pylint: disable=no-else-raise
                 raise ValueError('Invalid microsecond component')
             else:
                 pos += 1
@@ -66,11 +72,11 @@ except ImportError:
         return time_comps
 
 try:
-    from datetime import _parse_isoformat_time  # type: ignore
+    from datetime import _parse_isoformat_time  # type: ignore[attr-defined]
 except ImportError:
-    from datetime import timezone, timedelta
+    from datetime import timedelta, timezone
 
-    def _parse_isoformat_time(tstr):  # type: ignore
+    def _parse_isoformat_time(tstr: str) -> 'List[int]':
         # Format supported is HH[:MM[:SS[.fff[fff]]]][+HH:MM[:SS[.ffffff]]]
         len_str = len(tstr)
         if len_str < 2:
@@ -111,12 +117,17 @@ except ImportError:
 
 
 class datetime(_datetime):
+    """datetime(year, month, day[, hour[, minute[, second[, microsecond[,tzinfo]]]]])
+
+    The year, month and day arguments are required. tzinfo may be None, or an
+    instance of a tzinfo subclass. The remaining arguments may be ints.
+    """
 
     @classmethod
-    def fromisoformat(cls, date_string):  # type: ignore
+    def fromisoformat(cls, date_string: str) -> 'datetime':
         """Construct a datetime from the output of datetime.isoformat()."""
         if hasattr(_datetime, 'fromisoformat'):
-            return _datetime.fromisoformat(date_string)
+            return _datetime.fromisoformat(date_string)  # type: ignore[return-value]
 
         if not isinstance(date_string, str):
             raise TypeError('fromisoformat: argument must be str')

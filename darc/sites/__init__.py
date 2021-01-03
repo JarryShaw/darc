@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Sites Customisation
 =========================
 
@@ -15,12 +16,10 @@ Important:
 """
 
 import collections
-
 import warnings
+from typing import TYPE_CHECKING, cast
 
-import darc.typing as typing
 from darc.error import SiteNotFoundWarning
-from darc.link import Link
 from darc.sites._abc import BaseSite
 from darc.sites.bitcoin import Bitcoin
 from darc.sites.data import DataURI
@@ -33,6 +32,16 @@ from darc.sites.script import Script
 from darc.sites.tel import Tel
 from darc.sites.ws import WebSocket
 
+if TYPE_CHECKING:
+    from typing import DefaultDict, List, Type
+
+    from requests import Response, Session
+    from selenium.webdriver import Chrome as Driver
+
+    from darc._compat import datetime
+    from darc.link import Link
+
+
 SITEMAP = collections.defaultdict(lambda: DefaultSite, {
     # misc/special links
     '(data)': DataURI,
@@ -44,10 +53,10 @@ SITEMAP = collections.defaultdict(lambda: DefaultSite, {
     '(tel)': Tel,
     '(irc)': IRC,
     '(ws)': WebSocket,
-})  # type: typing.DefaultDict[str, typing.Type[BaseSite]]
+})  # type: DefaultDict[str, Type[BaseSite]]
 
 
-def register(site: typing.Type[BaseSite], *hostname) -> None:  # type: ignore
+def register(site: 'Type[BaseSite]', *hostname: str) -> None:
     """Register new site map.
 
     Args:
@@ -59,13 +68,13 @@ def register(site: typing.Type[BaseSite], *hostname) -> None:  # type: ignore
 
     """
     if site.hostname is None:
-        site.hostname = hostname   # type: ignore
+        site.hostname = cast('List[str]', hostname)
 
     for domain in hostname:
         SITEMAP[domain.casefold()] = site
 
 
-def _get_site(link: Link) -> typing.Type[BaseSite]:
+def _get_site(link: 'Link') -> 'Type[BaseSite]':
     """Load sites customisation if any.
 
     If the sites customisation does not exist, it will
@@ -91,7 +100,7 @@ def _get_site(link: Link) -> typing.Type[BaseSite]:
     return site
 
 
-def crawler_hook(timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.Response:
+def crawler_hook(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'Response':
     """Customisation as to :mod:`requests` sessions.
 
     Args:
@@ -112,7 +121,7 @@ def crawler_hook(timestamp: typing.Datetime, session: typing.Session, link: Link
     return site.crawler(timestamp, session, link)
 
 
-def loader_hook(timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.Driver:
+def loader_hook(timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'Driver':
     """Customisation as to :mod:`selenium` drivers.
 
     Args:

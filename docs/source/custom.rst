@@ -105,10 +105,10 @@ defined as following:
             session = requests.Session()
 
         session.headers['User-Agent'] = default_user_agent(proxy='Socks5')
-        session.proxies.update(dict(
-            http='socks5h://localhost:9293',
-            https='socks5h://localhost:9293',
-        ))
+        session.proxies.update({
+            'http': 'socks5h://localhost:9293',
+            'https': 'socks5h://localhost:9293',
+        })
         return session
 
 

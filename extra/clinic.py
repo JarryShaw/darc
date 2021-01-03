@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Redis clinic for releasing memory."""
 
 import argparse
@@ -12,12 +13,16 @@ import sys
 import textwrap
 import time
 import warnings
-from typing import Any, AnyStr
+from typing import TYPE_CHECKING
 
 import redis
 import stem.util.term
 
-#from typing import List
+if TYPE_CHECKING:
+    from argparse import ArgumentParser
+    from typing import Any, AnyStr
+
+    from stem.util.term import Color
 
 # Redis client
 REDIS: redis.Redis = None  # type: ignore[assignment]
@@ -48,7 +53,7 @@ class RedisCommandFailed(Warning):
     """Redis command execution failed."""
 
 
-def render_error(message: AnyStr, colour: stem.util.term.Color) -> str:
+def render_error(message: 'AnyStr', colour: 'Color') -> str:
     """Render error message.
 
     The function wraps the :func:`stem.util.term.format` function to
@@ -68,7 +73,7 @@ def render_error(message: AnyStr, colour: stem.util.term.Color) -> str:
     )
 
 
-def _gen_arg_msg(*args, **kwargs) -> str:  # type: ignore
+def _gen_arg_msg(*args: 'Any', **kwargs: 'Any') -> str:
     """Sanitise arguments representation string.
 
     Args:
@@ -90,7 +95,7 @@ def _gen_arg_msg(*args, **kwargs) -> str:  # type: ignore
     return textwrap.shorten(_args, shutil.get_terminal_size().columns)
 
 
-def _redis_command(command: str, *args: Any, **kwargs: Any) -> Any:
+def _redis_command(command: str, *args: 'Any', **kwargs: 'Any') -> 'Any':
     """Wrapper function for Redis command.
 
     Args:
@@ -121,7 +126,7 @@ def _redis_command(command: str, *args: Any, **kwargs: Any) -> Any:
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
-            warning = warnings.formatwarning(str(error), RedisCommandFailed, __file__, 131,
+            warning = warnings.formatwarning(str(error), RedisCommandFailed, __file__, 123,
                                              f'value = redis.{command}({_arg_msg})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -132,7 +137,7 @@ def _redis_command(command: str, *args: Any, **kwargs: Any) -> Any:
     return value
 
 
-def check_call(*args: Any, **kwargs: Any) -> int:
+def check_call(*args: 'Any', **kwargs: 'Any') -> int:
     """Wraps :func:`subprocess.check_call`."""
     with open('logs/clinic.log', 'at', buffering=1) as file:
         if 'stdout' not in kwargs:
@@ -187,7 +192,7 @@ def clinic(file: str, timeout: int, *services: str) -> None:
     print(f'[{datetime.datetime.now().isoformat()}] Started DARC services')
 
 
-def get_parser() -> argparse.ArgumentParser:
+def get_parser() -> 'ArgumentParser':
     """Argument parser."""
     parser = argparse.ArgumentParser('clinic',
                                      description='memory clinic for Redis')

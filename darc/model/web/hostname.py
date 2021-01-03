@@ -12,12 +12,22 @@ representing hostnames, specifically from ``new_host`` submission.
 
 """
 
-import peewee
+from typing import TYPE_CHECKING, cast
 
-import darc.typing as typing
+from peewee import DateTimeField, TextField
+
 from darc._compat import cached_property
 from darc.model.abc import BaseModelWeb as BaseModel
 from darc.model.utils import IntEnumField, Proxy
+
+if TYPE_CHECKING:
+    from typing import List
+
+    from darc._compat import datetime
+    from darc.model.web.hosts import HostsModel
+    from darc.model.web.robots import RobotsModel
+    from darc.model.web.sitemap import SitemapModel
+    from darc.model.web.url import URLModel
 
 __all__ = ['HostnameModel']
 
@@ -31,15 +41,31 @@ class HostnameModel(BaseModel):
 
     """
 
+    #: ``hosts.txt`` for the hostname, back reference from
+    #: :attr:`HostsModel.host <darc.model.web.hosts.HostsModel.host>`.
+    hosts: 'List[HostsModel]'
+
+    #: ``robots.txt`` for the hostname, back reference from
+    #: :attr:`RobotsModel.host <darc.model.web.robots.RobotsModel.host>`.
+    robots: 'List[RobotsModel]'
+
+    #: ``sitemap.xml`` for the hostname, back reference from
+    #: :attr:`SitemapModel.sitemaps <darc.model.web.robots.SitemapModel.sitemaps>`.
+    sitemaps: 'List[SitemapModel]'
+
+    #: URLs with the same hostname, back reference from
+    #: :attr:`URLModel.hostname <darc.model.web.url.URLModel.hostname>`.
+    urls: 'List[URLModel]'
+
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
-    hostname: str = peewee.TextField()
+    hostname: str = TextField()
     #: Proxy type (c.f. :attr:`link.proxy <darc.link.Link.proxy>`).
     proxy: Proxy = IntEnumField(choices=Proxy)
 
     #: Timestamp of first ``new_host`` submission.
-    discovery: typing.Datetime = peewee.DateTimeField()
+    discovery: 'datetime' = DateTimeField()
     #: Timestamp of last related submission.
-    last_seen: typing.Datetime = peewee.DateTimeField()
+    last_seen: 'datetime' = DateTimeField()
 
     @cached_property
     def alive(self) -> bool:
@@ -49,10 +75,10 @@ class HostnameModel(BaseModel):
         subsidiary URLs are *inactive*.
 
         """
-        return any(map(lambda url: url.alive, self.urls))  # pylint: disable=no-member
+        return any(map(lambda url: url.alive, self.urls))
 
     @cached_property
-    def since(self) -> typing.Datetime:
+    def since(self) -> 'datetime':
         """The hostname is active/inactive since such timestamp.
 
         We confider the timestamp by the earlies timestamp
@@ -60,10 +86,10 @@ class HostnameModel(BaseModel):
 
         """
         if self.alive:
-            filtering = lambda url: url.alive
+            filtering = lambda url: cast('HostnameModel', url).alive
         else:
-            filtering = lambda url: not url.alive
+            filtering = lambda url: not cast('HostnameModel', url).alive
 
         return min(*filter(
-            filtering, self.urls  # pylint: disable=no-member
+            filtering, self.urls
         ), key=lambda url: url.since)

@@ -1,16 +1,27 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=import-error,ungrouped-imports
+
+from typing import TYPE_CHECKING
 
 import requests
 import requests_futures.sessions
 import selenium.webdriver
 import selenium.webdriver.common.proxy
+
 from darc.const import DARC_CPU
 from darc.proxy import register
 from darc.requests import default_user_agent
 from darc.selenium import BINARY_LOCATION
 
+if TYPE_CHECKING:
+    from typing import Union
 
-def socks5_session(futures=False):
+    from requests import Session
+    from requests_futures.sessions import FuturesSession
+    from selenium.webdriver import Chrome
+
+
+def socks5_session(futures: bool = False) -> 'Union[Session, FuturesSession]':
     """Socks5 proxy session.
 
     Args:
@@ -27,14 +38,14 @@ def socks5_session(futures=False):
         session = requests.Session()
 
     session.headers['User-Agent'] = default_user_agent(proxy='Socks5')
-    session.proxies.update(dict(
-        http='socks5h://localhost:9293',
-        https='socks5h://localhost:9293',
-    ))
+    session.proxies.update({
+        'http': 'socks5h://localhost:9293',
+        'https': 'socks5h://localhost:9293',
+    })
     return session
 
 
-def socks5_driver():
+def socks5_driver() -> 'Chrome':
     """Socks5 proxy driver.
 
     Returns:

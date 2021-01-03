@@ -6,7 +6,7 @@ import sys
 import tempfile
 
 
-def is_in(line, dest):
+def is_in(line: str, dest: str) -> bool:
     if os.path.isfile(dest):
         with open(dest) as file:
             for content in filter(None, map(lambda s: s.strip(), file)):
@@ -15,7 +15,7 @@ def is_in(line, dest):
     return False
 
 
-def uniq(path, tempdir):
+def uniq(path: str, tempdir: str) -> None:
     name = os.path.split(path)[1]
     dest = os.path.join(tempdir, '%s.tmp' % name)
 
@@ -30,10 +30,11 @@ def uniq(path, tempdir):
     os.rename(dest, path)
 
 
-def main():
+def main() -> int:
     with tempfile.TemporaryDirectory() as tempdir:
         for path in sys.argv[1:]:
             uniq(path, tempdir)
+    return 0
 
 
 if __name__ == "__main__":

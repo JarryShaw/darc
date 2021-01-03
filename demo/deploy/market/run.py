@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#: pylint: disable=import-error,no-name-in-module
+#: pylint: disable=import-error
 """Entrypoint for the market module.
 
 Important:
@@ -14,11 +14,11 @@ You may simply use this file as the new entrypoint for your
 
 import sys
 
+from dummy import DummySite
+from market import MarketSite
+
 from darc.__main__ import main
 from darc.sites import SITEMAP, register
-
-from dummy import DummySite  # pylint: disable=wrong-import-order
-from market import MarketSite  # pylint: disable=wrong-import-order
 
 # register ``MarketSite`` as the default hook
 SITEMAP.default_factory = lambda: MarketSite

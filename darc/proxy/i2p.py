@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """I2P Proxy
 ===============
 
@@ -15,21 +16,27 @@ import pprint
 import re
 import shlex
 import shutil
-import subprocess  # nosec
+import subprocess  # nosec: B404
 import sys
 import traceback
 import warnings
+from typing import TYPE_CHECKING, cast
 
 import requests
 import selenium.webdriver
 import selenium.webdriver.common.proxy
 import stem.util.term
 
-import darc.typing as typing
 from darc.const import CHECK, DARC_USER, DEBUG, PATH_DB, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
-from darc.link import Link, parse_link, urljoin
+from darc.link import parse_link, urljoin
 from darc.parse import _check, get_content_type
+
+if TYPE_CHECKING:
+    from typing import IO, List, Optional
+
+    from darc._typing import File
+    from darc.link import Link
 
 # I2P args
 I2P_ARGS = shlex.split(os.getenv('I2P_ARGS', ''))
@@ -69,7 +76,7 @@ if getpass.getuser() == 'root':
         _I2P_ARGS = ['su', '-', DARC_USER, 'i2prouter', 'start']
     else:
         _unsupported = True
-        _I2P_ARGS = list()
+        _I2P_ARGS = []
 else:
     _I2P_ARGS = ['i2prouter', 'start']
 _I2P_ARGS.extend(I2P_ARGS)
@@ -124,8 +131,8 @@ def _i2p_bootstrap() -> None:
     returncode = _I2P_PROC.returncode
     if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _I2P_ARGS,
-                                            typing.cast(typing.IO[bytes], _I2P_PROC.stdout).read(),
-                                            typing.cast(typing.IO[bytes], _I2P_PROC.stderr).read())
+                                            cast('IO[bytes]', _I2P_PROC.stdout).read(),
+                                            cast('IO[bytes]', _I2P_PROC.stderr).read())
 
     # update flag
     _I2P_BS_FLAG = True
@@ -176,7 +183,7 @@ def i2p_bootstrap() -> None:
                                 stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, str]]:  # pylint: disable=inconsistent-return-statements
+def get_hosts(link: 'Link') -> 'Optional[File]':
     """Read ``hosts.txt``.
 
     Args:
@@ -201,14 +208,13 @@ def get_hosts(link: Link) -> typing.Optional[typing.Dict[str, str]]:  # pylint: 
         return None
     with open(path, 'rb') as file:
         content = file.read()
-    data = dict(
-        path=os.path.relpath(path, PATH_DB),
-        data=base64.b64encode(content).decode(),
-    )
-    return data
+    return {
+        'path': os.path.relpath(path, PATH_DB),
+        'data': base64.b64encode(content).decode(),
+    }
 
 
-def have_hosts(link: Link) -> typing.Optional[str]:
+def have_hosts(link: 'Link') -> 'Optional[str]':
     """Check if ``hosts.txt`` already exists.
 
     Args:
@@ -225,7 +231,7 @@ def have_hosts(link: Link) -> typing.Optional[str]:
     return path if os.path.isfile(path) else None
 
 
-def save_hosts(link: Link, text: str) -> str:
+def save_hosts(link: 'Link', text: str) -> str:
     """Save ``hosts.txt``.
 
     Args:
@@ -251,7 +257,7 @@ def save_hosts(link: Link, text: str) -> str:
     return path
 
 
-def read_hosts(text: str, check: bool = CHECK) -> typing.List[Link]:
+def read_hosts(text: str, check: bool = CHECK) -> 'List[Link]':
     """Read ``hosts.txt``.
 
     Args:
@@ -263,7 +269,7 @@ def read_hosts(text: str, check: bool = CHECK) -> typing.List[Link]:
         List of links extracted.
 
     """
-    temp_list = list()
+    temp_list = []
     for line in filter(None, map(lambda s: s.strip(), text.splitlines())):
         if line.startswith('#'):
             continue
@@ -278,7 +284,7 @@ def read_hosts(text: str, check: bool = CHECK) -> typing.List[Link]:
     return temp_list
 
 
-def fetch_hosts(link: Link, force: bool = False) -> None:
+def fetch_hosts(link: 'Link', force: bool = False) -> None:
     """Fetch ``hosts.txt``.
 
     Args:

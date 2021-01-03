@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Main Processing
 =====================
 
@@ -13,35 +14,42 @@ import signal
 import threading
 import time
 import warnings
+from typing import TYPE_CHECKING, cast
 
 import stem
 import stem.control
 import stem.process
 import stem.util.term
 
-import darc.typing as typing
 from darc._compat import strsignal
 from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, PATH_ID, REBOOT, getpid
 from darc.crawl import crawler, loader
-from darc.error import HookExecutionFailed, WorkerBreak
 from darc.db import load_requests, load_selenium
+from darc.error import HookExecutionFailed, WorkerBreak
 from darc.link import Link
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap
 from darc.proxy.i2p import _I2P_BS_FLAG, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, renew_tor_session, tor_bootstrap
 from darc.proxy.zeronet import _ZERONET_BS_FLAG, zeronet_bootstrap
 
-#: List[Union[multiprocessing.Process, threading.Thread]]: List of
+if TYPE_CHECKING:
+    from multiprocessing import Process
+    from signal import Signals  # pylint: disable=no-name-in-module
+    from threading import Thread
+    from types import FrameType
+    from typing import Callable, List, Literal, Optional, Union
+
+#: List[Union[Process, Thread]]: List of
 #: active child processes and/or threads.
-_WORKER_POOL = None
+_WORKER_POOL = []  # type: List[Union[Process, Thread]]
 
 #: List[Callable[[Literal['crawler', 'loader'], List[Link]]]: List of hook functions to
 #: be called between each *round*.
-_HOOK_REGISTRY = list()  # type: typing.List[typing.Callable[[typing.Literal['crawler', 'loader'], typing.List[Link]], None]]  # pylint: disable=line-too-long
+_HOOK_REGISTRY = []  # type: List[Callable[[Literal["crawler", "loader"], List[Link]], None]]
 
 
-def register(hook: typing.Callable[[typing.Literal['crawler', 'loader'], typing.List[Link]], None],
-             *, _index: typing.Optional[int] = None) -> None:
+def register(hook: 'Callable[[Literal["crawler", "loader"], List[Link]], None]',
+             *, _index: 'Optional[int]' = None) -> None:
     """Register hook function.
 
     Args:
@@ -73,8 +81,8 @@ def register(hook: typing.Callable[[typing.Literal['crawler', 'loader'], typing.
         _HOOK_REGISTRY.insert(_index, hook)
 
 
-def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] = None,  # pylint: disable=unused-argument,no-member
-                    frame: typing.Optional[typing.FrameType] = None) -> None:  # pylint: disable=unused-argument
+def _signal_handler(signum: 'Optional[Union[int, Signals]]' = None,
+                    frame: 'Optional[FrameType]' = None) -> None:
     """Signal handler.
 
     If the current process is not the main process, the function
@@ -92,14 +100,14 @@ def _signal_handler(signum: typing.Optional[typing.Union[int, signal.Signals]] =
         return
 
     if FLAG_MP and _WORKER_POOL:
-        for proc in _WORKER_POOL:  # type: ignore
+        for proc in cast('List[Process]', _WORKER_POOL):
             proc.kill()
             proc.join()
 
     if FLAG_TH and _WORKER_POOL:
-        for proc in _WORKER_POOL:  # type: ignore
-            proc._stop()  # pylint: disable=protected-access
-            proc.join()
+        for thrd in cast('List[Thread]', _WORKER_POOL):
+            thrd._stop()  # type: ignore[attr-defined] # pylint: disable=protected-access
+            thrd.join()
 
     if os.path.isfile(PATH_ID):
         os.remove(PATH_ID)
@@ -202,29 +210,29 @@ def process_loader() -> None:
     print('[LOADER] Stopping mainloop...')
 
 
-def _process(worker: typing.Union[process_crawler, process_loader]) -> None:  # type: ignore
+def _process(worker: 'Union[process_crawler, process_loader]') -> None:  # type: ignore[valid-type]
     """Wrapper function to start the worker process."""
     global _WORKER_POOL  # pylint: disable=global-statement
 
     if FLAG_MP:
-        _WORKER_POOL = [multiprocessing.Process(target=worker) for _ in range(DARC_CPU)]  # type: ignore
+        _WORKER_POOL = [multiprocessing.Process(target=worker) for _ in range(DARC_CPU)]
         for proc in _WORKER_POOL:
             proc.start()
         for proc in _WORKER_POOL:
             proc.join()
 
     elif FLAG_TH:
-        _WORKER_POOL = [threading.Thread(target=worker) for _ in range(DARC_CPU)]  # type: ignore
+        _WORKER_POOL = [threading.Thread(target=worker) for _ in range(DARC_CPU)]
         for proc in _WORKER_POOL:
             proc.start()
         for proc in _WORKER_POOL:
             proc.join()
 
     else:
-        worker()  # type: ignore
+        worker()  # type: ignore[misc]
 
 
-def process(worker: typing.Literal['crawler', 'loader']) -> None:
+def process(worker: 'Literal["crawler", "loader"]') -> None:
     """Main process.
 
     The function will register :func:`~darc.process._signal_handler` for ``SIGTERM``,

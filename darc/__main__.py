@@ -8,10 +8,10 @@ import shutil
 import sys
 import traceback
 import warnings
+from typing import TYPE_CHECKING
 
 import stem.util.term
 
-import darc.typing as typing
 from darc.const import DB, DB_WEB, DEBUG, FLAG_DB, PATH_ID, PATH_LN
 from darc.db import _db_operation, _redis_command, save_requests
 from darc.error import DatabaseOperaionFailed, render_error
@@ -26,13 +26,19 @@ from darc.proxy.tor import _TOR_CTRL, _TOR_PROC
 from darc.proxy.zeronet import _ZERONET_PROC
 from darc.submit import SAVE_DB
 
+if TYPE_CHECKING:
+    from argparse import ArgumentParser
+    from queue import Queue
+    from subprocess import Popen  # nosec: B404
+    from typing import List, Optional, Union
+
 # wait for Redis connection?
 _WAIT_REDIS = bool(int(os.getenv('DARC_REDIS', '1')))
 
 
 def _exit() -> None:
     """Gracefully exit."""
-    def caller(target: typing.Optional[typing.Union[typing.Queue, typing.Popen]], function: str) -> None:
+    def caller(target: 'Optional[Union[Queue, Popen]]', function: str) -> None:
         """Wrapper caller."""
         if target is None:
             return
@@ -57,7 +63,7 @@ def _exit() -> None:
     caller(_FREENET_PROC, 'wait')
 
 
-def get_parser() -> typing.ArgumentParser:
+def get_parser() -> 'ArgumentParser':
     """Argument parser."""
     from darc import __version__  # pylint: disable=import-outside-toplevel
 
@@ -74,7 +80,7 @@ def get_parser() -> typing.ArgumentParser:
     return parser
 
 
-def main(argv: typing.Optional[typing.List[str]] = None) -> int:
+def main(argv: 'Optional[List[str]]' = None) -> int:
     """Entrypoint.
 
     Args:
@@ -135,7 +141,7 @@ def main(argv: typing.Optional[typing.List[str]] = None) -> int:
             _redis_command('delete', 'queue_requests')
             _redis_command('delete', 'queue_selenium')
 
-    link_list = list()
+    link_list = []
     for link in filter(None, map(lambda s: s.strip(), args.link)):  # type: ignore[name-defined,var-annotated]
         if DEBUG:
             print(stem.util.term.format(link, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member

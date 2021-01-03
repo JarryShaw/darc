@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Data URI Schemes
 ======================
 
@@ -8,21 +9,29 @@ handle data URI schemes.
 """
 
 import sys
+from typing import TYPE_CHECKING
 
-import stem
+import stem.util.term
 
-import darc.typing as typing
 from darc.error import LinkNoReturn, render_error
-from darc.link import Link
 from darc.proxy.data import save_data
 from darc.sites._abc import BaseSite
+
+if TYPE_CHECKING:
+    from typing import NoReturn
+
+    from requests import Session
+    from selenium.webdriver import Chrome as Driver
+
+    from darc._compat import datetime
+    from darc.link import Link
 
 
 class DataURI(BaseSite):
     """Data URI schemes."""
 
     @staticmethod
-    def crawler(timestamp: typing.Datetime, session: typing.Session, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
+    def crawler(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'NoReturn':  # pylint: disable=unused-argument
         """Crawler hook for data URIs.
 
         Args:
@@ -38,11 +47,11 @@ class DataURI(BaseSite):
             save_data(link)
         except ValueError as error:
             print(render_error(f'[REQUESTS] Failed to save data URI from {link.url} <{error}>',
-                            stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
         raise LinkNoReturn(link)
 
     @staticmethod
-    def loader(timestamp: typing.Datetime, driver: typing.Driver, link: Link) -> typing.NoReturn:  # pylint: disable=unused-argument
+    def loader(timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'NoReturn':  # pylint: disable=unused-argument
         """Not implemented.
 
         Raises:

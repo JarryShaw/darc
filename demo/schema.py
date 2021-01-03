@@ -1,43 +1,51 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """JSON schema generator."""
-# pylint: disable=no-member
 
-import enum
+from typing import TYPE_CHECKING
 
 import pydantic.schema
-
-import darc.typing as typing
+from pydantic import BaseModel, Field
 
 __all__ = ['NewHostModel', 'RequestsModel', 'SeleniumModel']
+
+if TYPE_CHECKING:
+    from datetime import datetime
+    from enum import Enum
+    from typing import Any, Dict, List, Optional
+
+    from pydantic import AnyUrl, PositiveInt
+
+    CookiesType = List[Dict[str, Any]]
+    HeadersType = Dict[str, str]
+
+    class Proxy(str, Enum):
+        """Proxy type."""
+
+        null = 'null'
+        tor = 'tor'
+        i2p = 'i2p'
+        zeronet = 'zeronet'
+        freenet = 'freenet'
 
 ###############################################################################
 # Miscellaneous auxiliaries
 ###############################################################################
 
 
-class Proxy(str, enum.Enum):
-    """Proxy type."""
-
-    null = 'null'
-    tor = 'tor'
-    i2p = 'i2p'
-    zeronet = 'zeronet'
-    freenet = 'freenet'
-
-
-class Metadata(pydantic.BaseModel):
+class Metadata(BaseModel):
     """Metadata of URL."""
 
-    url: pydantic.AnyUrl = pydantic.Field(
+    url: 'AnyUrl' = Field(
         description='original URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>')
-    proxy: Proxy = pydantic.Field(
+    proxy: 'Proxy' = Field(
         description='proxy type - null / tor / i2p / zeronet / freenet')
-    host: str = pydantic.Field(
+    host: str = Field(
         description='hostname / netloc, c.f. ``urllib.parse.urlparse``')
-    base: str = pydantic.Field(
+    base: str = Field(
         description=('base folder, relative path (to data root path ``PATH_DATA``) in containter '
                      '- <proxy>/<scheme>/<host>'))
-    name: str = pydantic.Field(
+    name: str = Field(
         description=('sha256 of URL as name for saved files (timestamp is in ISO format) '
                      '- JSON log as this one: <base>/<name>_<timestamp>.json; '
                      '- HTML from requests: <base>/<name>_<timestamp>_raw.html; '
@@ -48,93 +56,93 @@ class Metadata(pydantic.BaseModel):
         title = 'metadata'
 
 
-class RobotsDocument(pydantic.BaseModel):
+class RobotsDocument(BaseModel):
     """``robots.txt`` document data."""
 
-    path: str = pydantic.Field(
+    path: str = Field(
         description=('path of the file, relative path (to data root path ``PATH_DATA``) in container '
                      '- <proxy>/<scheme>/<host>/robots.txt'))
-    data: str = pydantic.Field(
+    data: str = Field(
         description='content of the file (**base64** encoded)')
 
 
-class SitemapDocument(pydantic.BaseModel):
+class SitemapDocument(BaseModel):
     """Sitemaps document data."""
 
-    path: str = pydantic.Field(
+    path: str = Field(
         description=('path of the file, relative path (to data root path ``PATH_DATA``) in container '
                      '- <proxy>/<scheme>/<host>/sitemap_<name>.xml'))
-    data: str = pydantic.Field(
+    data: str = Field(
         description='content of the file (**base64** encoded)')
 
 
-class HostsDocument(pydantic.BaseModel):
+class HostsDocument(BaseModel):
     """``hosts.txt`` document data."""
 
-    path: str = pydantic.Field(
+    path: str = Field(
         description=('path of the file, relative path (to data root path ``PATH_DATA``) in container '
                      '- <proxy>/<scheme>/<host>/hosts.txt'))
-    data: str = pydantic.Field(
+    data: str = Field(
         description='content of the file (**base64** encoded)')
 
 
-class RequestsDocument(pydantic.BaseModel):
+class RequestsDocument(BaseModel):
     """:mod:`requests` document data."""
 
-    path: str = pydantic.Field(
+    path: str = Field(
         description=('path of the file, relative path (to data root path ``PATH_DATA``) in container '
                      '- <proxy>/<scheme>/<host>/<name>_<timestamp>_raw.html; '
                      'or if the document is of generic content type, i.e. not HTML '
                      '- <proxy>/<scheme>/<host>/<name>_<timestamp>.dat'))
-    data: str = pydantic.Field(
+    data: str = Field(
         description='content of the file (**base64** encoded)')
 
 
-class HistoryModel(pydantic.BaseModel):
+class HistoryModel(BaseModel):
     """:mod:`requests` history data."""
 
-    URL: pydantic.AnyUrl = pydantic.Field(
+    URL: 'AnyUrl' = Field(
         description='original URL')
 
-    Method: str = pydantic.Field(
+    Method: str = Field(
         description='request method')
-    status_code: pydantic.PositiveInt = pydantic.Field(
+    status_code: 'PositiveInt' = Field(
         alias='Status-Code',
         description='response status code')
-    Reason: str = pydantic.Field(
+    Reason: str = Field(
         description='response reason')
 
-    Cookies: typing.Cookies = pydantic.Field(
+    Cookies: 'CookiesType' = Field(
         description='response cookies (if any)')
-    Session: typing.Cookies = pydantic.Field(
+    Session: 'CookiesType' = Field(
         description='session cookies (if any)')
 
-    Request: typing.Headers = pydantic.Field(
+    Request: 'HeadersType' = Field(
         description='request headers (if any)')
-    Response: typing.Headers = pydantic.Field(
+    Response: 'HeadersType' = Field(
         description='response headers (if any)')
 
-    Document: str = pydantic.Field(
+    Document: str = Field(
         description='content of the file (**base64** encoded)')
 
 
-class SeleniumDocument(pydantic.BaseModel):
+class SeleniumDocument(BaseModel):
     """:mod:`selenium` document data."""
 
-    path: str = pydantic.Field(
+    path: str = Field(
         description=('path of the file, relative path (to data root path ``PATH_DATA``) in container '
                      '- <proxy>/<scheme>/<host>/<name>_<timestamp>.html'))
-    data: str = pydantic.Field(
+    data: str = Field(
         description='content of the file (**base64** encoded)')
 
 
-class ScreenshotDocument(pydantic.BaseModel):
+class ScreenshotDocument(BaseModel):
     """Screenshot document data."""
 
-    path: str = pydantic.Field(
+    path: str = Field(
         description=('path of the file, relative path (to data root path ``PATH_DATA``) in container '
                      '- <proxy>/<scheme>/<host>/<name>_<timestamp>.png'))
-    data: str = pydantic.Field(
+    data: str = Field(
         description='content of the file (**base64** encoded)')
 
 
@@ -143,29 +151,29 @@ class ScreenshotDocument(pydantic.BaseModel):
 ###############################################################################
 
 
-class NewHostModel(pydantic.BaseModel):
+class NewHostModel(BaseModel):
     """Data submission from :func:`darc.submit.submit_new_host`."""
 
-    partial: bool = pydantic.Field(
+    partial: bool = Field(
         alias='$PARTIAL$',
         description='partial flag - true / false')
-    reload: bool = pydantic.Field(
+    reload: bool = Field(
         alias='$RELOAD$',
         description='reload flag - true / false')
-    metadata: Metadata = pydantic.Field(
+    metadata: 'Metadata' = Field(
         alias='[metadata]',
         description='metadata of URL')
 
-    Timestamp: typing.Datetime = pydantic.Field(
+    Timestamp: 'datetime' = Field(
         description='requested timestamp in ISO format as in name of saved file')
-    URL: pydantic.AnyUrl = pydantic.Field(
+    URL: 'AnyUrl' = Field(
         description='original URL')
 
-    Robots: typing.Optional[RobotsDocument] = pydantic.Field(
+    Robots: 'Optional[RobotsDocument]' = Field(
         description='robots.txt from the host (if not exists, then ``null``)')
-    Sitemaps: typing.Optional[typing.List[SitemapDocument]] = pydantic.Field(
+    Sitemaps: 'Optional[List[SitemapDocument]]' = Field(
         description='sitemaps from the host (if none, then ``null``)')
-    Hosts: typing.Optional[HostsDocument] = pydantic.Field(
+    Hosts: 'Optional[HostsDocument]' = Field(
         description='hosts.txt from the host (if proxy type is ``i2p``; if not exists, then ``null``)')
 
 
@@ -173,70 +181,70 @@ class NewHostModel(pydantic.BaseModel):
         title = 'new_host'
 
 
-class RequestsModel(pydantic.BaseModel):
+class RequestsModel(BaseModel):
     """Data submission from :func:`darc.submit.submit_requests`."""
 
-    partial: bool = pydantic.Field(
+    partial: bool = Field(
         alias='$PARTIAL$',
         description='partial flag - true / false')
-    metadata: Metadata = pydantic.Field(
+    metadata: 'Metadata' = Field(
         alias='[metadata]',
         description='metadata of URL')
 
-    Timestamp: typing.Datetime = pydantic.Field(
+    Timestamp: 'datetime' = Field(
         description='requested timestamp in ISO format as in name of saved file')
-    URL: pydantic.AnyUrl = pydantic.Field(
+    URL: 'AnyUrl' = Field(
         description='original URL')
 
-    Method: str = pydantic.Field(
+    Method: str = Field(
         description='request method')
-    status_code: pydantic.PositiveInt = pydantic.Field(
+    status_code: 'PositiveInt' = Field(
         alias='Status-Code',
         description='response status code')
-    Reason: str = pydantic.Field(
+    Reason: str = Field(
         description='response reason')
 
-    Cookies: typing.Cookies = pydantic.Field(
+    Cookies: 'CookiesType' = Field(
         description='response cookies (if any)')
-    Session: typing.Cookies = pydantic.Field(
+    Session: 'CookiesType' = Field(
         description='session cookies (if any)')
 
-    Request: typing.Headers = pydantic.Field(
+    Request: 'HeadersType' = Field(
         description='request headers (if any)')
-    Response: typing.Headers = pydantic.Field(
+    Response: 'HeadersType' = Field(
         description='response headers (if any)')
-    content_type: str = pydantic.Field(
+    content_type: str = Field(
         alias='Content-Type',
         regex='[a-zA-Z0-9.-]+/[a-zA-Z0-9.-]+',
         description='content type')
 
-    Document: typing.Optional[RequestsDocument] = pydantic.Field(
+    Document: 'Optional[RequestsDocument]' = Field(
         description='requested file (if not exists, then ``null``)')
-    History: typing.List[HistoryModel] = pydantic.Field(
+    History: 'List[HistoryModel]' = Field(
         description='redirection history (if any)')
 
     class Config:
         title = 'requests'
 
 
-class SeleniumModel(pydantic.BaseModel):
+class SeleniumModel(BaseModel):
     """Data submission from :func:`darc.submit.submit_requests`."""
 
-    partial: bool = pydantic.Field(
+    partial: bool = Field(
         alias='$PARTIAL$',
         description='partial flag - true / false')
-    metadata: Metadata = pydantic.Field(
+    metadata: 'Metadata' = Field(
         alias='[metadata]',
         description='metadata of URL')
 
-    Timestamp: typing.Datetime = pydantic.Field(
+    Timestamp: 'datetime' = Field(
         description='requested timestamp in ISO format as in name of saved file')
-    URL: pydantic.AnyUrl = pydantic.Field(
+    URL: 'AnyUrl' = Field(
         description='original URL')
 
-    Document: typing.Optional[SeleniumDocument] = pydantic.Field(
+    Document: 'Optional[SeleniumDocument]' = Field(
         description='rendered HTML document (if not exists, then ``null``)')
-    Screenshot: typing.Optional[ScreenshotDocument] = pydantic.Field(
+    Screenshot: 'Optional[ScreenshotDocument]' = Field(
         description='web page screenshot (if not exists, then ``null``)')
 
     class Config:

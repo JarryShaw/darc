@@ -34,6 +34,7 @@ pydantic = {extras = ["dotenv", "email", "typing_extensions"], version = "*"}
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}
 file-magic = "*"
 peewee = "*"
+pottery = "*"
 PyMySQL = {version = "*",extras = ["rsa"]}
 python-datauri = "*"
 redis = {extras = ['hiredis'],version = "*"}
@@ -44,7 +45,7 @@ stem = "*"
 typing-extensions = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"
 
 [pipenv]
 allow_prereleases = true

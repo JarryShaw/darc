@@ -1,10 +1,10 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 LABEL org.opencontainers.image.title="darc" \
       org.opencontainers.image.description="Darkweb Crawler Project" \
       org.opencontainers.image.url="https://darc.jarryshaw.me/" \
       org.opencontainers.image.source="https://github.com/JarryShaw/darc" \
-      org.opencontainers.image.version="0.9.0" \
+      org.opencontainers.image.version="0.9.1" \
       org.opencontainers.image.licenses='BSD 3-Clause "New" or "Revised" License'
 
 STOPSIGNAL SIGINT
@@ -41,11 +41,11 @@ RUN set -x \
  && retry add-apt-repository ppa:i2p-maintainers/i2p --yes
 RUN retry apt-get update \
  && retry apt-get install --yes --no-install-recommends \
-        python3.8 \
+        python3.9-dev \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
+ && ln -sf /usr/bin/python3.9 /usr/local/bin/python3
 RUN retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
  && retry pty-install --stdin 'yes' apt-get install --yes \
@@ -58,11 +58,11 @@ RUN retry apt-get install --yes --no-install-recommends \
 
 ## Tor
 RUN retry apt-get install --yes --no-install-recommends tor
-COPY extra/torrc.bionic /etc/tor/torrc
+COPY extra/torrc.focal /etc/tor/torrc
 
 ## I2P
 RUN retry apt-get install --yes --no-install-recommends i2p
-COPY extra/i2p.bionic /etc/defaults/i2p
+COPY extra/i2p.focal /etc/defaults/i2p
 
 ## ZeroNet
 COPY vendor/ZeroNet-linux-dist-linux64.tar.gz /tmp
@@ -70,7 +70,7 @@ RUN set -x \
  && cd /tmp \
  && tar xvpfz ZeroNet-linux-dist-linux64.tar.gz \
  && mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
-COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
+COPY extra/zeronet.focal.conf /usr/local/src/zeronet/zeronet.conf
 
 ## FreeNet
 USER darc

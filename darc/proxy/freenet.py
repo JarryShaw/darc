@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Freenet Proxy
 ===================
 
@@ -13,16 +14,19 @@ import platform
 import pprint
 import shlex
 import shutil
-import subprocess  # nosec
+import subprocess  # nosec: B404
 import sys
 import traceback
 import warnings
+from typing import TYPE_CHECKING, cast
 
 import stem.util.term
 
-import darc.typing as typing
 from darc.const import DARC_USER, DEBUG, VERBOSE
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform, render_error
+
+if TYPE_CHECKING:
+    from typing import IO
 
 # ZeroNet args
 FREENET_ARGS = shlex.split(os.getenv('FREENET_ARGS', ''))
@@ -54,7 +58,7 @@ if getpass.getuser() == 'root':
         _FREENET_ARGS = ['su', '-', DARC_USER, os.path.join(FREENET_PATH, 'run.sh'), 'start']
     else:
         _unsupported = True
-        _FREENET_ARGS = list()
+        _FREENET_ARGS = []
 else:
     _FREENET_ARGS = [os.path.join(FREENET_PATH, 'run.sh'), 'start']
 _FREENET_ARGS.extend(FREENET_ARGS)
@@ -106,8 +110,8 @@ def _freenet_bootstrap() -> None:
     returncode = _FREENET_PROC.returncode
     if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _FREENET_ARGS,
-                                            typing.cast(typing.IO[bytes], _FREENET_PROC.stdout).read(),
-                                            typing.cast(typing.IO[bytes], _FREENET_PROC.stderr).read())
+                                            cast('IO[bytes]', _FREENET_PROC.stdout).read(),
+                                            cast('IO[bytes]', _FREENET_PROC.stderr).read())
 
     # update flag
     _FREENET_BS_FLAG = True

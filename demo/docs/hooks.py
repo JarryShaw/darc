@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=import-error
+
+from typing import TYPE_CHECKING
 
 from darc.error import WorkerBreak
 from darc.process import register
 
+if TYPE_CHECKING:
+    from typing import List, Literal, NoReturn
 
-def dummy_hook(node_type, link_pool):
+    from darc.link import Link
+
+
+def dummy_hook(node_type: 'Literal["crawler", "loader"]', link_pool: 'List[Link]') -> 'NoReturn':
     """A sample hook function that prints the processed links
     in the past round and informs the work to quit.
 

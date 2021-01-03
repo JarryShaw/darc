@@ -3,6 +3,7 @@
         "AQACAAE",
         "Buildx",
         "DFOC",
+        "Deque",
         "Ffacebookcorewwwi",
         "GIFs",
         "IHAV",
@@ -45,6 +46,7 @@
         "howto",
         "idna",
         "inited",
+        "ints",
         "isdigit",
         "isfinite",
         "isinf",
@@ -92,6 +94,7 @@
         "srem",
         "systemd",
         "tbselenium",
+        "thrd",
         "tmpfs",
         "toctree",
         "todos",
@@ -103,6 +106,7 @@
         "tzstr",
         "undoc",
         "unpause",
+        "unsubscriptable",
         "urlunparse",
         "urlunsplit",
         "uzja",
@@ -113,6 +117,8 @@
         "xvpfz",
         "xvzf",
         "zadd",
+        "zcard",
+        "zrange",
         "zrangebyscore",
         "zrem",
         "zscan",
@@ -125,5 +131,6 @@
         "ARGV",
         "KEYS"
     ],
-    "Lua.runtime.version": "Lua 5.1"
+    "Lua.runtime.version": "Lua 5.1",
+    "python.pythonPath": "/Users/jarryshaw/GitHub/darc/.venv/bin/python3.9"
 }

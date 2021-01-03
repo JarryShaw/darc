@@ -14,12 +14,16 @@ defined for the :obj:`crawler <darc.crawl.crawler>` queue.
 
 """
 
-import peewee
+from typing import TYPE_CHECKING
 
-import darc.typing as typing
-from darc.link import Link
+from peewee import CharField, DateTimeField, TextField
+
 from darc.model.abc import BaseModel
 from darc.model.utils import PickleField
+
+if TYPE_CHECKING:
+    from darc._compat import datetime
+    from darc.link import Link
 
 __all__ = ['RequestsQueueModel']
 
@@ -28,11 +32,11 @@ class RequestsQueueModel(BaseModel):
     """Task queue for :func:`~darc.crawl.crawler`."""
 
     #: URL as raw text (c.f. :attr:`Link.url <darc.link.Link.url>`).
-    text: typing.Union[str, peewee.TextField] = peewee.TextField()
+    text: str = TextField()
     #: Sha256 hash value (c.f. :attr:`Link.name <darc.link.Link.name>`).
-    hash: typing.Union[str, peewee.CharField] = peewee.CharField(max_length=256, unique=True)
+    hash: str = CharField(max_length=256, unique=True)
 
     #: Pickled target :class:`~darc.link.Link` instance.
-    link: typing.Union[Link, PickleField] = PickleField()
+    link: 'Link' = PickleField()
     #: Timestamp of last update.
-    timestamp: typing.Union[typing.Datetime, peewee.DateTimeField] = peewee.DateTimeField()
+    timestamp: 'datetime' = DateTimeField()

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=unsubscriptable-object,ungrouped-imports
 """Miscellaneous Utilities
 -----------------------------
 
@@ -11,12 +12,19 @@ import enum
 import ipaddress
 import json
 import pickle  # nosec
+from typing import TYPE_CHECKING
 
-import peewee
-import playhouse.mysql_ext
-import playhouse.shortcuts
+from peewee import BlobField, IntegerField
+from peewee import IPField as _IPField
+from peewee import Model, make_snake_case
+from playhouse.mysql_ext import JSONField as _JSONField
 
-import darc.typing as typing
+if TYPE_CHECKING:
+    from enum import IntEnum
+    from ipaddress import IPv4Address, IPv6Address
+    from typing import Any, Optional, Union
+
+    IPAddress = Union[IPv4Address, IPv6Address]
 
 __all__ = ['table_function',
            'JSONField', 'IPField',
@@ -24,7 +32,7 @@ __all__ = ['table_function',
            'Proxy']
 
 
-def table_function(model_class: peewee.Model) -> str:
+def table_function(model_class: Model) -> str:
     """Generate table name dynamically.
 
     The function strips ``Model`` from the class name and
@@ -41,13 +49,13 @@ def table_function(model_class: peewee.Model) -> str:
     name: str = model_class.__name__
     if name.endswith('Model'):
         name = name[:-5]  # strip ``Model`` suffix
-    return peewee.make_snake_case(name)
+    return make_snake_case(name)
 
 
-class JSONField(playhouse.mysql_ext.JSONField):
+class JSONField(_JSONField):
     """JSON data field."""
 
-    def db_value(self, value: typing.Any) -> typing.Optional[str]:  # pylint: disable=inconsistent-return-statements
+    def db_value(self, value: 'Any') -> 'Optional[str]':  # pylint: disable=inconsistent-return-statements
         """Dump the value for database storage.
 
         Args:
@@ -61,7 +69,7 @@ class JSONField(playhouse.mysql_ext.JSONField):
             return json.dumps(value)
         return None
 
-    def python_value(self, value: typing.Optional[str]) -> typing.Any:  # pylint: disable=inconsistent-return-statements
+    def python_value(self, value: 'Optional[str]') -> 'Any':  # pylint: disable=inconsistent-return-statements
         """Load the value from database storage.
 
         Args:
@@ -76,10 +84,10 @@ class JSONField(playhouse.mysql_ext.JSONField):
         return None
 
 
-class IPField(peewee.IPField):
+class IPField(_IPField):
     """IP data field."""
 
-    def db_value(self, val: typing.Optional[typing.Union[str, typing.IPAddress]]) -> typing.Optional[int]:  # pylint: disable=inconsistent-return-statements
+    def db_value(self, val: 'Optional[Union[str, IPAddress]]') -> 'Optional[int]':  # pylint: disable=inconsistent-return-statements
         """Dump the value for database storage.
 
         Args:
@@ -92,10 +100,10 @@ class IPField(peewee.IPField):
         if val is not None:
             if isinstance(val, str):
                 val = ipaddress.ip_address(val)
-            return int(val)  # type: ignore
+            return int(val)  # type: ignore[arg-type]
         return None
 
-    def python_value(self, val: typing.Optional[int]) -> typing.Optional[typing.IPAddress]:  # pylint: disable=inconsistent-return-statements
+    def python_value(self, val: 'Optional[int]') -> 'Optional[IPAddress]':  # pylint: disable=inconsistent-return-statements
         """Load the value from database storage.
 
         Args:
@@ -110,13 +118,13 @@ class IPField(peewee.IPField):
         return None
 
 
-class IntEnumField(peewee.IntegerField):
+class IntEnumField(IntegerField):
     """:class:`enum.IntEnum` data field."""
 
     #: The original :class:`enum.IntEnum` class.
-    choices: typing.IntEnum
+    choices: 'IntEnum'
 
-    # def db_value(self, value: typing.Optional[typing.IntEnum]) -> typing.Optional[str]:  # pylint: disable=inconsistent-return-statements
+    # def db_value(self, value: 'Optional[IntEnum]') -> 'Optional[str]':  # pylint: disable=inconsistent-return-statements
     #     """Dump the value for database storage.
 
     #     Args:
@@ -129,7 +137,7 @@ class IntEnumField(peewee.IntegerField):
     #     if value is not None:
     #         return value
 
-    def python_value(self, value: typing.Optional[int]) -> typing.Optional[typing.IntEnum]:  # pylint: disable=inconsistent-return-statements
+    def python_value(self, value: 'Optional[int]') -> 'Optional[IntEnum]':  # pylint: disable=inconsistent-return-statements
         """Load the value from database storage.
 
         Args:
@@ -144,10 +152,10 @@ class IntEnumField(peewee.IntegerField):
         return None
 
 
-class PickleField(peewee.BlobField):
+class PickleField(BlobField):
     """Pickled data field."""
 
-    def db_value(self, value: typing.Any) -> typing.Optional[bytes]:  # pylint: disable=inconsistent-return-statements
+    def db_value(self, value: 'Any') -> 'Optional[bytes]':  # pylint: disable=inconsistent-return-statements
         """Dump the value for database storage.
 
         Args:
@@ -161,7 +169,7 @@ class PickleField(peewee.BlobField):
             value = pickle.dumps(value)
         return super().db_value(value)
 
-    def python_value(self, value: typing.Optional[bytes]) -> typing.Any:  # pylint: disable=inconsistent-return-statements
+    def python_value(self, value: 'Optional[bytes]') -> 'Any':  # pylint: disable=inconsistent-return-statements
         """Load the value from database storage.
 
         Args:

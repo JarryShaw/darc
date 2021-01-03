@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from typing import TYPE_CHECKING
 
-import flask  # pylint: disable=import-error
+import flask
+
+if TYPE_CHECKING:
+    from flask import Response
 
 # Flask application
 app = flask.Flask(__file__)
 
 
 @app.route('/api/new_host', methods=['POST'])
-def new_host():
+def new_host() -> 'Response':
     """When a new host is discovered, the :mod:`darc` crawler will submit the
     host information. Such includes ``robots.txt`` (if exists) and
     ``sitemap.xml`` (if any).
@@ -78,9 +82,12 @@ def new_host():
     # do whatever processing needed
     ...
 
+    return flask.make_response()
+
+
 
 @app.route('/api/requests', methods=['POST'])
-def from_requests():
+def from_requests() -> 'Response':
     """When crawling, we'll first fetch the URl using ``requests``, to check
     its availability and to save its HTTP headers information. Such information
     will be submitted to the web UI.
@@ -157,9 +164,11 @@ def from_requests():
     # do whatever processing needed
     ...
 
+    return flask.make_response()
+
 
 @app.route('/api/selenium', methods=['POST'])
-def from_selenium():
+def from_selenium() -> 'Response':
     """After crawling with ``requests``, we'll then render the URl using
     ``selenium`` with Google Chrome and its driver, to provide a fully rendered
     web page. Such information will be submitted to the web UI.
@@ -217,6 +226,8 @@ def from_selenium():
     # do whatever processing needed
     ...
 
+    return flask.make_response()
+
 
 if __name__ == "__main__":
-    sys.exit(app.run())  # type: ignore
+    sys.exit(app.run())  # type: ignore[func-returns-value]
