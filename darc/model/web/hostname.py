@@ -12,7 +12,7 @@ representing hostnames, specifically from ``new_host`` submission.
 
 """
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from peewee import DateTimeField, TextField
 
@@ -21,7 +21,7 @@ from darc.model.abc import BaseModelWeb as BaseModel
 from darc.model.utils import IntEnumField, Proxy
 
 if TYPE_CHECKING:
-    from typing import List
+    from typing import Callable, List
 
     from darc._compat import datetime
     from darc.model.web.hosts import HostsModel
@@ -86,9 +86,9 @@ class HostnameModel(BaseModel):
 
         """
         if self.alive:
-            filtering = lambda url: cast('HostnameModel', url).alive
+            filtering = lambda url: url.alive  # type: Callable[[URLModel], bool]
         else:
-            filtering = lambda url: not cast('HostnameModel', url).alive
+            filtering = lambda url: not url.alive
 
         return min(*filter(
             filtering, self.urls

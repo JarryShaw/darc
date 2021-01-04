@@ -90,7 +90,7 @@ def _get_site(link: 'Link') -> 'Type[BaseSite]':
         * :data:`darc.sites.SITEMAP`
 
     """
-    host = link.host.casefold()
+    host = (link.host or '<null>').casefold()
     site = SITEMAP.get(host)
     if site is None:
         site = DefaultSite
