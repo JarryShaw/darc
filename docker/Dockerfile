@@ -42,11 +42,11 @@ RUN set -x \
  && add-apt-repository ppa:i2p-maintainers/i2p --yes
 RUN apt-get update \
  && apt-get install --yes --no-install-recommends \
-        python3.8 \
+        python3.9-dev \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
+ && ln -sf /usr/bin/python3.9 /usr/local/bin/python3
 # workaround for Git LFS as Docker Hub not supporting yet
 RUN mkdir -p /var/cache/oracle-jdk11-installer-local/ \
  && wget -O /var/cache/oracle-jdk11-installer-local/jdk-11.0.9_linux-x64_bin.tar.gz \

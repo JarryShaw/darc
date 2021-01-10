@@ -3,8 +3,8 @@
 # OS Support also exists for jessie & stretch (slim and full).
 # See https://hub.docker.com/r/library/python/ for all supported Python
 # tags from Docker Hub.
-#FROM python:3.8-alpine
-#FROM python:3.8
+#FROM python:3.9-alpine
+#FROM python:3.9
 
 # If you prefer miniconda:
 #FROM continuumio/miniconda3
@@ -67,11 +67,11 @@ RUN set -x \
  && add-apt-repository ppa:i2p-maintainers/i2p --yes
 RUN apt-get update \
  && apt-get install --yes \
-        python3.8 \
+        python3.9-dev \
         python3-pip \
         python3-setuptools \
         python3-wheel \
- && ln -sf /usr/bin/python3.8 /usr/local/bin/python3
+ && ln -sf /usr/bin/python3.9 /usr/local/bin/python3
 # workaround for Git LFS as Docker Hub not supporting yet
 RUN mkdir -p /var/cache/oracle-jdk11-installer-local/ \
  && wget -O /var/cache/oracle-jdk11-installer-local/jdk-11.0.9_linux-x64_bin.tar.gz \
