@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 LABEL org.opencontainers.image.title="darc" \
       org.opencontainers.image.description="Darkweb Crawler Project" \
@@ -63,11 +63,11 @@ RUN apt-get install --yes --no-install-recommends \
 
 ## Tor
 RUN apt-get install --yes --no-install-recommends tor
-COPY extra/torrc.bionic /etc/tor/torrc
+COPY extra/torrc.focal /etc/tor/torrc
 
 ## I2P
 RUN apt-get install --yes --no-install-recommends i2p
-COPY extra/i2p.bionic /etc/defaults/i2p
+COPY extra/i2p.focal /etc/defaults/i2p
 
 ## ZeroNet
 COPY vendor/ZeroNet-linux-dist-linux64.tar.gz /tmp
@@ -75,7 +75,7 @@ RUN set -x \
  && cd /tmp \
  && tar xvpfz ZeroNet-linux-dist-linux64.tar.gz \
  && mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
-COPY extra/zeronet.bionic.conf /usr/local/src/zeronet/zeronet.conf
+COPY extra/zeronet.focal.conf /usr/local/src/zeronet/zeronet.conf
 
 ## FreeNet
 USER darc
