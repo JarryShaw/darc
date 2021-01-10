@@ -70,6 +70,11 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       -
+         name: Clean cache
+         id: docker_prune
+         run: |
+           docker system prune --volumes -f
+      -
         name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
