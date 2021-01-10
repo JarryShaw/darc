@@ -1,0 +1,506 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Models &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Task Queues" href="tasks.html" />
+    <link rel="prev" title="Custom Exceptions" href="../error.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-darc.model">
+<span id="data-models"></span><h1>Data Models<a class="headerlink" href="#module-darc.model" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-darc.model" title="darc.model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model</span></code></a> module contains all data models defined for the
+<a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project, including RDS-based task queue and data submission.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">Task Queues</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#hostname-queue">Hostname Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#crawler-queue">Crawler Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#loader-queue">Loader Queue</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">Submission Data Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="web.html#hostname-records">Hostname Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#url-records">URL Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#robots-txt-records"><code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#sitemap-xml-records"><code class="docutils literal notranslate"><span class="pre">sitemap.xml</span></code> Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#hosts-txt-records"><code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#crawler-records">Crawler Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#loader-records">Loader Records</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<span class="target" id="module-darc.model.abc"></span><div class="section" id="base-model">
+<h2>Base Model<a class="headerlink" href="#base-model" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-darc.model.abc" title="darc.model.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.abc</span></code></a> module contains abstract base class
+of all data models for the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project.</p>
+<dl class="py class">
+<dt id="darc.model.abc.BaseMeta">
+<em class="property">class </em><code class="sig-prename descclassname">darc.model.abc.</code><code class="sig-name descname">BaseMeta</code><a class="reference internal" href="../../_modules/darc/model/abc.html#BaseMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.abc.BaseMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Basic metadata for data models.</p>
+<dl class="py method">
+<dt id="darc.model.abc.BaseMeta.table_function">
+<code class="sig-name descname">table_function</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#darc.model.abc.BaseMeta.table_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate table name dynamically (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">table_function()</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>model_class</strong> (<em>peewee.Model</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.abc.BaseMeta.database">
+<code class="sig-name descname">database</code><em class="property"> = &lt;peewee.SqliteDatabase object&gt;</em><a class="headerlink" href="#darc.model.abc.BaseMeta.database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference database storage (c.f. <a class="reference internal" href="../const.html#id0" title="darc.const.DB"><code class="xref py py-class docutils literal notranslate"><span class="pre">DB</span></code></a>).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darc.model.abc.BaseMetaWeb">
+<em class="property">class </em><code class="sig-prename descclassname">darc.model.abc.</code><code class="sig-name descname">BaseMetaWeb</code><a class="reference internal" href="../../_modules/darc/model/abc.html#BaseMetaWeb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.abc.BaseMetaWeb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.model.abc.BaseMeta" title="darc.model.abc.BaseMeta"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.abc.BaseMeta</span></code></a></p>
+<p>Basic metadata for data models of data submission.</p>
+<dl class="py attribute">
+<dt id="darc.model.abc.BaseMetaWeb.database">
+<code class="sig-name descname">database</code><em class="property"> = &lt;peewee.SqliteDatabase object&gt;</em><a class="headerlink" href="#darc.model.abc.BaseMetaWeb.database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference database storage (c.f. <a class="reference internal" href="../const.html#id0" title="darc.const.DB"><code class="xref py py-class docutils literal notranslate"><span class="pre">DB</span></code></a>).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darc.model.abc.BaseModel">
+<em class="property">class </em><code class="sig-prename descclassname">darc.model.abc.</code><code class="sig-name descname">BaseModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/abc.html#BaseModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.abc.BaseModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">peewee.Model</span></code></p>
+<p>Base model with standard patterns.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>The model will implicitly have a <code class="xref py py-class docutils literal notranslate"><span class="pre">AutoField</span></code>
+attribute named as <a class="reference internal" href="#darc.model.abc.BaseModel.id" title="darc.model.abc.BaseModel.id"><code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code></a>.</p>
+</div>
+<dl class="py attribute">
+<dt id="darc.model.abc.BaseModel.DoesNotExist">
+<code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#darc.model.abc.BaseModel.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.abc.BaseModelDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="darc.model.abc.BaseModel.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">keep_id</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/abc.html#BaseModel.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.abc.BaseModel.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert record to <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keep_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If keep the ID auto field.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The data converted through <code class="xref py py-func docutils literal notranslate"><span class="pre">playhouse.shortcuts.model_to_dict()</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.abc.BaseModel.Meta">
+<code class="sig-name descname">Meta</code><a class="headerlink" href="#darc.model.abc.BaseModel.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic metadata for data models.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.abc.BaseModel.id">
+<code class="sig-name descname">id</code><em class="property"> = &lt;AutoField: BaseModel.id&gt;</em><a class="headerlink" href="#darc.model.abc.BaseModel.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darc.model.abc.BaseModelWeb">
+<em class="property">class </em><code class="sig-prename descclassname">darc.model.abc.</code><code class="sig-name descname">BaseModelWeb</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/abc.html#BaseModelWeb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.abc.BaseModelWeb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.abc.BaseModel</span></code></a></p>
+<p>Base model with standard patterns for data submission.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>The model will implicitly have a <code class="xref py py-class docutils literal notranslate"><span class="pre">AutoField</span></code>
+attribute named as <a class="reference internal" href="#darc.model.abc.BaseModelWeb.id" title="darc.model.abc.BaseModelWeb.id"><code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code></a>.</p>
+</div>
+<dl class="py attribute">
+<dt id="darc.model.abc.BaseModelWeb.DoesNotExist">
+<code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#darc.model.abc.BaseModelWeb.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.abc.BaseModelWebDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.abc.BaseModelWeb.Meta">
+<code class="sig-name descname">Meta</code><a class="headerlink" href="#darc.model.abc.BaseModelWeb.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic metadata for data models.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.abc.BaseModelWeb.id">
+<code class="sig-name descname">id</code><em class="property"> = &lt;AutoField: BaseModelWeb.id&gt;</em><a class="headerlink" href="#darc.model.abc.BaseModelWeb.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-darc.model.utils"></span><div class="section" id="miscellaneous-utilities">
+<h2>Miscellaneous Utilities<a class="headerlink" href="#miscellaneous-utilities" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-darc.model.utils" title="darc.model.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.utils</span></code></a> module contains several miscellaneous
+utility functions and data fields.</p>
+<dl class="py class">
+<dt id="darc.model.utils.IPField">
+<em class="property">class </em><code class="sig-prename descclassname">darc.model.utils.</code><code class="sig-name descname">IPField</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">null</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">column_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">primary_key</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">constraints</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unindexed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">choices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">help_text</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">index_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">db_column</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_hidden</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#IPField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.IPField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">peewee.IPField</span></code></p>
+<p>IP data field.</p>
+<dl class="py method">
+<dt id="darc.model.utils.IPField.db_value">
+<code class="sig-name descname">db_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#IPField.db_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.IPField.db_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump the value for database storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Source IP address instance.</p></li>
+<li><p><strong>val</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>IPAddress</em><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Integral representation of the IP address.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="darc.model.utils.IPField.python_value">
+<code class="sig-name descname">python_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#IPField.python_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.IPField.python_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the value from database storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Integral representation of the IP address.</p></li>
+<li><p><strong>val</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[IPAddress]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Original IP address instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darc.model.utils.IntEnumField">
+<em class="property">class </em><code class="sig-prename descclassname">darc.model.utils.</code><code class="sig-name descname">IntEnumField</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">null</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">column_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">primary_key</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">constraints</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unindexed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">choices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">help_text</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">index_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">db_column</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_hidden</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#IntEnumField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.IntEnumField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">peewee.IntegerField</span></code></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.IntEnum" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></a> data field.</p>
+<dl class="py method">
+<dt id="darc.model.utils.IntEnumField.python_value">
+<code class="sig-name descname">python_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#IntEnumField.python_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.IntEnumField.python_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the value from database storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em>) – Integral representation of the enumeration.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[IntEnum]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Original enumeration object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.utils.IntEnumField.choices">
+<code class="sig-name descname">choices</code><em class="property">: IntEnum</em><a class="headerlink" href="#darc.model.utils.IntEnumField.choices" title="Permalink to this definition">¶</a></dt>
+<dd><p>The original <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.IntEnum" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></a> class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darc.model.utils.JSONField">
+<em class="property">class </em><code class="sig-prename descclassname">darc.model.utils.</code><code class="sig-name descname">JSONField</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">null</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">column_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">primary_key</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">constraints</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unindexed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">choices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">help_text</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">index_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">db_column</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_hidden</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#JSONField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.JSONField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">playhouse.mysql_ext.JSONField</span></code></p>
+<p>JSON data field.</p>
+<dl class="py method">
+<dt id="darc.model.utils.JSONField.db_value">
+<code class="sig-name descname">db_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#JSONField.db_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.JSONField.db_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump the value for database storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Any</em>) – Source JSON value.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JSON serialised string data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="darc.model.utils.JSONField.python_value">
+<code class="sig-name descname">python_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#JSONField.python_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.JSONField.python_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the value from database storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – Serialised JSON string.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Original JSON data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darc.model.utils.PickleField">
+<em class="property">class </em><code class="sig-prename descclassname">darc.model.utils.</code><code class="sig-name descname">PickleField</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">null</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">column_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">primary_key</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">constraints</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unindexed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">choices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">help_text</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">index_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">db_column</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_hidden</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#PickleField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.PickleField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">peewee.BlobField</span></code></p>
+<p>Pickled data field.</p>
+<dl class="py method">
+<dt id="darc.model.utils.PickleField.db_value">
+<code class="sig-name descname">db_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#PickleField.db_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.PickleField.db_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump the value for database storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Any</em>) – Source value.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.9)">bytes</a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Picked bytestring data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="darc.model.utils.PickleField.python_value">
+<code class="sig-name descname">python_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#PickleField.python_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.PickleField.python_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the value from database storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.9)"><em>bytes</em></a><em>]</em>) – SPicked bytestring data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Original data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darc.model.utils.Proxy">
+<em class="property">class </em><code class="sig-prename descclassname">darc.model.utils.</code><code class="sig-name descname">Proxy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#Proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.Proxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.IntEnum" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></a></p>
+<p>Proxy types supported by <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>.</p>
+<dl class="py attribute">
+<dt id="darc.model.utils.Proxy.FREENET">
+<code class="sig-name descname">FREENET</code><em class="property"> = 5</em><a class="headerlink" href="#darc.model.utils.Proxy.FREENET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Freenet proxy.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.utils.Proxy.I2P">
+<code class="sig-name descname">I2P</code><em class="property"> = 3</em><a class="headerlink" href="#darc.model.utils.Proxy.I2P" title="Permalink to this definition">¶</a></dt>
+<dd><p>I2P proxy.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.utils.Proxy.NULL">
+<code class="sig-name descname">NULL</code><em class="property"> = 1</em><a class="headerlink" href="#darc.model.utils.Proxy.NULL" title="Permalink to this definition">¶</a></dt>
+<dd><p>No proxy.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.utils.Proxy.TOR">
+<code class="sig-name descname">TOR</code><em class="property"> = 2</em><a class="headerlink" href="#darc.model.utils.Proxy.TOR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tor proxy.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.utils.Proxy.TOR2WEB">
+<code class="sig-name descname">TOR2WEB</code><em class="property"> = 6</em><a class="headerlink" href="#darc.model.utils.Proxy.TOR2WEB" title="Permalink to this definition">¶</a></dt>
+<dd><p>//onion.sh/&gt;`__, no proxy).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Proxied Tor (<a href="#id1"><span class="problematic" id="id2">`</span></a>tor2web &lt;https</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.model.utils.Proxy.ZERONET">
+<code class="sig-name descname">ZERONET</code><em class="property"> = 4</em><a class="headerlink" href="#darc.model.utils.Proxy.ZERONET" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZeroNet proxy.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.model.utils.table_function">
+<code class="sig-prename descclassname">darc.model.utils.</code><code class="sig-name descname">table_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_class</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#table_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.model.utils.table_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate table name dynamically.</p>
+<p>The function strips <code class="docutils literal notranslate"><span class="pre">Model</span></code> from the class name and
+calls <code class="xref py py-func docutils literal notranslate"><span class="pre">peewee.make_snake_case()</span></code> to generate a
+proper table name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model_class</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>) – Data model class.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Generated table name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../proxy/index.html">Proxy Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sites/index.html">Sites Customisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html">Custom Exceptions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Technical Documentation</a><ul>
+      <li>Previous: <a href="../error.html" title="previous chapter">Custom Exceptions</a></li>
+      <li>Next: <a href="tasks.html" title="next chapter">Task Queues</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="../../_sources/darc/model/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

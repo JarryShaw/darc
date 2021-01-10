@@ -1,0 +1,366 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Backend Demo &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Models Demo" href="model.html" />
+    <link rel="prev" title="Docker Integration" href="../docker.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="web-backend-demo">
+<h1>Web Backend Demo<a class="headerlink" href="#web-backend-demo" title="Permalink to this headline">¶</a></h1>
+<p>This is a demo of API for communication between the
+<a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> crawlers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.submit</span></code>) and web UI.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Please refer to <a class="reference internal" href="schema.html"><span class="doc">data schema</span></a> for more
+information about the submission data.</p>
+</div>
+<p>Assuming the web UI is developed using the <a class="reference external" href="https://flask.palletsprojects.com"><code class="docutils literal notranslate"><span class="pre">Flask</span></code></a>
+microframework.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">flask</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Response</span>
+
+<span class="c1"># Flask application</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">Flask</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/new_host&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">new_host</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;Response&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;When a new host is discovered, the :mod:`darc` crawler will submit the</span>
+<span class="sd">    host information. Such includes ``robots.txt`` (if exists) and</span>
+<span class="sd">    ``sitemap.xml`` (if any).</span>
+
+<span class="sd">    Data format::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            // partial flag - true / false</span>
+<span class="sd">            &quot;$PARTIAL$&quot;: ...,</span>
+<span class="sd">            // force flag - true / false</span>
+<span class="sd">            &quot;$FORCE$&quot;: ...,</span>
+<span class="sd">            // metadata of URL</span>
+<span class="sd">            &quot;[metadata]&quot;: {</span>
+<span class="sd">                // original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;</span>
+<span class="sd">                &quot;url&quot;: ...,</span>
+<span class="sd">                // proxy type - null / tor / i2p / zeronet / freenet</span>
+<span class="sd">                &quot;proxy&quot;: ...,</span>
+<span class="sd">                // hostname / netloc, c.f. ``urllib.parse.urlparse``</span>
+<span class="sd">                &quot;host&quot;: ...,</span>
+<span class="sd">                // base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;</span>
+<span class="sd">                &quot;base&quot;: ...,</span>
+<span class="sd">                // sha256 of URL as name for saved files (timestamp is in ISO format)</span>
+<span class="sd">                //   JSON log as this one - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json</span>
+<span class="sd">                //   HTML from requests - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html</span>
+<span class="sd">                //   HTML from selenium - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html</span>
+<span class="sd">                //   generic data files - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat</span>
+<span class="sd">                &quot;name&quot;: ...</span>
+<span class="sd">            },</span>
+<span class="sd">            // requested timestamp in ISO format as in name of saved file</span>
+<span class="sd">            &quot;Timestamp&quot;: ...,</span>
+<span class="sd">            // original URL</span>
+<span class="sd">            &quot;URL&quot;: ...,</span>
+<span class="sd">            // robots.txt from the host (if not exists, then ``null``)</span>
+<span class="sd">            &quot;Robots&quot;: {</span>
+<span class="sd">                // path of the file, relative path (to data root path ``PATH_DATA``) in container</span>
+<span class="sd">                //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/robots.txt</span>
+<span class="sd">                &quot;path&quot;: ...,</span>
+<span class="sd">                // content of the file (**base64** encoded)</span>
+<span class="sd">                &quot;data&quot;: ...,</span>
+<span class="sd">            },</span>
+<span class="sd">            // sitemaps from the host (if none, then ``null``)</span>
+<span class="sd">            &quot;Sitemaps&quot;: [</span>
+<span class="sd">                {</span>
+<span class="sd">                    // path of the file, relative path (to data root path ``PATH_DATA``) in container</span>
+<span class="sd">                    //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/sitemap_&lt;name&gt;.xml</span>
+<span class="sd">                    &quot;path&quot;: ...,</span>
+<span class="sd">                    // content of the file (**base64** encoded)</span>
+<span class="sd">                    &quot;data&quot;: ...,</span>
+<span class="sd">                },</span>
+<span class="sd">                ...</span>
+<span class="sd">            ],</span>
+<span class="sd">            // hosts.txt from the host (if proxy type is ``i2p``; if not exists, then ``null``)</span>
+<span class="sd">            &quot;Hosts&quot;: {</span>
+<span class="sd">                // path of the file, relative path (to data root path ``PATH_DATA``) in container</span>
+<span class="sd">                //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/hosts.txt</span>
+<span class="sd">                &quot;path&quot;: ...,</span>
+<span class="sd">                // content of the file (**base64** encoded)</span>
+<span class="sd">                &quot;data&quot;: ...,</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># JSON data from the request</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">json</span>  <span class="c1"># pylint: disable=unused-variable</span>
+
+    <span class="c1"># do whatever processing needed</span>
+    <span class="o">...</span>
+
+    <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">make_response</span><span class="p">()</span>
+
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/requests&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">from_requests</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;Response&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;When crawling, we&#39;ll first fetch the URl using ``requests``, to check</span>
+<span class="sd">    its availability and to save its HTTP headers information. Such information</span>
+<span class="sd">    will be submitted to the web UI.</span>
+
+<span class="sd">    Data format::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            // metadata of URL</span>
+<span class="sd">            &quot;[metadata]&quot;: {</span>
+<span class="sd">                // original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;</span>
+<span class="sd">                &quot;url&quot;: ...,</span>
+<span class="sd">                // proxy type - null / tor / i2p / zeronet / freenet</span>
+<span class="sd">                &quot;proxy&quot;: ...,</span>
+<span class="sd">                // hostname / netloc, c.f. ``urllib.parse.urlparse``</span>
+<span class="sd">                &quot;host&quot;: ...,</span>
+<span class="sd">                // base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;</span>
+<span class="sd">                &quot;base&quot;: ...,</span>
+<span class="sd">                // sha256 of URL as name for saved files (timestamp is in ISO format)</span>
+<span class="sd">                //   JSON log as this one - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json</span>
+<span class="sd">                //   HTML from requests - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html</span>
+<span class="sd">                //   HTML from selenium - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html</span>
+<span class="sd">                //   generic data files - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat</span>
+<span class="sd">                &quot;name&quot;: ...</span>
+<span class="sd">            },</span>
+<span class="sd">            // requested timestamp in ISO format as in name of saved file</span>
+<span class="sd">            &quot;Timestamp&quot;: ...,</span>
+<span class="sd">            // original URL</span>
+<span class="sd">            &quot;URL&quot;: ...,</span>
+<span class="sd">            // request method</span>
+<span class="sd">            &quot;Method&quot;: &quot;GET&quot;,</span>
+<span class="sd">            // response status code</span>
+<span class="sd">            &quot;Status-Code&quot;: ...,</span>
+<span class="sd">            // response reason</span>
+<span class="sd">            &quot;Reason&quot;: ...,</span>
+<span class="sd">            // response cookies (if any)</span>
+<span class="sd">            &quot;Cookies&quot;: {</span>
+<span class="sd">                ...</span>
+<span class="sd">            },</span>
+<span class="sd">            // session cookies (if any)</span>
+<span class="sd">            &quot;Session&quot;: {</span>
+<span class="sd">                ...</span>
+<span class="sd">            },</span>
+<span class="sd">            // request headers (if any)</span>
+<span class="sd">            &quot;Request&quot;: {</span>
+<span class="sd">                ...</span>
+<span class="sd">            },</span>
+<span class="sd">            // response headers (if any)</span>
+<span class="sd">            &quot;Response&quot;: {</span>
+<span class="sd">                ...</span>
+<span class="sd">            },</span>
+<span class="sd">            // content type</span>
+<span class="sd">            &quot;Content-Type&quot;: ...,</span>
+<span class="sd">            // requested file (if not exists, then ``null``)</span>
+<span class="sd">            &quot;Document&quot;: {</span>
+<span class="sd">                // path of the file, relative path (to data root path ``PATH_DATA``) in container</span>
+<span class="sd">                //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html</span>
+<span class="sd">                // or if the document is of generic content type, i.e. not HTML</span>
+<span class="sd">                //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat</span>
+<span class="sd">                &quot;path&quot;: ...,</span>
+<span class="sd">                // content of the file (**base64** encoded)</span>
+<span class="sd">                &quot;data&quot;: ...,</span>
+<span class="sd">            },</span>
+<span class="sd">            // redirection history (if any)</span>
+<span class="sd">            &quot;History&quot;: [</span>
+<span class="sd">                // same records as the original response</span>
+<span class="sd">                {&quot;...&quot;: &quot;...&quot;}</span>
+<span class="sd">            ]</span>
+<span class="sd">        }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># JSON data from the request</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">json</span>  <span class="c1"># pylint: disable=unused-variable</span>
+
+    <span class="c1"># do whatever processing needed</span>
+    <span class="o">...</span>
+
+    <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">make_response</span><span class="p">()</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/selenium&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">from_selenium</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;Response&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;After crawling with ``requests``, we&#39;ll then render the URl using</span>
+<span class="sd">    ``selenium`` with Google Chrome and its driver, to provide a fully rendered</span>
+<span class="sd">    web page. Such information will be submitted to the web UI.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This information is optional, only provided if the content type from</span>
+<span class="sd">        ``requests`` is HTML, status code &lt; 400, and HTML data not empty.</span>
+
+<span class="sd">    Data format::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            // metadata of URL</span>
+<span class="sd">            &quot;[metadata]&quot;: {</span>
+<span class="sd">                // original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;</span>
+<span class="sd">                &quot;url&quot;: ...,</span>
+<span class="sd">                // proxy type - null / tor / i2p / zeronet / freenet</span>
+<span class="sd">                &quot;proxy&quot;: ...,</span>
+<span class="sd">                // hostname / netloc, c.f. ``urllib.parse.urlparse``</span>
+<span class="sd">                &quot;host&quot;: ...,</span>
+<span class="sd">                // base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;</span>
+<span class="sd">                &quot;base&quot;: ...,</span>
+<span class="sd">                // sha256 of URL as name for saved files (timestamp is in ISO format)</span>
+<span class="sd">                //   JSON log as this one - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json</span>
+<span class="sd">                //   HTML from requests - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html</span>
+<span class="sd">                //   HTML from selenium - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html</span>
+<span class="sd">                //   generic data files - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat</span>
+<span class="sd">                &quot;name&quot;: ...</span>
+<span class="sd">            },</span>
+<span class="sd">            // requested timestamp in ISO format as in name of saved file</span>
+<span class="sd">            &quot;Timestamp&quot;: ...,</span>
+<span class="sd">            // original URL</span>
+<span class="sd">            &quot;URL&quot;: ...,</span>
+<span class="sd">            // rendered HTML document (if not exists, then ``null``)</span>
+<span class="sd">            &quot;Document&quot;: {</span>
+<span class="sd">                // path of the file, relative path (to data root path ``PATH_DATA``) in container</span>
+<span class="sd">                //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.html</span>
+<span class="sd">                &quot;path&quot;: ...,</span>
+<span class="sd">                // content of the file (**base64** encoded)</span>
+<span class="sd">                &quot;data&quot;: ...,</span>
+<span class="sd">            },</span>
+<span class="sd">            // web page screenshot (if not exists, then ``null``)</span>
+<span class="sd">            &quot;Screenshot&quot;: {</span>
+<span class="sd">                // path of the file, relative path (to data root path ``PATH_DATA``) in container</span>
+<span class="sd">                //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.png</span>
+<span class="sd">                &quot;path&quot;: ...,</span>
+<span class="sd">                // content of the file (**base64** encoded)</span>
+<span class="sd">                &quot;data&quot;: ...,</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># JSON data from the request</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">json</span>  <span class="c1"># pylint: disable=unused-variable</span>
+
+    <span class="c1"># do whatever processing needed</span>
+    <span class="o">...</span>
+
+    <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">make_response</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">())</span>  <span class="c1"># type: ignore[func-returns-value]</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docker.html">Docker Integration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../docker.html" title="previous chapter">Docker Integration</a></li>
+      <li>Next: <a href="model.html" title="next chapter">Data Models Demo</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="../_sources/demo/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

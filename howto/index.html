@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to … &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How to gracefully deploy darc?" href="deploy.html" />
+    <link rel="prev" title="darc - Darkweb Crawler Project" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to">
+<h1>How to …<a class="headerlink" href="#how-to" title="Permalink to this headline">¶</a></h1>
+<p>This is the knowledge base for <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project. Should you request for more
+articles, please create an issue at the
+<a class="reference external" href="https://github.com/JarryShaw/darc">GitHub repository</a>.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deploy.html">How to gracefully deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code>?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deploy.html#to-start-with">To Start With</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy.html#software-dependency">Software Dependency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy.html#deploy-darc-docker-image">Deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code> Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy.html#setup-healthcheck-daemon-service">Setup <code class="docutils literal notranslate"><span class="pre">healthcheck</span></code> Daemon Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy.html#install-upload-cron-job">Install <code class="docutils literal notranslate"><span class="pre">upload</span></code> Cron Job</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy.html#bonus-tip">Bonus Tip</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sites.html">How to implement a sites customisation?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sites.html#crawler-hook">Crawler Hook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sites.html#loader-hook">Loader Hook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sites.html#in-case-to-drop-the-link-from-task-queue">In case to drop the link from task queue…</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sites.html#then-what-should-i-do-to-include-my-sites-customisation">Then what should I do to include my sites customisation?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="proxy.html">How to implement a custom proxy middleware?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="proxy.html#session-factory">Session Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy.html#driver-factory">Driver Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy.html#what-should-i-do-to-register-the-proxy">What should I do to register the proxy?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to …</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deploy.html">How to gracefully deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sites.html">How to implement a sites customisation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy.html">How to implement a custom proxy middleware?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">darc</span></code> - Darkweb Crawler Project</a></li>
+      <li>Next: <a href="deploy.html" title="next chapter">How to gracefully deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code>?</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="../_sources/howto/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

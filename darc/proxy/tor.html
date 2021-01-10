@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>&lt;no title&gt; &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="zeronet.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="tel.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <dl class="py data">
+<dt id="darc.proxy.tor.TOR_REQUESTS_PROXY">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">TOR_REQUESTS_PROXY</code><em class="property">: Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span></em><a class="headerlink" href="#darc.proxy.tor.TOR_REQUESTS_PROXY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Proxy for Tor sessions.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.requests.tor_session()</span></code></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor.TOR_SELENIUM_PROXY">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">TOR_SELENIUM_PROXY</code><em class="property">: <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy" title="(in Selenium v3.141)">selenium.webdriver.common.proxy.Proxy</a></em><a class="headerlink" href="#darc.proxy.tor.TOR_SELENIUM_PROXY" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy" title="(in Selenium v3.141)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proxy</span></code></a> for Tor web drivers.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.selenium.tor_driver()</span></code></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<p>The following constants are configuration through environment variables:</p>
+<dl class="py data">
+<dt id="darc.proxy.tor.TOR_PORT">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">TOR_PORT</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><a class="headerlink" href="#darc.proxy.tor.TOR_PORT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Port for Tor proxy connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">9050</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.tor.TOR_PORT" title="darc.proxy.tor.TOR_PORT"><code class="xref py py-data docutils literal notranslate"><span class="pre">TOR_PORT</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor.TOR_CTRL">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">TOR_CTRL</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><a class="headerlink" href="#darc.proxy.tor.TOR_CTRL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Port for Tor controller connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">9051</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.tor.TOR_CTRL" title="darc.proxy.tor.TOR_CTRL"><code class="xref py py-data docutils literal notranslate"><span class="pre">TOR_CTRL</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor.TOR_PASS">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">TOR_PASS</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#darc.proxy.tor.TOR_PASS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tor controller authentication token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.tor.TOR_PASS" title="darc.proxy.tor.TOR_PASS"><code class="xref py py-data docutils literal notranslate"><span class="pre">TOR_PASS</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If not provided, it will be requested at runtime.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor.TOR_RETRY">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">TOR_RETRY</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><a class="headerlink" href="#darc.proxy.tor.TOR_RETRY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retry times for Tor bootstrap when failure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">3</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.tor.TOR_RETRY" title="darc.proxy.tor.TOR_RETRY"><code class="xref py py-data docutils literal notranslate"><span class="pre">TOR_RETRY</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor.BS_WAIT">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">BS_WAIT</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></em><a class="headerlink" href="#darc.proxy.tor.BS_WAIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time after which the attempt to start Tor is aborted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">90</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">TOR_WAIT</span></code></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If not provided, there will be <strong>NO</strong> timeouts.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor.TOR_CFG">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">TOR_CFG</code><em class="property">: Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span></em><a class="headerlink" href="#darc.proxy.tor.TOR_CFG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tor bootstrap configuration for <a class="reference external" href="https://stem.torproject.org/api/process.html#stem.process.launch_tor_with_config" title="(in Stem v1.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">stem.process.launch_tor_with_config()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.tor.TOR_CFG" title="darc.proxy.tor.TOR_CFG"><code class="xref py py-data docutils literal notranslate"><span class="pre">TOR_CFG</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If provided, it will be parsed from a JSON encoded string.</p>
+</div>
+</dd></dl>
+
+<p>The following constants are defined for internal usage:</p>
+<dl class="py data">
+<dt id="darc.proxy.tor._MNG_TOR">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">_MNG_TOR</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.proxy.tor._MNG_TOR" title="Permalink to this definition">¶</a></dt>
+<dd><p>If manage Tor proxy through <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">DARC_TOR</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor._TOR_BS_FLAG">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">_TOR_BS_FLAG</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.proxy.tor._TOR_BS_FLAG" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the Tor proxy is bootstrapped.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor._TOR_PROC">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">_TOR_PROC</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen" title="(in Python v3.9)">subprocess.Popen</a></em><a class="headerlink" href="#darc.proxy.tor._TOR_PROC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tor proxy process running in the background.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor._TOR_CTRL">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">_TOR_CTRL</code><em class="property">: <a class="reference external" href="https://stem.torproject.org/api/control.html#stem.control.Controller" title="(in Stem v1.8)">stem.control.Controller</a></em><a class="headerlink" href="#darc.proxy.tor._TOR_CTRL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tor controller process (<a class="reference external" href="https://stem.torproject.org/api/control.html#stem.control.Controller" title="(in Stem v1.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">stem.control.Controller</span></code></a>) running in the background.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.proxy.tor._TOR_CONFIG">
+<code class="sig-prename descclassname">darc.proxy.tor.</code><code class="sig-name descname">_TOR_CONFIG</code><em class="property">: List<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#darc.proxy.tor._TOR_CONFIG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tor bootstrap configuration for <a class="reference external" href="https://stem.torproject.org/api/process.html#stem.process.launch_tor_with_config" title="(in Stem v1.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">stem.process.launch_tor_with_config()</span></code></a>.</p>
+</dd></dl>
+
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Technical Documentation</a><ul>
+  <li><a href="index.html">Proxy Utilities</a><ul>
+      <li>Previous: <a href="tel.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="zeronet.html" title="next chapter">&lt;no title&gt;</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="../../_sources/darc/proxy/tor.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darc.model.tasks.selenium &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for darc.model.tasks.selenium</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Loader Queue</span>
+<span class="sd">------------------</span>
+
+<span class="sd">.. important::</span>
+
+<span class="sd">   The :obj:`loader &lt;darc.crawl.loader&gt;` queue is a **sorted set**</span>
+<span class="sd">   named ``queue_selenium`` in a `Redis`_ based task queue.</span>
+
+<span class="sd">   .. _Redis: https://redis.io</span>
+
+<span class="sd">The :mod:`darc.model.tasks.selenium` model contains the data model</span>
+<span class="sd">defined for the :obj:`loader &lt;darc.crawl.loader&gt;` queue.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="n">CharField</span><span class="p">,</span> <span class="n">DateTimeField</span><span class="p">,</span> <span class="n">TextField</span>
+
+<span class="kn">from</span> <span class="nn">darc.model.abc</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">darc.model.utils</span> <span class="kn">import</span> <span class="n">PickleField</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">datetime</span>
+    <span class="kn">from</span> <span class="nn">darc.link</span> <span class="kn">import</span> <span class="n">Link</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SeleniumQueueModel&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="SeleniumQueueModel"><a class="viewcode-back" href="../../../../darc/model/tasks.html#darc.model.tasks.selenium.SeleniumQueueModel">[docs]</a><span class="k">class</span> <span class="nc">SeleniumQueueModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Task queue for :func:`~darc.crawl.loader`.&quot;&quot;&quot;</span>
+
+    <span class="c1">#: URL as raw text (c.f. :attr:`Link.url &lt;darc.link.Link.url&gt;`).</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">()</span>
+    <span class="c1">#: Sha256 hash value (c.f. :attr:`Link.name &lt;darc.link.Link.name&gt;`).</span>
+    <span class="nb">hash</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">#: Pickled target :class:`~darc.link.Link` instance.</span>
+    <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span> <span class="o">=</span> <span class="n">PickleField</span><span class="p">()</span>
+    <span class="c1">#: Timestamp of last update.</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

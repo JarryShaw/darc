@@ -1,0 +1,663 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Module Constants &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Custom Exceptions" href="error.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="sites/tel.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-constants">
+<h1>Module Constants<a class="headerlink" href="#module-constants" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="auxiliary-function">
+<h2>Auxiliary Function<a class="headerlink" href="#auxiliary-function" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="darc.const.get_lock">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">get_lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/const.html#get_lock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.const.get_lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a lock.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Union[ProcessLock, ThreadLock, nullcontext]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Lock context based on <a class="reference internal" href="#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a>
+and <a class="reference internal" href="#darc.const.FLAG_TH" title="darc.const.FLAG_TH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_TH</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="general-configurations">
+<h2>General Configurations<a class="headerlink" href="#general-configurations" title="Permalink to this headline">¶</a></h2>
+<dl class="py data">
+<dt id="darc.const.REBOOT">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">REBOOT</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.REBOOT" title="Permalink to this definition">¶</a></dt>
+<dd><p>If exit the program after first round, i.e. crawled all links from the
+<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> link database and loaded all links from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>
+link database.</p>
+<p>This can be useful especially when the capacity is limited and you wish
+to save some space before continuing next round. See
+<a class="reference internal" href="../docker.html"><span class="doc">Docker integration</span></a> for more information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-0"></span><a class="reference internal" href="../config.html#envvar-DARC_REBOOT"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_REBOOT</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.DEBUG">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">DEBUG</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd><p>If run the program in debugging mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-1"></span><a class="reference internal" href="../config.html#envvar-DARC_DEBUG"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_DEBUG</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.VERBOSE">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">VERBOSE</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.VERBOSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>If run the program in verbose mode. If <a class="reference internal" href="#darc.const.DEBUG" title="darc.const.DEBUG"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEBUG</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>,
+then the verbose mode will be always enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-2"></span><a class="reference internal" href="../config.html#envvar-DARC_VERBOSE"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_VERBOSE</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.FORCE">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">FORCE</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.FORCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>If ignore <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> rules when crawling (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-3"></span><a class="reference internal" href="../config.html#envvar-DARC_FORCE"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_FORCE</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.CHECK">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">CHECK</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.CHECK" title="Permalink to this definition">¶</a></dt>
+<dd><p>If check proxy and hostname before crawling (when calling
+<code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code>
+and <code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code>).</p>
+<p>If <a class="reference internal" href="#darc.const.CHECK_NG" title="darc.const.CHECK_NG"><code class="xref py py-data docutils literal notranslate"><span class="pre">CHECK_NG</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, then this environment
+variable will be always set as <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-4"></span><a class="reference internal" href="../config.html#envvar-DARC_CHECK"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_CHECK</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.CHECK_NG">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">CHECK_NG</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.CHECK_NG" title="Permalink to this definition">¶</a></dt>
+<dd><p>If check content type through <code class="docutils literal notranslate"><span class="pre">HEAD</span></code> requests before crawling
+(when calling <code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-5"></span><a class="reference internal" href="../config.html#envvar-DARC_CHECK_CONTENT_TYPE"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_CHECK_CONTENT_TYPE</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.ROOT">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">ROOT</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#darc.const.ROOT" title="Permalink to this definition">¶</a></dt>
+<dd><p>The root folder of the project.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.CWD">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">CWD</code><em class="property"> = '.'</em><a class="headerlink" href="#darc.const.CWD" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current working direcory.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.DARC_CPU">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">DARC_CPU</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><a class="headerlink" href="#darc.const.DARC_CPU" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of concurrent processes. If not provided, then the number of
+system CPUs will be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-6"></span><a class="reference internal" href="../config.html#envvar-DARC_CPU"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_CPU</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.FLAG_MP">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">FLAG_MP</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.FLAG_MP" title="Permalink to this definition">¶</a></dt>
+<dd><p>If enable <em>multiprocessing</em> support.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-7"></span><a class="reference internal" href="../config.html#envvar-DARC_MULTIPROCESSING"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_MULTIPROCESSING</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.FLAG_TH">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">FLAG_TH</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.FLAG_TH" title="Permalink to this definition">¶</a></dt>
+<dd><p>If enable <em>multithreading</em> support.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-8"></span><a class="reference internal" href="../config.html#envvar-DARC_MULTITHREADING"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_MULTITHREADING</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a> and <a class="reference internal" href="#darc.const.FLAG_TH" title="darc.const.FLAG_TH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_TH</span></code></a> can
+<strong>NOT</strong> be toggled at the same time.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.DARC_USER">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">DARC_USER</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#darc.const.DARC_USER" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Non-root</em> user for proxies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>current login user (c.f. <a class="reference external" href="https://docs.python.org/3/library/getpass.html#getpass.getuser"><a class="reference external" href="https://docs.python.org/3/library/getpass.html#getpass.getuser" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">getpass.getuser()</span></code></a></a>)</p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-9"></span><a class="reference internal" href="../config.html#envvar-DARC_USER"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_USER</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="data-storage">
+<h2>Data Storage<a class="headerlink" href="#data-storage" title="Permalink to this headline">¶</a></h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code> for more information about database integration.</p>
+</div>
+<dl class="py data">
+<dt id="darc.const.REDIS">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">REDIS</code><em class="property">: redis.Redis</em><a class="headerlink" href="#darc.const.REDIS" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL to the Redis database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">redis://127.0.0.1</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-10"></span><a class="reference internal" href="../config.html#envvar-REDIS_URL"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">REDIS_URL</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.DB">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">DB</code><em class="property">: peewee.Database</em><a class="headerlink" href="#darc.const.DB" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL to the RDS storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">sqlite://{PATH_DB}/darc.db</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p>:envvar`DB_URL`</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="id0">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">DB</code><em class="property">: peewee.Database</em><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL to the data submission storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">sqlite://{PATH_DB}/darcweb.db</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p>:envvar`DB_URL`</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.FLAG_DB">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">FLAG_DB</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.FLAG_DB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag if uses RDS as the task queue backend.
+If <span class="target" id="index-11"></span><a class="reference internal" href="../config.html#envvar-REDIS_URL"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">REDIS_URL</span></code></a> is provided, then
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>; else, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.PATH_DB">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">PATH_DB</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#darc.const.PATH_DB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to data storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">data</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-12"></span><a class="reference internal" href="../config.html#envvar-PATH_DATA"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH_DATA</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.save</span></code> for more information about source saving.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.PATH_MISC">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">PATH_MISC</code><em class="property"> = '{PATH_DB}/misc/'</em><a class="headerlink" href="#darc.const.PATH_MISC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to miscellaneous data storage, i.e. <code class="docutils literal notranslate"><span class="pre">misc</span></code> folder under the
+root of data storage.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.const.PATH_DB</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.PATH_LN">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">PATH_LN</code><em class="property"> = '{PATH_DB}/link.csv'</em><a class="headerlink" href="#darc.const.PATH_LN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to the link CSV file, <code class="docutils literal notranslate"><span class="pre">link.csv</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.const.PATH_DB</span></code></a></p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.save.save_link</span></code></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.PATH_ID">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">PATH_ID</code><em class="property"> = '{PATH_DB}/darc.pid'</em><a class="headerlink" href="#darc.const.PATH_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to the process ID file, <code class="docutils literal notranslate"><span class="pre">darc.pid</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.const.PATH_DB</span></code></a></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.const.getpid()</span></code></p></li>
+</ul>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="web-crawlers">
+<h2>Web Crawlers<a class="headerlink" href="#web-crawlers" title="Permalink to this headline">¶</a></h2>
+<dl class="py data">
+<dt id="darc.const.DARC_WAIT">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">DARC_WAIT</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a><span class="p">]</span></em><a class="headerlink" href="#darc.const.DARC_WAIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time interval between each round when the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> and/or
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> database are empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">60</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-13"></span><a class="reference internal" href="../config.html#envvar-DARC_WAIT"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_WAIT</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.TIME_CACHE">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">TIME_CACHE</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></em><a class="headerlink" href="#darc.const.TIME_CACHE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time delta for caches in seconds.</p>
+<p>The <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project supports <em>caching</em> for fetched files.
+<a class="reference internal" href="#darc.const.TIME_CACHE" title="darc.const.TIME_CACHE"><code class="xref py py-data docutils literal notranslate"><span class="pre">TIME_CACHE</span></code></a> will specify for how log the
+fetched files will be cached and <strong>NOT</strong> fetched again.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <a class="reference internal" href="#darc.const.TIME_CACHE" title="darc.const.TIME_CACHE"><code class="xref py py-data docutils literal notranslate"><span class="pre">TIME_CACHE</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> then caching
+will be marked as <em>forever</em>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">60</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-14"></span><a class="reference internal" href="../config.html#envvar-TIME_CACHE"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">TIME_CACHE</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.SE_WAIT">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">SE_WAIT</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></em><a class="headerlink" href="#darc.const.SE_WAIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time to wait for <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> to finish loading pages.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Internally, <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> will wait for the browser to finish
+loading the pages before return (i.e. the web API event
+<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event"><code class="docutils literal notranslate"><span class="pre">DOMContentLoaded</span></code></a>). However, some extra scripts may take more time
+running after the event.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">60</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-15"></span><a class="reference internal" href="../config.html#envvar-SE_WAIT"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">SE_WAIT</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.SE_EMPTY">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">SE_EMPTY</code><em class="property"> = '&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;'</em><a class="headerlink" href="#darc.const.SE_EMPTY" title="Permalink to this definition">¶</a></dt>
+<dd><p>The empty page from <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.loader()</span></code></p></li>
+</ul>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="white-black-lists">
+<h2>White / Black Lists<a class="headerlink" href="#white-black-lists" title="Permalink to this headline">¶</a></h2>
+<dl class="py data">
+<dt id="darc.const.LINK_WHITE_LIST">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">LINK_WHITE_LIST</code><em class="property">: List<span class="p">[</span>re.Pattern<span class="p">]</span></em><a class="headerlink" href="#darc.const.LINK_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>White list of hostnames should be crawled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-16"></span><a class="reference internal" href="../config.html#envvar-LINK_WHITE_LIST"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">LINK_WHITE_LIST</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Regular expressions are supported.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.LINK_BLACK_LIST">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">LINK_BLACK_LIST</code><em class="property">: List<span class="p">[</span>re.Pattern<span class="p">]</span></em><a class="headerlink" href="#darc.const.LINK_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Black list of hostnames should be crawled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-17"></span><a class="reference internal" href="../config.html#envvar-LINK_BLACK_LIST"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">LINK_BLACK_LIST</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Regular expressions are supported.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.LINK_FALLBACK">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">LINK_FALLBACK</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.LINK_FALLBACK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fallback value for <code class="xref py py-func docutils literal notranslate"><span class="pre">match_host()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-18"></span><a class="reference internal" href="../config.html#envvar-LINK_FALLBACK"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">LINK_FALLBACK</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.MIME_WHITE_LIST">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">MIME_WHITE_LIST</code><em class="property">: List<span class="p">[</span>re.Pattern<span class="p">]</span></em><a class="headerlink" href="#darc.const.MIME_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>White list of content types should be crawled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-19"></span><a class="reference internal" href="../config.html#envvar-MIME_WHITE_LIST"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">MIME_WHITE_LIST</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Regular expressions are supported.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.MIME_BLACK_LIST">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">MIME_BLACK_LIST</code><em class="property">: List<span class="p">[</span>re.Pattern<span class="p">]</span></em><a class="headerlink" href="#darc.const.MIME_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Black list of content types should be crawled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-20"></span><a class="reference internal" href="../config.html#envvar-MIME_BLACK_LIST"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">MIME_BLACK_LIST</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Regular expressions are supported.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.MIME_FALLBACK">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">MIME_FALLBACK</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.MIME_FALLBACK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fallback value for <code class="xref py py-func docutils literal notranslate"><span class="pre">match_mime()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-21"></span><a class="reference internal" href="../config.html#envvar-MIME_FALLBACK"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">MIME_FALLBACK</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.PROXY_WHITE_LIST">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">PROXY_WHITE_LIST</code><em class="property">: List<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#darc.const.PROXY_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>White list of proxy types should be crawled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-22"></span><a class="reference internal" href="../config.html#envvar-PROXY_WHITE_LIST"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PROXY_WHITE_LIST</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The proxy types are <strong>case insensitive</strong>.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.PROXY_BLACK_LIST">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">PROXY_BLACK_LIST</code><em class="property">: List<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#darc.const.PROXY_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Black list of proxy types should be crawled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-23"></span><a class="reference internal" href="../config.html#envvar-PROXY_BLACK_LIST"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PROXY_BLACK_LIST</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The proxy types are <strong>case insensitive</strong>.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="darc.const.PROXY_FALLBACK">
+<code class="sig-prename descclassname">darc.const.</code><code class="sig-name descname">PROXY_FALLBACK</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#darc.const.PROXY_FALLBACK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fallback value for <code class="xref py py-func docutils literal notranslate"><span class="pre">match_proxy()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
+</dd>
+<dt class="field-even">Environ</dt>
+<dd class="field-even"><p><span class="target" id="index-24"></span><a class="reference internal" href="../config.html#envvar-PROXY_FALLBACK"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PROXY_FALLBACK</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy/index.html">Proxy Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sites/index.html">Sites Customisation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Module Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html">Data Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Technical Documentation</a><ul>
+      <li>Previous: <a href="sites/tel.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="error.html" title="next chapter">Custom Exceptions</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="../_sources/darc/const.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

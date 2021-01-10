@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auxiliary Scripts &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Submission Data Schema" href="demo/schema.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="auxiliary-scripts">
+<h1>Auxiliary Scripts<a class="headerlink" href="#auxiliary-scripts" title="Permalink to this headline">¶</a></h1>
+<p>Since the <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project can be deployed through <a class="reference internal" href="docker.html"><span class="doc">Docker Integration</span></a>,
+we provided some auxiliary scripts to help with the deployment.</p>
+<div class="section" id="health-check">
+<h2>Health Check<a class="headerlink" href="#health-check" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">File location</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Entry point: <code class="docutils literal notranslate"><span class="pre">extra/healthcheck.py</span></code></p></li>
+<li><p>System V service: <code class="docutils literal notranslate"><span class="pre">extra/healthcheck.service</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: healthcheck [-h] [-f FILE] [-i INTERVAL] ...
+
+health check running container
+
+positional arguments:
+  services              name of services
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  path to compose file
+  -i INTERVAL, --interval INTERVAL
+                        interval (in seconds) of health check
+</pre></div>
+</div>
+<p>This script will watch the running status of containers managed by Docker
+Compose. If the containers are stopped or of <em>unhealthy</em> status, it will
+bring the containers back alive.</p>
+<p>Also, as the internal program may halt unexpectedly whilst the container
+remains <em>healthy</em>, the script will watch if the program is still active
+through its output messages. If inactive, the script will restart the
+containers.</p>
+</div>
+<div class="section" id="upload-api-submission-files">
+<h2>Upload API Submission Files<a class="headerlink" href="#upload-api-submission-files" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">File location</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Entry point: <code class="docutils literal notranslate"><span class="pre">extra/upload.py</span></code></p></li>
+<li><p>Helper script: <code class="docutils literal notranslate"><span class="pre">extra/upload.sh</span></code></p></li>
+<li><p>Cron sample: <code class="docutils literal notranslate"><span class="pre">extra/upload.cron</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: upload [-h] [-p PATH] -H HOST [-U USER]
+
+upload API submission files
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -p PATH, --path PATH  path to data storage
+  -H HOST, --host HOST  upstream hostname
+  -U USER, --user USER  upstream user credential
+</pre></div>
+</div>
+<p>This script will automatically upload API submission files, c.f.
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.submit</span></code>, using <em class="manpage"><a class="manpage reference external" href="https://linux.die.net/man/1/curl">curl(1)</a></em>. The <code class="docutils literal notranslate"><span class="pre">--user</span></code> option is
+supplied for the same option of <em class="manpage"><a class="manpage reference external" href="https://linux.die.net/man/1/curl">curl(1)</a></em>.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>As the <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.save_submit()</span></code> is categorising saved API
+submission files by its actual date, the script is also uploading
+such files by the saved dates. Therefore, as the <em class="manpage"><a class="manpage reference external" href="https://linux.die.net/man/8/cron">cron(8)</a></em>
+sample suggests, the script should better be run everyday <em>slightly
+after</em> <strong>12:00 AM</strong> (<em>0:00</em> in 24-hour format).</p>
+</div>
+</div>
+<div class="section" id="remove-repeated-lines">
+<h2>Remove Repeated Lines<a class="headerlink" href="#remove-repeated-lines" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">File location</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">extra/uniq.py</span></code></p>
+</dd>
+</dl>
+<p>This script works the same as <em class="manpage"><a class="manpage reference external" href="https://linux.die.net/man/1/uniq">uniq(1)</a></em>, except it filters one input
+line at a time without putting pressure onto memory utilisation.</p>
+</div>
+<div class="section" id="redis-clinic">
+<h2>Redis Clinic<a class="headerlink" href="#redis-clinic" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">File location</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Entry point: <code class="docutils literal notranslate"><span class="pre">extra/clinic.py</span></code></p></li>
+<li><p>Helper script: <code class="docutils literal notranslate"><span class="pre">extra/clinic.lua</span></code></p></li>
+<li><p>Cron sample: <code class="docutils literal notranslate"><span class="pre">extra/clinic.cron</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: clinic [-h] -r REDIS [-f FILE] [-t TIMEOUT] ...
+
+memory clinic for Redis
+
+positional arguments:
+  services              name of services
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -r REDIS, --redis REDIS
+                        URI to the Redis server
+  -f FILE, --file FILE  path to compose file
+  -t TIMEOUT, --timeout TIMEOUT
+                        shutdown timeout in seconds
+</pre></div>
+</div>
+<p>Since Redis may take more and more memory as the growth of crawled
+data and task queues, this script will truncate the Redis task queues
+(<code class="docutils literal notranslate"><span class="pre">queue_requests</span> <span class="pre">&amp;</span> <span class="pre">``queue_selenium</span></code>), as well as the corresponding
+<a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> caches of <a class="reference internal" href="darc/link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.link.Link</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We used Lua scrpit to slightly accelerate the whole procedure, as
+it may bring burden to the host server if running through Redis
+client.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Auxiliary Scripts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#health-check">Health Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#upload-api-submission-files">Upload API Submission Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remove-repeated-lines">Remove Repeated Lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#redis-clinic">Redis Clinic</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="demo/schema.html" title="previous chapter">Submission Data Schema</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="_sources/aux.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

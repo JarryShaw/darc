@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Exceptions &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Models" href="model/index.html" />
+    <link rel="prev" title="Module Constants" href="const.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-darc.error"></span><div class="section" id="custom-exceptions">
+<h1>Custom Exceptions<a class="headerlink" href="#custom-exceptions" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#darc.error.render_error" title="darc.error.render_error"><code class="xref py py-func docutils literal notranslate"><span class="pre">render_error()</span></code></a> function can be used to render
+multi-line error messages with <a class="reference external" href="https://stem.torproject.org/api/util/term.html#module-stem.util.term" title="(in Stem v1.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stem.util.term</span></code></a> colours.</p>
+<p>The <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project provides following custom exceptions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#darc.error.LinkNoReturn" title="darc.error.LinkNoReturn"><code class="xref py py-exc docutils literal notranslate"><span class="pre">LinkNoReturn</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.UnsupportedLink" title="darc.error.UnsupportedLink"><code class="xref py py-exc docutils literal notranslate"><span class="pre">UnsupportedLink</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.UnsupportedPlatform" title="darc.error.UnsupportedPlatform"><code class="xref py py-exc docutils literal notranslate"><span class="pre">UnsupportedPlatform</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.UnsupportedProxy" title="darc.error.UnsupportedProxy"><code class="xref py py-exc docutils literal notranslate"><span class="pre">UnsupportedProxy</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.WorkerBreak" title="darc.error.WorkerBreak"><code class="xref py py-exc docutils literal notranslate"><span class="pre">WorkerBreak</span></code></a></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All exceptions are inherited from <a class="reference internal" href="#darc.error._BaseException" title="darc.error._BaseException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">_BaseException</span></code></a>.</p>
+</div>
+<p>The <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project provides following custom warnings:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#darc.error.TorBootstrapFailed" title="darc.error.TorBootstrapFailed"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TorBootstrapFailed</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.I2PBootstrapFailed" title="darc.error.I2PBootstrapFailed"><code class="xref py py-exc docutils literal notranslate"><span class="pre">I2PBootstrapFailed</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.ZeroNetBootstrapFailed" title="darc.error.ZeroNetBootstrapFailed"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ZeroNetBootstrapFailed</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.FreenetBootstrapFailed" title="darc.error.FreenetBootstrapFailed"><code class="xref py py-exc docutils literal notranslate"><span class="pre">FreenetBootstrapFailed</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.APIRequestFailed" title="darc.error.APIRequestFailed"><code class="xref py py-exc docutils literal notranslate"><span class="pre">APIRequestFailed</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.SiteNotFoundWarning" title="darc.error.SiteNotFoundWarning"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SiteNotFoundWarning</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.LockWarning" title="darc.error.LockWarning"><code class="xref py py-exc docutils literal notranslate"><span class="pre">LockWarning</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.TorRenewFailed" title="darc.error.TorRenewFailed"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TorRenewFailed</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.RedisCommandFailed" title="darc.error.RedisCommandFailed"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RedisCommandFailed</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.error.HookExecutionFailed" title="darc.error.HookExecutionFailed"><code class="xref py py-exc docutils literal notranslate"><span class="pre">HookExecutionFailed</span></code></a></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All warnings are inherited from <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-exc docutils literal notranslate"><span class="pre">_BaseWarning</span></code></a>.</p>
+</div>
+<dl class="py exception">
+<dt id="darc.error.APIRequestFailed">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">APIRequestFailed</code><a class="reference internal" href="../_modules/darc/error.html#APIRequestFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.APIRequestFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>API submit failed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.DatabaseOperaionFailed">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">DatabaseOperaionFailed</code><a class="reference internal" href="../_modules/darc/error.html#DatabaseOperaionFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.DatabaseOperaionFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>Database operation execution failed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.FreenetBootstrapFailed">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">FreenetBootstrapFailed</code><a class="reference internal" href="../_modules/darc/error.html#FreenetBootstrapFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.FreenetBootstrapFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>Freenet bootstrap process failed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.HookExecutionFailed">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">HookExecutionFailed</code><a class="reference internal" href="../_modules/darc/error.html#HookExecutionFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.HookExecutionFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>Failed to execute hook function.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.I2PBootstrapFailed">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">I2PBootstrapFailed</code><a class="reference internal" href="../_modules/darc/error.html#I2PBootstrapFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.I2PBootstrapFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>I2P bootstrap process failed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.LinkNoReturn">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">LinkNoReturn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">link</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">drop</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/error.html#LinkNoReturn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.LinkNoReturn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseException" title="darc.error._BaseException"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseException</span></code></a></p>
+<p>The link has no return value from the hooks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>darc.link.Link</em></a>) – Original link object.</p></li>
+<li><p><strong>drop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>drop</strong> – If drops the <code class="docutils literal notranslate"><span class="pre">link</span></code> from task queues.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="darc.error.LinkNoReturn.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">link</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">drop</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/error.html#LinkNoReturn.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.LinkNoReturn.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>drop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.LockWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">LockWarning</code><a class="reference internal" href="../_modules/darc/error.html#LockWarning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.LockWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>Failed to acquire Redis lock.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.RedisCommandFailed">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">RedisCommandFailed</code><a class="reference internal" href="../_modules/darc/error.html#RedisCommandFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.RedisCommandFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>Redis command execution failed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.SiteNotFoundWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">SiteNotFoundWarning</code><a class="reference internal" href="../_modules/darc/error.html#SiteNotFoundWarning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.SiteNotFoundWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportWarning" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImportWarning</span></code></a></p>
+<p>Site customisation not found.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.TorBootstrapFailed">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">TorBootstrapFailed</code><a class="reference internal" href="../_modules/darc/error.html#TorBootstrapFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.TorBootstrapFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>Tor bootstrap process failed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.TorRenewFailed">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">TorRenewFailed</code><a class="reference internal" href="../_modules/darc/error.html#TorRenewFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.TorRenewFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>Tor renew request failed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.UnsupportedLink">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">UnsupportedLink</code><a class="reference internal" href="../_modules/darc/error.html#UnsupportedLink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.UnsupportedLink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseException" title="darc.error._BaseException"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseException</span></code></a></p>
+<p>The link is not supported.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.UnsupportedPlatform">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">UnsupportedPlatform</code><a class="reference internal" href="../_modules/darc/error.html#UnsupportedPlatform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.UnsupportedPlatform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseException" title="darc.error._BaseException"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseException</span></code></a></p>
+<p>The platform is not supported.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.UnsupportedProxy">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">UnsupportedProxy</code><a class="reference internal" href="../_modules/darc/error.html#UnsupportedProxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.UnsupportedProxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseException" title="darc.error._BaseException"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseException</span></code></a></p>
+<p>The proxy is not supported.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.WorkerBreak">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">WorkerBreak</code><a class="reference internal" href="../_modules/darc/error.html#WorkerBreak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.WorkerBreak" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseException" title="darc.error._BaseException"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseException</span></code></a></p>
+<p>Break from the worker loop.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error.ZeroNetBootstrapFailed">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">ZeroNetBootstrapFailed</code><a class="reference internal" href="../_modules/darc/error.html#ZeroNetBootstrapFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.ZeroNetBootstrapFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#darc.error._BaseWarning" title="darc.error._BaseWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.error._BaseWarning</span></code></a></p>
+<p>ZeroNet bootstrap process failed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error._BaseException">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">_BaseException</code><a class="reference internal" href="../_modules/darc/error.html#_BaseException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error._BaseException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>Base exception class for <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> module.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="darc.error._BaseWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">_BaseWarning</code><a class="reference internal" href="../_modules/darc/error.html#_BaseWarning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error._BaseWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Warning" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Warning</span></code></a></p>
+<p>Base warning for <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> module.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.error.render_error">
+<code class="sig-prename descclassname">darc.error.</code><code class="sig-name descname">render_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span></em>, <em class="sig-param"><span class="n">colour</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/error.html#render_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.error.render_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render error message.</p>
+<p>The function wraps the <a class="reference external" href="https://stem.torproject.org/api/util/term.html#stem.util.term.format" title="(in Stem v1.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">stem.util.term.format()</span></code></a> function to
+provide multi-line formatting support.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<em>AnyStr</em>) – Multi-line message to be rendered with <code class="docutils literal notranslate"><span class="pre">colour</span></code>.</p></li>
+<li><p><strong>colour</strong> (<em>stem.util.term.Color</em>) – Front colour of text, c.f.
+<code class="xref py py-class docutils literal notranslate"><span class="pre">stem.util.term.Color</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The rendered error message.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy/index.html">Proxy Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sites/index.html">Sites Customisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="const.html">Module Constants</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html">Data Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Technical Documentation</a><ul>
+      <li>Previous: <a href="const.html" title="previous chapter">Module Constants</a></li>
+      <li>Next: <a href="model/index.html" title="next chapter">Data Models</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="../_sources/darc/error.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

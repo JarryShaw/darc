@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darc.error &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for darc.error</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Custom Exceptions</span>
+<span class="sd">=======================</span>
+
+<span class="sd">The :func:`~darc.error.render_error` function can be used to render</span>
+<span class="sd">multi-line error messages with :mod:`stem.util.term` colours.</span>
+
+<span class="sd">The :mod:`darc` project provides following custom exceptions:</span>
+
+<span class="sd">* :exc:`~darc.error.LinkNoReturn`</span>
+<span class="sd">* :exc:`~darc.error.UnsupportedLink`</span>
+<span class="sd">* :exc:`~darc.error.UnsupportedPlatform`</span>
+<span class="sd">* :exc:`~darc.error.UnsupportedProxy`</span>
+<span class="sd">* :exc:`~darc.error.WorkerBreak`</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">   All exceptions are inherited from :exc:`~darc.error._BaseException`.</span>
+
+<span class="sd">The :mod:`darc` project provides following custom warnings:</span>
+
+<span class="sd">* :exc:`~darc.error.TorBootstrapFailed`</span>
+<span class="sd">* :exc:`~darc.error.I2PBootstrapFailed`</span>
+<span class="sd">* :exc:`~darc.error.ZeroNetBootstrapFailed`</span>
+<span class="sd">* :exc:`~darc.error.FreenetBootstrapFailed`</span>
+<span class="sd">* :exc:`~darc.error.APIRequestFailed`</span>
+<span class="sd">* :exc:`~darc.error.SiteNotFoundWarning`</span>
+<span class="sd">* :exc:`~darc.error.LockWarning`</span>
+<span class="sd">* :exc:`~darc.error.TorRenewFailed`</span>
+<span class="sd">* :exc:`~darc.error.RedisCommandFailed`</span>
+<span class="sd">* :exc:`~darc.error.HookExecutionFailed`</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">   All warnings are inherited from :exc:`~darc.error._BaseWarning`.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">stem.util.term</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">AnyStr</span>
+
+    <span class="kn">from</span> <span class="nn">stem.util.term</span> <span class="kn">import</span> <span class="n">Color</span>
+
+
+<div class="viewcode-block" id="_BaseException"><a class="viewcode-back" href="../../darc/error.html#darc.error._BaseException">[docs]</a><span class="k">class</span> <span class="nc">_BaseException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base exception class for :mod:`darc` module.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="LinkNoReturn"><a class="viewcode-back" href="../../darc/error.html#darc.error.LinkNoReturn">[docs]</a><span class="k">class</span> <span class="nc">LinkNoReturn</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The link has no return value from the hooks.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link (darc.link.Link): Original link object.</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        drop: If drops the ``link`` from task queues.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LinkNoReturn.__init__"><a class="viewcode-back" href="../../darc/error.html#darc.error.LinkNoReturn.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[no-untyped-def]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="n">link</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">=</span> <span class="n">drop</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="UnsupportedLink"><a class="viewcode-back" href="../../darc/error.html#darc.error.UnsupportedLink">[docs]</a><span class="k">class</span> <span class="nc">UnsupportedLink</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The link is not supported.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="UnsupportedPlatform"><a class="viewcode-back" href="../../darc/error.html#darc.error.UnsupportedPlatform">[docs]</a><span class="k">class</span> <span class="nc">UnsupportedPlatform</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The platform is not supported.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="UnsupportedProxy"><a class="viewcode-back" href="../../darc/error.html#darc.error.UnsupportedProxy">[docs]</a><span class="k">class</span> <span class="nc">UnsupportedProxy</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The proxy is not supported.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="WorkerBreak"><a class="viewcode-back" href="../../darc/error.html#darc.error.WorkerBreak">[docs]</a><span class="k">class</span> <span class="nc">WorkerBreak</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Break from the worker loop.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="_BaseWarning"><a class="viewcode-back" href="../../darc/error.html#darc.error._BaseWarning">[docs]</a><span class="k">class</span> <span class="nc">_BaseWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base warning for :mod:`darc` module.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="TorBootstrapFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.TorBootstrapFailed">[docs]</a><span class="k">class</span> <span class="nc">TorBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tor bootstrap process failed.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="TorRenewFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.TorRenewFailed">[docs]</a><span class="k">class</span> <span class="nc">TorRenewFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tor renew request failed.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="I2PBootstrapFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.I2PBootstrapFailed">[docs]</a><span class="k">class</span> <span class="nc">I2PBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;I2P bootstrap process failed.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ZeroNetBootstrapFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.ZeroNetBootstrapFailed">[docs]</a><span class="k">class</span> <span class="nc">ZeroNetBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ZeroNet bootstrap process failed.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="FreenetBootstrapFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.FreenetBootstrapFailed">[docs]</a><span class="k">class</span> <span class="nc">FreenetBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Freenet bootstrap process failed.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="RedisCommandFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.RedisCommandFailed">[docs]</a><span class="k">class</span> <span class="nc">RedisCommandFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Redis command execution failed.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="DatabaseOperaionFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.DatabaseOperaionFailed">[docs]</a><span class="k">class</span> <span class="nc">DatabaseOperaionFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Database operation execution failed.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="APIRequestFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.APIRequestFailed">[docs]</a><span class="k">class</span> <span class="nc">APIRequestFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;API submit failed.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="SiteNotFoundWarning"><a class="viewcode-back" href="../../darc/error.html#darc.error.SiteNotFoundWarning">[docs]</a><span class="k">class</span> <span class="nc">SiteNotFoundWarning</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Site customisation not found.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="LockWarning"><a class="viewcode-back" href="../../darc/error.html#darc.error.LockWarning">[docs]</a><span class="k">class</span> <span class="nc">LockWarning</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Failed to acquire Redis lock.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="HookExecutionFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.HookExecutionFailed">[docs]</a><span class="k">class</span> <span class="nc">HookExecutionFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Failed to execute hook function.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="render_error"><a class="viewcode-back" href="../../darc/error.html#darc.error.render_error">[docs]</a><span class="k">def</span> <span class="nf">render_error</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="s1">&#39;AnyStr&#39;</span><span class="p">,</span> <span class="n">colour</span><span class="p">:</span> <span class="s1">&#39;Color&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Render error message.</span>
+
+<span class="sd">    The function wraps the :func:`stem.util.term.format` function to</span>
+<span class="sd">    provide multi-line formatting support.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        message: Multi-line message to be rendered with ``colour``.</span>
+<span class="sd">        colour (stem.util.term.Color): Front colour of text, c.f.</span>
+<span class="sd">            :class:`stem.util.term.Color`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The rendered error message.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">stem</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">colour</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

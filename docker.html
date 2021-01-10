@@ -1,0 +1,685 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Docker Integration &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Web Backend Demo" href="demo/api.html" />
+    <link rel="prev" title="Customisations" href="custom.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="docker-integration">
+<h1>Docker Integration<a class="headerlink" href="#docker-integration" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project is integrated with Docker and
+Compose. Though published to <a class="reference external" href="https://hub.docker.com/r/jsnbzh/darc">Docker Hub</a>, you can
+still build by yourself.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">debug</span></code> image contains miscellaneous documents,
+i.e. whole repository in it; and pre-installed some
+useful tools for debugging, such as IPython, etc.</p>
+</div>
+<p>The Docker image is based on <a class="reference external" href="http://releases.ubuntu.com/18.04.4">Ubuntu Bionic</a> (18.04 LTS),
+setting up all Python dependencies for the <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
+project, installing <a class="reference external" href="https://www.google.com/chrome">Google Chrome</a> (version
+79.0.3945.36) and corresponding <a class="reference external" href="https://chromedriver.chromium.org">ChromeDriver</a>, as well as
+installing and configuring <a class="reference external" href="https://www.torproject.org">Tor</a>, <a class="reference external" href="https://geti2p.net">I2P</a>, <a class="reference external" href="https://zeronet.io">ZeroNet</a>, <a class="reference external" href="https://freenetproject.org">FreeNet</a>,
+<a class="reference external" href="https://www.noip.com">NoIP</a> proxies.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://www.noip.com">NoIP</a> is currently not fully integrated in the
+<a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> due to misunderstanding in the configuration
+process. Contributions are welcome.</p>
+</div>
+<p>When building the image, there is an <em>optional</em> argument
+for setting up a <em>non-root</em> user, c.f. environment variable
+<code class="xref py py-data docutils literal notranslate"><span class="pre">DARC_USER</span></code> and module constant <a class="reference internal" href="darc/const.html#darc.const.DARC_USER" title="darc.const.DARC_USER"><code class="xref py py-data docutils literal notranslate"><span class="pre">DARC_USER</span></code></a>.
+By default, the username is <code class="docutils literal notranslate"><span class="pre">darc</span></code>.</p>
+<details>
+  <summary>Content of <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code></summary><div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">ubuntu:focal</span>
+
+<span class="k">LABEL</span> org.opencontainers.image.title<span class="o">=</span><span class="s2">&quot;darc&quot;</span> <span class="se">\</span>
+      org.opencontainers.image.description<span class="o">=</span><span class="s2">&quot;Darkweb Crawler Project&quot;</span> <span class="se">\</span>
+      org.opencontainers.image.url<span class="o">=</span><span class="s2">&quot;https://darc.jarryshaw.me/&quot;</span> <span class="se">\</span>
+      org.opencontainers.image.source<span class="o">=</span><span class="s2">&quot;https://github.com/JarryShaw/darc&quot;</span> <span class="se">\</span>
+      org.opencontainers.image.version<span class="o">=</span><span class="s2">&quot;0.9.2&quot;</span> <span class="se">\</span>
+      org.opencontainers.image.licenses<span class="o">=</span><span class="s1">&#39;BSD 3-Clause &quot;New&quot; or &quot;Revised&quot; License&#39;</span>
+
+<span class="k">STOPSIGNAL</span><span class="s"> SIGINT</span>
+<span class="k">HEALTHCHECK</span> --interval<span class="o">=</span>1h --timeout<span class="o">=</span>1m <span class="se">\</span>
+    <span class="k">CMD</span> wget https://httpbin.org/get -O /dev/null <span class="o">||</span> <span class="nb">exit</span> <span class="m">1</span>
+
+<span class="k">ARG</span> <span class="nv">DARC_USER</span><span class="o">=</span><span class="s2">&quot;darc&quot;</span>
+<span class="k">ENV</span> <span class="nv">LANG</span><span class="o">=</span><span class="s2">&quot;C.UTF-8&quot;</span> <span class="se">\</span>
+    <span class="nv">LC_ALL</span><span class="o">=</span><span class="s2">&quot;C.UTF-8&quot;</span> <span class="se">\</span>
+    <span class="nv">PYTHONIOENCODING</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span> <span class="se">\</span>
+    <span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span><span class="s2">&quot;teletype&quot;</span> <span class="se">\</span>
+    <span class="nv">DARC_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">DARC_USER</span><span class="si">}</span><span class="s2">&quot;</span>
+    # <span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span><span class="s2">&quot;noninteractive&quot;</span>
+
+<span class="k">COPY</span> extra/retry.sh /usr/local/bin/retry
+<span class="k">COPY</span> extra/install.py /usr/local/bin/pty-install
+<span class="k">COPY</span> vendor/jdk-11.0.9_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
+
+<span class="k">RUN</span> <span class="nb">set</span> -x <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> retry apt-get update <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> retry apt-get install --yes --no-install-recommends <span class="se">\</span>
+        apt-utils <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> retry apt-get install --yes --no-install-recommends <span class="se">\</span>
+        gcc <span class="se">\</span>
+        g++ <span class="se">\</span>
+        libmagic1 <span class="se">\</span>
+        make <span class="se">\</span>
+        software-properties-common <span class="se">\</span>
+        tar <span class="se">\</span>
+        unzip <span class="se">\</span>
+        zlib1g-dev <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> retry add-apt-repository ppa:deadsnakes/ppa --yes <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> retry add-apt-repository ppa:linuxuprising/java --yes <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> retry add-apt-repository ppa:i2p-maintainers/i2p --yes
+<span class="k">RUN</span> retry apt-get update <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> retry apt-get install --yes --no-install-recommends <span class="se">\</span>
+        python3.9-dev <span class="se">\</span>
+        python3-pip <span class="se">\</span>
+        python3-setuptools <span class="se">\</span>
+        python3-wheel <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> ln -sf /usr/bin/python3.9 /usr/local/bin/python3
+<span class="k">RUN</span> retry pty-install --stdin <span class="s1">&#39;6\n70&#39;</span> apt-get install --yes --no-install-recommends <span class="se">\</span>
+        tzdata <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> retry pty-install --stdin <span class="s1">&#39;yes&#39;</span> apt-get install --yes <span class="se">\</span>
+        oracle-java11-installer-local
+<span class="k">RUN</span> retry apt-get install --yes --no-install-recommends <span class="se">\</span>
+        sudo <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> adduser --disabled-password --gecos <span class="s1">&#39;&#39;</span> <span class="si">${</span><span class="nv">DARC_USER</span><span class="si">}</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> adduser <span class="si">${</span><span class="nv">DARC_USER</span><span class="si">}</span> sudo <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s1">&#39;%sudo ALL=(ALL) NOPASSWD:ALL&#39;</span> &gt;&gt; /etc/sudoers
+
+<span class="c">## Tor</span>
+<span class="k">RUN</span> retry apt-get install --yes --no-install-recommends tor
+<span class="k">COPY</span> extra/torrc.focal /etc/tor/torrc
+
+<span class="c">## I2P</span>
+<span class="k">RUN</span> retry apt-get install --yes --no-install-recommends i2p
+<span class="k">COPY</span> extra/i2p.focal /etc/defaults/i2p
+
+<span class="c">## ZeroNet</span>
+<span class="k">COPY</span> vendor/ZeroNet-linux-dist-linux64.tar.gz /tmp
+<span class="k">RUN</span> <span class="nb">set</span> -x <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /tmp <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> tar xvpfz ZeroNet-linux-dist-linux64.tar.gz <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> mv ZeroNet-linux-dist-linux64 /usr/local/src/zeronet
+<span class="k">COPY</span> extra/zeronet.focal.conf /usr/local/src/zeronet/zeronet.conf
+
+<span class="c">## FreeNet</span>
+<span class="k">USER</span><span class="s"> darc</span>
+<span class="k">COPY</span> vendor/new_installer_offline.jar /tmp
+<span class="k">RUN</span> <span class="nb">set</span> -x <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /tmp <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> <span class="o">(</span> pty-install --stdin <span class="s1">&#39;/home/darc/freenet\n1&#39;</span> java -jar new_installer_offline.jar <span class="o">||</span> <span class="nb">true</span> <span class="o">)</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> sudo mv /home/darc/freenet /usr/local/src/freenet
+<span class="k">USER</span><span class="s"> root</span>
+
+<span class="c">## NoIP</span>
+<span class="k">COPY</span> vendor/noip-duc-linux.tar.gz /tmp
+<span class="k">RUN</span> <span class="nb">set</span> -x <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /tmp <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> tar xvpfz noip-duc-linux.tar.gz <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> mv noip-2.1.9-1 /usr/local/src/noip <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /usr/local/src/noip <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> make
+ # <span class="o">&amp;&amp;</span> make install
+
+<span class="c"># # set up timezone</span>
+<span class="c"># RUN echo &#39;Asia/Shanghai&#39; &gt; /etc/timezone \</span>
+<span class="c">#  &amp;&amp; rm -f /etc/localtime \</span>
+<span class="c">#  &amp;&amp; ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \</span>
+<span class="c">#  &amp;&amp; dpkg-reconfigure -f noninteractive tzdata</span>
+
+<span class="k">COPY</span> vendor/chromedriver_linux64.zip <span class="se">\</span>
+     vendor/google-chrome-stable_current_amd64.deb /tmp/
+<span class="k">RUN</span> <span class="nb">set</span> -x <span class="se">\</span>
+ ## ChromeDriver
+ <span class="o">&amp;&amp;</span> unzip -d /usr/bin /tmp/chromedriver_linux64.zip <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> which chromedriver <span class="se">\</span>
+ ## Google Chrome
+ <span class="o">&amp;&amp;</span> <span class="o">(</span> dpkg --install /tmp/google-chrome-stable_current_amd64.deb <span class="o">||</span> <span class="nb">true</span> <span class="o">)</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> retry apt-get install --fix-broken --yes --no-install-recommends <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> dpkg --install /tmp/google-chrome-stable_current_amd64.deb <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> which google-chrome
+
+<span class="c"># Using pip:</span>
+<span class="k">COPY</span> requirements.txt /tmp
+<span class="k">RUN</span> python3 -m pip install -r /tmp/requirements.txt --no-cache-dir
+
+<span class="k">RUN</span> <span class="nb">set</span> -x <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> rm -rf <span class="se">\</span>
+        ## APT repository lists
+        /var/lib/apt/lists/* <span class="se">\</span>
+        ## Python dependencies
+        /tmp/requirements.txt <span class="se">\</span>
+        /tmp/pip <span class="se">\</span>
+        ## ChromeDriver
+        /tmp/chromedriver_linux64.zip <span class="se">\</span>
+        ## Google Chrome
+        /tmp/google-chrome-stable_current_amd64.deb <span class="se">\</span>
+        ## Vendors
+        /tmp/new_installer_offline.jar <span class="se">\</span>
+        /tmp/noip-duc-linux.tar.gz <span class="se">\</span>
+        /tmp/ZeroNet-linux-dist-linux64.tar.gz <span class="se">\</span>
+ <span class="c1">#&amp;&amp; apt-get remove --auto-remove --yes \</span>
+ <span class="c1">#       software-properties-common \</span>
+ <span class="c1">#       unzip \</span>
+ <span class="o">&amp;&amp;</span> apt-get autoremove -y <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> apt-get autoclean <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> apt-get clean
+
+<span class="k">ENTRYPOINT</span> <span class="p">[</span> <span class="s2">&quot;python3&quot;</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;darc&quot;</span> <span class="p">]</span>
+<span class="c">#ENTRYPOINT [ &quot;bash&quot;, &quot;/app/run.sh&quot; ]</span>
+<span class="k">CMD</span> <span class="p">[</span> <span class="s2">&quot;--help&quot;</span> <span class="p">]</span>
+
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+<span class="k">COPY</span> darc/ /app/darc/
+<span class="k">COPY</span> LICENSE <span class="se">\</span>
+     MANIFEST.in <span class="se">\</span>
+     README.rst <span class="se">\</span>
+     extra/run.sh <span class="se">\</span>
+     setup.cfg <span class="se">\</span>
+     setup.py <span class="se">\</span>
+     test_darc.py /app/
+<span class="k">RUN</span> python3 -m pip install -e .
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">retry</span></code> is a shell script for retrying the commands until
+success</p></li>
+</ul>
+<details>
+<summary>Content of <code class="docutils literal notranslate"><span class="pre">retry</span></code></summary><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
+
+<span class="k">while</span> true<span class="p">;</span> <span class="k">do</span>
+    &gt;<span class="p">&amp;</span><span class="m">2</span> <span class="nb">echo</span> <span class="s2">&quot;+ </span><span class="nv">$@</span><span class="s2">&quot;</span>
+    <span class="nv">$@</span> <span class="o">&amp;&amp;</span> <span class="nb">break</span>
+    &gt;<span class="p">&amp;</span><span class="m">2</span> <span class="nb">echo</span> <span class="s2">&quot;exit: </span><span class="nv">$?</span><span class="s2">&quot;</span>
+<span class="k">done</span>
+&gt;<span class="p">&amp;</span><span class="m">2</span> <span class="nb">echo</span> <span class="s2">&quot;exit: 0&quot;</span>
+</pre></div>
+</div>
+</details><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pty-install</span></code> is a Python script simulating user
+input for APT package installation with <code class="docutils literal notranslate"><span class="pre">DEBIAN_FRONTEND</span></code>
+set as <code class="docutils literal notranslate"><span class="pre">Teletype</span></code>.</p></li>
+</ul>
+<details>
+<summary>Content of <code class="docutils literal notranslate"><span class="pre">pty-install</span></code></summary><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="s2">&quot;&quot;&quot;Install packages requiring interactions.&quot;&quot;&quot;</span>
+
+import argparse
+import os
+import subprocess  <span class="c1"># nosec: B404</span>
+import sys
+import tempfile
+from typing import TYPE_CHECKING
+
+<span class="k">if</span> TYPE_CHECKING:
+    from argparse import ArgumentParser
+
+
+def get_parser<span class="o">()</span> -&gt; <span class="s1">&#39;ArgumentParser&#39;</span>:
+    <span class="s2">&quot;&quot;&quot;Argument parser.&quot;&quot;&quot;</span>
+    <span class="nv">parser</span> <span class="o">=</span> argparse.ArgumentParser<span class="o">(</span><span class="s1">&#39;install&#39;</span>,
+                                     <span class="nv">description</span><span class="o">=</span><span class="s1">&#39;pseudo-interactive package installer&#39;</span><span class="o">)</span>
+
+    parser.add_argument<span class="o">(</span><span class="s1">&#39;-i&#39;</span>, <span class="s1">&#39;--stdin&#39;</span>, <span class="nv">help</span><span class="o">=</span><span class="s1">&#39;content for input&#39;</span><span class="o">)</span>
+    parser.add_argument<span class="o">(</span><span class="s1">&#39;command&#39;</span>, <span class="nv">nargs</span><span class="o">=</span>argparse.REMAINDER, <span class="nv">help</span><span class="o">=</span><span class="s1">&#39;command to execute&#39;</span><span class="o">)</span>
+
+    <span class="k">return</span> parser
+
+
+def main<span class="o">()</span> -&gt; int:
+    <span class="s2">&quot;&quot;&quot;Entrypoint.&quot;&quot;&quot;</span>
+    <span class="nv">parser</span> <span class="o">=</span> get_parser<span class="o">()</span>
+    <span class="nv">args</span> <span class="o">=</span> parser.parse_args<span class="o">()</span>
+    <span class="nv">text</span> <span class="o">=</span> args.stdin.encode<span class="o">()</span>.decode<span class="o">(</span><span class="s1">&#39;unicode_escape&#39;</span><span class="o">)</span>
+
+    <span class="nv">path</span> <span class="o">=</span> tempfile.mktemp<span class="o">(</span><span class="nv">prefix</span><span class="o">=</span><span class="s1">&#39;install-&#39;</span><span class="o">)</span>  <span class="c1"># nosec: B306</span>
+    with open<span class="o">(</span>path, <span class="s1">&#39;w&#39;</span><span class="o">)</span> as file:
+        file.write<span class="o">(</span>text<span class="o">)</span>
+
+    with open<span class="o">(</span>path, <span class="s1">&#39;r&#39;</span><span class="o">)</span> as file:
+        <span class="nv">proc</span> <span class="o">=</span> subprocess.run<span class="o">(</span>args.command, <span class="nv">stdin</span><span class="o">=</span>file<span class="o">)</span>  <span class="c1"># pylint: disable=subprocess-run-check # nosec: B603</span>
+
+    os.remove<span class="o">(</span>path<span class="o">)</span>
+    <span class="k">return</span> proc.returncode
+
+
+<span class="k">if</span> <span class="nv">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span>:
+    sys.exit<span class="o">(</span>main<span class="o">())</span>
+</pre></div>
+</div>
+</details></div>
+</details><p>As always, you can also use Docker Compose to manage the <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
+image. Environment variables can be set as described in the
+<a class="reference external" href="index.html#configuration">configuration</a> section.</p>
+<details>
+  <summary>Content of <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3&#39;</span>
+
+<span class="nt">services</span><span class="p">:</span>
+  <span class="nt">crawler</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsnbzh/darc:latest</span>
+    <span class="nt">build</span><span class="p">:</span> <span class="nl">&amp;build</span>
+      <span class="nt">context</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">.</span>
+      <span class="nt">args</span><span class="p">:</span>
+        <span class="c1"># non-root user</span>
+        <span class="nt">DARC_USER</span><span class="p">:</span> <span class="s">&quot;darc&quot;</span>
+    <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">crawler</span>
+    <span class="c1">#entrypoint: [ &quot;bash&quot;, &quot;/app/run.sh&quot; ]</span>
+    <span class="nt">command</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="s">&quot;--type&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;crawler&quot;</span><span class="p p-Indicator">,</span>
+               <span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;/app/text/tor.txt&quot;</span><span class="p p-Indicator">,</span>
+               <span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;/app/text/tor2web.txt&quot;</span><span class="p p-Indicator">,</span>
+               <span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;/app/text/i2p.txt&quot;</span><span class="p p-Indicator">,</span>
+               <span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;/app/text/zeronet.txt&quot;</span><span class="p p-Indicator">,</span>
+               <span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;/app/text/freenet.txt&quot;</span><span class="p p-Indicator">,</span>
+               <span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;/app/text/clinic.txt&quot;</span> <span class="p p-Indicator">]</span>
+    <span class="nt">environment</span><span class="p">:</span>
+      <span class="c1">## [PYTHON] force the stdout and stderr streams to be unbuffered</span>
+      <span class="nt">PYTHONUNBUFFERED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># reboot mode</span>
+      <span class="nt">DARC_REBOOT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># debug mode</span>
+      <span class="nt">DARC_DEBUG</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># verbose mode</span>
+      <span class="nt">DARC_VERBOSE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># force mode (ignore robots.txt)</span>
+      <span class="nt">DARC_FORCE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># check mode (check proxy and hostname before crawling)</span>
+      <span class="nt">DARC_CHECK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># check mode (check content type before crawling)</span>
+      <span class="nt">DARC_CHECK_CONTENT_TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># save mode</span>
+      <span class="nt">DARC_SAVE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># save mode (for requests)</span>
+      <span class="nt">DAVE_SAVE_REQUESTS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># save mode (for selenium)</span>
+      <span class="nt">DAVE_SAVE_SELENIUM</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># processes</span>
+      <span class="nt">DARC_CPU</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">16</span>
+      <span class="c1"># multiprocessing</span>
+      <span class="nt">DARC_MULTIPROCESSING</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># multithreading</span>
+      <span class="nt">DARC_MULTITHREADING</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># time lapse</span>
+      <span class="nt">DARC_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+      <span class="c1"># bulk size</span>
+      <span class="nt">DARC_BULK_SIZE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
+      <span class="c1"># data storage</span>
+      <span class="nt">PATH_DATA</span><span class="p">:</span> <span class="s">&quot;data&quot;</span>
+      <span class="c1"># save data submitssion</span>
+      <span class="nt">SAVE_DB</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># Redis URL</span>
+      <span class="nt">REDIS_URL</span><span class="p">:</span> <span class="s">&#39;redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis&#39;</span>
+      <span class="c1"># database URL</span>
+      <span class="c1">#DB_URL: &#39;mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db&#39;</span>
+      <span class="c1"># max pool</span>
+      <span class="nt">DARC_MAX_POOL</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># Tor proxy &amp; control port</span>
+      <span class="nt">TOR_PORT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9050</span>
+      <span class="nt">TOR_CTRL</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9051</span>
+      <span class="c1"># Tor management method</span>
+      <span class="nt">TOR_STEM</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># Tor authentication</span>
+      <span class="nt">TOR_PASS</span><span class="p">:</span> <span class="s">&quot;16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F&quot;</span>
+      <span class="c1"># Tor bootstrap retry</span>
+      <span class="nt">TOR_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># Tor bootstrap wait</span>
+      <span class="nt">TOR_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
+      <span class="c1"># Tor bootstrap config</span>
+      <span class="nt">TOR_CFG</span><span class="p">:</span> <span class="s">&quot;{}&quot;</span>
+      <span class="c1"># I2P port</span>
+      <span class="nt">I2P_PORT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4444</span>
+      <span class="c1"># I2P bootstrap retry</span>
+      <span class="nt">I2P_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># I2P bootstrap wait</span>
+      <span class="nt">I2P_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
+      <span class="c1"># I2P bootstrap config</span>
+      <span class="nt">I2P_ARGS</span><span class="p">:</span> <span class="s">&quot;&quot;</span>
+      <span class="c1"># ZeroNet port</span>
+      <span class="nt">ZERONET_PORT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">43110</span>
+      <span class="c1"># ZeroNet bootstrap retry</span>
+      <span class="nt">ZERONET_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># ZeroNet project path</span>
+      <span class="nt">ZERONET_PATH</span><span class="p">:</span> <span class="s">&quot;/usr/local/src/zeronet&quot;</span>
+      <span class="c1"># ZeroNet bootstrap wait</span>
+      <span class="nt">ZERONET_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
+      <span class="c1"># ZeroNet bootstrap config</span>
+      <span class="nt">ZERONET_ARGS</span><span class="p">:</span> <span class="s">&quot;&quot;</span>
+      <span class="c1"># Freenet port</span>
+      <span class="nt">FREENET_PORT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8888</span>
+      <span class="c1"># Freenet bootstrap retry</span>
+      <span class="nt">FREENET_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># Freenet project path</span>
+      <span class="nt">FREENET_PATH</span><span class="p">:</span> <span class="s">&quot;/usr/local/src/freenet&quot;</span>
+      <span class="c1"># Freenet bootstrap wait</span>
+      <span class="nt">FREENET_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
+      <span class="c1"># Freenet bootstrap config</span>
+      <span class="nt">FREENET_ARGS</span><span class="p">:</span> <span class="s">&quot;&quot;</span>
+      <span class="c1"># time delta for caches in seconds</span>
+      <span class="nt">TIME_CACHE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2_592_000</span>  <span class="c1"># 30 days</span>
+      <span class="c1"># time to wait for selenium</span>
+      <span class="nt">SE_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+      <span class="c1"># extract link pattern</span>
+      <span class="nt">LINK_WHITE_LIST</span><span class="p">:</span> <span class="s">&#39;[</span>
+        <span class="s">&quot;.*?\\.onion&quot;,</span>
+        <span class="s">&quot;.*?\\.i2p&quot;,</span><span class="nv"> </span><span class="s">&quot;127\\.0\\.0\\.1:7657&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:7657&quot;,</span><span class="nv"> </span><span class="s">&quot;127\\.0\\.0\\.1:7658&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:7658&quot;,</span>
+        <span class="s">&quot;127\\.0\\.0\\.1:43110&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:43110&quot;,</span>
+        <span class="s">&quot;127\\.0\\.0\\.1:8888&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:8888&quot;</span>
+      <span class="s">]&#39;</span>
+      <span class="c1"># link black list</span>
+      <span class="nt">LINK_BLACK_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?facebookcorewwwi\\.onion&quot;,</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?nytimes3xbfgragh\\.onion&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># link fallback flag</span>
+      <span class="nt">LINK_FALLBACK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># content type white list</span>
+      <span class="nt">MIME_WHITE_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;text/html&quot;,</span><span class="nv"> </span><span class="s">&quot;application/xhtml+xml&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># content type black list</span>
+      <span class="nt">MIME_BLACK_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;text/css&quot;,</span><span class="nv"> </span><span class="s">&quot;application/javascript&quot;,</span><span class="nv"> </span><span class="s">&quot;text/json&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># content type fallback flag</span>
+      <span class="nt">MIME_FALLBACK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># proxy type white list</span>
+      <span class="nt">PROXY_WHITE_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;tor&quot;,</span><span class="nv"> </span><span class="s">&quot;i2p&quot;,</span><span class="nv"> </span><span class="s">&quot;freenet&quot;,</span><span class="nv"> </span><span class="s">&quot;zeronet&quot;,</span><span class="nv"> </span><span class="s">&quot;tor2web&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># proxy type black list</span>
+      <span class="nt">PROXY_BLACK_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;null&quot;,</span><span class="nv"> </span><span class="s">&quot;data&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># proxy type fallback flag</span>
+      <span class="nt">PROXY_FALLBACK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># API retry times</span>
+      <span class="nt">API_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># API URLs</span>
+      <span class="c1">#API_NEW_HOST: &#39;https://example.com/api/new_host&#39;</span>
+      <span class="c1">#API_REQUESTS: &#39;https://example.com/api/requests&#39;</span>
+      <span class="c1">#API_SELENIUM: &#39;https://example.com/api/selenium&#39;</span>
+    <span class="nt">restart</span><span class="p">:</span> <span class="s">&quot;always&quot;</span>
+    <span class="nt">networks</span><span class="p">:</span> <span class="nl">&amp;networks</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">darc</span>
+    <span class="nt">volumes</span><span class="p">:</span> <span class="nl">&amp;volumes</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./text:/app/text</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./extra:/app/extra</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/data/darc:/app/data</span>
+
+  <span class="nt">loader</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsnbzh/darc:latest</span>
+    <span class="nt">build</span><span class="p">:</span> <span class="nv">*build</span>
+    <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">loader</span>
+    <span class="c1">#entrypoint: [ &quot;bash&quot;, &quot;/app/run.sh&quot; ]</span>
+    <span class="nt">command</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="s">&quot;--type&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;loader&quot;</span> <span class="p p-Indicator">]</span>
+    <span class="nt">environment</span><span class="p">:</span>
+      <span class="c1">## [PYTHON] force the stdout and stderr streams to be unbuffered</span>
+      <span class="nt">PYTHONUNBUFFERED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># reboot mode</span>
+      <span class="nt">DARC_REBOOT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># debug mode</span>
+      <span class="nt">DARC_DEBUG</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># verbose mode</span>
+      <span class="nt">DARC_VERBOSE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># force mode (ignore robots.txt)</span>
+      <span class="nt">DARC_FORCE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># check mode (check proxy and hostname before crawling)</span>
+      <span class="nt">DARC_CHECK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># check mode (check content type before crawling)</span>
+      <span class="nt">DARC_CHECK_CONTENT_TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># save mode</span>
+      <span class="nt">DARC_SAVE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># save mode (for requests)</span>
+      <span class="nt">DAVE_SAVE_REQUESTS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># save mode (for selenium)</span>
+      <span class="nt">DAVE_SAVE_SELENIUM</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># processes</span>
+      <span class="nt">DARC_CPU</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># multiprocessing</span>
+      <span class="nt">DARC_MULTIPROCESSING</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># multithreading</span>
+      <span class="nt">DARC_MULTITHREADING</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># time lapse</span>
+      <span class="nt">DARC_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+      <span class="c1"># data storage</span>
+      <span class="nt">PATH_DATA</span><span class="p">:</span> <span class="s">&quot;data&quot;</span>
+      <span class="c1"># Redis URL</span>
+      <span class="nt">REDIS_URL</span><span class="p">:</span> <span class="s">&#39;redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis&#39;</span>
+      <span class="c1"># database URL</span>
+      <span class="c1">#DB_URL: &#39;mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db&#39;</span>
+      <span class="c1"># max pool</span>
+      <span class="nt">DARC_MAX_POOL</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># save data submitssion</span>
+      <span class="nt">SAVE_DB</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># Tor proxy &amp; control port</span>
+      <span class="nt">TOR_PORT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9050</span>
+      <span class="nt">TOR_CTRL</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9051</span>
+      <span class="c1"># Tor management method</span>
+      <span class="nt">TOR_STEM</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># Tor authentication</span>
+      <span class="nt">TOR_PASS</span><span class="p">:</span> <span class="s">&quot;16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F&quot;</span>
+      <span class="c1"># Tor bootstrap retry</span>
+      <span class="nt">TOR_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># Tor bootstrap wait</span>
+      <span class="nt">TOR_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
+      <span class="c1"># Tor bootstrap config</span>
+      <span class="nt">TOR_CFG</span><span class="p">:</span> <span class="s">&quot;{}&quot;</span>
+      <span class="c1"># I2P port</span>
+      <span class="nt">I2P_PORT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4444</span>
+      <span class="c1"># I2P bootstrap retry</span>
+      <span class="nt">I2P_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># I2P bootstrap wait</span>
+      <span class="nt">I2P_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
+      <span class="c1"># I2P bootstrap config</span>
+      <span class="nt">I2P_ARGS</span><span class="p">:</span> <span class="s">&quot;&quot;</span>
+      <span class="c1"># ZeroNet port</span>
+      <span class="nt">ZERONET_PORT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">43110</span>
+      <span class="c1"># ZeroNet bootstrap retry</span>
+      <span class="nt">ZERONET_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># ZeroNet project path</span>
+      <span class="nt">ZERONET_PATH</span><span class="p">:</span> <span class="s">&quot;/usr/local/src/zeronet&quot;</span>
+      <span class="c1"># ZeroNet bootstrap wait</span>
+      <span class="nt">ZERONET_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
+      <span class="c1"># ZeroNet bootstrap config</span>
+      <span class="nt">ZERONET_ARGS</span><span class="p">:</span> <span class="s">&quot;&quot;</span>
+      <span class="c1"># Freenet port</span>
+      <span class="nt">FREENET_PORT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8888</span>
+      <span class="c1"># Freenet bootstrap retry</span>
+      <span class="nt">FREENET_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># Freenet project path</span>
+      <span class="nt">FREENET_PATH</span><span class="p">:</span> <span class="s">&quot;/usr/local/src/freenet&quot;</span>
+      <span class="c1"># Freenet bootstrap wait</span>
+      <span class="nt">FREENET_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
+      <span class="c1"># Freenet bootstrap config</span>
+      <span class="nt">FREENET_ARGS</span><span class="p">:</span> <span class="s">&quot;&quot;</span>
+      <span class="c1"># time delta for caches in seconds</span>
+      <span class="nt">TIME_CACHE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2_592_000</span>  <span class="c1"># 30 days</span>
+      <span class="c1"># time to wait for selenium</span>
+      <span class="nt">SE_WAIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+      <span class="c1"># extract link pattern</span>
+      <span class="nt">LINK_WHITE_LIST</span><span class="p">:</span> <span class="s">&#39;[</span>
+        <span class="s">&quot;.*?\\.onion&quot;,</span>
+        <span class="s">&quot;.*?\\.i2p&quot;,</span><span class="nv"> </span><span class="s">&quot;127\\.0\\.0\\.1:7657&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:7657&quot;,</span><span class="nv"> </span><span class="s">&quot;127\\.0\\.0\\.1:7658&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:7658&quot;,</span>
+        <span class="s">&quot;127\\.0\\.0\\.1:43110&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:43110&quot;,</span>
+        <span class="s">&quot;127\\.0\\.0\\.1:8888&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:8888&quot;</span>
+      <span class="s">]&#39;</span>
+      <span class="c1"># link black list</span>
+      <span class="nt">LINK_BLACK_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?facebookcorewwwi\\.onion&quot;,</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?nytimes3xbfgragh\\.onion&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># link fallback flag</span>
+      <span class="nt">LINK_FALLBACK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+      <span class="c1"># content type white list</span>
+      <span class="nt">MIME_WHITE_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;text/html&quot;,</span><span class="nv"> </span><span class="s">&quot;application/xhtml+xml&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># content type black list</span>
+      <span class="nt">MIME_BLACK_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;text/css&quot;,</span><span class="nv"> </span><span class="s">&quot;application/javascript&quot;,</span><span class="nv"> </span><span class="s">&quot;text/json&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># content type fallback flag</span>
+      <span class="nt">MIME_FALLBACK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># proxy type white list</span>
+      <span class="nt">PROXY_WHITE_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;tor&quot;,</span><span class="nv"> </span><span class="s">&quot;i2p&quot;,</span><span class="nv"> </span><span class="s">&quot;freenet&quot;,</span><span class="nv"> </span><span class="s">&quot;zeronet&quot;,</span><span class="nv"> </span><span class="s">&quot;tor2web&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># proxy type black list</span>
+      <span class="nt">PROXY_BLACK_LIST</span><span class="p">:</span> <span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;null&quot;,</span><span class="nv"> </span><span class="s">&quot;data&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+      <span class="c1"># proxy type fallback flag</span>
+      <span class="nt">PROXY_FALLBACK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+      <span class="c1"># API retry times</span>
+      <span class="nt">API_RETRY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+      <span class="c1"># API URLs</span>
+      <span class="c1">#API_NEW_HOST: &#39;https://example.com/api/new_host&#39;</span>
+      <span class="c1">#API_REQUESTS: &#39;https://example.com/api/requests&#39;</span>
+      <span class="c1">#API_SELENIUM: &#39;https://example.com/api/selenium&#39;</span>
+    <span class="nt">restart</span><span class="p">:</span> <span class="s">&quot;always&quot;</span>
+    <span class="nt">networks</span><span class="p">:</span> <span class="nv">*networks</span>
+    <span class="nt">volumes</span><span class="p">:</span> <span class="nv">*volumes</span>
+
+<span class="c1"># network settings</span>
+<span class="nt">networks</span><span class="p">:</span>
+  <span class="nt">darc</span><span class="p">:</span>
+    <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">bridge</span>
+</pre></div>
+</div>
+</details><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Should you wish to run <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> in reboot mode, i.e. set
+<span class="target" id="index-0"></span><a class="reference internal" href="config.html#envvar-DARC_REBOOT"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_REBOOT</span></code></a> and/or <a class="reference internal" href="darc/const.html#darc.const.REBOOT" title="darc.const.REBOOT"><code class="xref py py-data docutils literal notranslate"><span class="pre">REBOOT</span></code></a>
+as <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, you may wish to change the entrypoint to</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bash /app/run.sh
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">run.sh</span></code> is a shell script wraps around <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
+especially for reboot mode.</p>
+<details>
+<summary>Content of <code class="docutils literal notranslate"><span class="pre">run.sh</span></code></summary><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
+
+<span class="nb">set</span> -e
+
+<span class="c1"># time lapse</span>
+<span class="nv">WAIT</span><span class="o">=</span><span class="si">${</span><span class="nv">DARC_WAIT</span><span class="p">=10</span><span class="si">}</span>
+
+<span class="c1"># signal handlers</span>
+<span class="nb">trap</span> <span class="s1">&#39;[ -f ${PATH_DATA}/darc.pid ] &amp;&amp; kill -2 $(cat ${PATH_DATA}/darc.pid)&#39;</span> SIGINT SIGTERM SIGKILL
+
+<span class="c1"># initialise</span>
+<span class="nb">echo</span> <span class="s2">&quot;+ Starting application...&quot;</span>
+python3 -m darc <span class="nv">$@</span>
+sleep <span class="si">${</span><span class="nv">WAIT</span><span class="si">}</span>
+
+<span class="c1"># mainloop</span>
+<span class="k">while</span> true<span class="p">;</span> <span class="k">do</span>
+    <span class="nb">echo</span> <span class="s2">&quot;+ Restarting application...&quot;</span>
+    python3 -m darc
+    sleep <span class="si">${</span><span class="nv">WAIT</span><span class="si">}</span>
+<span class="k">done</span>
+</pre></div>
+</div>
+</details><p>In such scenario, you can customise your <code class="docutils literal notranslate"><span class="pre">run.sh</span></code> to, for
+instance, archive then upload current data crawled by <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
+to somewhere else and save up some disk space.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Customisations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="custom.html" title="previous chapter">Customisations</a></li>
+      <li>Next: <a href="demo/api.html" title="next chapter">Web Backend Demo</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="_sources/docker.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

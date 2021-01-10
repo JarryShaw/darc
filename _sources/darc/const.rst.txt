@@ -1,0 +1,359 @@
+Module Constants
+================
+
+Auxiliary Function
+------------------
+
+.. autofunction:: darc.const.getpid
+.. autofunction:: darc.const.get_lock
+
+General Configurations
+----------------------
+
+.. data:: darc.const.REBOOT
+   :type: bool
+
+   If exit the program after first round, i.e. crawled all links from the
+   :mod:`requests` link database and loaded all links from the :mod:`selenium`
+   link database.
+
+   This can be useful especially when the capacity is limited and you wish
+   to save some space before continuing next round. See
+   :doc:`Docker integration </docker>` for more information.
+
+   :default: :data:`False`
+   :environ: :envvar:`DARC_REBOOT`
+
+.. data:: darc.const.DEBUG
+   :type: bool
+
+   If run the program in debugging mode.
+
+   :default: :data:`False`
+   :environ: :envvar:`DARC_DEBUG`
+
+.. data:: darc.const.VERBOSE
+   :type: bool
+
+   If run the program in verbose mode. If :data:`~darc.const.DEBUG` is :data:`True`,
+   then the verbose mode will be always enabled.
+
+   :default: :data:`False`
+   :environ: :envvar:`DARC_VERBOSE`
+
+.. data:: darc.const.FORCE
+   :type: bool
+
+   If ignore ``robots.txt`` rules when crawling (c.f. :func:`~darc.crawl.crawler`).
+
+   :default: :data:`False`
+   :environ: :envvar:`DARC_FORCE`
+
+.. data:: darc.const.CHECK
+   :type: bool
+
+   If check proxy and hostname before crawling (when calling
+   :func:`~darc.parse.extract_links`, :func:`~darc.proxy.null.read_sitemap`
+   and :func:`~darc.proxy.i2p.read_hosts`).
+
+   If :data:`~darc.const.CHECK_NG` is :data:`True`, then this environment
+   variable will be always set as :data:`True`.
+
+   :default: :data:`False`
+   :environ: :envvar:`DARC_CHECK`
+
+.. data:: darc.const.CHECK_NG
+   :type: bool
+
+   If check content type through ``HEAD`` requests before crawling
+   (when calling :func:`~darc.parse.extract_links`,
+   :func:`~darc.proxy.null.read_sitemap` and :func:`~darc.proxy.i2p.read_hosts`).
+
+   :default: :data:`False`
+   :environ: :envvar:`DARC_CHECK_CONTENT_TYPE`
+
+.. data:: darc.const.ROOT
+   :type: str
+
+   The root folder of the project.
+
+.. data:: darc.const.CWD
+   :value: '.'
+
+   The current working direcory.
+
+.. data:: darc.const.DARC_CPU
+   :type: int
+
+   Number of concurrent processes. If not provided, then the number of
+   system CPUs will be used.
+
+   :default: :data:`None`
+   :environ: :envvar:`DARC_CPU`
+
+.. data:: darc.const.FLAG_MP
+   :type: bool
+
+   If enable *multiprocessing* support.
+
+   :default: :data:`True`
+   :environ: :envvar:`DARC_MULTIPROCESSING`
+
+.. data:: darc.const.FLAG_TH
+   :type: bool
+
+   If enable *multithreading* support.
+
+   :default: :data:`False`
+   :environ: :envvar:`DARC_MULTITHREADING`
+
+   .. note::
+
+      :data:`~darc.const.FLAG_MP` and :data:`~darc.const.FLAG_TH` can
+      **NOT** be toggled at the same time.
+
+.. data:: darc.const.DARC_USER
+   :type: str
+
+   *Non-root* user for proxies.
+
+   :default: current login user (c.f. |getuser|_)
+   :environ: :envvar:`DARC_USER`
+
+   .. |getuser| replace:: :func:`getpass.getuser`
+   .. _getuser: https://docs.python.org/3/library/getpass.html#getpass.getuser
+
+Data Storage
+------------
+
+.. seealso::
+
+   See :mod:`darc.db` for more information about database integration.
+
+.. data:: darc.const.REDIS
+   :type: redis.Redis
+
+   URL to the Redis database.
+
+   :default: ``redis://127.0.0.1``
+   :environ: :envvar:`REDIS_URL`
+
+.. data:: darc.const.DB
+   :type: peewee.Database
+
+   URL to the RDS storage.
+
+   :default: ``sqlite://{PATH_DB}/darc.db``
+   :environ: :envvar`DB_URL`
+
+.. data:: darc.const.DB
+   :type: peewee.Database
+
+   URL to the data submission storage.
+
+   :default: ``sqlite://{PATH_DB}/darcweb.db``
+   :environ: :envvar`DB_URL`
+
+.. data:: darc.const.FLAG_DB
+   :type: bool
+
+   Flag if uses RDS as the task queue backend.
+   If :envvar:`REDIS_URL` is provided, then
+   :data:`False`; else, :data:`True`.
+
+.. data:: darc.const.PATH_DB
+   :type: str
+
+   Path to data storage.
+
+   :default: ``data``
+   :environ: :envvar:`PATH_DATA`
+
+   .. seealso::
+
+      See :mod:`darc.save` for more information about source saving.
+
+.. data:: darc.const.PATH_MISC
+   :value: '{PATH_DB}/misc/'
+
+   Path to miscellaneous data storage, i.e. ``misc`` folder under the
+   root of data storage.
+
+   .. seealso::
+
+      * :data:`darc.const.PATH_DB`
+
+.. data:: darc.const.PATH_LN
+   :value: '{PATH_DB}/link.csv'
+
+   Path to the link CSV file, ``link.csv``.
+
+   .. seealso::
+
+      * :data:`darc.const.PATH_DB`
+      * :data:`darc.save.save_link`
+
+.. data:: darc.const.PATH_ID
+   :value: '{PATH_DB}/darc.pid'
+
+   Path to the process ID file, ``darc.pid``.
+
+   .. seealso::
+
+      * :data:`darc.const.PATH_DB`
+      * :func:`darc.const.getpid`
+
+Web Crawlers
+------------
+
+.. data:: darc.const.DARC_WAIT
+   :type: Optional[float]
+
+   Time interval between each round when the :mod:`requests` and/or
+   :mod:`selenium` database are empty.
+
+   :default: ``60``
+   :environ: :envvar:`DARC_WAIT`
+
+.. data:: darc.const.TIME_CACHE
+   :type: float
+
+   Time delta for caches in seconds.
+
+   The :mod:`darc` project supports *caching* for fetched files.
+   :data:`~darc.const.TIME_CACHE` will specify for how log the
+   fetched files will be cached and **NOT** fetched again.
+
+   .. note::
+
+      If :data:`~darc.const.TIME_CACHE` is :data:`None` then caching
+      will be marked as *forever*.
+
+   :default: ``60``
+   :environ: :envvar:`TIME_CACHE`
+
+.. data:: darc.const.SE_WAIT
+   :type: float
+
+   Time to wait for :mod:`selenium` to finish loading pages.
+
+   .. note::
+
+      Internally, :mod:`selenium` will wait for the browser to finish
+      loading the pages before return (i.e. the web API event
+      |event|_). However, some extra scripts may take more time
+      running after the event.
+
+   .. |event| replace:: ``DOMContentLoaded``
+   .. _event: https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event
+
+   :default: ``60``
+   :environ: :envvar:`SE_WAIT`
+
+.. data:: darc.const.SE_EMPTY
+   :value: '<html><head></head><body></body></html>'
+
+   The empty page from :mod:`selenium`.
+
+   .. seealso::
+
+      * :func:`darc.crawl.loader`
+
+White / Black Lists
+-------------------
+
+.. data:: darc.const.LINK_WHITE_LIST
+   :type: List[re.Pattern]
+
+   White list of hostnames should be crawled.
+
+   :default: ``[]``
+   :environ: :envvar:`LINK_WHITE_LIST`
+
+   .. note::
+
+      Regular expressions are supported.
+
+.. data:: darc.const.LINK_BLACK_LIST
+   :type: List[re.Pattern]
+
+   Black list of hostnames should be crawled.
+
+   :default: ``[]``
+   :environ: :envvar:`LINK_BLACK_LIST`
+
+   .. note::
+
+      Regular expressions are supported.
+
+.. data:: darc.const.LINK_FALLBACK
+   :type: bool
+
+   Fallback value for :func:`~darc.parse.match_host`.
+
+   :default: :data:`False`
+   :environ: :envvar:`LINK_FALLBACK`
+
+.. data:: darc.const.MIME_WHITE_LIST
+   :type: List[re.Pattern]
+
+   White list of content types should be crawled.
+
+   :default: ``[]``
+   :environ: :envvar:`MIME_WHITE_LIST`
+
+   .. note::
+
+      Regular expressions are supported.
+
+.. data:: darc.const.MIME_BLACK_LIST
+   :type: List[re.Pattern]
+
+   Black list of content types should be crawled.
+
+   :default: ``[]``
+   :environ: :envvar:`MIME_BLACK_LIST`
+
+   .. note::
+
+      Regular expressions are supported.
+
+.. data:: darc.const.MIME_FALLBACK
+   :type: bool
+
+   Fallback value for :func:`~darc.parse.match_mime`.
+
+   :default: :data:`False`
+   :environ: :envvar:`MIME_FALLBACK`
+
+.. data:: darc.const.PROXY_WHITE_LIST
+   :type: List[str]
+
+   White list of proxy types should be crawled.
+
+   :default: ``[]``
+   :environ: :envvar:`PROXY_WHITE_LIST`
+
+   .. note::
+
+      The proxy types are **case insensitive**.
+
+.. data:: darc.const.PROXY_BLACK_LIST
+   :type: List[str]
+
+   Black list of proxy types should be crawled.
+
+   :default: ``[]``
+   :environ: :envvar:`PROXY_BLACK_LIST`
+
+   .. note::
+
+      The proxy types are **case insensitive**.
+
+.. data:: darc.const.PROXY_FALLBACK
+   :type: bool
+
+   Fallback value for :func:`~darc.parse.match_proxy`.
+
+   :default: :data:`False`
+   :environ: :envvar:`PROXY_FALLBACK`

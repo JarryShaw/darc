@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darc - Darkweb Crawler Project &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="How to …" href="howto/index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="darc-darkweb-crawler-project">
+<h1><code class="docutils literal notranslate"><span class="pre">darc</span></code> - Darkweb Crawler Project<a class="headerlink" href="#darc-darkweb-crawler-project" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> is designed as a swiss army knife for darkweb crawling.
+It integrates <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> to collect HTTP request and response
+information, such as cookies, header fields, etc. It also bundles
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> to provide a fully rendered web page and screenshot
+of such view.</p>
+<img alt="_images/darc.jpeg" src="_images/darc.jpeg" />
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="howto/index.html">How to …</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howto/deploy.html">How to gracefully deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto/sites.html">How to implement a sites customisation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto/proxy.html">How to implement a custom proxy middleware?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="darc/index.html">Technical Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="darc/link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="darc/proxy/index.html">Proxy Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="darc/sites/index.html">Sites Customisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="darc/const.html">Module Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="darc/error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="darc/model/index.html">Data Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config.html#general-configurations">General Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#data-storage">Data Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#web-crawlers">Web Crawlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#white-black-lists">White / Black Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#data-submission">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#tor-proxy-configuration">Tor Proxy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#i2p-proxy-configuration">I2P Proxy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#zeronet-proxy-configuration">ZeroNet Proxy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#freenet-proxy-configuration">Freenet Proxy Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Customisations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="custom.html#hooks-between-rounds">Hooks between Rounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom.html#custom-proxy">Custom Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom.html#sites-customisation">Sites Customisation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/schema.html">Submission Data Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demo/schema.html#new-host-submission">New Host Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo/schema.html#requests-submission">Requests Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo/schema.html#selenium-submission">Selenium Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo/schema.html#model-definitions">Model Definitions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="aux.html">Auxiliary Scripts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="aux.html#health-check">Health Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aux.html#upload-api-submission-files">Upload API Submission Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aux.html#remove-repeated-lines">Remove Repeated Lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aux.html#redis-clinic">Redis Clinic</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="rationale">
+<h2>Rationale<a class="headerlink" href="#rationale" title="Permalink to this headline">¶</a></h2>
+<p>There are two types of <em>workers</em>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">crawler</span></code> – runs the <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.crawler()</span></code> to provide a
+fresh view of a link and test its connectability</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">loader</span></code> – run the <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.loader()</span></code> to provide an
+in-depth view of a link and provide more visual information</p></li>
+</ul>
+<p>The general process can be described as following for <em>workers</em> of <code class="docutils literal notranslate"><span class="pre">crawler</span></code> type:</p>
+<ol class="arabic">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">process_crawler()</span></code>: obtain URLs from the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>
+link database (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">load_requests()</span></code>), and feed such URLs to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <a class="reference internal" href="darc/const.html#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be
+called with <em>multiprocessing</em> support; if <a class="reference internal" href="darc/const.html#darc.const.FLAG_TH" title="darc.const.FLAG_TH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_TH</span></code></a>
+if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be called with <em>multithreading</em>
+support; if none, the function will be called in single-threading.</p>
+</div>
+</li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code>: parse the URL using
+<a class="reference internal" href="darc/link.html#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_link()</span></code></a>, and check if need to crawl the
+URL (c.f. <a class="reference internal" href="darc/const.html#darc.const.PROXY_WHITE_LIST" title="darc.const.PROXY_WHITE_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">PROXY_WHITE_LIST</span></code></a>, <a class="reference internal" href="darc/const.html#darc.const.PROXY_BLACK_LIST" title="darc.const.PROXY_BLACK_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">PROXY_BLACK_LIST</span></code></a>,
+<a class="reference internal" href="darc/const.html#darc.const.LINK_WHITE_LIST" title="darc.const.LINK_WHITE_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">LINK_WHITE_LIST</span></code></a> and <a class="reference internal" href="darc/const.html#darc.const.LINK_BLACK_LIST" title="darc.const.LINK_BLACK_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">LINK_BLACK_LIST</span></code></a>);
+if true, then crawl the URL with <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>.</p>
+<p>If the URL is from a brand new host, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will first try
+to fetch and save <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> and sitemaps of the host
+(c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">save_robots()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">save_sitemap()</span></code>),
+and extract then save the links from sitemaps (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code>)
+into link database for future crawling (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code>).
+Also, if the submission API is provided, <code class="xref py py-func docutils literal notranslate"><span class="pre">submit_new_host()</span></code>
+will be called and submit the documents just fetched.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> presented, and <a class="reference internal" href="darc/const.html#darc.const.FORCE" title="darc.const.FORCE"><code class="xref py py-data docutils literal notranslate"><span class="pre">FORCE</span></code></a> is
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will check if allowed to crawl the URL.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The root path (e.g. <code class="docutils literal notranslate"><span class="pre">/</span></code> in <a class="reference external" href="https://www.example.com/">https://www.example.com/</a>) will always
+be crawled ignoring <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
+</div>
+<p>At this point, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will call the customised hook function
+from <a class="reference internal" href="darc/sites/index.html#module-darc.sites" title="darc.sites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites</span></code></a> to crawl and get the final response object.
+<a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will save the session cookies and header information,
+using <code class="xref py py-func docutils literal notranslate"><span class="pre">save_headers()</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <code class="xref py py-exc docutils literal notranslate"><span class="pre">requests.exceptions.InvalidSchema</span></code> is raised, the link
+will be saved by <code class="xref py py-func docutils literal notranslate"><span class="pre">save_invalid()</span></code>. Further
+processing is dropped.</p>
+</div>
+<p>If the content type of response document is not ignored (c.f.
+<a class="reference internal" href="darc/const.html#darc.const.MIME_WHITE_LIST" title="darc.const.MIME_WHITE_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">MIME_WHITE_LIST</span></code></a> and <a class="reference internal" href="darc/const.html#darc.const.MIME_BLACK_LIST" title="darc.const.MIME_BLACK_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">MIME_BLACK_LIST</span></code></a>),
+<code class="xref py py-func docutils literal notranslate"><span class="pre">submit_requests()</span></code> will be called and submit the document
+just fetched.</p>
+<p>If the response document is HTML (<code class="docutils literal notranslate"><span class="pre">text/html</span></code> and <code class="docutils literal notranslate"><span class="pre">application/xhtml+xml</span></code>),
+<code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code> will be called then to extract all possible
+links from the HTML document and save such links into the database
+(c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code>).</p>
+<p>And if the response status code is between <code class="docutils literal notranslate"><span class="pre">400</span></code> and <code class="docutils literal notranslate"><span class="pre">600</span></code>,
+the URL will be saved back to the link database
+(c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code>). If <strong>NOT</strong>, the URL will
+be saved into <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> link database to proceed next steps
+(c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">save_selenium()</span></code>).</p>
+</li>
+</ol>
+<p>The general process can be described as following for <em>workers</em> of <code class="docutils literal notranslate"><span class="pre">loader</span></code> type:</p>
+<ol class="arabic">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">process_loader()</span></code>: in the meanwhile, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will
+obtain URLs from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> link database (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">load_selenium()</span></code>),
+and feed such URLs to <code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <a class="reference internal" href="darc/const.html#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be
+called with <em>multiprocessing</em> support; if <a class="reference internal" href="darc/const.html#darc.const.FLAG_TH" title="darc.const.FLAG_TH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_TH</span></code></a>
+if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be called with <em>multithreading</em>
+support; if none, the function will be called in single-threading.</p>
+</div>
+</li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code>: parse the URL using
+<a class="reference internal" href="darc/link.html#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_link()</span></code></a> and start loading the URL using
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> with Google Chrome.</p>
+<p>At this point, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will call the customised hook function
+from <a class="reference internal" href="darc/sites/index.html#module-darc.sites" title="darc.sites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites</span></code></a> to load and return the original
+<a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v3.141)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a> object.</p>
+<p>If successful, the rendered source HTML document will be saved, and a
+full-page screenshot will be taken and saved.</p>
+<p>If the submission API is provided, <code class="xref py py-func docutils literal notranslate"><span class="pre">submit_selenium()</span></code>
+will be called and submit the document just loaded.</p>
+<p>Later, <code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code> will be called then to
+extract all possible links from the HTML document and save such
+links into the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code>).</p>
+</li>
+</ol>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>For more information about the hook functions, please refer
+to the <a class="reference internal" href="custom.html"><span class="doc">customisation</span></a> documentations.</p>
+</div>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> supports Python all versions above and includes <strong>3.6</strong>.
+Currently, it only supports and is tested on Linux (<em>Ubuntu 18.04</em>)
+and macOS (<em>Catalina</em>).</p>
+<p>When installing in Python versions below <strong>3.8</strong>, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will
+use <a class="reference external" href="https://github.com/pybpc/walrus"><code class="docutils literal notranslate"><span class="pre">walrus</span></code></a> to compile itself for backport compatibility.</p>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install darc
+</pre></div>
+</div>
+<p>Please make sure you have Google Chrome and corresponding version of Chrome
+Driver installed on your system.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Starting from version <strong>0.3.0</strong>, we introduced <a class="reference external" href="https://redis.io">Redis</a> for the task
+queue database backend.</p>
+<p>Since version <strong>0.6.0</strong>, we introduced relationship database storage
+(e.g. <a class="reference external" href="https://mysql.com/">MySQL</a>, <a class="reference external" href="https://www.sqlite.org/">SQLite</a>, <a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a>, etc.) for the task queue database
+backend, besides the <a class="reference external" href="https://redis.io">Redis</a> database, since it can be too much memory-costly
+when the task queue becomes vary large.</p>
+<p>Please make sure you have one of the backend database installed, configured,
+and running when using the <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project.</p>
+</div>
+<p>However, the <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project is shipped with Docker and Compose support.
+Please see <a class="reference internal" href="docker.html"><span class="doc">Docker Integration</span></a>  for more information.</p>
+<p>Or, you may refer to and/or install from the <a class="reference external" href="https://hub.docker.com/r/jsnbzh/darc">Docker Hub</a> repository:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker pull jsnbzh/darc<span class="o">[</span>:TAGNAME<span class="o">]</span>
+</pre></div>
+</div>
+<p>or GitHub Container Registry, with more updated and comprehensive images:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker pull ghcr.io/jarryshaw/darc<span class="o">[</span>:TAGNAME<span class="o">]</span>
+<span class="c1"># or the debug image</span>
+docker pull ghcr.io/jarryshaw/darc-debug<span class="o">[</span>:TAGNAME<span class="o">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Though simple CLI, the <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project is more configurable by
+environment variables. For more information, please refer to the
+<a class="reference internal" href="config.html"><span class="doc">environment variable configuration</span></a> documentations.</p>
+</div>
+<p>The <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project provides a simple CLI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">darc</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span><span class="n">t</span> <span class="p">{</span><span class="n">crawler</span><span class="p">,</span><span class="n">loader</span><span class="p">}</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span> <span class="n">FILE</span><span class="p">]</span> <span class="o">...</span>
+
+<span class="n">the</span> <span class="n">darkweb</span> <span class="n">crawling</span> <span class="n">swiss</span> <span class="n">army</span> <span class="n">knife</span>
+
+<span class="n">positional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="n">link</span>                  <span class="n">links</span> <span class="n">to</span> <span class="n">craw</span>
+
+<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">-</span><span class="n">v</span><span class="p">,</span> <span class="o">--</span><span class="n">version</span>         <span class="n">show</span> <span class="n">program</span><span class="s1">&#39;s version number and exit</span>
+  <span class="o">-</span><span class="n">t</span> <span class="p">{</span><span class="n">crawler</span><span class="p">,</span><span class="n">loader</span><span class="p">},</span> <span class="o">--</span><span class="nb">type</span> <span class="p">{</span><span class="n">crawler</span><span class="p">,</span><span class="n">loader</span><span class="p">}</span>
+                        <span class="nb">type</span> <span class="n">of</span> <span class="n">worker</span> <span class="n">process</span>
+  <span class="o">-</span><span class="n">f</span> <span class="n">FILE</span><span class="p">,</span> <span class="o">--</span><span class="n">file</span> <span class="n">FILE</span>  <span class="n">read</span> <span class="n">links</span> <span class="kn">from</span> <span class="nn">file</span>
+</pre></div>
+</div>
+<p>It can also be called through module entrypoint:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">python</span><span class="o">-</span><span class="n">darc</span> <span class="o">...</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The link files can contain <strong>comment</strong> lines, which should start with <code class="docutils literal notranslate"><span class="pre">#</span></code>.
+Empty lines and comment lines will be ignored when loading.</p>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="howto/index.html" title="next chapter">How to …</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

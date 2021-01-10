@@ -1,0 +1,93 @@
+.. automodule:: darc.proxy.i2p
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. data:: darc.proxy.i2p.I2P_REQUESTS_PROXY
+   :type: Dict[str, Any]
+
+   Proxy for I2P sessions.
+
+   .. seealso::
+
+      * :func:`darc.requests.i2p_session`
+
+.. data:: darc.proxy.i2p.I2P_SELENIUM_PROXY
+   :type: selenium.webdriver.common.proxy.Proxy
+
+   :class:`~selenium.webdriver.common.proxy.Proxy` for I2P web drivers.
+
+   .. seealso::
+
+      * :func:`darc.selenium.i2p_driver`
+
+The following constants are configuration through environment variables:
+
+.. data:: darc.proxy.i2p.I2P_PORT
+   :type: int
+
+   Port for I2P proxy connection.
+
+   :default: ``4444``
+   :environ: :data:`I2P_PORT`
+
+.. data:: darc.proxy.i2p.I2P_RETRY
+   :type: int
+
+   Retry times for I2P bootstrap when failure.
+
+   :default: ``3``
+   :environ: :data:`I2P_RETRY`
+
+.. data:: darc.proxy.i2p.BS_WAIT
+   :type: float
+
+   Time after which the attempt to start I2P is aborted.
+
+   :default: ``90``
+   :environ: :data:`I2P_WAIT`
+
+   .. note::
+
+      If not provided, there will be **NO** timeouts.
+
+.. data:: darc.proxy.i2p.I2P_ARGS
+   :type: List[str]
+
+   I2P bootstrap arguments for ``i2prouter start``.
+
+   If provided, it should be parsed as command
+   line arguments (c.f. :func:`shlex.split`).
+
+   :default: ``''``
+   :environ: :data:`I2P_ARGS`
+
+   .. note::
+
+      The command will be run as :data:`~darc.const.DARC_USER`,
+      if current user (c.f. :func:`getpass.getuser`) is *root*.
+
+The following constants are defined for internal usage:
+
+.. data:: darc.proxy.i2p._MNG_I2P
+   :type: bool
+
+   If manage I2P proxy through :mod:`darc`.
+
+   :default: :data:`True`
+   :environ: :data:`DARC_I2P`
+
+.. data:: darc.proxy.i2p._I2P_BS_FLAG
+   :type: bool
+
+   If the I2P proxy is bootstrapped.
+
+.. data:: darc.proxy.i2p._I2P_PROC
+   :type: subprocess.Popen
+
+   I2P proxy process running in the background.
+
+.. data:: darc.proxy.i2p._I2P_ARGS
+   :type: List[str]
+
+   I2P proxy bootstrap arguments.

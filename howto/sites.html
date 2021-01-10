@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to implement a sites customisation? &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How to implement a custom proxy middleware?" href="proxy.html" />
+    <link rel="prev" title="How to gracefully deploy darc?" href="deploy.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-implement-a-sites-customisation">
+<h1>How to implement a sites customisation?<a class="headerlink" href="#how-to-implement-a-sites-customisation" title="Permalink to this headline">¶</a></h1>
+<p>As had been discussed already in the <a class="reference external" href="https://darc.jarryshaw.me/en/latest/custom.html#sites-customisation">documentation</a>, the implementation
+of a sites customisation is dead simple: just inherits the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.BaseSite</span></code> class and overwrites
+the corresponding <code class="xref py py-meth docutils literal notranslate"><span class="pre">crawler()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">loader()</span></code> <em>abstract</em> <strong>static methods</strong>.</p>
+<p>See below an example from the documentation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.sites</span> <span class="kn">import</span> <span class="n">BaseSite</span><span class="p">,</span> <span class="n">register</span>
+</pre></div>
+</div>
+<p>As the class below suggests, you may implement and register your sites
+customisation for <em>mysite.com</em> and <em>www.mysite.com</em> using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">MySite</span></code> class, where <code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code>
+attribute contains the list of hostnames to which the class should be
+associated with.</p>
+<p><strong>NB</strong>: Implementation details of the <code class="docutils literal notranslate"><span class="pre">crawler</span></code> and <code class="docutils literal notranslate"><span class="pre">loader</span></code>
+methods will be discussed in following sections.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MySite</span><span class="p">(</span><span class="n">BaseSite</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is a site customisation class for demonstration purpose.</span>
+<span class="sd">    You may implement a module as well should you prefer.&quot;&quot;&quot;</span>
+
+    <span class="c1">#: List[str]: Hostnames the sites customisation is designed for.</span>
+    <span class="n">hostname</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mysite.com&#39;</span><span class="p">,</span> <span class="s1">&#39;www.mysite.com&#39;</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span> <span class="o">...</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>Should your sites customisation be associated with multiple sites, you can
+just add them all to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code> attribute; when you call
+<code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code> to register your sites customisation, the
+function will automatically handle the registry association information.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># register sites implicitly</span>
+<span class="n">register</span><span class="p">(</span><span class="n">MySite</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Nonetheless, in case where you would rather specify the hostnames at
+runtime (instead of adding them to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code> attribute), you may
+just leave out the <code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code> attribute as <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> and specify
+your list of hostnames at <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code> function call.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># register sites explicitly</span>
+<span class="n">register</span><span class="p">(</span><span class="n">MySite</span><span class="p">,</span> <span class="s1">&#39;mysite.com&#39;</span><span class="p">,</span> <span class="s1">&#39;www.mysite.com&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="crawler-hook">
+<h2>Crawler Hook<a class="headerlink" href="#crawler-hook" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">crawler</span></code> method is based on <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> objects
+and returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a> instance representing the
+<em>crawled</em> web page.</p>
+<p>Type annotations of the method can be described as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="n">darc</span><span class="o">.</span><span class="n">link</span><span class="o">.</span><span class="n">Link</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">session</span></code> is the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> instance with <strong>proxy</strong>
+presets and <code class="docutils literal notranslate"><span class="pre">link</span></code> is the target link (parsed by
+<a class="reference internal" href="../darc/link.html#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.link.parse_link()</span></code></a> to provide more information than mere string).</p>
+<p>For example, let’s say you would like to inject a cookie named <code class="docutils literal notranslate"><span class="pre">SessionID</span></code>
+and an <code class="docutils literal notranslate"><span class="pre">Authentication</span></code> header with some fake identity, then you may write
+the <code class="docutils literal notranslate"><span class="pre">crawler</span></code> method as below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Crawler hook for my site.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        timestamp (datetime.datetime): Timestamp of the worker node reference.</span>
+<span class="sd">        session (requests.Session): Session object with proxy settings.</span>
+<span class="sd">        link (darc.link.Link): Link object to be crawled.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        requests.Response: The final response object with crawled data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># inject cookies</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;SessionID&#39;</span><span class="p">,</span> <span class="s1">&#39;fake-session-id-value&#39;</span><span class="p">)</span>
+
+    <span class="c1"># insert headers</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authentication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Basic fake-identity-credential&#39;</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+</pre></div>
+</div>
+<p>In this case when <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> crawling the link, the HTTP(S) request will be
+provided with a session cookie and HTTP header, so that it may bypass
+potential authorisation checks and land on the target page.</p>
+</div>
+<div class="section" id="loader-hook">
+<h2>Loader Hook<a class="headerlink" href="#loader-hook" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">loader</span></code> method is based on <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.Chrome</span></code> objects
+and returns a the original web driver instance containing the <em>loaded</em> web
+page.</p>
+<p>Type annotations of the method can be described as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">selenium</span><span class="o">.</span><span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="n">darc</span><span class="o">.</span><span class="n">link</span><span class="o">.</span><span class="n">Link</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">selenium</span><span class="o">.</span><span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">driver</span></code> is the <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.Chrome</span></code> instance with
+<strong>proxy</strong> presets and <code class="docutils literal notranslate"><span class="pre">link</span></code> is the target link (parsed by
+<a class="reference internal" href="../darc/link.html#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.link.parse_link()</span></code></a> to provide more information than mere string).</p>
+<p>For example, let’s say you would like to animate user login and go to the
+target page after successful attempt, then you may write the <code class="docutils literal notranslate"><span class="pre">loader</span></code>
+method as below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loader hook for my site.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        timestamp: Timestamp of the worker node reference.</span>
+<span class="sd">        driver (selenium.webdriver.Chrome): Web driver object with proxy settings.</span>
+<span class="sd">        link (darc.link.Link): Link object to be loaded.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        selenium.webdriver.Chrome: The web driver object with loaded data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># land on login page</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://</span><span class="si">%s</span><span class="s1">/login&#39;</span> <span class="o">%</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
+
+    <span class="c1"># animate login attempt</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s1">&#39;login-form&#39;</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;p@ssd&#39;</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+
+    <span class="c1"># check if the attempt succeeded</span>
+    <span class="k">if</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="s1">&#39;Please login!&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;failed to login </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
+
+    <span class="c1"># go to the target page</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="c1"># wait for page to finish loading</span>
+    <span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">SE_WAIT</span>  <span class="c1"># should&#39;ve been put with the top-level import statements</span>
+    <span class="k">if</span> <span class="n">SE_WAIT</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SE_WAIT</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">driver</span>
+</pre></div>
+</div>
+<p>In this case when <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> loading the link, the web driver will first
+perform user login, so that it may bypass potential authorisation checks
+and land on the target page.</p>
+</div>
+<div class="section" id="in-case-to-drop-the-link-from-task-queue">
+<h2>In case to drop the link from task queue…<a class="headerlink" href="#in-case-to-drop-the-link-from-task-queue" title="Permalink to this headline">¶</a></h2>
+<p>In some scenarios, you may want to remove the target link from the task
+queue, then there’re basically two ways:</p>
+<ol class="arabic simple">
+<li><p>do like a wildling, remove it directly from the database</p></li>
+</ol>
+<p>As there’re three task queues used in <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>, each represents task
+queues for the <em>crawler</em> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database) and <em>loader</em>
+(<code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> database) worker nodes and a track record for known
+hostnames (hostname database), you will need to call corresponding functions
+to remove the target link from the database desired.</p>
+<p>Possible functions are as below:</p>
+<ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.drop_hostname()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.drop_requests()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.drop_selenium()</span></code></p></li>
+</ul>
+<p>all take one positional argument <code class="docutils literal notranslate"><span class="pre">link</span></code>, i.e. the <a class="reference internal" href="../darc/link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.link.Link</span></code></a>
+object to be removed.</p>
+<p>Say you would like to remove <code class="docutils literal notranslate"><span class="pre">https://www.mysite.com</span></code> from the
+<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database, then you may just run</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.db</span> <span class="kn">import</span> <span class="n">drop_requests</span>
+<span class="kn">from</span> <span class="nn">darc.link</span> <span class="kn">import</span> <span class="n">parse_link</span>
+
+<span class="n">link</span> <span class="o">=</span> <span class="n">parse_link</span><span class="p">(</span><span class="s1">&#39;https://www.mysite.com&#39;</span><span class="p">)</span>
+<span class="n">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>or make it in an elegant way</p></li>
+</ol>
+<p>When implementing the sites customisation, you may wish to drop certain
+links at runtime, then you may simply raise <a class="reference internal" href="../darc/error.html#darc.error.LinkNoReturn" title="darc.error.LinkNoReturn"><code class="xref py py-exc docutils literal notranslate"><span class="pre">darc.error.LinkNoReturn</span></code></a>
+in the corresponding <code class="docutils literal notranslate"><span class="pre">crawler</span></code> and/or <code class="docutils literal notranslate"><span class="pre">loader</span></code> methods.</p>
+<p>For instance, you would like to proceed with <code class="docutils literal notranslate"><span class="pre">mysite.com</span></code> but <strong>NOT</strong>
+<code class="docutils literal notranslate"><span class="pre">www.mysite.com</span></code> in the sites customisation, then you may implement your
+class as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">LinkNoReturn</span>
+
+<span class="k">class</span> <span class="nc">MySite</span><span class="p">(</span><span class="n">BaseSite</span><span class="p">):</span>
+
+    <span class="o">...</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="s1">&#39;www.mysite.com&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">LinkNoReturn</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+
+        <span class="o">...</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="s1">&#39;www.mysite.com&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">LinkNoReturn</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+
+        <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="then-what-should-i-do-to-include-my-sites-customisation">
+<h2>Then what should I do to include my sites customisation?<a class="headerlink" href="#then-what-should-i-do-to-include-my-sites-customisation" title="Permalink to this headline">¶</a></h2>
+<p>Simple as well!</p>
+<p>Just <em>install</em> your codes to where you’re running <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>, e.g. the
+Docker container, remote server, etc.; then change the startup by injecting
+your codes before the entrypoint.</p>
+<p>Say the structure of the working directory is as below:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>.
+|-- .venv/
+|   |-- lib/python3.8/site-packages
+|   |   |-- darc/
+|   |   |   |-- ...
+|   |   |-- ...
+|   |-- ...
+|-- mysite.py
+|-- ...
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">.venv</span></code> is the folder of virtual environment with <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
+installed and <code class="docutils literal notranslate"><span class="pre">mysite.py</span></code> is the file with your sites customisation.</p>
+<p>Then you just need to change your <code class="docutils literal notranslate"><span class="pre">mysite.py</span></code> with some additional lines
+as below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># mysite.py</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">darc.__main__</span> <span class="kn">import</span> <span class="n">main</span>
+<span class="kn">from</span> <span class="nn">darc.sites</span> <span class="kn">import</span> <span class="n">BaseSite</span><span class="p">,</span> <span class="n">register</span>
+
+
+<span class="k">class</span> <span class="nc">MySite</span><span class="p">(</span><span class="n">BaseSite</span><span class="p">):</span>
+
+    <span class="o">...</span>
+
+
+<span class="c1"># register sites</span>
+<span class="n">register</span><span class="p">(</span><span class="n">MySite</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>And now, you can start <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> through <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">mysite.py</span> <span class="pre">[...]</span></code> instead
+of <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">darc</span> <span class="pre">[...]</span></code> with your sites customisation registered to the
+system.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference download internal" download="" href="../_downloads/dee6c6d697560407465c7b61fdc0aefc/mysite.py"><code class="xref download docutils literal notranslate"><span class="pre">mysite.py</span></code></a></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">How to …</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="deploy.html">How to gracefully deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code>?</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">How to implement a sites customisation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy.html">How to implement a custom proxy middleware?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">How to …</a><ul>
+      <li>Previous: <a href="deploy.html" title="previous chapter">How to gracefully deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code>?</a></li>
+      <li>Next: <a href="proxy.html" title="next chapter">How to implement a custom proxy middleware?</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="../_sources/howto/sites.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

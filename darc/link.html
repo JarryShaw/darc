@@ -1,0 +1,440 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Utilities &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="parse.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="crawl.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-darc.link"></span><div class="section" id="url-utilities">
+<h1>URL Utilities<a class="headerlink" href="#url-utilities" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> class is the key data structure
+of the <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project, it contains all information
+required to identify a URL’s proxy type, hostname, path prefix
+when saving, etc.</p>
+<p>The <a class="reference internal" href="#module-darc.link" title="darc.link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">link</span></code></a> module also provides several wrapper
+function to the <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#module-urllib.parse" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">urllib.parse</span></code></a> module.</p>
+<dl class="py class">
+<dt id="darc.link.Link">
+<em class="property">class </em><code class="sig-prename descclassname">darc.link.</code><code class="sig-name descname">Link</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">proxy</span></em>, <em class="sig-param"><span class="n">url_parse</span></em>, <em class="sig-param"><span class="n">host</span></em>, <em class="sig-param"><span class="n">base</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#Link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.link.Link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Parsed link.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – original link</p></li>
+<li><p><strong>proxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – proxy type</p></li>
+<li><p><strong>host</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – URL’s hostname</p></li>
+<li><p><strong>base</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – base folder for saving files</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – hashed link for saving files</p></li>
+<li><p><strong>url_parse</strong> (<a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.ParseResult" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParseResult</span></code></a>) – parsed URL from <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlparse" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlparse()</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Parsed link object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> is a <a class="reference external" href="https://www.python.org/dev/peps/pep-0557">dataclass</a> object.
+It is safely <em>hashable</em>, through <a class="reference external" href="https://docs.python.org/3/library/functions.html#hash" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">hash(url)</span></code></a>.</p>
+</div>
+<dl class="py method">
+<dt id="darc.link.Link.__hash__">
+<code class="sig-name descname">__hash__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#Link.__hash__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.link.Link.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide hash support to the <a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.link.Link.base">
+<code class="sig-name descname">base</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#darc.link.Link.base" title="Permalink to this definition">¶</a></dt>
+<dd><p>base folder for saving files</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.link.Link.host">
+<code class="sig-name descname">host</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#darc.link.Link.host" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL’s hostname</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.link.Link.name">
+<code class="sig-name descname">name</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#darc.link.Link.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>hashed link for saving files</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.link.Link.proxy">
+<code class="sig-name descname">proxy</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#darc.link.Link.proxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>proxy type</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.link.Link.url">
+<code class="sig-name descname">url</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#darc.link.Link.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>original link</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darc.link.Link.url_parse">
+<code class="sig-name descname">url_parse</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.ParseResult" title="(in Python v3.9)">urllib.parse.ParseResult</a></em><a class="headerlink" href="#darc.link.Link.url_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>parsed URL from <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlparse" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlparse()</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.link.parse_link">
+<code class="sig-prename descclassname">darc.link.</code><code class="sig-name descname">parse_link</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">link</span></em>, <em class="sig-param"><span class="n">host</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#parse_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.link.parse_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse link.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>link</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – link to be parsed</p></li>
+<li><p><strong>host</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – hostname of the link</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#darc.link.Link" title="darc.link.Link">Link</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The parsed link object.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">host</span></code> is provided, it will override the hostname
+of the original <code class="docutils literal notranslate"><span class="pre">link</span></code>.</p>
+</div>
+<p>The parsing process of proxy type is as follows:</p>
+<ol class="arabic" start="0">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">host</span></code> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> and the parse result from <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlparse" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlparse()</span></code></a>
+has no <code class="docutils literal notranslate"><span class="pre">netloc</span></code> (or hostname) specified, then set <code class="docutils literal notranslate"><span class="pre">hostname</span></code>
+as <code class="docutils literal notranslate"><span class="pre">(null)</span></code>; else set it as is.</p></li>
+<li><p>If the scheme is <code class="docutils literal notranslate"><span class="pre">data</span></code>, then the <code class="docutils literal notranslate"><span class="pre">link</span></code> is a data URI,
+set <code class="docutils literal notranslate"><span class="pre">hostname</span></code> as <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">proxy</span></code> as <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p></li>
+<li><p>If the scheme is <code class="docutils literal notranslate"><span class="pre">javascript</span></code>, then the link is some
+JavaScript codes, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> as <code class="docutils literal notranslate"><span class="pre">script</span></code>.</p></li>
+<li><p>If the scheme is <code class="docutils literal notranslate"><span class="pre">bitcoin</span></code>, then the link is a Bitcoin
+address, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> as <code class="docutils literal notranslate"><span class="pre">bitcoin</span></code>.</p></li>
+<li><p>If the scheme is <code class="docutils literal notranslate"><span class="pre">ed2k</span></code>, then the link is an ED2K magnet
+link, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> as <code class="docutils literal notranslate"><span class="pre">ed2k</span></code>.</p></li>
+<li><p>If the scheme is <code class="docutils literal notranslate"><span class="pre">magnet</span></code>, then the link is a magnet
+link, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> as <code class="docutils literal notranslate"><span class="pre">magnet</span></code>.</p></li>
+<li><p>If the scheme is <code class="docutils literal notranslate"><span class="pre">mailto</span></code>, then the link is an email
+address, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> as <code class="docutils literal notranslate"><span class="pre">mail</span></code>.</p></li>
+<li><p>If the scheme is <code class="docutils literal notranslate"><span class="pre">irc</span></code>, then the link is an IRC
+link, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> as <code class="docutils literal notranslate"><span class="pre">irc</span></code>.</p></li>
+<li><p>If the scheme is <strong>NOT</strong> any of <code class="docutils literal notranslate"><span class="pre">http</span></code> or <code class="docutils literal notranslate"><span class="pre">https</span></code>,
+then set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> to the scheme.</p></li>
+<li><p>If the host is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, set <code class="docutils literal notranslate"><span class="pre">hostname</span></code> to <code class="docutils literal notranslate"><span class="pre">(null)</span></code>,
+set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> to <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
+<li><p>If the host is an onion (<code class="docutils literal notranslate"><span class="pre">.onion</span></code>) address,
+set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> to <code class="docutils literal notranslate"><span class="pre">tor</span></code>.</p></li>
+<li><p>If the host is an I2P (<code class="docutils literal notranslate"><span class="pre">.i2p</span></code>) address, or
+any of <code class="docutils literal notranslate"><span class="pre">localhost:7657</span></code> and <code class="docutils literal notranslate"><span class="pre">localhost:7658</span></code>,
+set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> to <code class="docutils literal notranslate"><span class="pre">i2p</span></code>.</p></li>
+<li><p>If the host is <em>localhost</em> on <a class="reference internal" href="proxy/zeronet.html#darc.proxy.zeronet.ZERONET_PORT" title="darc.proxy.zeronet.ZERONET_PORT"><code class="xref py py-data docutils literal notranslate"><span class="pre">ZERONET_PORT</span></code></a>,
+and the path is not <code class="docutils literal notranslate"><span class="pre">/</span></code>, i.e. <strong>NOT</strong> root path, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code>
+to <code class="docutils literal notranslate"><span class="pre">zeronet</span></code>; and set the first part of its path as <code class="docutils literal notranslate"><span class="pre">hostname</span></code>.</p>
+<p>Example:</p>
+<blockquote>
+<div><p>For a ZeroNet address, e.g.
+<a class="reference external" href="http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D">http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D</a>,
+<a class="reference internal" href="#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_link()</span></code></a> will parse the <code class="docutils literal notranslate"><span class="pre">hostname</span></code> as
+<code class="docutils literal notranslate"><span class="pre">1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p>If the host is <em>localhost</em> on <a class="reference internal" href="proxy/freenet.html#darc.proxy.freenet.FREENET_PORT" title="darc.proxy.freenet.FREENET_PORT"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_PORT</span></code></a>,
+and the path is not <code class="docutils literal notranslate"><span class="pre">/</span></code>, i.e. <strong>NOT</strong> root path, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code>
+to <code class="docutils literal notranslate"><span class="pre">freenet</span></code>; and set the first part of its path as <code class="docutils literal notranslate"><span class="pre">hostname</span></code>.</p>
+<p>Example:</p>
+<blockquote>
+<div><p>For a Freenet address, e.g.
+<a class="reference external" href="http://127.0.0.1:8888/USK&#64;nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/">http://127.0.0.1:8888/USK&#64;nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/</a>,
+<a class="reference internal" href="#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_link()</span></code></a> will parse the <code class="docutils literal notranslate"><span class="pre">hostname</span></code> as
+<code class="docutils literal notranslate"><span class="pre">USK&#64;nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p>If the host is a proxied onion (<code class="docutils literal notranslate"><span class="pre">.onion.sh</span></code>) address,
+set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> to <code class="docutils literal notranslate"><span class="pre">tor2web</span></code>.</p></li>
+<li><p>If none of the cases above satisfied, the <code class="docutils literal notranslate"><span class="pre">proxy</span></code> will be set
+as <code class="docutils literal notranslate"><span class="pre">null</span></code>, marking it a plain normal link.</p></li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">base</span></code> for parsed link <a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object is defined as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">root</span><span class="o">&gt;/&lt;</span><span class="n">proxy</span><span class="o">&gt;/&lt;</span><span class="n">scheme</span><span class="o">&gt;/&lt;</span><span class="n">hostname</span><span class="o">&gt;/</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">root</span></code> is <a class="reference internal" href="const.html#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_DB</span></code></a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">name</span></code> for parsed link <a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object is
+the sha256 hash (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">hashlib.sha256()</span></code>) of the original <code class="docutils literal notranslate"><span class="pre">link</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.link.quote">
+<code class="sig-prename descclassname">darc.link.</code><code class="sig-name descname">quote</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span></em>, <em class="sig-param"><span class="n">safe</span><span class="o">=</span><span class="default_value">'/'</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">errors</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.link.quote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.quote" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.quote()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – string to be quoted</p></li>
+<li><p><strong>safe</strong> (<em>_Str</em>) – charaters not to escape</p></li>
+<li><p><strong>encoding</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – string encoding</p></li>
+<li><p><strong>errors</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – encoding error handler</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The quoted string.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function suppressed possible errors when calling
+<a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.quote" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.quote()</span></code></a>. If any, it will return
+the original string.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.link.unquote">
+<code class="sig-prename descclassname">darc.link.</code><code class="sig-name descname">unquote</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">'utf-8'</span></em>, <em class="sig-param"><span class="n">errors</span><span class="o">=</span><span class="default_value">'replace'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#unquote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.link.unquote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.unquote" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.unquote()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – string to be unquoted</p></li>
+<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – string encoding</p></li>
+<li><p><strong>errors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – encoding error handler</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The quoted string.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function suppressed possible errors when calling
+<a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.unquote" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.unquote()</span></code></a>. If any, it will return
+the original string.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.link.urljoin">
+<code class="sig-prename descclassname">darc.link.</code><code class="sig-name descname">urljoin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">base</span></em>, <em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">allow_fragments</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#urljoin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.link.urljoin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urljoin" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urljoin()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> (<em>AnyStr</em>) – base URL</p></li>
+<li><p><strong>url</strong> (<em>AnyStr</em>) – URL to be joined</p></li>
+<li><p><strong>allow_fragments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if allow fragments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>AnyStr</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The joined URL.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function suppressed possible errors when calling
+<a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urljoin" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urljoin()</span></code></a>. If any, it will return
+<code class="docutils literal notranslate"><span class="pre">base/url</span></code> directly.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.link.urlparse">
+<code class="sig-prename descclassname">darc.link.</code><code class="sig-name descname">urlparse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">scheme</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">allow_fragments</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#urlparse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.link.urlparse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlparse" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlparse()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – URL to be parsed</p></li>
+<li><p><strong>scheme</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – URL scheme</p></li>
+<li><p><strong>allow_fragments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if allow fragments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ParseResult</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The parse result.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function suppressed possible errors when calling
+<a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlparse" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlparse()</span></code></a>. If any, it will return
+<code class="docutils literal notranslate"><span class="pre">urllib.parse.ParseResult(scheme=scheme,</span> <span class="pre">netloc='',</span> <span class="pre">path=url,</span> <span class="pre">params='',</span> <span class="pre">query='',</span> <span class="pre">fragment='')</span></code>
+directly.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.link.urlsplit">
+<code class="sig-prename descclassname">darc.link.</code><code class="sig-name descname">urlsplit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">scheme</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">allow_fragments</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#urlsplit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darc.link.urlsplit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlsplit" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlsplit()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – URL to be split</p></li>
+<li><p><strong>scheme</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – URL scheme</p></li>
+<li><p><strong>allow_fragments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if allow fragments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.SplitResult" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SplitResult</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The split result.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function suppressed possible errors when calling
+<a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlsplit" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlsplit()</span></code></a>. If any, it will return
+<code class="docutils literal notranslate"><span class="pre">urllib.parse.SplitResult(scheme=scheme,</span> <span class="pre">netloc='',</span> <span class="pre">path=url,</span> <span class="pre">params='',</span> <span class="pre">query='',</span> <span class="pre">fragment='')</span></code>
+directly.</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy/index.html">Proxy Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sites/index.html">Sites Customisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="const.html">Module Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html">Data Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Technical Documentation</a><ul>
+      <li>Previous: <a href="crawl.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="parse.html" title="next chapter">&lt;no title&gt;</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="../_sources/darc/link.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

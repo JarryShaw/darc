@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sites Customisation &#8212; darc 0.9.2 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="_abc.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="../proxy/zeronet.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-darc.sites">
+<span id="sites-customisation"></span><h1>Sites Customisation<a class="headerlink" href="#module-darc.sites" title="Permalink to this headline">¶</a></h1>
+<p>As websites may have authentication requirements, etc., over
+its content, the <a class="reference internal" href="#module-darc.sites" title="darc.sites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites</span></code></a> module provides sites
+customisation hooks to both <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>
+crawling processes.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>To create a sites customisation, define your class by inheriting
+<code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.BaseSite</span></code> and register it to the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
+module through <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code>.</p>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<p>To start with, you just need to define your sites customisation by
+inheriting <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code> and overload corresponding
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">crawler()</span></code> and/or
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">loader()</span></code> methods.</p>
+<p>To customise behaviours over <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, you sites customisation
+class should have a <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code> method, e.g.
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.crawler</span></code>.</p>
+<p>The function takes the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> object with proxy settings and
+a <a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object representing the link to be
+crawled, then returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a> object containing the final
+data of the crawling process.</p>
+<p>To customise behaviours over <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>, you sites customisation
+class should have a <code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code> method, e.g.
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.loader</span></code>.</p>
+<p>The function takes the <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v3.141)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>
+object with proxy settings and a <a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object representing
+the link to be loaded, then returns the <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v3.141)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>
+object containing the final data of the loading process.</p>
+<p>To tell the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project which sites customisation
+module it should use for a certain hostname, you can register
+such module to the <a class="reference internal" href="#darc.sites.darc.sites.SITEMAP" title="darc.sites.darc.sites.SITEMAP"><code class="xref py py-data docutils literal notranslate"><span class="pre">SITEMAP</span></code></a> mapping dictionary
+through <code class="xref py py-func docutils literal notranslate"><span class="pre">register()</span></code>:</p>
+<dl class="py data">
+<dt id="darc.sites.darc.sites.SITEMAP">
+<code class="sig-prename descclassname">darc.sites.</code><code class="sig-name descname">SITEMAP</code><em class="property">: DefaultDict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Type<span class="p">[</span>darc.sites._abc.BaseSite<span class="p">]</span><span class="p">]</span></em><a class="headerlink" href="#darc.sites.darc.sites.SITEMAP" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.sites.default</span> <span class="kn">import</span> <span class="n">DefaultSite</span>
+
+<span class="n">SITEMAP</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DefaultSite</span><span class="p">,</span> <span class="p">{</span>
+    <span class="c1"># &#39;www.sample.com&#39;: SampleSite,  # local customised class</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>The mapping dictionary for hostname to sites customisation
+classes.</p>
+<p>The fallback value is <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.default.DefaultSite</span></code>.</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Please refer to <a class="reference internal" href="../../custom.html"><span class="doc">Customisations</span></a> for more examples and explanations.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../proxy/index.html">Proxy Utilities</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sites Customisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Data Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Technical Documentation</a><ul>
+      <li>Previous: <a href="../proxy/zeronet.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="_abc.html" title="next chapter">&lt;no title&gt;</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+      |
+      <a href="../../_sources/darc/sites/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
