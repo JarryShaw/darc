@@ -1,6 +1,6 @@
 # Python packages
 pip==20.3.3
-setuptools==51.1.1
+setuptools==51.1.2
 wheel==0.36.2
 
 # Python dependencies
@@ -19,12 +19,12 @@ cryptography==3.3.1
 file-magic==0.4.0
 hiredis==1.1.0
 html5lib==1.1
-idna==2.10; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+idna==3.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 mmh3==2.5.1
 peewee==3.14.0
 pottery==1.1.0
 pycparser==2.20; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
-pymysql[rsa]==0.10.1
+pymysql[rsa]==1.0.2
 pysocks==1.7.1
 python-datauri==0.2.9
 redis[hiredis]==3.5.3
