@@ -77,7 +77,7 @@ napoleon_custom_sections = None
 
 manpages_url = 'https://linux.die.net/man/{section}/{page}'
 
-do_include_todos = True
+#do_include_todos = True
 
 set_type_checking_flag = True
 
