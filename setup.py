@@ -106,6 +106,7 @@ attrs = dict(
         'beautifulsoup4[html5lib]',
         'file-magic',
         'peewee',
+        'pottery',
         'python-datauri',
         'redis[hiredis]',
         'requests-futures',
