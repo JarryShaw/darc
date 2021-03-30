@@ -13,7 +13,7 @@ from darc.model.web import *
 __all__ = [
     'HostnameQueueModel', 'RequestsQueueModel', 'SeleniumQueueModel',
 
-    'HostnameModel', 'URLModel',
+    'HostnameModel', 'URLModel', 'URLThroughModel',
     'RobotsModel', 'SitemapModel', 'HostsModel',
     'RequestsModel', 'RequestsHistoryModel', 'SeleniumModel',
 ]

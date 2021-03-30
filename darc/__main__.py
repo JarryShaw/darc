@@ -18,7 +18,7 @@ from darc.error import DatabaseOperaionFailed, render_error
 from darc.link import parse_link
 from darc.model import (HostnameModel, HostnameQueueModel, HostsModel, RequestsHistoryModel,
                         RequestsModel, RequestsQueueModel, RobotsModel, SeleniumModel,
-                        SeleniumQueueModel, SitemapModel, URLModel)
+                        SeleniumQueueModel, SitemapModel, URLModel, URLThroughModel)
 from darc.process import process
 from darc.proxy.freenet import _FREENET_PROC
 from darc.proxy.i2p import _I2P_PROC
@@ -121,7 +121,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
             try:
                 with DB_WEB:
                     _db_operation(DB_WEB.create_tables, [
-                        HostnameModel, URLModel,
+                        HostnameModel, URLModel, URLThroughModel,
                         RobotsModel, SitemapModel, HostsModel,
                         RequestsModel, RequestsHistoryModel, SeleniumModel,
                     ])
@@ -158,7 +158,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
                     link_list.append(line)
 
     # write to database
-    link_pool = [parse_link(link) for link in link_list]
+    link_pool = [parse_link(link, backref=None) for link in link_list]
     save_requests(link_pool, score=0, nx=True)
 
     if DEBUG:

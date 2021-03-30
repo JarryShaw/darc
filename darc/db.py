@@ -47,6 +47,7 @@ from typing import TYPE_CHECKING, TypeVar, cast
 import peewee
 import pottery.exceptions
 import pottery.redlock
+import redis as redis_lib
 import stem.util.term
 
 from darc._compat import datetime, nullcontext
@@ -150,11 +151,11 @@ def _redis_command(command: str, *args: 'Any', **kwargs: 'Any') -> 'Any':
     while True:
         try:
             value = method(*args, **kwargs)
-        except Exception as error:
+        except (redis_lib.exceptions.ConnectionError, pottery.exceptions.PotteryError) as error:
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
-            warning = warnings.formatwarning(str(error), RedisCommandFailed, __file__, 153,
+            warning = warnings.formatwarning(f'{type(error).__name__}: {error}', RedisCommandFailed, __file__, 153,
                                              f'value = redis.{command}({_arg_msg})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
@@ -185,12 +186,12 @@ def _db_operation(operation: 'Callable[..., _T]', *args: 'Any', **kwargs: 'Any')
     while True:
         try:
             value = operation(*args, **kwargs)
-        except Exception as error:
+        except (peewee.OperationalError, peewee.InterfaceError) as error:
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
             model = cast('MethodType', operation).__self__.__class__.__name__
-            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 188,
+            warning = warnings.formatwarning(f'{type(error).__name__}: {error}', DatabaseOperaionFailed, __file__, 188,
                                              f'{model}.{operation.__name__}({_arg_msg})')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 

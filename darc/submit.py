@@ -32,7 +32,7 @@ There are three submission events:
 """
 
 import base64
-import dataclasses
+import contextlib
 import glob
 import json
 import os
@@ -43,6 +43,7 @@ import warnings
 from datetime import date
 from typing import TYPE_CHECKING, cast
 
+import peewee
 import requests
 import stem.util.term
 
@@ -51,7 +52,7 @@ from darc.const import DEBUG, PATH_DB
 from darc.db import _db_operation
 from darc.error import APIRequestFailed, DatabaseOperaionFailed, render_error
 from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, RequestsModel, RobotsModel,
-                        SeleniumModel, SitemapModel, URLModel)
+                        SeleniumModel, SitemapModel, URLModel, URLThroughModel)
 from darc.model.utils import Proxy
 from darc.requests import null_session
 
@@ -90,28 +91,6 @@ if DEBUG:
 
 # UNIX epoch
 EPOCH = datetime(1970, 1, 1, 0, 0)  # 1970-01-01T00:00:00
-
-
-def get_metadata(link: 'Link') -> 'Dict[str, str]':
-    """Generate metadata field.
-
-    Args:
-        link: Link object to generate metadata.
-
-    Returns:
-        The metadata from ``link``.
-
-        * ``url`` -- original URL, :attr:`link.url <darc.link.Link.url>`
-        * ``proxy`` -- proxy type, :attr:`link.proxy <darc.link.Link.proxy>`
-        * ``host`` -- hostname, :attr:`link.host <darc.link.Link.host>`
-        * ``base`` -- base path, :attr:`link.base <darc.link.Link.base>`
-        * ``name`` -- link hash, :attr:`link.name <darc.link.Link.name>`
-
-    """
-    metadata = dataclasses.asdict(link)
-    metadata['base'] = os.path.relpath(link.base, PATH_DB)
-    del metadata['url_parse']
-    return metadata
 
 
 def get_robots(link: 'Link') -> 'Optional[File]':
@@ -317,7 +296,9 @@ def submit_new_host(time: 'datetime', link: 'Link', partial: bool = False, force
                 //   HTML from requests - <base>/<name>_<timestamp>_raw.html
                 //   HTML from selenium - <base>/<name>_<timestamp>.html
                 //   generic data files - <base>/<name>_<timestamp>.dat
-                "name": ...
+                "name": ...,
+                // originate URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+                "backref": ...
             },
             // requested timestamp in ISO format as in name of saved file
             "Timestamp": ...,
@@ -356,13 +337,12 @@ def submit_new_host(time: 'datetime', link: 'Link', partial: bool = False, force
         * :data:`darc.submit.API_NEW_HOST`
         * :func:`darc.submit.submit`
         * :func:`darc.submit.save_submit`
-        * :func:`darc.submit.get_metadata`
         * :func:`darc.submit.get_robots`
         * :func:`darc.submit.get_sitemaps`
         * :func:`darc.submit.get_hosts`
 
     """
-    metadata = get_metadata(link)
+    metadata = link.asdict()
     ts = time.isoformat()
 
     robots = get_robots(link)
@@ -468,7 +448,9 @@ def submit_requests(time: 'datetime', link: 'Link',
                 //   HTML from requests - <base>/<name>_<timestamp>_raw.html
                 //   HTML from selenium - <base>/<name>_<timestamp>.html
                 //   generic data files - <base>/<name>_<timestamp>.dat
-                "name": ...
+                "name": ...,
+                // originate URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+                "backref": ...
             },
             // requested timestamp in ISO format as in name of saved file
             "Timestamp": ...,
@@ -519,7 +501,6 @@ def submit_requests(time: 'datetime', link: 'Link',
         * :data:`darc.submit.API_REQUESTS`
         * :func:`darc.submit.submit`
         * :func:`darc.submit.save_submit`
-        * :func:`darc.submit.get_metadata`
         * :func:`darc.submit.get_raw`
         * :func:`darc.crawl.crawler`
 
@@ -556,6 +537,12 @@ def submit_requests(time: 'datetime', link: 'Link',
                 url.last_seen = time
             _db_operation(url.save)
 
+            if link.url_backref is not None:
+                with contextlib.suppress(peewee.IntegrityError):
+                    _db_operation(URLThroughModel.create,
+                                  parent=_db_operation(URLModel.get_by_url, link.url_backref.url),
+                                  child=url)
+
             model = cast('RequestsModel',
                          _db_operation(RequestsModel.create,
                                        url=url,
@@ -589,7 +576,7 @@ def submit_requests(time: 'datetime', link: 'Link',
                                              'submit_requests(...)')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
-    metadata = get_metadata(link)
+    metadata = link.asdict()
     ts = time.isoformat()
 
     if html:
@@ -682,7 +669,9 @@ def submit_selenium(time: 'datetime', link: 'Link',
                 //   HTML from requests - <base>/<name>_<timestamp>_raw.html
                 //   HTML from selenium - <base>/<name>_<timestamp>.html
                 //   generic data files - <base>/<name>_<timestamp>.dat
-                "name": ...
+                "name": ...,
+                // originate URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+                "backref": ...
             },
             // requested timestamp in ISO format as in name of saved file
             "Timestamp": ...,
@@ -710,7 +699,6 @@ def submit_selenium(time: 'datetime', link: 'Link',
         * :data:`darc.submit.API_SELENIUM`
         * :func:`darc.submit.submit`
         * :func:`darc.submit.save_submit`
-        * :func:`darc.submit.get_metadata`
         * :func:`darc.submit.get_html`
         * :func:`darc.submit.get_screenshot`
         * :func:`darc.crawl.loader`
@@ -745,6 +733,12 @@ def submit_selenium(time: 'datetime', link: 'Link',
                 url.last_seen = time
             _db_operation(url.save)
 
+            if link.url_backref is not None:
+                with contextlib.suppress(peewee.IntegrityError):
+                    _db_operation(URLThroughModel.create,
+                                  parent=_db_operation(URLModel.get_by_url, link.url_backref.url),
+                                  child=url)
+
             _db_operation(SeleniumModel.create,
                           url=url,
                           timestamp=time,
@@ -755,7 +749,7 @@ def submit_selenium(time: 'datetime', link: 'Link',
                                              'submit_selenium(...)')
             print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
-    metadata = get_metadata(link)
+    metadata = link.asdict()
     ts = time.isoformat()
 
     if screenshot is None:

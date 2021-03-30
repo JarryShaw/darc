@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=ungrouped-imports
+# pylint: disable=ungrouped-imports,no-name-in-module
 """JSON schema generator."""
 
 from typing import TYPE_CHECKING
@@ -51,6 +51,8 @@ class Metadata(BaseModel):
                      '- HTML from requests: <base>/<name>_<timestamp>_raw.html; '
                      '- HTML from selenium: <base>/<name>_<timestamp>.html; '
                      '- generic data files: <base>/<name>_<timestamp>.dat'))
+    backref: str = Field(
+        description='originate URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>')
 
     class Config:
         title = 'metadata'

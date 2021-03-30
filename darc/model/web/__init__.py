@@ -18,10 +18,10 @@ from darc.model.web.requests import RequestsHistoryModel, RequestsModel
 from darc.model.web.robots import RobotsModel
 from darc.model.web.selenium import SeleniumModel
 from darc.model.web.sitemap import SitemapModel
-from darc.model.web.url import URLModel
+from darc.model.web.url import URLModel, URLThroughModel
 
 __all__ = [
-    'HostnameModel', 'URLModel',
+    'HostnameModel', 'URLModel', 'URLThroughModel',
     'RobotsModel', 'SitemapModel', 'HostsModel',
     'RequestsModel', 'RequestsHistoryModel', 'SeleniumModel',
 ]

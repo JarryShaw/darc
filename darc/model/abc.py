@@ -7,12 +7,17 @@ of all data models for the :mod:`darc` project.
 
 """
 
+from typing import TYPE_CHECKING
+
 import peewee
 import playhouse.shortcuts
 
 from darc.const import DB as database
 from darc.const import DB_WEB as database_web
 from darc.model.utils import table_function
+
+if TYPE_CHECKING:
+    from peewee import Metadata
 
 __all__ = [
     'BaseMeta', 'BaseModel',
@@ -35,6 +40,9 @@ class BaseMetaWeb(BaseMeta):
     #: Reference database storage (c.f. :class:`~darc.const.DB`).
     database = database_web
 
+    #: Generate table name dynamically (c.f. :func:`~darc.models.utils.table_function`).
+    table_function = table_function
+
 
 class BaseModel(peewee.Model):
     """Base model with standard patterns.
@@ -47,6 +55,7 @@ class BaseModel(peewee.Model):
 
     #: Basic metadata for data models.
     Meta = BaseMeta
+    _meta: 'Metadata'
 
     def to_dict(self, keep_id: bool = False) -> None:
         """Convert record to :obj:`dict`.

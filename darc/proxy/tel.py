@@ -11,6 +11,7 @@ numbers extracted to the data storage file
 
 """
 
+import json
 import os
 from typing import TYPE_CHECKING
 
@@ -35,4 +36,7 @@ def save_tel(link: 'Link') -> None:
     """
     with LOCK:  # type: ignore[union-attr]
         with open(PATH, 'a') as file:
-            print(link.url, file=file)
+            print(json.dumps({
+                'src': backref.url if (backref := link.url_backref) is not None else None,  # pylint: disable=used-before-assignment
+                'url': link.url,
+            }), file=file)

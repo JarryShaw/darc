@@ -38,14 +38,26 @@ if TYPE_CHECKING:
     from darc.link import Link
 
 # Regular expression patterns to match all reasonable URLs.
-URL_PAT = [
+URL_PAT = {
+    # gfm.autolink.URL_RE (https://pythonhosted.org/py-gfm/_modules/gfm/autolink.html#AutolinkExtension)
+    'http': re.compile(r'(?i)\b((?:(?:ftp|https?|wss?|irc)://|www\d{0,3}[.])(?:[^\s()<>]+|'
+                       r'\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()'
+                       r'<>]+\)))*\)|[^\s`!()\[\]{};:' + r"'" + r'".,<>?«»“”‘’]))', re.ASCII),
+    # gfm.automail.MAIL_RE (https://pythonhosted.org/py-gfm/_modules/gfm/automail.html#AutomailExtension)
+    'mailto:': re.compile(r'(?i)\b(?P<url>(?:mailto:)?[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+)\b', re.ASCII),
+
+    # BTC
+    'bitcoin': re.compile(r'(?i)\b(?P<url>(?:(?:bitcoin|btc):)?[13][a-z0-9]{27,34})\b', re.ASCII),
+    # ETH
+    'ethereum': re.compile(r'(?i)\b(?P<url>(?:(?:ethereum|eth):)?(?:0x)?[0-9a-f]{40})\b', re.ASCII),
+
     # HTTP(S) and other *regular* URLs, e.g. WebSocket, IRC, etc.
-    re.compile(r'(?P<url>((https?|wss?|irc):)?(//)?\w+(\.\w+)+/?\S*)', re.UNICODE),
+    #re.compile(r'(?P<url>((https?|wss?|irc):)?(//)?\w+(\.\w+)+/?\S*)', re.UNICODE),
     # bitcoin / data / ed2k / magnet / mail / script / tel, etc.
-    re.compile(r'(?P<url>(bitcoin|data|ed2k|magnet|mailto|script|tel):\w+)', re.ASCII),
-]
-URL_PAT.extend(re.compile(pattern, re.RegexFlag(flags))  # pattern string + compiling flags
-               for pattern, flags in json.loads(os.getenv('DARC_URL_PAT', '[]')))
+    #re.compile(r'(?P<url>(bitcoin|data|ed2k|magnet|mailto|script|tel):\w+)', re.ASCII),
+}
+URL_PAT.update({scheme: re.compile(pattern, re.RegexFlag(flags) | re.ASCII)  # pattern string + compiling flags
+                for scheme, pattern, flags in json.loads(os.getenv('DARC_URL_PAT', '[]'))})
 
 
 def match_proxy(proxy: str) -> bool:
@@ -316,7 +328,7 @@ def extract_links(link: 'Link', html: 'Union[str, bytes]', check: bool = CHECK) 
     for child in soup.find_all(lambda tag: tag.has_attr('href') or tag.has_attr('src')):
         if (href := child.get('href', child.get('src'))) is None:
             continue
-        temp_link = parse_link(urljoin(link.url, href))
+        temp_link = parse_link(urljoin(link.url, href), backref=link)
         temp_list.append(temp_link)
 
     # extract links from text
@@ -352,14 +364,14 @@ def extract_links_from_text(link: 'Link', text: str) -> 'List[Link]':
     """
     temp_list = []
     for part in text.split():
-        for pattern in URL_PAT:
+        for scheme, pattern in URL_PAT.items():
             for match in pattern.finditer(part):
                 match_url = match.group('url')
 
                 # add scheme if not exist
                 if not urlsplit(match_url).scheme:
-                    match_url = f'{link.url_parse.scheme}:{match_url}'
+                    match_url = f'{scheme}:{match_url}'
 
-                temp_link = parse_link(match_url)
+                temp_link = parse_link(match_url, backref=link)
                 temp_list.append(temp_link)
     return temp_list

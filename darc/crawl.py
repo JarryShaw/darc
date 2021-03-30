@@ -50,7 +50,7 @@ if TYPE_CHECKING:
 
 
 def crawler(link: 'Link') -> None:
-    """Single :mod:`requests` crawler for a entry link.
+    """Single :mod:`requests` crawler for an entry link.
 
     Args:
         link: URL to be crawled by :mod:`requests`.
@@ -217,7 +217,7 @@ def crawler(link: 'Link') -> None:
                 # probably hosts.txt
                 if link.proxy == 'i2p' and ct_type in ['text/plain', 'text/text']:
                     text = response.text
-                    save_requests(read_hosts(text))
+                    save_requests(read_hosts(link, text))
 
                 if match_mime(ct_type):
                     drop_requests(link)
@@ -271,7 +271,7 @@ def crawler(link: 'Link') -> None:
 
 
 def loader(link: 'Link') -> None:
-    """Single :mod:`selenium` loader for a entry link.
+    """Single :mod:`selenium` loader for an entry link.
 
     Args:
         Link: URL to be crawled by :mod:`selenium`.

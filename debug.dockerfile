@@ -15,7 +15,7 @@ LABEL org.opencontainers.image.title="darc" \
       org.opencontainers.image.description="Darkweb Crawler Project" \
       org.opencontainers.image.url="https://darc.jarryshaw.me/" \
       org.opencontainers.image.source="https://github.com/JarryShaw/darc" \
-      org.opencontainers.image.version="0.9.2" \
+      org.opencontainers.image.version="0.9.3" \
       org.opencontainers.image.licenses='BSD 3-Clause "New" or "Revised" License'
 #EXPOSE 9050
 
@@ -41,7 +41,7 @@ ENV LANG="C.UTF-8" \
 COPY extra/retry.sh /usr/local/bin/retry
 COPY extra/install.py /usr/local/bin/pty-install
 # see https://www.oracle.com/cn/java/technologies/javase-downloads.html for archive downloads
-COPY vendor/jdk-11.0.9_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
+COPY vendor/jdk-11.0.10_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
 
 RUN set -x \
  && retry apt-get update \

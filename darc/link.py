@@ -31,7 +31,7 @@ except NotImplementedError:
     from pathlib import PurePosixPath as PosixPath  # type: ignore[misc]
 
 if TYPE_CHECKING:
-    from typing import Any, AnyStr, Optional, Union
+    from typing import Any, AnyStr, Dict, Optional, Union
     from urllib.parse import ParseResult
 
     _Str = Union[bytes, str]
@@ -164,6 +164,8 @@ class Link:
         base: base folder for saving files
         name: hashed link for saving files
         url_parse: parsed URL from :func:`urllib.parse.urlparse`
+        url_backref: optional :class:`~darc.link.Link` instance
+            from which current link was extracted
 
     Returns:
         :class:`~darc.link.Link`: Parsed link object.
@@ -181,15 +183,18 @@ class Link:
     #: proxy type
     proxy: str
 
-    #: parsed URL from :func:`urllib.parse.urlparse`
-    url_parse: urllib.parse.ParseResult
-
     #: URL's hostname
     host: 'Optional[str]'
     #: base folder for saving files
     base: str
     #: hashed link for saving files
     name: str
+
+    #: parsed URL from :func:`urllib.parse.urlparse`
+    url_parse: urllib.parse.ParseResult
+    #: optional :class:`~darc.link.Link` instance
+    #: from which current link was extracted
+    url_backref: 'Optional[Link]' = None
 
     def __hash__(self) -> int:
         """Provide hash support to the :class:`~darc.link.Link` object."""
@@ -208,13 +213,28 @@ class Link:
             return self.url < value.url
         raise TypeError(f"'<' not supported between instances of 'Link' and {type(value).__name__!r}")
 
+    def asdict(self) -> 'Dict[str, Any]':
+        """Convert to a :obj:`dict` instance."""
+        return {
+            'url': self.url,
+            'proxy': self.proxy,
+            'host': self.host,
+            'base': os.path.relpath(self.base, PATH_DB),
+            'name': self.name,
+            'backref': backref.url if (backref := self.url_backref) is not None else None,  # pylint: disable=used-before-assignment
+        }
 
-def parse_link(link: str, host: 'Optional[str]' = None) -> 'Link':
+
+def parse_link(link: str, host: 'Optional[str]' = None, *, backref: 'Optional[Link]' = None) -> 'Link':
     """Parse link.
 
     Args:
         link: link to be parsed
         host: hostname of the link
+
+    Keyword Args:
+        backref: optional :class:`~darc.link.Link` instance
+            from which current link was extracted
 
     Returns:
         The parsed link object.
@@ -234,24 +254,26 @@ def parse_link(link: str, host: 'Optional[str]' = None) -> 'Link':
         JavaScript codes, set ``proxy`` as ``script``.
     3.  If the scheme is ``bitcoin``, then the link is a Bitcoin
         address, set ``proxy`` as ``bitcoin``.
-    4.  If the scheme is ``ed2k``, then the link is an ED2K magnet
+    4.  If the scheme is ``ethereum``, then the link is an Ethereum
+        address, set ``proxy`` as ``ethereum``.
+    5.  If the scheme is ``ed2k``, then the link is an ED2K magnet
         link, set ``proxy`` as ``ed2k``.
-    5.  If the scheme is ``magnet``, then the link is a magnet
+    6.  If the scheme is ``magnet``, then the link is a magnet
         link, set ``proxy`` as ``magnet``.
-    6.  If the scheme is ``mailto``, then the link is an email
+    7.  If the scheme is ``mailto``, then the link is an email
         address, set ``proxy`` as ``mail``.
-    7.  If the scheme is ``irc``, then the link is an IRC
+    8.  If the scheme is ``irc``, then the link is an IRC
         link, set ``proxy`` as ``irc``.
-    8.  If the scheme is **NOT** any of ``http`` or ``https``,
+    9.  If the scheme is **NOT** any of ``http`` or ``https``,
         then set ``proxy`` to the scheme.
-    9.  If the host is :data:`None`, set ``hostname`` to ``(null)``,
+    10. If the host is :data:`None`, set ``hostname`` to ``(null)``,
         set ``proxy`` to ``null``.
-    10. If the host is an onion (``.onion``) address,
+    11. If the host is an onion (``.onion``) address,
         set ``proxy`` to ``tor``.
-    11. If the host is an I2P (``.i2p``) address, or
-        any of ``localhost:7657`` and ``localhost:7658``,
+    12. If the host is an I2P (``.i2p``) address, or
+       any of ``localhost:7657`` and ``localhost:7658``,
         set ``proxy`` to ``i2p``.
-    12. If the host is *localhost* on :data:`~darc.proxy.zeronet.ZERONET_PORT`,
+    13. If the host is *localhost* on :data:`~darc.proxy.zeronet.ZERONET_PORT`,
         and the path is not ``/``, i.e. **NOT** root path, set ``proxy``
         to ``zeronet``; and set the first part of its path as ``hostname``.
 
@@ -262,7 +284,7 @@ def parse_link(link: str, host: 'Optional[str]' = None) -> 'Link':
            :func:`~darc.link.parse_link` will parse the ``hostname`` as
            ``1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D``.
 
-    13. If the host is *localhost* on :data:`~darc.proxy.freenet.FREENET_PORT`,
+    14. If the host is *localhost* on :data:`~darc.proxy.freenet.FREENET_PORT`,
         and the path is not ``/``, i.e. **NOT** root path, set ``proxy``
         to ``freenet``; and set the first part of its path as ``hostname``.
 
@@ -273,9 +295,9 @@ def parse_link(link: str, host: 'Optional[str]' = None) -> 'Link':
            :func:`~darc.link.parse_link` will parse the ``hostname`` as
            ``USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE``.
 
-    14. If the host is a proxied onion (``.onion.sh``) address,
+    15. If the host is a proxied onion (``.onion.sh``) address,
         set ``proxy`` to ``tor2web``.
-    15. If none of the cases above satisfied, the ``proxy`` will be set
+    16. If none of the cases above satisfied, the ``proxy`` will be set
         as ``null``, marking it a plain normal link.
 
     The ``base`` for parsed link :class:`~darc.link.Link` object is defined as
@@ -309,9 +331,12 @@ def parse_link(link: str, host: 'Optional[str]' = None) -> 'Link':
     elif scheme == 'javascript':
         proxy_type = 'script'
         host = '(script)'
-    elif scheme == 'bitcoin':
+    elif scheme in ('bitcoin', 'btc'):
         proxy_type = 'bitcoin'
         host = '(bitcoin)'
+    elif scheme in ('ethereum', 'eth'):
+        proxy_type = 'ethereum'
+        host = '(ethereum)'
     elif scheme == 'ed2k':
         proxy_type = 'ed2k'
         host = '(ed2k)'
@@ -371,6 +396,7 @@ def parse_link(link: str, host: 'Optional[str]' = None) -> 'Link':
     return Link(
         url=link,
         url_parse=parse,
+        url_backref=backref,
         host=host,
         base=base,
         name=name,

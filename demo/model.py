@@ -5,11 +5,12 @@ import os
 from typing import TYPE_CHECKING
 
 import peewee
+import playhouse.mysql_ext
 import playhouse.shortcuts
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from typing import Any, Dict
+    from typing import Any, Dict, List
 
 # database client
 DB = playhouse.db_url.connect(os.getenv('DB_URL', 'mysql://127.0.0.1'))
@@ -150,6 +151,51 @@ class URLModel(BaseModel):
     #: Link hash (c.f. :attr:`link.name <darc.link.Link.name>`).
     name: str = peewee.FixedCharField(max_length=64)
 
+    @classmethod
+    def get_by_url(cls, url: str) -> 'URLModel':
+        """Select by URL.
+
+        Args:
+            url: URL to select.
+
+        Returns:
+            Selected URL model.
+
+        """
+        return cls.get(cls.url == url)
+
+    @property
+    def parents(self) -> 'List[URLModel]':
+        """Back reference to where the URL was identified."""
+        return (URLModel
+                .select()
+                .join(URLThroughModel, on=URLThroughModel.parent)
+                .where(URLThroughModel.child == self)
+                .order_by(URLModel.url))
+
+    @property
+    def childrent(self) -> 'List[URLModel]':
+        """Back reference to which URLs were identified from the URL."""
+        return (URLModel
+                .select()
+                .join(URLThroughModel, on=URLThroughModel.child)
+                .where(URLThroughModel.parent == self)
+                .order_by(URLModel.url))
+
+
+class URLThroughModel(BaseModel):
+    """Data model for the map of URL extration chain."""
+
+    #: Back reference to where the URL was identified.
+    parent: 'List[URLModel]' = peewee.ForeignKeyField(URLModel, backref='parents')
+    #: Back reference to which URLs were identified from the URL.
+    child: 'List[URLModel]' = peewee.ForeignKeyField(URLModel, backref='children')
+
+    class Meta(BaseMeta):
+        indexes = (
+            # Specify a unique multi-column index on from/to-user.
+            (('parent', 'child'), True),
+        )
 
 class RequestsDocumentModel(BaseModel):
     """Data model for documents from ``requests`` submission."""

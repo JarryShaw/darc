@@ -168,8 +168,8 @@ def read_robots(link: 'Link', text: str, host: 'Optional[str]' = None) -> 'List[
 
     sitemaps = rp.site_maps()
     if sitemaps is None:
-        return [parse_link(urljoin(link.url, '/sitemap.xml'))]
-    return [parse_link(urljoin(link.url, sitemap), host=host) for sitemap in sitemaps]
+        return [parse_link(urljoin(link.url, '/sitemap.xml'), backref=link)]
+    return [parse_link(urljoin(link.url, sitemap), host=host, backref=link) for sitemap in sitemaps]
 
 
 def get_sitemap(link: 'Link', text: str, host: 'Optional[str]' = None) -> 'List[Link]':
@@ -197,7 +197,7 @@ def get_sitemap(link: 'Link', text: str, host: 'Optional[str]' = None) -> 'List[
     # https://www.sitemaps.org/protocol.html#index
     for loc in soup.select('sitemapindex > sitemap > loc'):
         sitemaps.append(urljoin(link.url, loc.text))
-    return [parse_link(sitemap, host=host) for sitemap in sitemaps]
+    return [parse_link(sitemap, host=host, backref=link) for sitemap in sitemaps]
 
 
 def read_sitemap(link: 'Link', text: str, check: bool = CHECK) -> 'List[Link]':
@@ -220,7 +220,8 @@ def read_sitemap(link: 'Link', text: str, check: bool = CHECK) -> 'List[Link]':
     soup = bs4.BeautifulSoup(text, 'html5lib')
 
     # https://www.sitemaps.org/protocol.html
-    temp_list = [parse_link(urljoin(link.url, loc.text), host=link.host) for loc in soup.select('urlset > url > loc')]
+    temp_list = [parse_link(urljoin(link.url, loc.text), host=link.host, backref=link)
+                 for loc in soup.select('urlset > url > loc')]
 
     # check content / proxy type
     if check:
@@ -261,7 +262,7 @@ def fetch_sitemap(link: 'Link', force: bool = False) -> None:
 
     else:
 
-        robots_link = parse_link(urljoin(link.url, '/robots.txt'))
+        robots_link = parse_link(urljoin(link.url, '/robots.txt'), backref=link)
         print(f'[ROBOTS] Checking {robots_link.url}')
 
         with request_session(robots_link) as session:

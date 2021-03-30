@@ -257,10 +257,11 @@ def save_hosts(link: 'Link', text: str) -> str:
     return path
 
 
-def read_hosts(text: str, check: bool = CHECK) -> 'List[Link]':
+def read_hosts(link: 'Link', text: str, check: bool = CHECK) -> 'List[Link]':
     """Read ``hosts.txt``.
 
     Args:
+        link: Link object to fetch for its ``hosts.txt``.
         text: Content of ``hosts.txt``.
         check: If perform checks on extracted links,
             default to :data:`~darc.const.CHECK`.
@@ -277,7 +278,7 @@ def read_hosts(text: str, check: bool = CHECK) -> 'List[Link]':
         link = line.split('=', maxsplit=1)[0]
         if I2P_REGEX.fullmatch(link) is None:
             continue
-        temp_list.append(parse_link(f'http://{link}'))
+        temp_list.append(parse_link(f'http://{link}', backref=link))
 
     if check:
         return _check(temp_list)
@@ -311,7 +312,7 @@ def fetch_hosts(link: 'Link', force: bool = False) -> None:
 
         from darc.requests import i2p_session  # pylint: disable=import-outside-toplevel
 
-        hosts_link = parse_link(urljoin(link.url, '/hosts.txt'))
+        hosts_link = parse_link(urljoin(link.url, '/hosts.txt'), backref=link)
         print(f'[HOSTS] Subscribing {hosts_link.url}')
 
         with i2p_session() as session:
@@ -341,4 +342,4 @@ def fetch_hosts(link: 'Link', force: bool = False) -> None:
     from darc.db import save_requests  # pylint: disable=import-outside-toplevel
 
     # add link to queue
-    save_requests(read_hosts(hosts_text))
+    save_requests(read_hosts(link, hosts_text))

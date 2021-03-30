@@ -138,7 +138,7 @@ class MarketSite(BaseSite):
 
         """
         temp_list = cls.extract_links(link, html)
-        link_list = [parse_link(link) for link in temp_list]
+        link_list = [parse_link(item, backref=link) for item in temp_list]
 
         # check content / proxy type
         if check:

@@ -25,6 +25,7 @@ from darc.sites.bitcoin import Bitcoin
 from darc.sites.data import DataURI
 from darc.sites.default import DefaultSite
 from darc.sites.ed2k import ED2K
+from darc.sites.ethereum import Ethereum
 from darc.sites.irc import IRC
 from darc.sites.magnet import Magnet
 from darc.sites.mail import Email
@@ -53,6 +54,7 @@ SITEMAP = collections.defaultdict(lambda: DefaultSite, {
     '(tel)': Tel,
     '(irc)': IRC,
     '(ws)': WebSocket,
+    '(ether)': Ethereum,
 })  # type: DefaultDict[str, Type[BaseSite]]
 
 

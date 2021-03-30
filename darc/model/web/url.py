@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 
 from peewee import BooleanField, CharField, DateTimeField, ForeignKeyField, TextField
 
+from darc.model.abc import BaseMetaWeb as BaseMeta
 from darc.model.abc import BaseModelWeb as BaseModel
 from darc.model.utils import IntEnumField, Proxy
 from darc.model.web.hostname import HostnameModel
@@ -28,7 +29,7 @@ if TYPE_CHECKING:
     from darc.model.web.requests import RequestsModel
     from darc.model.web.selenium import SeleniumModel
 
-__all__ = ['URLModel']
+__all__ = ['URLModel', 'URLThroughModel']
 
 
 class URLModel(BaseModel):
@@ -68,3 +69,49 @@ class URLModel(BaseModel):
     alive: bool = BooleanField()
     #: The hostname is active/inactive since this timestamp.
     since: 'datetime' = DateTimeField()
+
+    @classmethod
+    def get_by_url(cls, url: str) -> 'URLModel':
+        """Select by URL.
+
+        Args:
+            url: URL to select.
+
+        Returns:
+            Selected URL model.
+
+        """
+        return cls.get(cls.url == url)
+
+    @property
+    def parents(self) -> 'List[URLModel]':
+        """Back reference to where the URL was identified."""
+        return (URLModel
+                .select()
+                .join(URLThroughModel, on=URLThroughModel.parent)
+                .where(URLThroughModel.child == self)
+                .order_by(URLModel.url))
+
+    @property
+    def childrent(self) -> 'List[URLModel]':
+        """Back reference to which URLs were identified from the URL."""
+        return (URLModel
+                .select()
+                .join(URLThroughModel, on=URLThroughModel.child)
+                .where(URLThroughModel.parent == self)
+                .order_by(URLModel.url))
+
+
+class URLThroughModel(BaseModel):
+    """Data model for the map of URL extration chain."""
+
+    #: Back reference to where the URL was identified.
+    parent: 'List[URLModel]' = ForeignKeyField(URLModel, backref='parents')
+    #: Back reference to which URLs were identified from the URL.
+    child: 'List[URLModel]' = ForeignKeyField(URLModel, backref='children')
+
+    class Meta(BaseMeta):
+        indexes = (
+            # Specify a unique multi-column index on from/to-user.
+            (('parent', 'child'), True),
+        )
