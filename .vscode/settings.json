@@ -134,5 +134,5 @@
         "KEYS"
     ],
     "Lua.runtime.version": "Lua 5.1",
-    "python.pythonPath": "/Users/jarryshaw/GitHub/darc/.venv/bin/python3.9"
+    "python.pythonPath": ".venv/bin/python"
 }
