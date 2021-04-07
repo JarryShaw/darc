@@ -12,11 +12,12 @@ representing hostnames, specifically from ``new_host`` submission.
 
 """
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from peewee import DateTimeField, TextField
 
 from darc._compat import cached_property
+from darc._typing import SPHINX_BUILD
 from darc.model.abc import BaseModelWeb as BaseModel
 from darc.model.utils import IntEnumField, Proxy
 
@@ -24,15 +25,17 @@ if TYPE_CHECKING:
     from typing import Callable, List, TypeVar
 
     from darc._compat import datetime
-    #import darc.model.web.hosts as darc_hosts  # HostsModel
-    #import darc.model.web.robots as darc_robots  # RobotsModel
-    #import darc.model.web.sitemap as darc_sitemap  # SitemapModel
-    #import darc.model.web.url as darc_url  # URLModel
 
-    HostsModel = TypeVar('HostsModel', bound='darc.model.web.hosts.HostsModel')  # type: ignore[name-defined]
-    RobotsModel = TypeVar('RobotsModel', bound='darc.model.web.robots.RobotsModel')  # type: ignore[name-defined]
-    SitemapModel = TypeVar('SitemapModel', bound='darc.model.web.sitemap.SitemapModel')  # type: ignore[name-defined]
-    URLModel = TypeVar('URLModel', bound='darc.model.web.url.URLModel')  # type: ignore[name-defined]
+    if not SPHINX_BUILD:
+        from darc.model.web.hosts import HostsModel  # pylint: disable=unused-import
+        from darc.model.web.robots import RobotsModel  # pylint: disable=unused-import
+        from darc.model.web.sitemap import SitemapModel  # pylint: disable=unused-import
+        from darc.model.web.url import URLModel  # pylint: disable=unused-import
+    else:
+        HostsModel = TypeVar('HostsModel', bound='darc.model.web.hosts.HostsModel')  # type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long
+        RobotsModel = TypeVar('RobotsModel', bound='darc.model.web.robots.RobotsModel')  # type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long
+        SitemapModel = TypeVar('SitemapModel', bound='darc.model.web.sitemap.SitemapModel')  # type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long
+        URLModel = TypeVar('URLModel', bound='darc.model.web.url.URLModel')  # type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long
 
 __all__ = ['HostnameModel']
 
@@ -48,19 +51,19 @@ class HostnameModel(BaseModel):
 
     #: ``hosts.txt`` for the hostname, back reference from
     #: :attr:`HostsModel.host <darc.model.web.hosts.HostsModel.host>`.
-    hosts: 'List[HostsModel]'  # type: ignore[valid-type]
+    hosts: 'List[HostsModel]'
 
     #: ``robots.txt`` for the hostname, back reference from
     #: :attr:`RobotsModel.host <darc.model.web.robots.RobotsModel.host>`.
-    robots: 'List[RobotsModel]'  # type: ignore[valid-type]
+    robots: 'List[RobotsModel]'
 
     #: ``sitemap.xml`` for the hostname, back reference from
     #: :attr:`SitemapModel.sitemaps <darc.model.web.robots.SitemapModel.sitemaps>`.
-    sitemaps: 'List[SitemapModel]'  # type: ignore[valid-type]
+    sitemaps: 'List[SitemapModel]'
 
     #: URLs with the same hostname, back reference from
     #: :attr:`URLModel.hostname <darc.model.web.url.URLModel.hostname>`.
-    urls: 'List[URLModel]'  # type: ignore[valid-type]
+    urls: 'List[URLModel]'
 
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
     hostname: str = TextField()
@@ -80,9 +83,7 @@ class HostnameModel(BaseModel):
         subsidiary URLs are *inactive*.
 
         """
-        if TYPE_CHECKING:
-            from darc.model.web.url import URLModel as URLModelType  # pylint: disable=import-outside-toplevel,unused-import
-        return any(map(lambda url: url.alive, cast('List[URLModelType]', self.urls)))  # type: ignore[redundant-cast]
+        return any(map(lambda url: url.alive, self.urls))
 
     @cached_property
     def since(self) -> 'datetime':
@@ -92,11 +93,8 @@ class HostnameModel(BaseModel):
         of related subsidiary *active/inactive* URLs.
 
         """
-        if TYPE_CHECKING:
-            from darc.model.web.url import URLModel as URLModelType  # pylint: disable=import-outside-toplevel,unused-import
-
         if self.alive:
-            filtering = lambda url: url.alive  # type: Callable[[URLModelType], bool]
+            filtering = lambda url: url.alive  # type: Callable[[URLModel], bool]
         else:
             filtering = lambda url: not url.alive
 

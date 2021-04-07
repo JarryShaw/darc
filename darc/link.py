@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=unsubscriptable-object,ungrouped-imports
+# pylint: disable=unsubscriptable-object,ungrouped-imports,line-too-long
 """URL Utilities
 ===================
 
@@ -271,7 +271,7 @@ def parse_link(link: str, host: 'Optional[str]' = None, *, backref: 'Optional[Li
     11. If the host is an onion (``.onion``) address,
         set ``proxy`` to ``tor``.
     12. If the host is an I2P (``.i2p``) address, or
-       any of ``localhost:7657`` and ``localhost:7658``,
+        any of ``localhost:7657`` and ``localhost:7658``,
         set ``proxy`` to ``i2p``.
     13. If the host is *localhost* on :data:`~darc.proxy.zeronet.ZERONET_PORT`,
         and the path is not ``/``, i.e. **NOT** root path, set ``proxy``
@@ -279,8 +279,8 @@ def parse_link(link: str, host: 'Optional[str]' = None, *, backref: 'Optional[Li
 
         Example:
 
-           For a ZeroNet address, e.g.
-           http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D,
+           For a ZeroNet address, e.g.,
+           ``http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D``,
            :func:`~darc.link.parse_link` will parse the ``hostname`` as
            ``1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D``.
 
@@ -290,8 +290,8 @@ def parse_link(link: str, host: 'Optional[str]' = None, *, backref: 'Optional[Li
 
         Example:
 
-           For a Freenet address, e.g.
-           http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/,
+           For a Freenet address, e.g.,
+           ``http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/``,
            :func:`~darc.link.parse_link` will parse the ``hostname`` as
            ``USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE``.
 

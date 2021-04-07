@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 """Typing declrations."""
 
-from typing_extensions import TypedDict
+import re
+import os
+import sys
+
+from typing_extensions import Literal, TypedDict
+
+#: Flag if running from ``sphinx-build``.
+SPHINX_BUILD = bool(
+    re.fullmatch(r'(?ai)sphinx-build(?:\.exe)?',
+                 os.path.basename(sys.argv[0]))
+)  # type: Literal[False] # type: ignore[assignment]
 
 
 class File(TypedDict):

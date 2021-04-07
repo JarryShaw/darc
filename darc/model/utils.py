@@ -186,7 +186,10 @@ class PickleField(BlobField):
 
 
 class Proxy(enum.IntEnum):
-    """Proxy types supported by :mod:`darc`."""
+    """Proxy types supported by :mod:`darc`.
+
+    .. _tor2web: https://onion.sh/
+    """
 
     #: No proxy.
     NULL = enum.auto()
@@ -198,5 +201,5 @@ class Proxy(enum.IntEnum):
     ZERONET = enum.auto()
     #: Freenet proxy.
     FREENET = enum.auto()
-    #: Proxied Tor (`tor2web <https://onion.sh/>`__, no proxy).
+    #: Proxied Tor (`tor2web`_, no proxy).
     TOR2WEB = enum.auto()

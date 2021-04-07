@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 
 from peewee import BooleanField, CharField, DateTimeField, ForeignKeyField, TextField
 
+from darc._typing import SPHINX_BUILD
 from darc.model.abc import BaseMetaWeb as BaseMeta
 from darc.model.abc import BaseModelWeb as BaseModel
 from darc.model.utils import IntEnumField, Proxy
@@ -26,11 +27,13 @@ if TYPE_CHECKING:
     from typing import List, TypeVar
 
     from darc._compat import datetime
-    # import darc.model.web.requests as darc_requests  # RequestsModel
-    # import darc.model.web.selenium as darc_selenium  # SeleniumModel
 
-    RequestsModel = TypeVar('RequestsModel', bound='darc.model.web.requests.RequestsModel')  # type: ignore[name-defined] # pylint: disable=line-too-long
-    SeleniumModel = TypeVar('SeleniumModel', bound='darc.model.web.selenium.SeleniumModel')  # type: ignore[name-defined] # pylint: disable=line-too-long
+    if not SPHINX_BUILD:
+        from darc.model.web.selenium import SeleniumModel # pylint: disable=unused-import
+        from darc.model.web.requests import RequestsModel # pylint: disable=unused-import
+    else:
+        RequestsModel = TypeVar('RequestsModel', bound='darc.model.web.requests.RequestsModel')  # type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long
+        SeleniumModel = TypeVar('SeleniumModel', bound='darc.model.web.selenium.SeleniumModel')  # type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long
 
 __all__ = ['URLModel', 'URLThroughModel']
 
@@ -47,11 +50,11 @@ class URLModel(BaseModel):
 
     #: ``requests`` submission record, back reference from
     #: :attr:`RequestsModel.url <darc.models.web.requests.RequestsModel.url>`.
-    requests: 'List[RequestsModel]'  # type: ignore[valid-type]
+    requests: 'List[RequestsModel]'
 
     #: ``selenium`` submission record, back reference from
     #: :attr:`SeleniumModel.url <darc.models.web.selenium.SeleniumModel.url>`.
-    selenium: 'List[SeleniumModel]'  # type: ignore[valid-type]
+    selenium: 'List[SeleniumModel]'
 
     #: Original URL (c.f. :attr:`link.url <darc.link.Link.url>`).
     url: str = TextField()

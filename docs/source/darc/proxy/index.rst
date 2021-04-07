@@ -11,6 +11,7 @@ to the :mod:`darc` project.
    bitcoin
    data
    ed2k
+   ethereum
    freenet
    i2p
    irc

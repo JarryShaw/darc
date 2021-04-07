@@ -146,7 +146,7 @@ Data Storage
    :default: ``sqlite://{PATH_DB}/darc.db``
    :environ: :envvar`DB_URL`
 
-.. data:: darc.const.DB
+.. data:: darc.const.DB_WEB
    :type: peewee.Database
 
    URL to the data submission storage.

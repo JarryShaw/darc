@@ -4,6 +4,21 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import importlib
+import logging
+import os
+import sys
+import typing
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Any, Dict, List
+    from sphinx.application import Sphinx
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -18,7 +33,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'darc'
-copyright = '2019-2020, Jarry Shaw'
+copyright = '2019-2020, Jarry Shaw'  # pylint: disable=redefined-builtin
 author = 'Jarry Shaw'
 
 # The full version, including alpha/beta/rc tags
@@ -77,9 +92,12 @@ napoleon_custom_sections = None
 
 manpages_url = 'https://linux.die.net/man/{section}/{page}'
 
-#do_include_todos = True
+do_include_todos = True
 
-set_type_checking_flag = True
+#set_type_checking_flag = True
+typehints_fully_qualified = False
+always_document_param_types = False
+typehints_document_rtype = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -87,7 +105,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = []  # type: List[str]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -120,12 +138,11 @@ html_theme_options = {
 
 # -- Customised hooks --------------------------------------------------------
 
-import os
-
 os.environ['TOR_PASS'] = 'null'
 
 
-def maybe_skip_member(app, what: str, name: str, obj: object, skip: bool, options: dict):
+def maybe_skip_member(app: 'Sphinx', what: str, name: str,  # pylint: disable=unused-argument
+                      obj: 'Any', skip: bool, options: 'Dict[str, Any]') -> bool:  # pylint: disable=unused-argument
     if name == '_abc_impl':
         return True
     if name == '__init__':
@@ -134,11 +151,41 @@ def maybe_skip_member(app, what: str, name: str, obj: object, skip: bool, option
     return skip
 
 
-def remove_module_docstring(app, what: str, name: str, obj: object, options: dict, lines: list):
+def remove_module_docstring(app: 'Sphinx', what: str, name: str,  # pylint: disable=unused-argument
+                            obj: 'Any', options: 'Dict[str, Any]', lines: 'List[str]') -> None:  # pylint: disable=unused-argument
     if what == "module" and "darc" in name:
-        lines.clear()
+        module = sys.modules.get(name)
+        if module is not None:
+            logger.info('reloading module: %s', name)
+            typing.TYPE_CHECKING = True
+            importlib.reload(module)
+            logger.info('reloaded module: %s', name)
+        #lines.clear()
 
 
-def setup(app):
-    #app.connect("autodoc-process-docstring", remove_module_docstring)
+def process_docstring(app: 'Sphinx', what: str, name: str,  # pylint: disable=unused-argument
+                      obj: 'Any', options: 'Dict[str, Any]', lines: 'List[str]') -> None:  # pylint: disable=unused-argument
+    if what == "module" and "darc" in name:
+        module = importlib.import_module(name)
+        typing.TYPE_CHECKING = True
+        importlib.reload(module)
+
+
+def source_read(app: 'Sphinx', docname: str, source_text: str) -> None:  # pylint: disable=unused-argument
+    print(docname, source_text)
+
+
+def setup(app: 'Sphinx') -> None:
+    #app.connect('autodoc-process-docstring', process_docstring, 0)
+    app.connect("autodoc-process-docstring", remove_module_docstring)
     app.connect('autodoc-skip-member', maybe_skip_member)
+    #app.connect('source-read', source_read)
+
+    typing.TYPE_CHECKING = True
+    for name, module in sys.modules.copy().items():
+        if 'darc' not in name:
+            continue
+
+        logger.info('reloading module: %s', name)
+        importlib.reload(module)
+        logger.info('reloaded module: %s', name)
