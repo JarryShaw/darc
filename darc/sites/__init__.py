@@ -39,8 +39,8 @@ if TYPE_CHECKING:
     from requests import Response, Session
     from selenium.webdriver import Chrome as Driver
 
+    import darc.link as darc_link  # Link
     from darc._compat import datetime
-    from darc.link import Link
 
 
 SITEMAP = collections.defaultdict(lambda: DefaultSite, {
@@ -54,7 +54,7 @@ SITEMAP = collections.defaultdict(lambda: DefaultSite, {
     '(tel)': Tel,
     '(irc)': IRC,
     '(ws)': WebSocket,
-    '(ether)': Ethereum,
+    '(ethereum)': Ethereum,
 })  # type: DefaultDict[str, Type[BaseSite]]
 
 
@@ -76,7 +76,7 @@ def register(site: 'Type[BaseSite]', *hostname: str) -> None:
         SITEMAP[domain.casefold()] = site
 
 
-def _get_site(link: 'Link') -> 'Type[BaseSite]':
+def _get_site(link: 'darc_link.Link') -> 'Type[BaseSite]':
     """Load sites customisation if any.
 
     If the sites customisation does not exist, it will
@@ -102,7 +102,7 @@ def _get_site(link: 'Link') -> 'Type[BaseSite]':
     return site
 
 
-def crawler_hook(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'Response':
+def crawler_hook(timestamp: 'datetime', session: 'Session', link: 'darc_link.Link') -> 'Response':
     """Customisation as to :mod:`requests` sessions.
 
     Args:
@@ -123,7 +123,7 @@ def crawler_hook(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'Re
     return site.crawler(timestamp, session, link)
 
 
-def loader_hook(timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'Driver':
+def loader_hook(timestamp: 'datetime', driver: 'Driver', link: 'darc_link.Link') -> 'Driver':
     """Customisation as to :mod:`selenium` drivers.
 
     Args:

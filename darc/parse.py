@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING
 import bs4
 import magic
 import requests
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc._compat import RobotFileParser
 from darc.const import (CHECK, CHECK_NG, LINK_BLACK_LIST, LINK_FALLBACK, LINK_WHITE_LIST,
@@ -35,7 +35,7 @@ if TYPE_CHECKING:
     from requests import Response
     from requests_futures.sessions import FuturesSession
 
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 # Regular expression patterns to match all reasonable URLs.
 URL_PAT = {
@@ -156,7 +156,7 @@ def match_mime(mime: str) -> bool:
     return MIME_FALLBACK
 
 
-def check_robots(link: 'Link') -> bool:
+def check_robots(link: 'darc_link.Link') -> bool:
     """Check if ``link`` is allowed in ``robots.txt``.
 
     Args:
@@ -184,7 +184,7 @@ def check_robots(link: 'Link') -> bool:
     return True
 
 
-def _check_ng(temp_list: 'List[Link]') -> 'List[Link]':
+def _check_ng(temp_list: 'List[darc_link.Link]') -> 'List[darc_link.Link]':
     """Check content type of links through ``HEAD`` requests.
 
     Args:
@@ -227,10 +227,10 @@ def _check_ng(temp_list: 'List[Link]') -> 'List[Link]':
         except requests.RequestException as error:
             if error.response is None:
                 print(render_error(f'[HEAD] Checking failed <{error}>',
-                                   stem.util.term.Color.RED))  # pylint: disable=no-member
+                                   stem_term.Color.RED))  # pylint: disable=no-member
                 continue
             print(render_error(f'[HEAD] Failed on {error.response.url} <{error}>',
-                               stem.util.term.Color.RED))  # pylint: disable=no-member
+                               stem_term.Color.RED))  # pylint: disable=no-member
             link_list.append(error.response.url)
             continue
         ct_type = get_content_type(response)
@@ -244,7 +244,7 @@ def _check_ng(temp_list: 'List[Link]') -> 'List[Link]':
     return link_list
 
 
-def _check(temp_list: 'List[Link]') -> 'List[Link]':
+def _check(temp_list: 'List[darc_link.Link]') -> 'List[darc_link.Link]':
     """Check hostname and proxy type of links.
 
     Args:
@@ -305,7 +305,7 @@ def get_content_type(response: 'Response') -> str:
     return ct_type.casefold().split(';', maxsplit=1)[0].strip()
 
 
-def extract_links(link: 'Link', html: 'Union[str, bytes]', check: bool = CHECK) -> 'List[Link]':
+def extract_links(link: 'darc_link.Link', html: 'Union[str, bytes]', check: bool = CHECK) -> 'List[darc_link.Link]':
     """Extract links from HTML document.
 
     Args:
@@ -340,7 +340,7 @@ def extract_links(link: 'Link', html: 'Union[str, bytes]', check: bool = CHECK) 
     return temp_list
 
 
-def extract_links_from_text(link: 'Link', text: str) -> 'List[Link]':
+def extract_links_from_text(link: 'darc_link.Link', text: str) -> 'List[darc_link.Link]':
     """Extract links from raw text source.
 
     Args:

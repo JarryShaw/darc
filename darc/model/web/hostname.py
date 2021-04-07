@@ -12,7 +12,7 @@ representing hostnames, specifically from ``new_host`` submission.
 
 """
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from peewee import DateTimeField, TextField
 
@@ -21,13 +21,18 @@ from darc.model.abc import BaseModelWeb as BaseModel
 from darc.model.utils import IntEnumField, Proxy
 
 if TYPE_CHECKING:
-    from typing import Callable, List
+    from typing import Callable, List, TypeVar
 
     from darc._compat import datetime
-    from darc.model.web.hosts import HostsModel
-    from darc.model.web.robots import RobotsModel
-    from darc.model.web.sitemap import SitemapModel
-    from darc.model.web.url import URLModel
+    #import darc.model.web.hosts as darc_hosts  # HostsModel
+    #import darc.model.web.robots as darc_robots  # RobotsModel
+    #import darc.model.web.sitemap as darc_sitemap  # SitemapModel
+    #import darc.model.web.url as darc_url  # URLModel
+
+    HostsModel = TypeVar('HostsModel', bound='darc.model.web.hosts.HostsModel')  # type: ignore[name-defined]
+    RobotsModel = TypeVar('RobotsModel', bound='darc.model.web.robots.RobotsModel')  # type: ignore[name-defined]
+    SitemapModel = TypeVar('SitemapModel', bound='darc.model.web.sitemap.SitemapModel')  # type: ignore[name-defined]
+    URLModel = TypeVar('URLModel', bound='darc.model.web.url.URLModel')  # type: ignore[name-defined]
 
 __all__ = ['HostnameModel']
 
@@ -43,19 +48,19 @@ class HostnameModel(BaseModel):
 
     #: ``hosts.txt`` for the hostname, back reference from
     #: :attr:`HostsModel.host <darc.model.web.hosts.HostsModel.host>`.
-    hosts: 'List[HostsModel]'
+    hosts: 'List[HostsModel]'  # type: ignore[valid-type]
 
     #: ``robots.txt`` for the hostname, back reference from
     #: :attr:`RobotsModel.host <darc.model.web.robots.RobotsModel.host>`.
-    robots: 'List[RobotsModel]'
+    robots: 'List[RobotsModel]'  # type: ignore[valid-type]
 
     #: ``sitemap.xml`` for the hostname, back reference from
     #: :attr:`SitemapModel.sitemaps <darc.model.web.robots.SitemapModel.sitemaps>`.
-    sitemaps: 'List[SitemapModel]'
+    sitemaps: 'List[SitemapModel]'  # type: ignore[valid-type]
 
     #: URLs with the same hostname, back reference from
     #: :attr:`URLModel.hostname <darc.model.web.url.URLModel.hostname>`.
-    urls: 'List[URLModel]'
+    urls: 'List[URLModel]'  # type: ignore[valid-type]
 
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
     hostname: str = TextField()
@@ -75,7 +80,9 @@ class HostnameModel(BaseModel):
         subsidiary URLs are *inactive*.
 
         """
-        return any(map(lambda url: url.alive, self.urls))
+        if TYPE_CHECKING:
+            from darc.model.web.url import URLModel as URLModelType  # pylint: disable=import-outside-toplevel,unused-import
+        return any(map(lambda url: url.alive, cast('List[URLModelType]', self.urls)))  # type: ignore[redundant-cast]
 
     @cached_property
     def since(self) -> 'datetime':
@@ -85,8 +92,11 @@ class HostnameModel(BaseModel):
         of related subsidiary *active/inactive* URLs.
 
         """
+        if TYPE_CHECKING:
+            from darc.model.web.url import URLModel as URLModelType  # pylint: disable=import-outside-toplevel,unused-import
+
         if self.alive:
-            filtering = lambda url: url.alive  # type: Callable[[URLModel], bool]
+            filtering = lambda url: url.alive  # type: Callable[[URLModelType], bool]
         else:
             filtering = lambda url: not url.alive
 

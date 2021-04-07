@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=ungrouped-imports
 """Module entrypoint."""
 
 import argparse
@@ -10,7 +11,7 @@ import traceback
 import warnings
 from typing import TYPE_CHECKING
 
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc.const import DB, DB_WEB, DEBUG, FLAG_DB, PATH_ID, PATH_LN
 from darc.db import _db_operation, _redis_command, save_requests
@@ -112,7 +113,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
             except Exception as error:
                 warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 102,  # type: ignore[arg-type]
                                                  'DB.create_tables([HostnameQueueModel, ...])')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 continue
             break
 
@@ -128,12 +129,12 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
             except Exception as error:
                 warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 117,  # type: ignore[arg-type]
                                                  'DB.create_tables([HostnameModel, ...])')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 continue
             break
 
     if DEBUG:
-        print(stem.util.term.format('-*- Initialisation -*-', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-*- Initialisation -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
         # nuke the db
         if not FLAG_DB:
@@ -144,7 +145,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
     link_list = []
     for link in filter(None, map(lambda s: s.strip(), args.link)):  # type: ignore[name-defined,var-annotated]
         if DEBUG:
-            print(stem.util.term.format(link, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+            print(stem_term.format(link, stem_term.Color.MAGENTA))  # pylint: disable=no-member
         link_list.append(link)
 
     if args.file is not None:
@@ -154,7 +155,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
                     if line.startswith('#'):
                         continue
                     if DEBUG:
-                        print(stem.util.term.format(line, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+                        print(stem_term.format(line, stem_term.Color.MAGENTA))  # pylint: disable=no-member
                     link_list.append(line)
 
     # write to database
@@ -162,7 +163,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
     save_requests(link_pool, score=0, nx=True)
 
     if DEBUG:
-        print(stem.util.term.format('-' * shutil.get_terminal_size().columns, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
     # init link file
     if not os.path.isfile(PATH_LN):

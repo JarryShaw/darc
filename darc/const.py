@@ -16,9 +16,9 @@ import threading
 from typing import TYPE_CHECKING
 
 import peewee
-import playhouse.db_url
+import playhouse.db_url as playhouse_db_url
 import redis
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc._compat import nullcontext
 from darc.error import render_error
@@ -85,21 +85,17 @@ PATH_ID = os.path.join(PATH_DB, 'darc.pid')
 # extract link pattern
 _LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
 if DEBUG:
-    print(stem.util.term.format('-*- LINK WHITE LIST -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_LINK_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- LINK WHITE LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_LINK_WHITE_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 LINK_WHITE_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_WHITE_LIST]
 
 # link black list
 _LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
 if DEBUG:
-    print(stem.util.term.format('-*- LINK BLACK LIST -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_LINK_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- LINK BLACK LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_LINK_BLACK_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 LINK_BLACK_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_BLACK_LIST]
 
 # link fallback value
@@ -108,22 +104,18 @@ LINK_FALLBACK = bool(int(os.getenv('LINK_FALLBACK', '0')))
 # content type white list
 _MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
 if DEBUG:
-    print(stem.util.term.format('-*- MIME WHITE LIST -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_MIME_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- MIME WHITE LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_MIME_WHITE_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 MIME_WHITE_LIST = [re.compile(mime, re.IGNORECASE) for mime in _MIME_WHITE_LIST]
 del _MIME_WHITE_LIST
 
 # content type black list
 _MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
 if DEBUG:
-    print(stem.util.term.format('-*- MIME BLACK LIST -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_MIME_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- MIME BLACK LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_MIME_BLACK_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 MIME_BLACK_LIST = [re.compile(mime, re.IGNORECASE) for mime in _MIME_BLACK_LIST]
 del _MIME_BLACK_LIST
 
@@ -133,22 +125,18 @@ MIME_FALLBACK = bool(int(os.getenv('MIME_FALLBACK', '0')))
 # proxy type black list
 _PROXY_BLACK_LIST = json.loads(os.getenv('PROXY_BLACK_LIST', '[]').casefold())
 if DEBUG:
-    print(stem.util.term.format('-*- PROXY BLACK LIST -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_PROXY_BLACK_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- PROXY BLACK LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_PROXY_BLACK_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 PROXY_BLACK_LIST = [proxy.casefold() for proxy in _PROXY_BLACK_LIST]
 del _PROXY_BLACK_LIST
 
 # proxy type white list
 _PROXY_WHITE_LIST = json.loads(os.getenv('PROXY_WHITE_LIST', '[]').casefold())
 if DEBUG:
-    print(stem.util.term.format('-*- PROXY WHITE LIST -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_PROXY_WHITE_LIST), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- PROXY WHITE LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_PROXY_WHITE_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 PROXY_WHITE_LIST = [proxy.casefold() for proxy in _PROXY_WHITE_LIST]
 del _PROXY_WHITE_LIST
 
@@ -188,7 +176,7 @@ if _REDIS_URL is None:
     REDIS = None  # type: Optional[Redis]
     FLAG_DB = True
 else:
-    REDIS = redis.Redis.from_url(_REDIS_URL, decode_components=True)
+    REDIS = redis.Redis.from_url(_REDIS_URL, decode_components=True)  # type: ignore[call-overload]
     FLAG_DB = False
 del _REDIS_URL
 
@@ -198,8 +186,8 @@ if _DB_URL is None:
     DB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/sqlite/darc.db')
     DB_WEB = peewee.SqliteDatabase(f'sqlite://{PATH_DB}/sqlite/darcweb.db')
 else:
-    DB = playhouse.db_url.connect(f'{_DB_URL}/darc', unquote_password=True)  # type: Database # type: ignore[no-redef]
-    DB_WEB = playhouse.db_url.connect(f'{_DB_URL}/darcweb', unquote_password=True)  # type: Database # type: ignore[no-redef] # pylint: disable=line-too-long
+    DB = playhouse_db_url.connect(f'{_DB_URL}/darc', unquote_password=True)  # type: Database # type: ignore[no-redef]
+    DB_WEB = playhouse_db_url.connect(f'{_DB_URL}/darcweb', unquote_password=True)  # type: Database # type: ignore[no-redef] # pylint: disable=line-too-long
 del _DB_URL
 
 

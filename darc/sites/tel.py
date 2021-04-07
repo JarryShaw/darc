@@ -20,15 +20,15 @@ if TYPE_CHECKING:
     from requests import Session
     from selenium.webdriver import Chrome as Driver
 
+    import darc.link as darc_link  # Link
     from darc._compat import datetime
-    from darc.link import Link
 
 
 class Tel(BaseSite):
     """Telephone numbers."""
 
     @staticmethod
-    def crawler(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'NoReturn':  # pylint: disable=unused-argument
+    def crawler(timestamp: 'datetime', session: 'Session', link: 'darc_link.Link') -> 'NoReturn':  # pylint: disable=unused-argument
         """Crawler hook for telephone numbers.
 
         Args:
@@ -44,7 +44,7 @@ class Tel(BaseSite):
         raise LinkNoReturn(link)
 
     @staticmethod
-    def loader(timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'NoReturn':  # pylint: disable=unused-argument
+    def loader(timestamp: 'datetime', driver: 'Driver', link: 'darc_link.Link') -> 'NoReturn':  # pylint: disable=unused-argument
         """Not implemented.
 
         Raises:

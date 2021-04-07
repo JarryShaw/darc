@@ -19,7 +19,7 @@ import functools
 import hashlib
 import os
 import re
-import urllib.parse
+import urllib.parse as urllib_parse
 from typing import TYPE_CHECKING
 
 from darc.const import PATH_DB
@@ -56,7 +56,7 @@ def quote(string: str, safe: '_Str' = '/', encoding: 'Optional[str]' = None, err
 
     """
     with contextlib.suppress(Exception):
-        return urllib.parse.quote(string, safe, encoding=encoding, errors=errors)
+        return urllib_parse.quote(string, safe, encoding=encoding, errors=errors)
     return str(string)
 
 
@@ -78,7 +78,7 @@ def unquote(string: str, encoding: str = 'utf-8', errors: str = 'replace') -> st
 
     """
     with contextlib.suppress(Exception):
-        return urllib.parse.unquote(string, encoding=encoding, errors=errors)
+        return urllib_parse.unquote(string, encoding=encoding, errors=errors)
     return str(string)
 
 
@@ -100,7 +100,7 @@ def urljoin(base: 'AnyStr', url: 'AnyStr', allow_fragments: bool = True) -> 'Any
 
     """
     with contextlib.suppress(ValueError):
-        return urllib.parse.urljoin(base, url, allow_fragments=allow_fragments)
+        return urllib_parse.urljoin(base, url, allow_fragments=allow_fragments)
     if isinstance(base, bytes):
         return b'%s/%s' % (base, url)
     return f'{base}/{url}'
@@ -125,11 +125,11 @@ def urlparse(url: str, scheme: str = '', allow_fragments: bool = True) -> 'Parse
 
     """
     with contextlib.suppress(ValueError):
-        return urllib.parse.urlparse(url, scheme, allow_fragments=allow_fragments)
-    return urllib.parse.ParseResult(scheme=scheme, netloc='', path=url, params='', query='', fragment='')
+        return urllib_parse.urlparse(url, scheme, allow_fragments=allow_fragments)
+    return urllib_parse.ParseResult(scheme=scheme, netloc='', path=url, params='', query='', fragment='')
 
 
-def urlsplit(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib.parse.SplitResult:
+def urlsplit(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib_parse.SplitResult:
     """Wrapper function for :func:`urllib.parse.urlsplit`.
 
     Args:
@@ -148,8 +148,8 @@ def urlsplit(url: str, scheme: str = '', allow_fragments: bool = True) -> urllib
 
     """
     with contextlib.suppress(ValueError):
-        return urllib.parse.urlsplit(url, scheme, allow_fragments=allow_fragments)
-    return urllib.parse.SplitResult(scheme=scheme, netloc='', path=url, query='', fragment='')
+        return urllib_parse.urlsplit(url, scheme, allow_fragments=allow_fragments)
+    return urllib_parse.SplitResult(scheme=scheme, netloc='', path=url, query='', fragment='')
 
 
 @dataclasses.dataclass
@@ -191,7 +191,7 @@ class Link:
     name: str
 
     #: parsed URL from :func:`urllib.parse.urlparse`
-    url_parse: urllib.parse.ParseResult
+    url_parse: urllib_parse.ParseResult
     #: optional :class:`~darc.link.Link` instance
     #: from which current link was extracted
     url_backref: 'Optional[Link]' = None

@@ -18,15 +18,15 @@ if TYPE_CHECKING:
     from requests import Response, Session
     from selenium.webdriver import Chrome as Driver
 
+    import darc.link as darc_link  # Link
     from darc._compat import datetime
-    from darc.link import Link
 
 
 class DefaultSite(BaseSite):
     """Default hooks."""
 
     @staticmethod
-    def crawler(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'Response':  # pylint: disable=unused-argument
+    def crawler(timestamp: 'datetime', session: 'Session', link: 'darc_link.Link') -> 'Response':  # pylint: disable=unused-argument
         """Default crawler hook.
 
         Args:
@@ -45,7 +45,7 @@ class DefaultSite(BaseSite):
         return response
 
     @staticmethod
-    def loader(timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'Driver':  # pylint: disable=unused-argument
+    def loader(timestamp: 'datetime', driver: 'Driver', link: 'darc_link.Link') -> 'Driver':  # pylint: disable=unused-argument
         """Default loader hook.
 
         When loading, if :data:`~darc.const.SE_WAIT` is a valid time lapse,

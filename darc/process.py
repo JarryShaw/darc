@@ -16,10 +16,7 @@ import time
 import warnings
 from typing import TYPE_CHECKING, cast
 
-import stem
-import stem.control
-import stem.process
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc._compat import strsignal
 from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, PATH_ID, REBOOT, getpid
@@ -116,8 +113,8 @@ def _signal_handler(signum: 'Optional[Union[int, Signals]]' = None,
         sig = strsignal(signum) if signum else signum
     except Exception:
         sig = signum
-    print(stem.util.term.format(f'[DARC] Exit with signal: {sig} <{frame}>',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format(f'[DARC] Exit with signal: {sig} <{frame}>',
+                           stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def process_crawler() -> None:

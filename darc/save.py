@@ -54,13 +54,13 @@ if TYPE_CHECKING:
 
     from requests import Response, Session
 
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 # lock for file I/O
 _SAVE_LOCK = get_lock()
 
 
-def sanitise(link: 'Link', time: 'Optional[datetime]' = None,
+def sanitise(link: 'darc_link.Link', time: 'Optional[datetime]' = None,
              raw: bool = False, data: bool = False,
              headers: bool = False, screenshot: bool = False) -> str:
     """Sanitise link to path.
@@ -108,7 +108,7 @@ def sanitise(link: 'Link', time: 'Optional[datetime]' = None,
     return f'{path}_{ts}.html'
 
 
-def save_link(link: 'Link') -> None:
+def save_link(link: 'darc_link.Link') -> None:
     """Save link hash database ``link.csv``.
 
     The CSV file has following fields:
@@ -133,7 +133,7 @@ def save_link(link: 'Link') -> None:
                   f'{link.name},{quote(link.url)}', file=file)
 
 
-def save_headers(time: 'datetime', link: 'Link',
+def save_headers(time: 'datetime', link: 'darc_link.Link',
                  response: 'Response', session: 'Session') -> str:
     """Save HTTP response headers.
 

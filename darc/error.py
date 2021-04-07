@@ -38,7 +38,7 @@ The :mod:`darc` project provides following custom warnings:
 
 from typing import TYPE_CHECKING
 
-import stem.util.term
+import stem.util.term as stem_term
 
 if TYPE_CHECKING:
     from typing import AnyStr
@@ -147,5 +147,5 @@ def render_error(message: 'AnyStr', colour: 'Color') -> str:
 
     """
     return ''.join(
-        stem.util.term.format(line, colour) for line in message.splitlines(True)
+        stem_term.format(line, colour) for line in message.splitlines(True)
     )

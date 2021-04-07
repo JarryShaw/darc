@@ -15,7 +15,9 @@ import platform
 import shutil
 from typing import TYPE_CHECKING
 
-import selenium.webdriver
+import selenium.webdriver.common.desired_capabilities as selenium_desired_capabilities
+import selenium.webdriver.chrome.options as selenium_options
+import selenium.webdriver.chrome.webdriver as selenium_webdriver
 
 from darc.const import DEBUG
 from darc.error import UnsupportedLink, UnsupportedPlatform, UnsupportedProxy
@@ -25,10 +27,10 @@ from darc.proxy.tor import TOR_PORT, TOR_SELENIUM_PROXY
 if TYPE_CHECKING:
     from typing import Dict
 
-    from selenium.webdriver import Chrome as Driver
+    from selenium.webdriver.chrome.webdriver import WebDriver
     from selenium.webdriver.chrome.options import Options
 
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 # Google Chrome binary location.
 BINARY_LOCATION = os.getenv('CHROME_BINARY_LOCATION')
@@ -42,14 +44,14 @@ if BINARY_LOCATION is None:
     del _system
 
 
-def request_driver(link: 'Link') -> 'Driver':
+def request_driver(link: 'darc_link.Link') -> 'WebDriver':
     """Get selenium driver.
 
     Args:
-        link: Link requesting for :class:`~selenium.webdriver.Chrome`.
+        link: Link requesting for :class:`~selenium.webdriver.chrome.webdriver.WebDriver`.
 
     Returns:
-        selenium.webdriver.Chrome: The web driver object with corresponding proxy settings.
+        selenium.webdriver.chrome.webdriver.WebDriver: The web driver object with corresponding proxy settings.
 
     Raises:
         UnsupportedLink: If the proxy type of ``link``
@@ -74,7 +76,8 @@ def get_options(type: str = 'null') -> 'Options':  # pylint: disable=redefined-b
         type: Proxy type for options.
 
     Returns:
-        selenium.webdriver.ChromeOptions: The options for the web driver :class:`~selenium.webdriver.Chrome`.
+        selenium.webdriver.chrome.options.Options: The options for the web driver
+            :class:`~selenium.webdriver.chrome.webdriver.WebDriver`.
 
     Raises:
         UnsupportedPlatform: If the operation system is **NOT**
@@ -112,7 +115,7 @@ def get_options(type: str = 'null') -> 'Options':  # pylint: disable=redefined-b
     _system = platform.system()
 
     # initiate options
-    options = selenium.webdriver.ChromeOptions()
+    options = selenium_options.Options()
     if BINARY_LOCATION is None:
         raise UnsupportedPlatform(f'unsupported system: {_system}')
     options.binary_location = BINARY_LOCATION
@@ -152,7 +155,7 @@ def get_capabilities(type: str = 'null') -> 'Dict[str, str]':  # pylint: disable
         type: Proxy type for capabilities.
 
     Returns:
-        The desied capabilities for the web driver :class:`~selenium.webdriver.Chrome`.
+        The desied capabilities for the web driver :class:`~selenium.webdriver.chrome.webdriver.WebDriver`.
 
     Raises:
         UnsupportedProxy: If the proxy type is **NOT**
@@ -164,7 +167,7 @@ def get_capabilities(type: str = 'null') -> 'Dict[str, str]':  # pylint: disable
 
     """
     # do not modify source dict
-    capabilities = selenium.webdriver.DesiredCapabilities.CHROME.copy()
+    capabilities = selenium_desired_capabilities.DesiredCapabilities.CHROME.copy()
 
     if type == 'null':
         pass
@@ -177,11 +180,11 @@ def get_capabilities(type: str = 'null') -> 'Dict[str, str]':  # pylint: disable
     return capabilities
 
 
-def i2p_driver() -> 'Driver':
+def i2p_driver() -> 'WebDriver':
     """I2P (``.i2p``) driver.
 
     Returns:
-        selenium.webdriver.Chrome: The web driver object with I2P proxy settings.
+        selenium.webdriver.chrome.webdriver.WebDriver: The web driver object with I2P proxy settings.
 
     See Also:
         * :func:`darc.selenium.get_options`
@@ -192,16 +195,16 @@ def i2p_driver() -> 'Driver':
     capabilities = get_capabilities('i2p')
 
     # initiate driver
-    driver = selenium.webdriver.Chrome(options=options,
-                                       desired_capabilities=capabilities)
+    driver = selenium_webdriver.WebDriver(options=options,
+                                          desired_capabilities=capabilities)
     return driver
 
 
-def tor_driver() -> 'Driver':
+def tor_driver() -> 'WebDriver':
     """Tor (``.onion``) driver.
 
     Returns:
-        selenium.webdriver.Chrome: The web driver object with Tor proxy settings.
+        selenium.webdriver.chrome.webdriver.WebDriver: The web driver object with Tor proxy settings.
 
     See Also:
         * :func:`darc.selenium.get_options`
@@ -212,16 +215,16 @@ def tor_driver() -> 'Driver':
     capabilities = get_capabilities('tor')
 
     # initiate driver
-    driver = selenium.webdriver.Chrome(options=options,
-                                       desired_capabilities=capabilities)
+    driver = selenium_webdriver.WebDriver(options=options,
+                                          desired_capabilities=capabilities)
     return driver
 
 
-def null_driver() -> 'Driver':
+def null_driver() -> 'WebDriver':
     """No proxy driver.
 
     Returns:
-        selenium.webdriver.Chrome: The web driver object with no proxy settings.
+        selenium.webdriver.chrome.webdriver.WebDriver: The web driver object with no proxy settings.
 
     See Also:
         * :func:`darc.selenium.get_options`
@@ -232,6 +235,6 @@ def null_driver() -> 'Driver':
     capabilities = get_capabilities('null')
 
     # initiate driver
-    driver = selenium.webdriver.Chrome(options=options,
-                                       desired_capabilities=capabilities)
+    driver = selenium_webdriver.WebDriver(options=options,
+                                          desired_capabilities=capabilities)
     return driver

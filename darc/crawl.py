@@ -18,14 +18,9 @@ import traceback
 from typing import TYPE_CHECKING
 
 import requests
-import selenium.common.exceptions
-import selenium.webdriver
-import selenium.webdriver.common.proxy
-import stem
-import stem.control
-import stem.process
-import stem.util.term
-import urllib3.exceptions
+import selenium.common.exceptions as selenium_exceptions
+import stem.util.term as stem_term
+import urllib3.exceptions as urllib3_exceptions
 
 from darc._compat import datetime
 from darc.const import FORCE, SE_EMPTY
@@ -46,10 +41,10 @@ from darc.submit import SAVE_DB, submit_new_host, submit_requests, submit_seleni
 if TYPE_CHECKING:
     from typing import Optional
 
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 
-def crawler(link: 'Link') -> None:
+def crawler(link: 'darc_link.Link') -> None:
     """Single :mod:`requests` crawler for an entry link.
 
     Args:
@@ -124,13 +119,13 @@ def crawler(link: 'Link') -> None:
     try:
         if match_proxy(link.proxy):
             print(render_error(f'[REQUESTS] Ignored proxy type from {link.url} ({link.proxy})',
-                               stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                               stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
             drop_requests(link)
             return
 
         if match_host(link.host):
             print(render_error(f'[REQUESTS] Ignored hostname from {link.url} ({link.proxy})',
-                               stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                               stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
             drop_requests(link)
             return
 
@@ -160,7 +155,7 @@ def crawler(link: 'Link') -> None:
                         fetch_sitemap(link, force=force_fetch)
                     except Exception:
                         error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                        print(render_error(error, stem_term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
                         partial = True
 
                 if link.proxy == 'i2p':
@@ -169,7 +164,7 @@ def crawler(link: 'Link') -> None:
                         fetch_hosts(link, force=force_fetch)
                     except Exception:
                         error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                        print(render_error(error, stem_term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
                         partial = True
 
                 # submit data / drop hostname from db
@@ -179,7 +174,7 @@ def crawler(link: 'Link') -> None:
 
             if not FORCE and not check_robots(link):
                 print(render_error(f'[REQUESTS] Robots disallowed link from {link.url}',
-                                stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                                stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
                 return
 
         # reuse the session object
@@ -189,18 +184,18 @@ def crawler(link: 'Link') -> None:
                 response = crawler_hook(timestamp, session, link)
             except requests.exceptions.InvalidSchema as error:
                 print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_invalid(link)
                 drop_requests(link)
                 return
             except requests.RequestException as error:
                 print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_requests(link, single=True)
                 return
             except LinkNoReturn as error:
                 print(render_error(f'[REQUESTS] Removing from database: {link.url}',
-                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
                 if error.drop:
                     drop_requests(link)
                 return
@@ -212,7 +207,7 @@ def crawler(link: 'Link') -> None:
             ct_type = get_content_type(response)
             if ct_type not in ['text/html', 'application/xhtml+xml']:
                 print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
-                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
 
                 # probably hosts.txt
                 if link.proxy == 'i2p' and ct_type in ['text/plain', 'text/text']:
@@ -232,7 +227,7 @@ def crawler(link: 'Link') -> None:
             html = response.content
             if not html:
                 print(render_error(f'[REQUESTS] Empty response from {link.url}',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_requests(link, single=True)
                 return
 
@@ -244,7 +239,7 @@ def crawler(link: 'Link') -> None:
 
             if not response.ok:
                 print(render_error(f'[REQUESTS] Failed on {link.url} [{response.status_code}]',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_requests(link, single=True)
                 return
 
@@ -265,12 +260,12 @@ def crawler(link: 'Link') -> None:
                     url.save()
 
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # type: ignore # pylint: disable=line-too-long
-        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # type: ignore # pylint: disable=no-member
+        print(render_error(error, stem_term.Color.CYAN), file=sys.stderr)  # type: ignore # pylint: disable=no-member
         save_requests(link, single=True)
     print(f'[REQUESTS] Requested {link.url}')
 
 
-def loader(link: 'Link') -> None:
+def loader(link: 'darc_link.Link') -> None:
     """Single :mod:`selenium` loader for an entry link.
 
     Args:
@@ -281,7 +276,7 @@ def loader(link: 'Link') -> None:
 
     At this point, :mod:`darc` will call the customised hook function
     from :mod:`darc.sites` to load and return the original
-    :class:`selenium.webdriver.Chrome` object.
+    :class:`selenium.webdriver.chrome.webdriver.WebDriver` object.
 
     .. note::
 
@@ -326,19 +321,19 @@ def loader(link: 'Link') -> None:
             try:
                 # selenium driver hook
                 driver = loader_hook(timestamp, driver, link)
-            except urllib3.exceptions.HTTPError as error:
+            except urllib3_exceptions.HTTPError as error:
                 print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_selenium(link, single=True)
                 return
-            except selenium.common.exceptions.WebDriverException as error:
+            except selenium_exceptions.WebDriverException as error:
                 print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_selenium(link, single=True)
                 return
             except LinkNoReturn as error:
                 print(render_error(f'[SELENIUM] Removing from database: {link.url}',
-                                   stem.util.term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
                 if error.drop:
                     drop_selenium(link)
                 return
@@ -348,7 +343,7 @@ def loader(link: 'Link') -> None:
 
             if html == SE_EMPTY:
                 print(render_error(f'[SELENIUM] Empty page from {link.url}',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 save_selenium(link, single=True)
                 return
 
@@ -366,7 +361,7 @@ def loader(link: 'Link') -> None:
                 screenshot = driver.get_screenshot_as_base64()
             except Exception as error:
                 print(render_error(f'[SELENIUM] Fail to save screenshot from {link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
 
             # submit data
             submit_selenium(timestamp, link, html, screenshot)
@@ -375,6 +370,6 @@ def loader(link: 'Link') -> None:
             save_requests(extract_links(link, html), score=0, nx=True)
     except Exception:
         error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # type: ignore # pylint: disable=line-too-long
-        print(render_error(error, stem.util.term.Color.CYAN), file=sys.stderr)  # type: ignore # pylint: disable=no-member
+        print(render_error(error, stem_term.Color.CYAN), file=sys.stderr)  # type: ignore # pylint: disable=no-member
         save_selenium(link, single=True)
     print(f'[SELENIUM] Loaded {link.url}')

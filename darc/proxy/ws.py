@@ -18,13 +18,13 @@ from typing import TYPE_CHECKING
 from darc.const import PATH_MISC, get_lock
 
 if TYPE_CHECKING:
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 PATH = os.path.join(PATH_MISC, 'ws.txt')
 LOCK = get_lock()
 
 
-def save_ws(link: 'Link') -> None:
+def save_ws(link: 'darc_link.Link') -> None:
     """Save WebSocket addresses.
 
     The function will save WebSocket address to the file

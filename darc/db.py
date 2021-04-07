@@ -45,10 +45,10 @@ from datetime import timedelta
 from typing import TYPE_CHECKING, TypeVar, cast
 
 import peewee
-import pottery.exceptions
-import pottery.redlock
+import pottery.exceptions as pottery_exceptions
+import pottery.redlock as pottery_redlock
 import redis as redis_lib
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc._compat import datetime, nullcontext
 from darc.const import CHECK
@@ -81,16 +81,16 @@ _LOCK_TIMEOUT = float(os.getenv('DARC_LOCK_TIMEOUT', '10'))
 if math.isfinite(_LOCK_TIMEOUT):
     LOCK_TIMEOUT = int(_LOCK_TIMEOUT * 1_000)
 else:
-    LOCK_TIMEOUT = pottery.redlock.Redlock.AUTO_RELEASE_TIME  # type: ignore[attr-defined] # pylint: disable=no-member
+    LOCK_TIMEOUT = pottery_redlock.Redlock.AUTO_RELEASE_TIME  # type: ignore[attr-defined] # pylint: disable=no-member
 del _LOCK_TIMEOUT
 
 # use lock?
 REDIS_LOCK = bool(int(os.getenv('DARC_REDIS_LOCK', '0')))
 if redis is not None and REDIS_LOCK:
     REDIS_LOCK_POOL = {
-        'queue_hostname': pottery.redlock.Redlock(key='queue_hostname', masters={redis}, auto_release_time=LOCK_TIMEOUT),  # pylint: disable=line-too-long
-        'queue_requests': pottery.redlock.Redlock(key='queue_requests', masters={redis}, auto_release_time=LOCK_TIMEOUT),  # pylint: disable=line-too-long
-        'queue_selenium': pottery.redlock.Redlock(key='queue_selenium', masters={redis}, auto_release_time=LOCK_TIMEOUT),  # pylint: disable=line-too-long
+        'queue_hostname': pottery_redlock.Redlock(key='queue_hostname', masters={redis}, auto_release_time=LOCK_TIMEOUT),  # pylint: disable=line-too-long
+        'queue_requests': pottery_redlock.Redlock(key='queue_requests', masters={redis}, auto_release_time=LOCK_TIMEOUT),  # pylint: disable=line-too-long
+        'queue_selenium': pottery_redlock.Redlock(key='queue_selenium', masters={redis}, auto_release_time=LOCK_TIMEOUT),  # pylint: disable=line-too-long
     }
 
 # bulk size
@@ -151,13 +151,13 @@ def _redis_command(command: str, *args: 'Any', **kwargs: 'Any') -> 'Any':
     while True:
         try:
             value = method(*args, **kwargs)
-        except (redis_lib.exceptions.ConnectionError, pottery.exceptions.PotteryError) as error:
+        except (redis_lib.exceptions.ConnectionError, pottery_exceptions.PotteryError) as error:
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
             warning = warnings.formatwarning(f'{type(error).__name__}: {error}', RedisCommandFailed, __file__, 153,
                                              f'value = redis.{command}({_arg_msg})')
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
             if RETRY_INTERVAL is not None:
                 time.sleep(RETRY_INTERVAL)
@@ -193,7 +193,7 @@ def _db_operation(operation: 'Callable[..., _T]', *args: 'Any', **kwargs: 'Any')
             model = cast('MethodType', operation).__self__.__class__.__name__
             warning = warnings.formatwarning(f'{type(error).__name__}: {error}', DatabaseOperaionFailed, __file__, 188,
                                              f'{model}.{operation.__name__}({_arg_msg})')
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
             if RETRY_INTERVAL is not None:
                 time.sleep(RETRY_INTERVAL)
@@ -245,7 +245,7 @@ def have_hostname(link: 'Link') -> 'Tuple[bool, bool]':
             except Exception as error:
                 warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 244,
                                                  f'_have_hostname_db({link})')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return False, False
     return _have_hostname_redis(link)
 
@@ -341,7 +341,7 @@ def drop_hostname(link: 'Link') -> None:
             except Exception as error:
                 warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 340,
                                                  f'_drop_hostname_db({link})')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return None
     return _drop_hostname_redis(link)
 
@@ -392,7 +392,7 @@ def drop_requests(link: 'Link') -> None:  # pylint: disable=inconsistent-return-
             except Exception as error:
                 warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 391,
                                                  f'_drop_requests_db({link})')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return None
     return _drop_requests_redis(link)
 
@@ -444,7 +444,7 @@ def drop_selenium(link: 'Link') -> None:  # pylint: disable=inconsistent-return-
             except Exception as error:
                 warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 443,
                                                  f'_drop_selenium_db({link})')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return None
     return _drop_selenium_redis(link)
 
@@ -516,7 +516,7 @@ def save_requests(entries: 'Union[Link, List[Link]]', single: bool = False,
             except Exception as error:
                 warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 515,
                                                  '_save_requests_db(...)')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return None
     return _save_requests_redis(entries, single, score, nx, xx)
 
@@ -558,7 +558,7 @@ def _save_requests_db(entries: 'Union[Link, List[Link]]', single: bool = False,
                     'hash': link.name,
                     'link': link,
                     'timestamp': timestamp,
-                 } for link in entries]
+                } for link in entries]
                 for batch in peewee.chunked(insert_many, BULK_SIZE):
                     _db_operation(RequestsQueueModel
                                   .insert_many(insert_many)
@@ -697,7 +697,7 @@ def save_selenium(entries: 'Union[Link, List[Link]]', single: bool = False,  # p
             except Exception as error:
                 warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 696,
                                                  '_save_selenium_db(...)')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 return None
     return _save_selenium_redis(entries, single, score, nx, xx)
 
@@ -739,7 +739,7 @@ def _save_selenium_db(entries: 'Union[Link, List[Link]]', single: bool = False,
                     'hash': link.name,
                     'link': link,
                     'timestamp': timestamp,
-                 } for link in entries]
+                } for link in entries]
                 for batch in peewee.chunked(insert_many, BULK_SIZE):
                     _db_operation(SeleniumQueueModel
                                   .insert_many(insert_many)
@@ -878,7 +878,7 @@ def load_requests(check: bool = CHECK) -> 'List[Link]':
             except Exception as error:
                 warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 877,
                                                  '_load_requests_db()')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 link_pool = []
     else:
         link_pool = _load_requests_redis()
@@ -887,12 +887,9 @@ def load_requests(check: bool = CHECK) -> 'List[Link]':
         link_pool = _check(link_pool)
 
     if VERBOSE:
-        print(stem.util.term.format('-*- [REQUESTS] LINK POOL -*-',
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(sorted(link.url for link in link_pool)),
-                           stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-*- [REQUESTS] LINK POOL -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(render_error(pprint.pformat(sorted(link.url for link in link_pool)), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
     return link_pool
 
 
@@ -964,10 +961,10 @@ def _load_requests_redis() -> 'List[Link]':
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 _save_requests_redis(link_pool, score=new_score)  # force update records
-    except pottery.exceptions.PotteryError:
+    except pottery_exceptions.PotteryError:
         warning = warnings.formatwarning(f'[REQUESTS] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 969, "_redis_get_lock('queue_requests')")
-        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                                         LockWarning, __file__, 957, "_redis_get_lock('queue_requests')")
+        print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
         link_pool = []
     return link_pool
 
@@ -996,9 +993,9 @@ def load_selenium(check: bool = CHECK) -> 'List[Link]':
             try:
                 link_pool = _load_selenium_db()
             except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 997,
+                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 994,
                                                  '_load_selenium_db()')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
                 link_pool = []
     else:
         link_pool = _load_selenium_redis()
@@ -1007,12 +1004,9 @@ def load_selenium(check: bool = CHECK) -> 'List[Link]':
         link_pool = _check(link_pool)
 
     if VERBOSE:
-        print(stem.util.term.format('-*- [SELENIUM] LINK POOL -*-',
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(sorted(link.url for link in link_pool)),
-                           stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-*- [SELENIUM] LINK POOL -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(render_error(pprint.pformat(sorted(link.url for link in link_pool)), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
     return link_pool
 
 
@@ -1088,9 +1082,9 @@ def _load_selenium_redis() -> 'List[Link]':
             if TIME_CACHE is not None:
                 new_score = now + sec_delta
                 _save_selenium_redis(link_pool, score=new_score)  # force update records
-    except pottery.exceptions.PotteryError:
+    except pottery_exceptions.PotteryError:
         warning = warnings.formatwarning(f'[SELENIUM] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 1084, "_redis_get_lock('queue_selenium')")
-        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                                         LockWarning, __file__, 1078, "_redis_get_lock('queue_selenium')")
+        print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
         link_pool = []
     return link_pool

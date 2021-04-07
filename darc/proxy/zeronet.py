@@ -18,7 +18,7 @@ import traceback
 import warnings
 from typing import TYPE_CHECKING, cast
 
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc.const import DEBUG, VERBOSE
 from darc.error import ZeroNetBootstrapFailed, render_error
@@ -54,11 +54,9 @@ _ZERONET_ARGS = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'main']
 _ZERONET_ARGS.extend(ZERONET_ARGS)
 
 if DEBUG:
-    print(stem.util.term.format('-*- ZERONET PROXY -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_ZERONET_ARGS), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- ZERONET PROXY -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_ZERONET_ARGS), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def _zeronet_bootstrap() -> None:
@@ -92,9 +90,9 @@ def _zeronet_bootstrap() -> None:
         stdout, stderr = error.stdout, error.stderr
     if VERBOSE:
         if stdout is not None:
-            print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+            print(render_error(stdout, stem_term.Color.BLUE))  # pylint: disable=no-member
     if stderr is not None:
-        print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
+        print(render_error(stderr, stem_term.Color.RED))  # pylint: disable=no-member
 
     returncode = _ZERONET_PROC.returncode
     if returncode != 0:
@@ -131,8 +129,7 @@ def zeronet_bootstrap() -> None:
     if _ZERONET_BS_FLAG:
         return
 
-    print(stem.util.term.format('-*- ZeroNet Bootstrap -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- ZeroNet Bootstrap -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(ZERONET_RETRY+1):
         try:
             _zeronet_bootstrap()
@@ -140,9 +137,8 @@ def zeronet_bootstrap() -> None:
         except Exception as error:
             if DEBUG:
                 message = '[Error bootstraping ZeroNet proxy]' + os.linesep + traceback.format_exc()
-                print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(message, stem_term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(str(error), ZeroNetBootstrapFailed, __file__, 133, 'zeronet_bootstrap()')
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+            warning = warnings.formatwarning(str(error), ZeroNetBootstrapFailed, __file__, 135, 'zeronet_bootstrap()')
+            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member

@@ -23,9 +23,8 @@ import warnings
 from typing import TYPE_CHECKING, cast
 
 import requests
-import selenium.webdriver
-import selenium.webdriver.common.proxy
-import stem.util.term
+import selenium.webdriver.common.proxy as selenium_proxy
+import stem.util.term as stem_term
 
 from darc.const import CHECK, DARC_USER, DEBUG, PATH_DB, VERBOSE
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
@@ -35,8 +34,8 @@ from darc.parse import _check, get_content_type
 if TYPE_CHECKING:
     from typing import IO, List, Optional
 
+    import darc.link as darc_link  # Link
     from darc._typing import File
-    from darc.link import Link
 
 # I2P args
 I2P_ARGS = shlex.split(os.getenv('I2P_ARGS', ''))
@@ -56,8 +55,8 @@ I2P_REQUESTS_PROXY = {
     'http':  f'http://localhost:{I2P_PORT}',
     'https': f'http://localhost:{I2P_PORT}',
 }
-I2P_SELENIUM_PROXY = selenium.webdriver.Proxy()
-I2P_SELENIUM_PROXY.proxyType = selenium.webdriver.common.proxy.ProxyType.MANUAL
+I2P_SELENIUM_PROXY = selenium_proxy.Proxy()
+I2P_SELENIUM_PROXY.proxyType = selenium_proxy.ProxyType.MANUAL
 I2P_SELENIUM_PROXY.http_proxy = f'http://localhost:{I2P_PORT}'
 I2P_SELENIUM_PROXY.ssl_proxy = f'http://localhost:{I2P_PORT}'
 
@@ -82,15 +81,12 @@ else:
 _I2P_ARGS.extend(I2P_ARGS)
 
 if DEBUG:
-    print(stem.util.term.format('-*- I2P PROXY -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- I2P PROXY -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
     if _unsupported:
-        print(stem.util.term.format(f'unsupported system: {platform.system()}',
-                                    stem.util.term.Color.RED))  # pylint: disable=no-member
+        print(stem_term.format(f'unsupported system: {platform.system()}', stem_term.Color.RED))  # pylint: disable=no-member
     else:
-        print(render_error(pprint.pformat(_I2P_ARGS), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(render_error(pprint.pformat(_I2P_ARGS), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
 # I2P link regular expression
 I2P_REGEX = re.compile(r'.*\.i2p', re.IGNORECASE)
@@ -124,9 +120,9 @@ def _i2p_bootstrap() -> None:
         stdout, stderr = error.stdout, error.stderr
     if VERBOSE:
         if stdout is not None:
-            print(render_error(stdout, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+            print(render_error(stdout, stem_term.Color.BLUE))  # pylint: disable=no-member
     if stderr is not None:
-        print(render_error(stderr, stem.util.term.Color.RED))  # pylint: disable=no-member
+        print(render_error(stderr, stem_term.Color.RED))  # pylint: disable=no-member
 
     returncode = _I2P_PROC.returncode
     if returncode != 0:
@@ -166,8 +162,8 @@ def i2p_bootstrap() -> None:
     if _I2P_BS_FLAG:
         return
 
-    print(stem.util.term.format('-*- I2P Bootstrap -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- I2P Bootstrap -*-',
+                                stem_term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(I2P_RETRY+1):
         try:
             _i2p_bootstrap()
@@ -175,15 +171,15 @@ def i2p_bootstrap() -> None:
         except Exception as error:
             if DEBUG:
                 message = '[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc()
-                print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(message, stem_term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
             warning = warnings.formatwarning(str(error), I2PBootstrapFailed, __file__, 166, 'i2p_bootstrap()')
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns,
+                                stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
 
-def get_hosts(link: 'Link') -> 'Optional[File]':
+def get_hosts(link: 'darc_link.Link') -> 'Optional[File]':
     """Read ``hosts.txt``.
 
     Args:
@@ -214,7 +210,7 @@ def get_hosts(link: 'Link') -> 'Optional[File]':
     }
 
 
-def have_hosts(link: 'Link') -> 'Optional[str]':
+def have_hosts(link: 'darc_link.Link') -> 'Optional[str]':
     """Check if ``hosts.txt`` already exists.
 
     Args:
@@ -231,7 +227,7 @@ def have_hosts(link: 'Link') -> 'Optional[str]':
     return path if os.path.isfile(path) else None
 
 
-def save_hosts(link: 'Link', text: str) -> str:
+def save_hosts(link: 'darc_link.Link', text: str) -> str:
     """Save ``hosts.txt``.
 
     Args:
@@ -257,7 +253,7 @@ def save_hosts(link: 'Link', text: str) -> str:
     return path
 
 
-def read_hosts(link: 'Link', text: str, check: bool = CHECK) -> 'List[Link]':
+def read_hosts(link: 'darc_link.Link', text: str, check: bool = CHECK) -> 'List[darc_link.Link]':
     """Read ``hosts.txt``.
 
     Args:
@@ -275,17 +271,17 @@ def read_hosts(link: 'Link', text: str, check: bool = CHECK) -> 'List[Link]':
         if line.startswith('#'):
             continue
 
-        link = line.split('=', maxsplit=1)[0]
-        if I2P_REGEX.fullmatch(link) is None:
+        host = line.split('=', maxsplit=1)[0]
+        if I2P_REGEX.fullmatch(host) is None:
             continue
-        temp_list.append(parse_link(f'http://{link}', backref=link))
+        temp_list.append(parse_link(f'http://{host}', backref=link))
 
     if check:
         return _check(temp_list)
     return temp_list
 
 
-def fetch_hosts(link: 'Link', force: bool = False) -> None:
+def fetch_hosts(link: 'darc_link.Link', force: bool = False) -> None:
     """Fetch ``hosts.txt``.
 
     Args:
@@ -297,13 +293,13 @@ def fetch_hosts(link: 'Link', force: bool = False) -> None:
 
     """
     if force:
-        print(stem.util.term.format(f'[HOSTS] Force refetch {link.url}',
-                                    stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+        print(stem_term.format(f'[HOSTS] Force refetch {link.url}',
+                                    stem_term.Color.YELLOW))  # pylint: disable=no-member
 
     hosts_path = None if force else have_hosts(link)
     if hosts_path is not None:
 
-        print(stem.util.term.format(f'[HOSTS] Cached {link.url}', stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+        print(stem_term.format(f'[HOSTS] Cached {link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
 
         with open(hosts_path) as hosts_file:
             hosts_text = hosts_file.read()
@@ -320,18 +316,18 @@ def fetch_hosts(link: 'Link', force: bool = False) -> None:
                 response = session.get(hosts_link.url)
             except requests.RequestException as error:
                 print(render_error(f'[HOSTS] Failed on {hosts_link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
         if not response.ok:
             print(render_error(f'[HOSTS] Failed on {hosts_link.url} [{response.status_code}]',
-                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                               stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             return
 
         ct_type = get_content_type(response)
         if ct_type not in ['text/text', 'text/plain']:
             print(render_error(f'[HOSTS] Unresolved content type on {hosts_link.url} ({ct_type})',
-                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                               stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             return
 
         hosts_text = response.text

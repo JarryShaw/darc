@@ -22,8 +22,8 @@ from darc.model.abc import BaseModel
 from darc.model.utils import PickleField
 
 if TYPE_CHECKING:
+    import darc.link as darc_link  # Link
     from darc._compat import datetime
-    from darc.link import Link
 
 __all__ = ['RequestsQueueModel']
 
@@ -37,6 +37,6 @@ class RequestsQueueModel(BaseModel):
     hash: str = CharField(max_length=256, unique=True)
 
     #: Pickled target :class:`~darc.link.Link` instance.
-    link: 'Link' = PickleField()
+    link: 'darc_link.Link' = PickleField()
     #: Timestamp of last update.
     timestamp: 'datetime' = DateTimeField()

@@ -18,13 +18,13 @@ from typing import TYPE_CHECKING
 from darc.const import PATH_MISC, get_lock
 
 if TYPE_CHECKING:
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 PATH = os.path.join(PATH_MISC, 'irc.txt')
 LOCK = get_lock()
 
 
-def save_irc(link: 'Link') -> None:
+def save_irc(link: 'darc_link.Link') -> None:
     """Save IRC address.
 
     The function will save IRC address to the file

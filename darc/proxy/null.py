@@ -15,10 +15,7 @@ from typing import TYPE_CHECKING
 
 import bs4
 import requests
-import stem
-import stem.control
-import stem.process
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc._compat import RobotFileParser
 from darc.const import CHECK, PATH_MISC, get_lock
@@ -32,13 +29,13 @@ from darc.save import save_link
 if TYPE_CHECKING:
     from typing import List, Optional
 
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 PATH = os.path.join(PATH_MISC, 'invalid.txt')
 LOCK = get_lock()
 
 
-def save_invalid(link: 'Link') -> None:
+def save_invalid(link: 'darc_link.Link') -> None:
     """Save link with invalid scheme.
 
     The function will save link with invalid scheme to the file
@@ -53,7 +50,7 @@ def save_invalid(link: 'Link') -> None:
             print(link.url, file=file)
 
 
-def save_robots(link: 'Link', text: str) -> str:
+def save_robots(link: 'darc_link.Link', text: str) -> str:
     """Save ``robots.txt``.
 
     Args:
@@ -79,7 +76,7 @@ def save_robots(link: 'Link', text: str) -> str:
     return path
 
 
-def save_sitemap(link: 'Link', text: str) -> str:
+def save_sitemap(link: 'darc_link.Link', text: str) -> str:
     """Save sitemap.
 
     Args:
@@ -108,7 +105,7 @@ def save_sitemap(link: 'Link', text: str) -> str:
     return path
 
 
-def have_robots(link: 'Link') -> 'Optional[str]':
+def have_robots(link: 'darc_link.Link') -> 'Optional[str]':
     """Check if ``robots.txt`` already exists.
 
     Args:
@@ -125,7 +122,7 @@ def have_robots(link: 'Link') -> 'Optional[str]':
     return path if os.path.isfile(path) else None
 
 
-def have_sitemap(link: 'Link') -> 'Optional[str]':
+def have_sitemap(link: 'darc_link.Link') -> 'Optional[str]':
     """Check if sitemap already exists.
 
     Args:
@@ -142,7 +139,7 @@ def have_sitemap(link: 'Link') -> 'Optional[str]':
     return path if os.path.isfile(path) else None
 
 
-def read_robots(link: 'Link', text: str, host: 'Optional[str]' = None) -> 'List[Link]':
+def read_robots(link: 'darc_link.Link', text: str, host: 'Optional[str]' = None) -> 'List[darc_link.Link]':
     """Read ``robots.txt`` to fetch link to sitemaps.
 
     Args:
@@ -172,7 +169,7 @@ def read_robots(link: 'Link', text: str, host: 'Optional[str]' = None) -> 'List[
     return [parse_link(urljoin(link.url, sitemap), host=host, backref=link) for sitemap in sitemaps]
 
 
-def get_sitemap(link: 'Link', text: str, host: 'Optional[str]' = None) -> 'List[Link]':
+def get_sitemap(link: 'darc_link.Link', text: str, host: 'Optional[str]' = None) -> 'List[darc_link.Link]':
     """Fetch link to other sitemaps from a sitemap.
 
     Args:
@@ -200,7 +197,7 @@ def get_sitemap(link: 'Link', text: str, host: 'Optional[str]' = None) -> 'List[
     return [parse_link(sitemap, host=host, backref=link) for sitemap in sitemaps]
 
 
-def read_sitemap(link: 'Link', text: str, check: bool = CHECK) -> 'List[Link]':
+def read_sitemap(link: 'darc_link.Link', text: str, check: bool = CHECK) -> 'List[darc_link.Link]':
     """Read sitemap.
 
     Args:
@@ -229,7 +226,7 @@ def read_sitemap(link: 'Link', text: str, check: bool = CHECK) -> 'List[Link]':
     return temp_list
 
 
-def fetch_sitemap(link: 'Link', force: bool = False) -> None:
+def fetch_sitemap(link: 'darc_link.Link', force: bool = False) -> None:
     """Fetch sitemap.
 
     The function will first fetch the ``robots.txt``, then
@@ -249,14 +246,12 @@ def fetch_sitemap(link: 'Link', force: bool = False) -> None:
 
     """
     if force:
-        print(stem.util.term.format(f'[ROBOTS] Force refetch {link.url}',
-                                    stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+        print(stem_term.format(f'[ROBOTS] Force refetch {link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
 
     robots_path = None if force else have_robots(link)
     if robots_path is not None:
 
-        print(stem.util.term.format(f'[ROBOTS] Cached {link.url}',
-                                    stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+        print(stem_term.format(f'[ROBOTS] Cached {link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
         with open(robots_path) as file:
             robots_text = file.read()
 
@@ -270,14 +265,14 @@ def fetch_sitemap(link: 'Link', force: bool = False) -> None:
                 response = session.get(robots_link.url)
             except requests.RequestException as error:
                 print(render_error(f'[ROBOTS] Failed on {robots_link.url} <{error}>',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 return
 
         if response.ok:
             ct_type = get_content_type(response)
             if ct_type not in ['text/text', 'text/plain']:
                 print(render_error(f'[ROBOTS] Unresolved content type on {robots_link.url} ({ct_type})',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 robots_text = ''
             else:
                 robots_text = response.text
@@ -285,20 +280,18 @@ def fetch_sitemap(link: 'Link', force: bool = False) -> None:
                 print(f'[ROBOTS] Checked {robots_link.url}')
         else:
             print(render_error(f'[ROBOTS] Failed on {robots_link.url} [{response.status_code}]',
-                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                               stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
             robots_text = ''
 
     if force:
-        print(stem.util.term.format(f'[SITEMAP] Force refetch {link.url}',
-                                    stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+        print(stem_term.format(f'[SITEMAP] Force refetch {link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
 
     sitemaps = read_robots(link, robots_text, host=link.host)
     for sitemap_link in sitemaps:
         sitemap_path = None if force else have_sitemap(sitemap_link)
         if sitemap_path is not None:
 
-            print(stem.util.term.format(f'[SITEMAP] Cached {sitemap_link.url}',
-                                        stem.util.term.Color.YELLOW))  # pylint: disable=no-member
+            print(stem_term.format(f'[SITEMAP] Cached {sitemap_link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
             with open(sitemap_path) as file:
                 sitemap_text = file.read()
 
@@ -311,12 +304,12 @@ def fetch_sitemap(link: 'Link', force: bool = False) -> None:
                     response = session.get(sitemap_link.url)
                 except requests.RequestException as error:
                     print(render_error(f'[SITEMAP] Failed on {sitemap_link.url} <{error}>',
-                                       stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                       stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                     continue
 
             if not response.ok:
                 print(render_error(f'[SITEMAP] Failed on {sitemap_link.url} [{response.status_code}]',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 continue
 
             # check content type
@@ -331,7 +324,7 @@ def fetch_sitemap(link: 'Link', force: bool = False) -> None:
                 save_sitemap(sitemap_link, sitemap_text)
             else:
                 print(render_error(f'[SITEMAP] Unresolved content type on {sitemap_link.url} ({ct_type})',
-                                   stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
                 continue
 
             print(f'[SITEMAP] Fetched {sitemap_link.url}')

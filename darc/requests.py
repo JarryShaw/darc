@@ -12,7 +12,7 @@ project.
 from typing import TYPE_CHECKING
 
 import requests
-import requests_futures.sessions
+import requests_futures.sessions as requests_futures_sessions
 
 from darc.const import DARC_CPU
 from darc.error import UnsupportedLink
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from requests import Session
     from requests_futures.sessions import FuturesSession
 
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 
 def default_user_agent(name: str = 'python-darc', proxy: 'Optional[str]' = None) -> str:
@@ -48,7 +48,7 @@ def default_user_agent(name: str = 'python-darc', proxy: 'Optional[str]' = None)
     return ua
 
 
-def request_session(link: 'Link', futures: bool = False) -> 'Union[Session, FuturesSession]':
+def request_session(link: 'darc_link.Link', futures: bool = False) -> 'Union[Session, FuturesSession]':
     """Get requests session.
 
     Args:
@@ -91,7 +91,7 @@ def i2p_session(futures: bool = False) -> 'Union[Session, FuturesSession]':
 
     """
     if futures:
-        session = requests_futures.sessions.FuturesSession(max_workers=DARC_CPU)
+        session = requests_futures_sessions.FuturesSession(max_workers=DARC_CPU)
     else:
         session = requests.Session()
 
@@ -115,7 +115,7 @@ def tor_session(futures: bool = False) -> 'Union[Session, FuturesSession]':
 
     """
     if futures:
-        session = requests_futures.sessions.FuturesSession(max_workers=DARC_CPU)
+        session = requests_futures_sessions.FuturesSession(max_workers=DARC_CPU)
     else:
         session = requests.Session()
 
@@ -136,7 +136,7 @@ def null_session(futures: bool = False) -> 'Union[Session, FuturesSession]':
 
     """
     if futures:
-        session = requests_futures.sessions.FuturesSession(max_workers=DARC_CPU)
+        session = requests_futures_sessions.FuturesSession(max_workers=DARC_CPU)
     else:
         session = requests.Session()
 

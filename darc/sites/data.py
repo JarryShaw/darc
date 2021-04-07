@@ -11,7 +11,7 @@ handle data URI schemes.
 import sys
 from typing import TYPE_CHECKING
 
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc.error import LinkNoReturn, render_error
 from darc.proxy.data import save_data
@@ -23,15 +23,15 @@ if TYPE_CHECKING:
     from requests import Session
     from selenium.webdriver import Chrome as Driver
 
+    import darc.link as darc_link  # Link
     from darc._compat import datetime
-    from darc.link import Link
 
 
 class DataURI(BaseSite):
     """Data URI schemes."""
 
     @staticmethod
-    def crawler(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'NoReturn':  # pylint: disable=unused-argument
+    def crawler(timestamp: 'datetime', session: 'Session', link: 'darc_link.Link') -> 'NoReturn':  # pylint: disable=unused-argument
         """Crawler hook for data URIs.
 
         Args:
@@ -47,11 +47,11 @@ class DataURI(BaseSite):
             save_data(link)
         except ValueError as error:
             print(render_error(f'[REQUESTS] Failed to save data URI from {link.url} <{error}>',
-                               stem.util.term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                               stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
         raise LinkNoReturn(link)
 
     @staticmethod
-    def loader(timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'NoReturn':  # pylint: disable=unused-argument
+    def loader(timestamp: 'datetime', driver: 'Driver', link: 'darc_link.Link') -> 'NoReturn':  # pylint: disable=unused-argument
         """Not implemented.
 
         Raises:

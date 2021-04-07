@@ -24,8 +24,8 @@ if TYPE_CHECKING:
     from requests import Response, Session
     from selenium.webdriver import Chrome as Driver
 
+    import darc.link as darc_link  # Link
     from darc._compat import datetime
-    from darc.link import Link
 
 
 class BaseSite:
@@ -35,7 +35,7 @@ class BaseSite:
     hostname = None  # type: Optional[List[str]]
 
     @staticmethod
-    def crawler(timestamp: 'datetime', session: 'Session', link: 'Link') -> 'Union[NoReturn, Response]':  # pylint: disable=unused-argument
+    def crawler(timestamp: 'datetime', session: 'Session', link: 'darc_link.Link') -> 'Union[NoReturn, Response]':  # pylint: disable=unused-argument
         """Crawler hook for my site.
 
         Args:
@@ -50,7 +50,7 @@ class BaseSite:
         raise LinkNoReturn(link)
 
     @staticmethod
-    def loader(timestamp: 'datetime', driver: 'Driver', link: 'Link') -> 'Union[NoReturn, Driver]':  # pylint: disable=unused-argument
+    def loader(timestamp: 'datetime', driver: 'Driver', link: 'darc_link.Link') -> 'Union[NoReturn, Driver]':  # pylint: disable=unused-argument
         """Loader hook for my site.
 
         Args:

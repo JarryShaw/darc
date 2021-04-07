@@ -22,7 +22,7 @@ from darc._compat import datetime
 from darc.const import PATH_MISC, get_lock
 
 if TYPE_CHECKING:
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 LOCK = get_lock()
 PATH = os.path.join(PATH_MISC, 'data')
@@ -30,7 +30,7 @@ PATH_MAP = os.path.join(PATH, 'data.txt')
 os.makedirs(PATH, exist_ok=True)
 
 
-def save_data(link: 'Link') -> None:
+def save_data(link: 'darc_link.Link') -> None:
     """Save data URI.
 
     The function will save data URIs to the data storage

@@ -18,13 +18,13 @@ from typing import TYPE_CHECKING
 from darc.const import PATH_MISC, get_lock
 
 if TYPE_CHECKING:
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 PATH = os.path.join(PATH_MISC, 'ed2k.txt')
 LOCK = get_lock()
 
 
-def save_ed2k(link: 'Link') -> None:
+def save_ed2k(link: 'darc_link.Link') -> None:
     """Save ed2k magnet link.
 
     The function will save ED2K magnet link to the file

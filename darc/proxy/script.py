@@ -18,13 +18,13 @@ from typing import TYPE_CHECKING
 from darc.const import PATH_MISC, get_lock
 
 if TYPE_CHECKING:
-    from darc.link import Link
+    import darc.link as darc_link  # Link
 
 PATH = os.path.join(PATH_MISC, 'script.txt')
 LOCK = get_lock()
 
 
-def save_script(link: 'Link') -> None:
+def save_script(link: 'darc_link.Link') -> None:
     """Save JavaScript link.
 
     The function will save JavaScript link to the file

@@ -45,7 +45,7 @@ from typing import TYPE_CHECKING, cast
 
 import peewee
 import requests
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc._compat import datetime
 from darc.const import DEBUG, PATH_DB
@@ -62,8 +62,8 @@ if TYPE_CHECKING:
     from requests import Response, Session
     from typing_extensions import Literal
 
+    import darc.link as darc_link  # Link
     from darc._typing import File
-    from darc.link import Link
 
     Domain = Literal['new_host', 'requests', 'selenium']
 
@@ -83,17 +83,17 @@ API_REQUESTS = os.getenv('API_REQUESTS')
 API_SELENIUM = os.getenv('API_SELENIUM')
 
 if DEBUG:
-    print(stem.util.term.format('-*- SUBMIT API -*-', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format(f'NEW HOST: {API_NEW_HOST}', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format(f'REQUESTS: {API_REQUESTS}', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format(f'SELENIUM: {API_SELENIUM}', stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns, stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- SUBMIT API -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format(f'NEW HOST: {API_NEW_HOST}', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format(f'REQUESTS: {API_REQUESTS}', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format(f'SELENIUM: {API_SELENIUM}', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
 # UNIX epoch
 EPOCH = datetime(1970, 1, 1, 0, 0)  # 1970-01-01T00:00:00
 
 
-def get_robots(link: 'Link') -> 'Optional[File]':
+def get_robots(link: 'darc_link.Link') -> 'Optional[File]':
     """Read ``robots.txt``.
 
     Args:
@@ -124,7 +124,7 @@ def get_robots(link: 'Link') -> 'Optional[File]':
     }
 
 
-def get_sitemaps(link: 'Link') -> 'Optional[List[File]]':
+def get_sitemaps(link: 'darc_link.Link') -> 'Optional[List[File]]':
     """Read sitemaps.
 
     Args:
@@ -159,7 +159,7 @@ def get_sitemaps(link: 'Link') -> 'Optional[List[File]]':
     return data_list
 
 
-def get_hosts(link: 'Link') -> 'Optional[File]':
+def get_hosts(link: 'darc_link.Link') -> 'Optional[File]':
     """Read ``hosts.txt``.
 
     Args:
@@ -250,11 +250,11 @@ def submit(api: str, domain: 'Domain', data: 'Dict[str, Any]') -> None:
             except requests.RequestException as error:
                 warning = warnings.formatwarning(str(error), APIRequestFailed, __file__, 262,
                                                  f'[{domain.upper()}] response = requests.post(api, json=data)')
-                print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
     save_submit(domain, data)
 
 
-def submit_new_host(time: 'datetime', link: 'Link', partial: bool = False, force: bool = False) -> None:
+def submit_new_host(time: 'datetime', link: 'darc_link.Link', partial: bool = False, force: bool = False) -> None:
     """Submit new host.
 
     When a new host is discovered, the :mod:`darc` crawler will submit the
@@ -379,7 +379,7 @@ def submit_new_host(time: 'datetime', link: 'Link', partial: bool = False, force
         except Exception as error:
             warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 371,
                                              'submit_new_host(...)')
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
     data = {
         '$PARTIAL$': partial,
@@ -393,11 +393,10 @@ def submit_new_host(time: 'datetime', link: 'Link', partial: bool = False, force
     }
 
     if DEBUG:
-        print(stem.util.term.format('-*- NEW HOST DATA -*-',
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(data), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-*- NEW HOST DATA -*-',
+                               stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(render_error(pprint.pformat(data), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
     if API_NEW_HOST is None:
         save_submit('new_host', data)
@@ -407,7 +406,7 @@ def submit_new_host(time: 'datetime', link: 'Link', partial: bool = False, force
     submit(API_NEW_HOST, 'new_host', data)
 
 
-def submit_requests(time: 'datetime', link: 'Link',
+def submit_requests(time: 'datetime', link: 'darc_link.Link',
                     response: 'Response', session: 'Session',
                     content: bytes, mime_type: str, html: bool = True) -> None:
     """Submit requests data.
@@ -574,7 +573,7 @@ def submit_requests(time: 'datetime', link: 'Link',
         except Exception as error:
             warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 528,
                                              'submit_requests(...)')
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
     metadata = link.asdict()
     ts = time.isoformat()
@@ -613,11 +612,10 @@ def submit_requests(time: 'datetime', link: 'Link',
     }
 
     if DEBUG:
-        print(stem.util.term.format('-*- REQUESTS DATA -*-',
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(data), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-*- REQUESTS DATA -*-',
+                               stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(render_error(pprint.pformat(data), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
     if API_REQUESTS is None:
         save_submit('requests', data)
@@ -627,7 +625,7 @@ def submit_requests(time: 'datetime', link: 'Link',
     submit(API_REQUESTS, 'requests', data)
 
 
-def submit_selenium(time: 'datetime', link: 'Link',
+def submit_selenium(time: 'datetime', link: 'darc_link.Link',
                     html: str, screenshot: 'Optional[str]') -> None:
     """Submit selenium data.
 
@@ -747,7 +745,7 @@ def submit_selenium(time: 'datetime', link: 'Link',
         except Exception as error:
             warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 720,
                                              'submit_selenium(...)')
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
     metadata = link.asdict()
     ts = time.isoformat()
@@ -772,11 +770,10 @@ def submit_selenium(time: 'datetime', link: 'Link',
     }
 
     if DEBUG:
-        print(stem.util.term.format('-*- SELENIUM DATA -*-',
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(data), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                    stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-*- SELENIUM DATA -*-',
+                               stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(render_error(pprint.pformat(data), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
     if API_SELENIUM is None:
         save_submit('selenium', data)

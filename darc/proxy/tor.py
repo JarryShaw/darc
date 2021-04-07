@@ -22,7 +22,7 @@ import selenium.webdriver
 import selenium.webdriver.common.proxy
 import stem.control
 import stem.process
-import stem.util.term
+import stem.util.term as stem_term
 
 from darc.const import DEBUG
 from darc.error import TorBootstrapFailed, TorRenewFailed, render_error
@@ -79,11 +79,9 @@ _TOR_CONFIG = {
 _TOR_CONFIG.update(TOR_CFG)
 
 if DEBUG:
-    print(stem.util.term.format('-*- TOR PROXY -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_TOR_CONFIG), stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- TOR PROXY -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(render_error(pprint.pformat(_TOR_CONFIG), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def renew_tor_session() -> None:
@@ -97,9 +95,9 @@ def renew_tor_session() -> None:
             _TOR_CTRL.authenticate(TOR_PASS)
         _TOR_CTRL.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
     except Exception as error:
-        warning = warnings.formatwarning(str(error), TorRenewFailed, __file__, 88,
+        warning = warnings.formatwarning(str(error), TorRenewFailed, __file__, 94,
                                          '_TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))')
-        print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+        print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
 
 
 def print_bootstrap_lines(line: str) -> None:
@@ -110,11 +108,11 @@ def print_bootstrap_lines(line: str) -> None:
 
     """
     if DEBUG:
-        print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+        print(stem_term.format(line, stem_term.Color.BLUE))  # pylint: disable=no-member
         return
 
     if 'Bootstrapped ' in line:
-        print(stem.util.term.format(line, stem.util.term.Color.BLUE))  # pylint: disable=no-member
+        print(stem_term.format(line, stem_term.Color.BLUE))  # pylint: disable=no-member
 
 
 def _tor_bootstrap() -> None:
@@ -171,8 +169,7 @@ def tor_bootstrap() -> None:
     if _TOR_BS_FLAG:
         return
 
-    print(stem.util.term.format('-*- Tor Bootstrap -*-',
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+    print(stem_term.format('-*- Tor Bootstrap -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
     for _ in range(TOR_RETRY+1):
         try:
             _tor_bootstrap()
@@ -180,9 +177,8 @@ def tor_bootstrap() -> None:
         except Exception as error:
             if DEBUG:
                 message = '[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc()
-                print(render_error(message, stem.util.term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
+                print(render_error(message, stem_term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
 
-            warning = warnings.formatwarning(str(error), TorBootstrapFailed, __file__, 170, 'tor_bootstrap()')
-            print(render_error(warning, stem.util.term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-    print(stem.util.term.format('-' * shutil.get_terminal_size().columns,
-                                stem.util.term.Color.MAGENTA))  # pylint: disable=no-member
+            warning = warnings.formatwarning(str(error), TorBootstrapFailed, __file__, 175, 'tor_bootstrap()')
+            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member

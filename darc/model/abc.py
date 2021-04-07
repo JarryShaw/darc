@@ -10,7 +10,7 @@ of all data models for the :mod:`darc` project.
 from typing import TYPE_CHECKING
 
 import peewee
-import playhouse.shortcuts
+import playhouse.shortcuts as playhouse_shortcuts
 
 from darc.const import DB as database
 from darc.const import DB_WEB as database_web
@@ -67,7 +67,7 @@ class BaseModel(peewee.Model):
             The data converted through :func:`playhouse.shortcuts.model_to_dict`.
 
         """
-        data = playhouse.shortcuts.model_to_dict(self)
+        data = playhouse_shortcuts.model_to_dict(self)
         if keep_id:
             return data
 

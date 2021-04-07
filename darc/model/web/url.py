@@ -23,11 +23,14 @@ from darc.model.utils import IntEnumField, Proxy
 from darc.model.web.hostname import HostnameModel
 
 if TYPE_CHECKING:
-    from typing import List
+    from typing import List, TypeVar
 
     from darc._compat import datetime
-    from darc.model.web.requests import RequestsModel
-    from darc.model.web.selenium import SeleniumModel
+    # import darc.model.web.requests as darc_requests  # RequestsModel
+    # import darc.model.web.selenium as darc_selenium  # SeleniumModel
+
+    RequestsModel = TypeVar('RequestsModel', bound='darc.model.web.requests.RequestsModel')  # type: ignore[name-defined] # pylint: disable=line-too-long
+    SeleniumModel = TypeVar('SeleniumModel', bound='darc.model.web.selenium.SeleniumModel')  # type: ignore[name-defined] # pylint: disable=line-too-long
 
 __all__ = ['URLModel', 'URLThroughModel']
 
@@ -44,11 +47,11 @@ class URLModel(BaseModel):
 
     #: ``requests`` submission record, back reference from
     #: :attr:`RequestsModel.url <darc.models.web.requests.RequestsModel.url>`.
-    requests: 'List[RequestsModel]'
+    requests: 'List[RequestsModel]'  # type: ignore[valid-type]
 
     #: ``selenium`` submission record, back reference from
     #: :attr:`SeleniumModel.url <darc.models.web.selenium.SeleniumModel.url>`.
-    selenium: 'List[SeleniumModel]'
+    selenium: 'List[SeleniumModel]'  # type: ignore[valid-type]
 
     #: Original URL (c.f. :attr:`link.url <darc.link.Link.url>`).
     url: str = TextField()
