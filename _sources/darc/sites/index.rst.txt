@@ -21,6 +21,7 @@ crawling processes.
    bitcoin
    data
    ed2k
+   ethereum
    irc
    magnet
    mail

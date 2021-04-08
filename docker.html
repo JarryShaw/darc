@@ -4,8 +4,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Docker Integration &#8212; darc 0.9.2 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Docker Integration &#8212; darc 0.9.3 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="docker-integration">
+  <section id="docker-integration">
 <h1>Docker Integration<a class="headerlink" href="#docker-integration" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project is integrated with Docker and
 Compose. Though published to <a class="reference external" href="https://hub.docker.com/r/jsnbzh/darc">Docker Hub</a>, you can
@@ -66,7 +67,7 @@ By default, the username is <code class="docutils literal notranslate"><span cla
       org.opencontainers.image.description<span class="o">=</span><span class="s2">&quot;Darkweb Crawler Project&quot;</span> <span class="se">\</span>
       org.opencontainers.image.url<span class="o">=</span><span class="s2">&quot;https://darc.jarryshaw.me/&quot;</span> <span class="se">\</span>
       org.opencontainers.image.source<span class="o">=</span><span class="s2">&quot;https://github.com/JarryShaw/darc&quot;</span> <span class="se">\</span>
-      org.opencontainers.image.version<span class="o">=</span><span class="s2">&quot;0.9.2&quot;</span> <span class="se">\</span>
+      org.opencontainers.image.version<span class="o">=</span><span class="s2">&quot;0.9.3&quot;</span> <span class="se">\</span>
       org.opencontainers.image.licenses<span class="o">=</span><span class="s1">&#39;BSD 3-Clause &quot;New&quot; or &quot;Revised&quot; License&#39;</span>
 
 <span class="k">STOPSIGNAL</span><span class="s"> SIGINT</span>
@@ -83,7 +84,7 @@ By default, the username is <code class="docutils literal notranslate"><span cla
 
 <span class="k">COPY</span> extra/retry.sh /usr/local/bin/retry
 <span class="k">COPY</span> extra/install.py /usr/local/bin/pty-install
-<span class="k">COPY</span> vendor/jdk-11.0.9_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
+<span class="k">COPY</span> vendor/jdk-11.0.10_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
 
 <span class="k">RUN</span> <span class="nb">set</span> -x <span class="se">\</span>
  <span class="o">&amp;&amp;</span> retry apt-get update <span class="se">\</span>
@@ -597,7 +598,7 @@ sleep <span class="si">${</span><span class="nv">WAIT</span><span class="si">}</
 instance, archive then upload current data crawled by <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
 to somewhere else and save up some disk space.</p>
 </div>
-</div>
+</section>
 
 
           </div>

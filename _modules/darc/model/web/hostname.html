@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darc.model.web.hostname &#8212; darc 0.9.2 documentation</title>
+    <title>darc.model.web.hostname &#8212; darc 0.9.3 documentation</title>
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
@@ -50,17 +50,25 @@
 <span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="n">DateTimeField</span><span class="p">,</span> <span class="n">TextField</span>
 
 <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span> <span class="nn">darc._typing</span> <span class="kn">import</span> <span class="n">SPHINX_BUILD</span>
 <span class="kn">from</span> <span class="nn">darc.model.abc</span> <span class="kn">import</span> <span class="n">BaseModelWeb</span> <span class="k">as</span> <span class="n">BaseModel</span>
 <span class="kn">from</span> <span class="nn">darc.model.utils</span> <span class="kn">import</span> <span class="n">IntEnumField</span><span class="p">,</span> <span class="n">Proxy</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TypeVar</span>
 
     <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">datetime</span>
-    <span class="kn">from</span> <span class="nn">darc.model.web.hosts</span> <span class="kn">import</span> <span class="n">HostsModel</span>
-    <span class="kn">from</span> <span class="nn">darc.model.web.robots</span> <span class="kn">import</span> <span class="n">RobotsModel</span>
-    <span class="kn">from</span> <span class="nn">darc.model.web.sitemap</span> <span class="kn">import</span> <span class="n">SitemapModel</span>
-    <span class="kn">from</span> <span class="nn">darc.model.web.url</span> <span class="kn">import</span> <span class="n">URLModel</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">SPHINX_BUILD</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">darc.model.web.hosts</span> <span class="kn">import</span> <span class="n">HostsModel</span>  <span class="c1"># pylint: disable=unused-import</span>
+        <span class="kn">from</span> <span class="nn">darc.model.web.robots</span> <span class="kn">import</span> <span class="n">RobotsModel</span>  <span class="c1"># pylint: disable=unused-import</span>
+        <span class="kn">from</span> <span class="nn">darc.model.web.sitemap</span> <span class="kn">import</span> <span class="n">SitemapModel</span>  <span class="c1"># pylint: disable=unused-import</span>
+        <span class="kn">from</span> <span class="nn">darc.model.web.url</span> <span class="kn">import</span> <span class="n">URLModel</span>  <span class="c1"># pylint: disable=unused-import</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">HostsModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;HostsModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.hosts.HostsModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
+        <span class="n">RobotsModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;RobotsModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.robots.RobotsModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
+        <span class="n">SitemapModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;SitemapModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.sitemap.SitemapModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
+        <span class="n">URLModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;URLModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.url.URLModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;HostnameModel&#39;</span><span class="p">]</span>
 

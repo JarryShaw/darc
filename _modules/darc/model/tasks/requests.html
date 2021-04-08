@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darc.model.tasks.requests &#8212; darc 0.9.2 documentation</title>
+    <title>darc.model.tasks.requests &#8212; darc 0.9.3 documentation</title>
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
@@ -55,8 +55,8 @@
 <span class="kn">from</span> <span class="nn">darc.model.utils</span> <span class="kn">import</span> <span class="n">PickleField</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">darc.link</span> <span class="k">as</span> <span class="nn">darc_link</span>  <span class="c1"># Link</span>
     <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">datetime</span>
-    <span class="kn">from</span> <span class="nn">darc.link</span> <span class="kn">import</span> <span class="n">Link</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RequestsQueueModel&#39;</span><span class="p">]</span>
 
@@ -70,7 +70,7 @@
     <span class="nb">hash</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1">#: Pickled target :class:`~darc.link.Link` instance.</span>
-    <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span> <span class="o">=</span> <span class="n">PickleField</span><span class="p">()</span>
+    <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span> <span class="o">=</span> <span class="n">PickleField</span><span class="p">()</span>
     <span class="c1">#: Timestamp of last update.</span>
     <span class="n">timestamp</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">()</span></div>
 </pre></div>

@@ -1,0 +1,1205 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darc.db &#8212; darc 0.9.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for darc.db</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># pylint: disable=ungrouped-imports</span>
+<span class="sd">&quot;&quot;&quot;Link Database</span>
+<span class="sd">===================</span>
+
+<span class="sd">The :mod:`darc` project utilises `Redis`_ based database</span>
+<span class="sd">to provide tele-process communication.</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">   In its first implementation, the :mod:`darc` project used</span>
+<span class="sd">   :class:`~multiprocessing.Queue` to support such communication.</span>
+<span class="sd">   However, as noticed when runtime, the :class:`~multiprocessing.Queue`</span>
+<span class="sd">   object will be much affected by the lack of memory.</span>
+
+<span class="sd">There will be three databases, all following the save naming</span>
+<span class="sd">convension with ``queue_`` prefix:</span>
+
+<span class="sd">* the hostname database -- ``queue_hostname`` (:class:`~darc.model.tasks.hostname.HostnameQueueModel`)</span>
+<span class="sd">* the :mod:`requests` database -- ``queue_requests`` (:class:`~darc.model.tasks.requests.RequestsQueueModel`)</span>
+<span class="sd">* the :mod:`selenium` database -- ``queue_selenium`` (:class:`~darc.model.tasks.selenium.SeleniumQueueModel`)</span>
+
+<span class="sd">For ``queue_hostname``, ``queue_requests`` and ``queue_selenium``,</span>
+<span class="sd">they are all `Redis`_ **sorted set** data type.</span>
+
+<span class="sd">If :data:`~darc.const.FLAG_DB` is :data:`True`, then the</span>
+<span class="sd">module uses the RDS storage described by the :mod:`peewee`</span>
+<span class="sd">models as backend.</span>
+
+<span class="sd">.. _Redis: https://redis.io/</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>  <span class="c1"># nosec: B403</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">import</span> <span class="nn">peewee</span>
+<span class="kn">import</span> <span class="nn">pottery.exceptions</span> <span class="k">as</span> <span class="nn">pottery_exceptions</span>
+<span class="kn">import</span> <span class="nn">pottery.redlock</span> <span class="k">as</span> <span class="nn">pottery_redlock</span>
+<span class="kn">import</span> <span class="nn">redis</span> <span class="k">as</span> <span class="nn">redis_lib</span>
+<span class="kn">import</span> <span class="nn">stem.util.term</span> <span class="k">as</span> <span class="nn">stem_term</span>
+
+<span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">nullcontext</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">CHECK</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DB</span> <span class="k">as</span> <span class="n">database</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">FLAG_DB</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">REDIS</span> <span class="k">as</span> <span class="n">redis</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">TIME_CACHE</span><span class="p">,</span> <span class="n">VERBOSE</span>
+<span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="n">LockWarning</span><span class="p">,</span> <span class="n">RedisCommandFailed</span><span class="p">,</span> <span class="n">render_error</span>
+<span class="kn">from</span> <span class="nn">darc.link</span> <span class="kn">import</span> <span class="n">Link</span>
+<span class="kn">from</span> <span class="nn">darc.model.tasks</span> <span class="kn">import</span> <span class="n">HostnameQueueModel</span><span class="p">,</span> <span class="n">RequestsQueueModel</span><span class="p">,</span> <span class="n">SeleniumQueueModel</span>
+<span class="kn">from</span> <span class="nn">darc.parse</span> <span class="kn">import</span> <span class="n">_check</span>
+
+<span class="n">_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_T&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">MethodType</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ContextManager</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+    <span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="n">TextField</span>
+    <span class="kn">from</span> <span class="nn">pottery.redlock</span> <span class="kn">import</span> <span class="n">Redlock</span>
+    <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="c1"># Redis retry interval</span>
+<span class="n">RETRY_INTERVAL</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_RETRY&#39;</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">))</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">RETRY_INTERVAL</span><span class="p">):</span>
+    <span class="n">RETRY_INTERVAL</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
+
+<span class="c1"># lock blocking timeout</span>
+<span class="n">_LOCK_TIMEOUT</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_LOCK_TIMEOUT&#39;</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">_LOCK_TIMEOUT</span><span class="p">):</span>
+    <span class="n">LOCK_TIMEOUT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_LOCK_TIMEOUT</span> <span class="o">*</span> <span class="mi">1_000</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">LOCK_TIMEOUT</span> <span class="o">=</span> <span class="n">pottery_redlock</span><span class="o">.</span><span class="n">Redlock</span><span class="o">.</span><span class="n">AUTO_RELEASE_TIME</span>  <span class="c1"># type: ignore[attr-defined] # pylint: disable=no-member</span>
+<span class="k">del</span> <span class="n">_LOCK_TIMEOUT</span>
+
+<span class="c1"># use lock?</span>
+<span class="n">REDIS_LOCK</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_REDIS_LOCK&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span>
+<span class="k">if</span> <span class="n">redis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">REDIS_LOCK</span><span class="p">:</span>
+    <span class="n">REDIS_LOCK_POOL</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;queue_hostname&#39;</span><span class="p">:</span> <span class="n">pottery_redlock</span><span class="o">.</span><span class="n">Redlock</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;queue_hostname&#39;</span><span class="p">,</span> <span class="n">masters</span><span class="o">=</span><span class="p">{</span><span class="n">redis</span><span class="p">},</span> <span class="n">auto_release_time</span><span class="o">=</span><span class="n">LOCK_TIMEOUT</span><span class="p">),</span>  <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="s1">&#39;queue_requests&#39;</span><span class="p">:</span> <span class="n">pottery_redlock</span><span class="o">.</span><span class="n">Redlock</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;queue_requests&#39;</span><span class="p">,</span> <span class="n">masters</span><span class="o">=</span><span class="p">{</span><span class="n">redis</span><span class="p">},</span> <span class="n">auto_release_time</span><span class="o">=</span><span class="n">LOCK_TIMEOUT</span><span class="p">),</span>  <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="s1">&#39;queue_selenium&#39;</span><span class="p">:</span> <span class="n">pottery_redlock</span><span class="o">.</span><span class="n">Redlock</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;queue_selenium&#39;</span><span class="p">,</span> <span class="n">masters</span><span class="o">=</span><span class="p">{</span><span class="n">redis</span><span class="p">},</span> <span class="n">auto_release_time</span><span class="o">=</span><span class="n">LOCK_TIMEOUT</span><span class="p">),</span>  <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="p">}</span>
+
+<span class="c1"># bulk size</span>
+<span class="n">BULK_SIZE</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_BULK_SIZE&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">))</span>
+
+<span class="c1"># max pool</span>
+<span class="n">MAX_POOL</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_MAX_POOL&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">MAX_POOL</span><span class="p">):</span>
+    <span class="n">MAX_POOL</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">MAX_POOL</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="_gen_arg_msg"><a class="viewcode-back" href="../../darc/db.html#darc.db._gen_arg_msg">[docs]</a><span class="k">def</span> <span class="nf">_gen_arg_msg</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Sanitise arguments representation string.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        *args: Arbitrary arguments.</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        **kwargs: Arbitrary keyword arguments.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Sanitised arguments representation string.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_args</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+    <span class="n">_kwargs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">_kwargs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_args</span><span class="p">:</span>
+            <span class="n">_args</span> <span class="o">+=</span> <span class="s1">&#39;, &#39;</span>
+        <span class="n">_args</span> <span class="o">+=</span> <span class="n">_kwargs</span>
+    <span class="k">return</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">shorten</span><span class="p">(</span><span class="n">_args</span><span class="p">,</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_redis_command"><a class="viewcode-back" href="../../darc/db.html#darc.db._redis_command">[docs]</a><span class="k">def</span> <span class="nf">_redis_command</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Any&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper function for Redis command.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        command: Command name.</span>
+<span class="sd">        *args: Arbitrary arguments for the Redis command.</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        **kwargs: Arbitrary keyword arguments for the Redis command.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        Values returned from the Redis command.</span>
+
+<span class="sd">    Warns:</span>
+<span class="sd">        RedisCommandFailed: Warns at each round when the command failed.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        Between each retry, the function sleeps for :data:`~darc.db.RETRY_INTERVAL`</span>
+<span class="sd">        second(s) if such value is **NOT** :data:`None`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_arg_msg</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">redis</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">redis_lib</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">,</span> <span class="n">pottery_exceptions</span><span class="o">.</span><span class="n">PotteryError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_arg_msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_arg_msg</span> <span class="o">=</span> <span class="n">_gen_arg_msg</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">RedisCommandFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>
+                                             <span class="sa">f</span><span class="s1">&#39;value = redis.</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">_arg_msg</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+
+            <span class="k">if</span> <span class="n">RETRY_INTERVAL</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">RETRY_INTERVAL</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">break</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="_db_operation"><a class="viewcode-back" href="../../darc/db.html#darc.db._db_operation">[docs]</a><span class="k">def</span> <span class="nf">_db_operation</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="s1">&#39;Callable[..., _T]&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Retry operation on database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        operation: Callable / method to perform.</span>
+<span class="sd">        *args: Arbitrary positional arguments.</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        **kwargs: Arbitrary keyword arguments.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Any return value from a successful</span>
+<span class="sd">        ``operation`` call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_arg_msg</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">peewee</span><span class="o">.</span><span class="n">OperationalError</span><span class="p">,</span> <span class="n">peewee</span><span class="o">.</span><span class="n">InterfaceError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_arg_msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_arg_msg</span> <span class="o">=</span> <span class="n">_gen_arg_msg</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">model</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;MethodType&#39;</span><span class="p">,</span> <span class="n">operation</span><span class="p">)</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">188</span><span class="p">,</span>
+                                             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">operation</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">_arg_msg</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+
+            <span class="k">if</span> <span class="n">RETRY_INTERVAL</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">RETRY_INTERVAL</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">break</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="_redis_get_lock"><a class="viewcode-back" href="../../darc/db.html#darc.db._redis_get_lock">[docs]</a><span class="k">def</span> <span class="nf">_redis_get_lock</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;Literal[&quot;queue_hostname&quot;, &quot;queue_requests&quot;, &quot;queue_selenium&quot;]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[Redlock, ContextManager]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sd">&quot;&quot;&quot;Get a lock for Redis operations.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        key: Lock target key.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Return a new :class:`pottery.redlock.Redlock` object using key ``key``</span>
+<span class="sd">        that mimics the behavior of :class:`threading.Lock`.</span>
+
+<span class="sd">    Seel Also:</span>
+<span class="sd">        If :data:`~darc.db.REDIS_LOCK` is :data:`False`, returns a</span>
+<span class="sd">        :class:`contextlib.nullcontext` instead.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">REDIS_LOCK</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">REDIS_LOCK_POOL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">or</span> <span class="n">nullcontext</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">nullcontext</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="have_hostname"><a class="viewcode-back" href="../../darc/db.html#darc.db.have_hostname">[docs]</a><span class="k">def</span> <span class="nf">have_hostname</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Tuple[bool, bool]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check if current link is a new host.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to check against.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple of two :obj:`bool` values representing</span>
+<span class="sd">        if such link is a known host and needs force</span>
+<span class="sd">        refetch respectively.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.db._have_hostname_db`</span>
+<span class="sd">        * :func:`darc.db._have_hostname_redis`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">FLAG_DB</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">connection_context</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_have_hostname_db</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">244</span><span class="p">,</span>
+                                                 <span class="sa">f</span><span class="s1">&#39;_have_hostname_db(</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">_have_hostname_redis</span><span class="p">(</span><span class="n">link</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_have_hostname_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._have_hostname_db">[docs]</a><span class="k">def</span> <span class="nf">_have_hostname_db</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Tuple[bool, bool]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check if current link is a new host.</span>
+
+<span class="sd">    The function checks the :class:`~darc.models.tasks.hostname.HostnameQueueModel` table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to check against.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple of two :obj:`bool` values representing</span>
+<span class="sd">        if such link is a known host and needs force</span>
+<span class="sd">        refetch respectively.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="p">(</span><span class="n">timestamp</span> <span class="o">-</span> <span class="n">TIME_CACHE</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+
+    <span class="n">model</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+        <span class="s1">&#39;Tuple[HostnameQueueModel, bool]&#39;</span><span class="p">,</span>
+        <span class="n">_db_operation</span><span class="p">(</span><span class="n">HostnameQueueModel</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">,</span> <span class="n">hostname</span><span class="o">=</span><span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+        <span class="p">})</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">created</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">threshold</span></div>
+
+
+<div class="viewcode-block" id="_have_hostname_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._have_hostname_redis">[docs]</a><span class="k">def</span> <span class="nf">_have_hostname_redis</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Tuple[bool, bool]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check if current link is a new host.</span>
+
+<span class="sd">    The function checks the ``queue_hostname`` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to check against.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple of two :obj:`bool` values representing</span>
+<span class="sd">        if such link is a known host and needs force</span>
+<span class="sd">        refetch respectively.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_score</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">new_score</span> <span class="o">-</span> <span class="n">TIME_CACHE</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_hostname&#39;</span><span class="p">):</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zscore&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_hostname&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>  <span class="c1"># type: Optional[int]</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">have_flag</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">force_fetch</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="c1"># update Redis record</span>
+            <span class="n">redis_update</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">have_flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">force_fetch</span> <span class="o">=</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="n">threshold</span>
+
+            <span class="c1"># update Redis record (only if re-fetch)</span>
+            <span class="n">redis_update</span> <span class="o">=</span> <span class="n">force_fetch</span>
+
+    <span class="k">if</span> <span class="n">redis_update</span><span class="p">:</span>
+        <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zadd&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_hostname&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">:</span> <span class="n">new_score</span><span class="p">,</span>
+        <span class="p">})</span>
+    <span class="k">return</span> <span class="n">have_flag</span><span class="p">,</span> <span class="n">force_fetch</span></div>
+
+
+<div class="viewcode-block" id="drop_hostname"><a class="viewcode-back" href="../../darc/db.html#darc.db.drop_hostname">[docs]</a><span class="k">def</span> <span class="nf">drop_hostname</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Remove link from the hostname database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to be removed.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.db._drop_hostname_db`</span>
+<span class="sd">        * :func:`darc.db._drop_hostname_redis`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">FLAG_DB</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">connection_context</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_drop_hostname_db</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">340</span><span class="p">,</span>
+                                                 <span class="sa">f</span><span class="s1">&#39;_drop_hostname_db(</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">_drop_hostname_redis</span><span class="p">(</span><span class="n">link</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_drop_hostname_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_hostname_db">[docs]</a><span class="k">def</span> <span class="nf">_drop_hostname_db</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Remove link from the hostname database.</span>
+
+<span class="sd">    The function updates the :class:`~darc.models.tasks.hostname.HostnameQueueModel` table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to be removed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">_db_operation</span><span class="p">(</span><span class="n">HostnameQueueModel</span><span class="o">.</span><span class="n">get_or_none</span><span class="p">,</span>
+                          <span class="n">HostnameQueueModel</span><span class="o">.</span><span class="n">hostname</span> <span class="o">==</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>  <span class="c1"># type: HostnameQueueModel</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">delete_instance</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="_drop_hostname_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_hostname_redis">[docs]</a><span class="k">def</span> <span class="nf">_drop_hostname_redis</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Remove link from the hostname database.</span>
+
+<span class="sd">    The function updates the ``queue_hostname`` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to be removed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_hostname&#39;</span><span class="p">):</span>
+        <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zrem&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_hostname&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="drop_requests"><a class="viewcode-back" href="../../darc/db.html#darc.db.drop_requests">[docs]</a><span class="k">def</span> <span class="nf">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
+    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`requests` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to be removed.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.db._drop_requests_db`</span>
+<span class="sd">        * :func:`darc.db._drop_requests_redis`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">FLAG_DB</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">connection_context</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_drop_requests_db</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">391</span><span class="p">,</span>
+                                                 <span class="sa">f</span><span class="s1">&#39;_drop_requests_db(</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">_drop_requests_redis</span><span class="p">(</span><span class="n">link</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_drop_requests_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_requests_db">[docs]</a><span class="k">def</span> <span class="nf">_drop_requests_db</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`requests` database.</span>
+
+<span class="sd">    The function updates the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to be removed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">_db_operation</span><span class="p">(</span><span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">get_or_none</span><span class="p">,</span>
+                          <span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># type: RequestsQueueModel</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">delete_instance</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="_drop_requests_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_requests_redis">[docs]</a><span class="k">def</span> <span class="nf">_drop_requests_redis</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`requests` database.</span>
+
+<span class="sd">    The function updates the ``queue_requests`` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to be removed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_requests&#39;</span><span class="p">):</span>
+        <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zrem&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_requests&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="drop_selenium"><a class="viewcode-back" href="../../darc/db.html#darc.db.drop_selenium">[docs]</a><span class="k">def</span> <span class="nf">drop_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
+    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`selenium` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to be removed.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.db._drop_selenium_db`</span>
+<span class="sd">        * :func:`darc.db._drop_selenium_redis`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">FLAG_DB</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">connection_context</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_drop_selenium_db</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">443</span><span class="p">,</span>
+                                                 <span class="sa">f</span><span class="s1">&#39;_drop_selenium_db(</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">_drop_selenium_redis</span><span class="p">(</span><span class="n">link</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_drop_selenium_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_selenium_db">[docs]</a><span class="k">def</span> <span class="nf">_drop_selenium_db</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`selenium` database.</span>
+
+<span class="sd">    The function updates the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to be removed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">_db_operation</span><span class="p">(</span><span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">get_or_none</span><span class="p">,</span>
+                          <span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># type: SeleniumQueueModel</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">delete_instance</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="_drop_selenium_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_selenium_redis">[docs]</a><span class="k">def</span> <span class="nf">_drop_selenium_redis</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`selenium` database.</span>
+
+<span class="sd">    The function updates the ``queue_selenium`` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link to be removed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_selenium&#39;</span><span class="p">):</span>
+        <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zrem&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_selenium&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_requests"><a class="viewcode-back" href="../../darc/db.html#darc.db.save_requests">[docs]</a><span class="k">def</span> <span class="nf">save_requests</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                  <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`requests` database.</span>
+
+<span class="sd">    The function updates the ``queue_requests`` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        entries: Links to be added to the :mod:`requests` database.</span>
+<span class="sd">            It can be either a :obj:`list` of links, or a single</span>
+<span class="sd">            link string (if ``single`` set as :data:`True`).</span>
+<span class="sd">        single: Indicate if ``entries`` is a :obj:`list` of links</span>
+<span class="sd">            or a single link string.</span>
+<span class="sd">        score: Score to for the Redis sorted set.</span>
+<span class="sd">        nx: Only create new elements and not to</span>
+<span class="sd">            update scores for elements that already exist.</span>
+<span class="sd">        xx: Only update scores of elements that</span>
+<span class="sd">            already exist. New elements will not be added.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        The ``entries`` will be dumped through :mod:`pickle` so that</span>
+<span class="sd">        :mod:`darc` do not need to parse them again.</span>
+
+<span class="sd">    When ``entries`` is a list of :class:`~darc.link.Link` instances,</span>
+<span class="sd">    we tries to perform *bulk* update to easy the memory consumption.</span>
+<span class="sd">    The *bulk* size is defined by :data:`~darc.db.BULK_SIZE`.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.db._save_requests_db`</span>
+<span class="sd">        * :func:`darc.db._save_requests_redis`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">FLAG_DB</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">connection_context</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_save_requests_db</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">single</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">xx</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">515</span><span class="p">,</span>
+                                                 <span class="s1">&#39;_save_requests_db(...)&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">_save_requests_redis</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">single</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">xx</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_save_requests_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._save_requests_db">[docs]</a><span class="k">def</span> <span class="nf">_save_requests_db</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                      <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`requests` database.</span>
+
+<span class="sd">    The function updates the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        entries: Links to be added to the :mod:`requests` database.</span>
+<span class="sd">            It can be either a :obj:`list` of links, or a single</span>
+<span class="sd">            link string (if ``single`` set as :data:`True`).</span>
+<span class="sd">        single: Indicate if ``entries`` is a :obj:`list` of links</span>
+<span class="sd">            or a single link string.</span>
+<span class="sd">        score: Score to for the Redis sorted set.</span>
+<span class="sd">        nx: Only create new elements and not to</span>
+<span class="sd">            update scores for elements that already exist.</span>
+<span class="sd">        xx: Only update scores of elements that</span>
+<span class="sd">            already exist. New elements will not be added.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">entries</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">single</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+            <span class="n">entries</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;List[Link]&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">nx</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+                <span class="n">insert_many</span> <span class="o">=</span> <span class="p">[{</span>
+                    <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                    <span class="s1">&#39;hash&#39;</span><span class="p">:</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+                    <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+                <span class="p">}</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">peewee</span><span class="o">.</span><span class="n">chunked</span><span class="p">(</span><span class="n">insert_many</span><span class="p">,</span> <span class="n">BULK_SIZE</span><span class="p">):</span>
+                    <span class="n">_db_operation</span><span class="p">(</span><span class="n">RequestsQueueModel</span>
+                                  <span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="n">insert_many</span><span class="p">)</span>
+                                  <span class="o">.</span><span class="n">on_conflict_ignore</span><span class="p">()</span>
+                                  <span class="o">.</span><span class="n">execute</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">xx</span><span class="p">:</span>
+            <span class="n">entries_text</span> <span class="o">=</span> <span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">url</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">]</span>
+            <span class="n">_db_operation</span><span class="p">(</span><span class="n">RequestsQueueModel</span>
+                          <span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+                          <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;TextField&#39;</span><span class="p">,</span> <span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">entries_text</span><span class="p">))</span>
+                          <span class="o">.</span><span class="n">execute</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+            <span class="n">replace_many</span> <span class="o">=</span> <span class="p">[{</span>
+                <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                <span class="s1">&#39;hash&#39;</span><span class="p">:</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+                <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+            <span class="p">}</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">peewee</span><span class="o">.</span><span class="n">chunked</span><span class="p">(</span><span class="n">replace_many</span><span class="p">,</span> <span class="n">BULK_SIZE</span><span class="p">):</span>
+                <span class="n">_db_operation</span><span class="p">(</span><span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">replace_many</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+        <span class="n">entries</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;Link&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nx</span><span class="p">:</span>
+        <span class="n">_db_operation</span><span class="p">(</span><span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">,</span>
+                      <span class="n">text</span><span class="o">=</span><span class="n">entries</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                      <span class="n">defaults</span><span class="o">=</span><span class="p">{</span>
+                          <span class="s1">&#39;hash&#39;</span><span class="p">:</span> <span class="n">entries</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                          <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">entries</span><span class="p">,</span>
+                          <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+                      <span class="p">})</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">xx</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">peewee</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">):</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">_db_operation</span><span class="p">(</span><span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">entries</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># type: RequestsQueueModel # pylint: disable=line-too-long</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
+            <span class="n">_db_operation</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">_db_operation</span><span class="p">(</span><span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="n">text</span><span class="o">=</span><span class="n">entries</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+        <span class="nb">hash</span><span class="o">=</span><span class="n">entries</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">link</span><span class="o">=</span><span class="n">entries</span><span class="p">,</span>
+        <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="_save_requests_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._save_requests_redis">[docs]</a><span class="k">def</span> <span class="nf">_save_requests_redis</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                         <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`requests` database.</span>
+
+<span class="sd">    The function updates the ``queue_requests`` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        entries: Links to be added to the :mod:`requests` database.</span>
+<span class="sd">            It can be either a :obj:`list` of links, or a single</span>
+<span class="sd">            link string (if ``single`` set as :data:`True`).</span>
+<span class="sd">        single: Indicate if ``entries`` is a :obj:`list` of links</span>
+<span class="sd">            or a single link string.</span>
+<span class="sd">        score: Score to for the Redis sorted set.</span>
+<span class="sd">        nx: Forces ``ZADD`` to only create new elements and not to</span>
+<span class="sd">            update scores for elements that already exist.</span>
+<span class="sd">        xx: Forces ``ZADD`` to only update scores of elements that</span>
+<span class="sd">            already exist. New elements will not be added.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">single</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+            <span class="n">entries</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;List[Link]&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">peewee</span><span class="o">.</span><span class="n">chunked</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">BULK_SIZE</span><span class="p">):</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">link</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">Link</span><span class="p">),</span> <span class="n">chunk</span><span class="p">))</span>  <span class="c1"># type: List[Link]</span>
+            <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">:</span>
+                <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">link</span><span class="p">),</span> <span class="n">nx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_requests&#39;</span><span class="p">):</span>
+                <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zadd&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_requests&#39;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">score</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">pool</span>
+                <span class="p">},</span> <span class="n">nx</span><span class="o">=</span><span class="n">nx</span><span class="p">,</span> <span class="n">xx</span><span class="o">=</span><span class="n">xx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+        <span class="n">entries</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;Link&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+
+    <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">entries</span><span class="p">),</span> <span class="n">nx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_requests&#39;</span><span class="p">):</span>
+        <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zadd&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_requests&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="n">entries</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">score</span><span class="p">,</span>
+        <span class="p">},</span> <span class="n">nx</span><span class="o">=</span><span class="n">nx</span><span class="p">,</span> <span class="n">xx</span><span class="o">=</span><span class="n">xx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="save_selenium"><a class="viewcode-back" href="../../darc/db.html#darc.db.save_selenium">[docs]</a><span class="k">def</span> <span class="nf">save_selenium</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
+                  <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`selenium` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        entries: Links to be added to the :mod:`selenium` database.</span>
+<span class="sd">            It can be either a :obj:`list` of links, or a single</span>
+<span class="sd">            link string (if ``single`` set as :data:`True`).</span>
+<span class="sd">        single: Indicate if ``entries`` is a :obj:`list` of links</span>
+<span class="sd">            or a single link string.</span>
+<span class="sd">        score: Score to for the Redis sorted set.</span>
+<span class="sd">        nx: Only create new elements and not to</span>
+<span class="sd">            update scores for elements that already exist.</span>
+<span class="sd">        xx: Only update scores of elements that</span>
+<span class="sd">            already exist. New elements will not be added.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        The ``entries`` will be dumped through :mod:`pickle` so that</span>
+<span class="sd">        :mod:`darc` do not need to parse them again.</span>
+
+<span class="sd">    When ``entries`` is a list of :class:`~darc.link.Link` instances,</span>
+<span class="sd">    we tries to perform *bulk* update to easy the memory consumption.</span>
+<span class="sd">    The *bulk* size is defined by :data:`~darc.db.BULK_SIZE`.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.db._save_selenium_db`</span>
+<span class="sd">        * :func:`darc.db._save_selenium_redis`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">FLAG_DB</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">connection_context</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_save_selenium_db</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">single</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">xx</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">696</span><span class="p">,</span>
+                                                 <span class="s1">&#39;_save_selenium_db(...)&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">_save_selenium_redis</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">single</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">xx</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_save_selenium_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._save_selenium_db">[docs]</a><span class="k">def</span> <span class="nf">_save_selenium_db</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                      <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`selenium` database.</span>
+
+<span class="sd">    The function updates the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        entries: Links to be added to the :mod:`selenium` database.</span>
+<span class="sd">            It can be either a :obj:`list` of links, or a single</span>
+<span class="sd">            link string (if ``single`` set as :data:`True`).</span>
+<span class="sd">        single: Indicate if ``entries`` is a :obj:`list` of links</span>
+<span class="sd">            or a single link string.</span>
+<span class="sd">        score: Score to for the Redis sorted set.</span>
+<span class="sd">        nx: Only create new elements and not to</span>
+<span class="sd">            update scores for elements that already exist.</span>
+<span class="sd">        xx: Only update scores of elements that</span>
+<span class="sd">            already exist. New elements will not be added.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">entries</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">single</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+            <span class="n">entries</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;List[Link]&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">nx</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+                <span class="n">insert_many</span> <span class="o">=</span> <span class="p">[{</span>
+                    <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                    <span class="s1">&#39;hash&#39;</span><span class="p">:</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+                    <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+                <span class="p">}</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">peewee</span><span class="o">.</span><span class="n">chunked</span><span class="p">(</span><span class="n">insert_many</span><span class="p">,</span> <span class="n">BULK_SIZE</span><span class="p">):</span>
+                    <span class="n">_db_operation</span><span class="p">(</span><span class="n">SeleniumQueueModel</span>
+                                  <span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="n">insert_many</span><span class="p">)</span>
+                                  <span class="o">.</span><span class="n">on_conflict_ignore</span><span class="p">()</span>
+                                  <span class="o">.</span><span class="n">execute</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">xx</span><span class="p">:</span>
+            <span class="n">entries_text</span> <span class="o">=</span> <span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">url</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">]</span>
+            <span class="n">_db_operation</span><span class="p">(</span><span class="n">SeleniumQueueModel</span>
+                          <span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+                          <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;TextField&#39;</span><span class="p">,</span> <span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">entries_text</span><span class="p">))</span>
+                          <span class="o">.</span><span class="n">execute</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+            <span class="n">replace_many</span> <span class="o">=</span> <span class="p">[{</span>
+                <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                <span class="s1">&#39;hash&#39;</span><span class="p">:</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+                <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+            <span class="p">}</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">peewee</span><span class="o">.</span><span class="n">chunked</span><span class="p">(</span><span class="n">replace_many</span><span class="p">,</span> <span class="n">BULK_SIZE</span><span class="p">):</span>
+                <span class="n">_db_operation</span><span class="p">(</span><span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">replace_many</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+        <span class="n">entries</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;Link&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nx</span><span class="p">:</span>
+        <span class="n">_db_operation</span><span class="p">(</span><span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">,</span>
+                      <span class="n">text</span><span class="o">=</span><span class="n">entries</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                      <span class="n">defaults</span><span class="o">=</span><span class="p">{</span>
+                          <span class="s1">&#39;hash&#39;</span><span class="p">:</span> <span class="n">entries</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                          <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">entries</span><span class="p">,</span>
+                          <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+                      <span class="p">})</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">xx</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">peewee</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">):</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">_db_operation</span><span class="p">(</span><span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">entries</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># type: SeleniumQueueModel # pylint: disable=line-too-long</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
+            <span class="n">_db_operation</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">_db_operation</span><span class="p">(</span><span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="n">text</span><span class="o">=</span><span class="n">entries</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+        <span class="nb">hash</span><span class="o">=</span><span class="n">entries</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">link</span><span class="o">=</span><span class="n">entries</span><span class="p">,</span>
+        <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="_save_selenium_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._save_selenium_redis">[docs]</a><span class="k">def</span> <span class="nf">_save_selenium_redis</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                         <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`selenium` database.</span>
+
+<span class="sd">    The function updates the ``queue_selenium`` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        entries: Links to be added to the :mod:`selenium` database.</span>
+<span class="sd">            It can be either an *iterable* of links, or a single</span>
+<span class="sd">            link string (if ``single`` set as :data:`True`).</span>
+<span class="sd">        single: Indicate if ``entries`` is an *iterable* of links</span>
+<span class="sd">            or a single link string.</span>
+<span class="sd">        score: Score to for the Redis sorted set.</span>
+<span class="sd">        nx: Forces ``ZADD`` to only create new elements and not to</span>
+<span class="sd">            update scores for elements that already exist.</span>
+<span class="sd">        xx: Forces ``ZADD`` to only update scores of elements that</span>
+<span class="sd">            already exist. New elements will not be added.</span>
+
+<span class="sd">    When ``entries`` is a list of :class:`~darc.link.Link` instances,</span>
+<span class="sd">    we tries to perform *bulk* update to easy the memory consumption.</span>
+<span class="sd">    The *bulk* size is defined by :data:`~darc.db.BULK_SIZE`.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        The ``entries`` will be dumped through :mod:`pickle` so that</span>
+<span class="sd">        :mod:`darc` do not need to parse them again.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">entries</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">single</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+            <span class="n">entries</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;List[Link]&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">peewee</span><span class="o">.</span><span class="n">chunked</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">BULK_SIZE</span><span class="p">):</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">link</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">Link</span><span class="p">),</span> <span class="n">chunk</span><span class="p">))</span>  <span class="c1"># type: List[Link]</span>
+            <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">:</span>
+                <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">link</span><span class="p">),</span> <span class="n">nx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_selenium&#39;</span><span class="p">):</span>
+                <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zadd&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_selenium&#39;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">score</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">pool</span>
+                <span class="p">},</span> <span class="n">nx</span><span class="o">=</span><span class="n">nx</span><span class="p">,</span> <span class="n">xx</span><span class="o">=</span><span class="n">xx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+        <span class="n">entries</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;Link&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+
+    <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">entries</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">entries</span><span class="p">),</span> <span class="n">nx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_selenium&#39;</span><span class="p">):</span>
+        <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zadd&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_selenium&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="n">entries</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">score</span><span class="p">,</span>
+        <span class="p">},</span> <span class="n">nx</span><span class="o">=</span><span class="n">nx</span><span class="p">,</span> <span class="n">xx</span><span class="o">=</span><span class="n">xx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="load_requests"><a class="viewcode-back" href="../../darc/db.html#darc.db.load_requests">[docs]</a><span class="k">def</span> <span class="nf">load_requests</span><span class="p">(</span><span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CHECK</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`requests` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        check: If perform checks on loaded links,</span>
+<span class="sd">            default to :data:`~darc.const.CHECK`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of loaded links from the :mod:`requests` database.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        At runtime, the function will load links with maximum number</span>
+<span class="sd">        at :data:`~darc.db.MAX_POOL` to limit the memory usage.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.db._load_requests_db`</span>
+<span class="sd">        * :func:`darc.db._load_requests_redis`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">FLAG_DB</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">connection_context</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">link_pool</span> <span class="o">=</span> <span class="n">_load_requests_db</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">877</span><span class="p">,</span>
+                                                 <span class="s1">&#39;_load_requests_db()&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">link_pool</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="n">_load_requests_redis</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="n">_check</span><span class="p">(</span><span class="n">link_pool</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">stem_term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;-*- [REQUESTS] LINK POOL -*-&#39;</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">link_pool</span><span class="p">)),</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">stem_term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+    <span class="k">return</span> <span class="n">link_pool</span></div>
+
+
+<div class="viewcode-block" id="_load_requests_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._load_requests_db">[docs]</a><span class="k">def</span> <span class="nf">_load_requests_db</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`requests` database.</span>
+
+<span class="sd">    The function reads the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of loaded links from the :mod:`requests` database.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        At runtime, the function will load links with maximum number</span>
+<span class="sd">        at :data:`~darc.db.MAX_POOL` to limit the memory usage.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sec_delta</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="n">now</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sec_delta</span> <span class="o">=</span> <span class="n">TIME_CACHE</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">sec_delta</span>
+
+    <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">_db_operation</span><span class="p">(</span>
+            <span class="n">RequestsQueueModel</span>
+            <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">link</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">&lt;=</span> <span class="n">max_score</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">RequestsQueueModel</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">MAX_POOL</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">execute</span>
+        <span class="p">)</span>  <span class="c1"># type: List[RequestsQueueModel]</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">link</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">query</span><span class="p">]</span>
+
+        <span class="c1"># force update records</span>
+        <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_score</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">+</span> <span class="n">sec_delta</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+            <span class="n">_save_requests_db</span><span class="p">(</span><span class="n">link_pool</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="n">new_score</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">link_pool</span></div>
+
+
+<div class="viewcode-block" id="_load_requests_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._load_requests_redis">[docs]</a><span class="k">def</span> <span class="nf">_load_requests_redis</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`requests` database.</span>
+
+<span class="sd">    The function reads the ``queue_requests`` database.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of loaded links from the :mod:`requests` database.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        At runtime, the function will load links with maximum number</span>
+<span class="sd">        at :data:`~darc.db.MAX_POOL` to limit the memory usage.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sec_delta</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: float</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="n">now</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sec_delta</span> <span class="o">=</span> <span class="n">TIME_CACHE</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">sec_delta</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_requests&#39;</span><span class="p">):</span>
+            <span class="n">temp_pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zrangebyscore&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_requests&#39;</span><span class="p">,</span>
+                                                                                <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">max_score</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">MAX_POOL</span><span class="p">)]</span>  <span class="c1"># type: List[bytes] # pylint: disable=line-too-long</span>
+            <span class="n">link_pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">link</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_pool</span><span class="p">)]</span>  <span class="c1"># nosec: B301</span>
+            <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">new_score</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="n">sec_delta</span>
+                <span class="n">_save_requests_redis</span><span class="p">(</span><span class="n">link_pool</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="n">new_score</span><span class="p">)</span>  <span class="c1"># force update records</span>
+    <span class="k">except</span> <span class="n">pottery_exceptions</span><span class="o">.</span><span class="n">PotteryError</span><span class="p">:</span>
+        <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Failed to acquire Redis lock after </span><span class="si">{</span><span class="n">LOCK_TIMEOUT</span><span class="si">}</span><span class="s1"> second(s)&#39;</span><span class="p">,</span>
+                                         <span class="n">LockWarning</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">957</span><span class="p">,</span> <span class="s2">&quot;_redis_get_lock(&#39;queue_requests&#39;)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="n">link_pool</span></div>
+
+
+<div class="viewcode-block" id="load_selenium"><a class="viewcode-back" href="../../darc/db.html#darc.db.load_selenium">[docs]</a><span class="k">def</span> <span class="nf">load_selenium</span><span class="p">(</span><span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CHECK</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`selenium` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        check: If perform checks on loaded links,</span>
+<span class="sd">            default to :data:`~darc.const.CHECK`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of loaded links from the :mod:`selenium` database.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        At runtime, the function will load links with maximum number</span>
+<span class="sd">        at :data:`~darc.db.MAX_POOL` to limit the memory usage.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.db._load_selenium_db`</span>
+<span class="sd">        * :func:`darc.db._load_selenium_redis`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">FLAG_DB</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">connection_context</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">link_pool</span> <span class="o">=</span> <span class="n">_load_selenium_db</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">DatabaseOperaionFailed</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">994</span><span class="p">,</span>
+                                                 <span class="s1">&#39;_load_selenium_db()&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">link_pool</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="n">_load_selenium_redis</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="n">_check</span><span class="p">(</span><span class="n">link_pool</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">stem_term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;-*- [SELENIUM] LINK POOL -*-&#39;</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">link_pool</span><span class="p">)),</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">stem_term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+    <span class="k">return</span> <span class="n">link_pool</span></div>
+
+
+<div class="viewcode-block" id="_load_selenium_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._load_selenium_db">[docs]</a><span class="k">def</span> <span class="nf">_load_selenium_db</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`selenium` database.</span>
+
+<span class="sd">    The function reads the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of loaded links from the :mod:`selenium` database.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        At runtime, the function will load links with maximum number</span>
+<span class="sd">        at :data:`~darc.db.MAX_POOL` to limit the memory usage.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sec_delta</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="n">now</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sec_delta</span> <span class="o">=</span> <span class="n">TIME_CACHE</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">sec_delta</span>
+
+    <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">_db_operation</span><span class="p">(</span>
+            <span class="n">SeleniumQueueModel</span>
+            <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">link</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">&lt;=</span> <span class="n">max_score</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">SeleniumQueueModel</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">MAX_POOL</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">query</span>
+        <span class="p">)</span>  <span class="c1"># type: List[SeleniumQueueModel]</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">link</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">query</span><span class="p">]</span>
+
+        <span class="c1"># force update records</span>
+        <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_score</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">+</span> <span class="n">sec_delta</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+            <span class="n">_save_selenium_db</span><span class="p">(</span><span class="n">link_pool</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="n">new_score</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">link_pool</span></div>
+
+
+<div class="viewcode-block" id="_load_selenium_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._load_selenium_redis">[docs]</a><span class="k">def</span> <span class="nf">_load_selenium_redis</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`selenium` database.</span>
+
+<span class="sd">    The function reads the ``queue_selenium`` database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        check: If perform checks on loaded links,</span>
+<span class="sd">            default to :data:`~darc.const.CHECK`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of loaded links from the :mod:`selenium` database.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        At runtime, the function will load links with maximum number</span>
+<span class="sd">        at :data:`~darc.db.MAX_POOL` to limit the memory usage.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sec_delta</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: float</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="n">now</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sec_delta</span> <span class="o">=</span> <span class="n">TIME_CACHE</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">sec_delta</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">_redis_get_lock</span><span class="p">(</span><span class="s1">&#39;queue_selenium&#39;</span><span class="p">):</span>
+            <span class="n">temp_pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_redis_command</span><span class="p">(</span><span class="s1">&#39;zrangebyscore&#39;</span><span class="p">,</span> <span class="s1">&#39;queue_selenium&#39;</span><span class="p">,</span>
+                                                                                <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">max_score</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">MAX_POOL</span><span class="p">)]</span>  <span class="c1"># type: List[bytes] # pylint: disable=line-too-long</span>
+            <span class="n">link_pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">link</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_pool</span><span class="p">)]</span>  <span class="c1"># nosec: B301</span>
+            <span class="k">if</span> <span class="n">TIME_CACHE</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">new_score</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="n">sec_delta</span>
+                <span class="n">_save_selenium_redis</span><span class="p">(</span><span class="n">link_pool</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="n">new_score</span><span class="p">)</span>  <span class="c1"># force update records</span>
+    <span class="k">except</span> <span class="n">pottery_exceptions</span><span class="o">.</span><span class="n">PotteryError</span><span class="p">:</span>
+        <span class="n">warning</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Failed to acquire Redis lock after </span><span class="si">{</span><span class="n">LOCK_TIMEOUT</span><span class="si">}</span><span class="s1"> second(s)&#39;</span><span class="p">,</span>
+                                         <span class="n">LockWarning</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">1078</span><span class="p">,</span> <span class="s2">&quot;_redis_get_lock(&#39;queue_selenium&#39;)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="n">link_pool</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

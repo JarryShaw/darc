@@ -4,8 +4,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>&lt;no title&gt; &#8212; darc 0.9.2 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Email Addresses &#8212; darc 0.9.3 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -14,8 +15,8 @@
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="null.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="magnet.html" />
+    <link rel="next" title="No Proxy" href="null.html" />
+    <link rel="prev" title="Magnet Links" href="magnet.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -32,9 +33,33 @@
 
           <div class="body" role="main">
             
-  <dl class="py data">
-<dt id="darc.proxy.mail.PATH">
-<code class="sig-prename descclassname">darc.proxy.mail.</code><code class="sig-name descname">PATH</code><em class="property"> = '{PATH_MISC}/mail.txt'</em><a class="headerlink" href="#darc.proxy.mail.PATH" title="Permalink to this definition">¶</a></dt>
+  <span class="target" id="module-darc.proxy.mail"></span><section id="email-addresses">
+<h1>Email Addresses<a class="headerlink" href="#email-addresses" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-darc.proxy.mail" title="darc.proxy.mail"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy.mail</span></code></a> module contains the auxiliary functions
+around managing and processing the email addresses.</p>
+<p>Currently, the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project directly save the email
+addresses extracted to the data storage file
+<a class="reference internal" href="#darc.proxy.mail.darc.proxy.mail.PATH" title="darc.proxy.mail.darc.proxy.mail.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a> without further processing.</p>
+<dl class="py function">
+<dt id="darc.proxy.mail.save_mail">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.mail.</span></code><code class="sig-name descname"><span class="pre">save_mail</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/mail.html#save_mail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.mail.save_mail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save email address.</p>
+<p>The function will save email address to the file
+as defined in <a class="reference internal" href="#darc.proxy.mail.darc.proxy.mail.PATH" title="darc.proxy.mail.darc.proxy.mail.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object representing the email address.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<dl class="py data">
+<dt id="darc.proxy.mail.darc.proxy.mail.PATH">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.mail.</span></code><code class="sig-name descname"><span class="pre">PATH</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_MISC}/mail.txt'</span></em><a class="headerlink" href="#darc.proxy.mail.darc.proxy.mail.PATH" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the data storage of email addresses.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -45,9 +70,9 @@
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.proxy.mail.LOCK">
-<code class="sig-prename descclassname">darc.proxy.mail.</code><code class="sig-name descname">LOCK</code><em class="property">: Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Lock" title="(in Python v3.9)">multiprocessing.Lock</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Lock" title="(in Python v3.9)">threading.Lock</a><span class="p">, </span>contextlib.nullcontext<span class="p">]</span></em><a class="headerlink" href="#darc.proxy.mail.LOCK" title="Permalink to this definition">¶</a></dt>
-<dd><p>I/O lock for saving email addresses <a class="reference internal" href="#darc.proxy.mail.PATH" title="darc.proxy.mail.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
+<dt id="darc.proxy.mail.darc.proxy.mail.LOCK">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.mail.</span></code><code class="sig-name descname"><span class="pre">LOCK</span></code><em class="property"><span class="pre">:</span> <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Lock" title="(in Python v3.9)"><span class="pre">multiprocessing.Lock</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Lock" title="(in Python v3.9)"><span class="pre">threading.Lock</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">contextlib.nullcontext</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.mail.darc.proxy.mail.LOCK" title="Permalink to this definition">¶</a></dt>
+<dd><p>I/O lock for saving email addresses <a class="reference internal" href="#darc.proxy.mail.darc.proxy.mail.PATH" title="darc.proxy.mail.darc.proxy.mail.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -81,9 +106,25 @@
 
 
 <h3>Navigation</h3>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Technical Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../process.html">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crawl.html">Web Crawlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html">Source Saving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html">Selenium Wrapper</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Proxy Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sites/index.html">Sites Customisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Data Models</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
@@ -99,8 +140,8 @@
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Technical Documentation</a><ul>
   <li><a href="index.html">Proxy Utilities</a><ul>
-      <li>Previous: <a href="magnet.html" title="previous chapter">&lt;no title&gt;</a></li>
-      <li>Next: <a href="null.html" title="next chapter">&lt;no title&gt;</a></li>
+      <li>Previous: <a href="magnet.html" title="previous chapter">Magnet Links</a></li>
+      <li>Next: <a href="null.html" title="next chapter">No Proxy</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

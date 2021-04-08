@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darc.crawl &#8212; darc 0.9.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for darc.crawl</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Web Crawlers</span>
+<span class="sd">==================</span>
+
+<span class="sd">The :mod:`darc.crawl` module provides two types of crawlers.</span>
+
+<span class="sd">* :func:`~darc.crawl.crawler` -- crawler powered by :mod:`requests`</span>
+<span class="sd">* :func:`~darc.crawl.loader` -- crawler powered by :mod:`selenium`</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">selenium.common.exceptions</span> <span class="k">as</span> <span class="nn">selenium_exceptions</span>
+<span class="kn">import</span> <span class="nn">stem.util.term</span> <span class="k">as</span> <span class="nn">stem_term</span>
+<span class="kn">import</span> <span class="nn">urllib3.exceptions</span> <span class="k">as</span> <span class="nn">urllib3_exceptions</span>
+
+<span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">FORCE</span><span class="p">,</span> <span class="n">SE_EMPTY</span>
+<span class="kn">from</span> <span class="nn">darc.db</span> <span class="kn">import</span> <span class="p">(</span><span class="n">drop_hostname</span><span class="p">,</span> <span class="n">drop_requests</span><span class="p">,</span> <span class="n">drop_selenium</span><span class="p">,</span> <span class="n">have_hostname</span><span class="p">,</span> <span class="n">save_requests</span><span class="p">,</span>
+                     <span class="n">save_selenium</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">LinkNoReturn</span><span class="p">,</span> <span class="n">render_error</span>
+<span class="kn">from</span> <span class="nn">darc.model</span> <span class="kn">import</span> <span class="n">HostnameModel</span><span class="p">,</span> <span class="n">URLModel</span>
+<span class="kn">from</span> <span class="nn">darc.parse</span> <span class="kn">import</span> <span class="p">(</span><span class="n">check_robots</span><span class="p">,</span> <span class="n">extract_links</span><span class="p">,</span> <span class="n">get_content_type</span><span class="p">,</span> <span class="n">match_host</span><span class="p">,</span> <span class="n">match_mime</span><span class="p">,</span>
+                        <span class="n">match_proxy</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">darc.proxy.i2p</span> <span class="kn">import</span> <span class="n">fetch_hosts</span><span class="p">,</span> <span class="n">read_hosts</span>
+<span class="kn">from</span> <span class="nn">darc.proxy.null</span> <span class="kn">import</span> <span class="n">fetch_sitemap</span><span class="p">,</span> <span class="n">save_invalid</span>
+<span class="kn">from</span> <span class="nn">darc.requests</span> <span class="kn">import</span> <span class="n">request_session</span>
+<span class="kn">from</span> <span class="nn">darc.save</span> <span class="kn">import</span> <span class="n">save_headers</span>
+<span class="kn">from</span> <span class="nn">darc.selenium</span> <span class="kn">import</span> <span class="n">request_driver</span>
+<span class="kn">from</span> <span class="nn">darc.sites</span> <span class="kn">import</span> <span class="n">crawler_hook</span><span class="p">,</span> <span class="n">loader_hook</span>
+<span class="kn">from</span> <span class="nn">darc.submit</span> <span class="kn">import</span> <span class="n">SAVE_DB</span><span class="p">,</span> <span class="n">submit_new_host</span><span class="p">,</span> <span class="n">submit_requests</span><span class="p">,</span> <span class="n">submit_selenium</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+    <span class="kn">import</span> <span class="nn">darc.link</span> <span class="k">as</span> <span class="nn">darc_link</span>  <span class="c1"># Link</span>
+
+
+<div class="viewcode-block" id="crawler"><a class="viewcode-back" href="../../darc/crawl.html#darc.crawl.crawler">[docs]</a><span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Single :mod:`requests` crawler for an entry link.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: URL to be crawled by :mod:`requests`.</span>
+
+<span class="sd">    The function will first parse the URL using</span>
+<span class="sd">    :func:`~darc.link.parse_link`, and check if need to crawl the</span>
+<span class="sd">    URL (c.f. :data:`~darc.const.PROXY_WHITE_LIST`, :data:`~darc.const.PROXY_BLACK_LIST`,</span>
+<span class="sd">    :data:`~darc.const.LINK_WHITE_LIST` and :data:`~darc.const.LINK_BLACK_LIST`);</span>
+<span class="sd">    if true, then crawl the URL with :mod:`requests`.</span>
+
+<span class="sd">    If the URL is from a brand new host, :mod:`darc` will first try</span>
+<span class="sd">    to fetch and save ``robots.txt`` and sitemaps of the host</span>
+<span class="sd">    (c.f. :func:`~darc.proxy.null.save_robots` and :func:`~darc.proxy.null.save_sitemap`),</span>
+<span class="sd">    and extract then save the links from sitemaps (c.f. :func:`~darc.proxy.null.read_sitemap`)</span>
+<span class="sd">    into link database for future crawling (c.f. :func:`~darc.db.save_requests`).</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">       A host is new if :func:`~darc.db.have_hostname` returns :data:`True`.</span>
+
+<span class="sd">       If :func:`darc.proxy.null.fetch_sitemap` and/or :func:`darc.proxy.i2p.fetch_hosts`</span>
+<span class="sd">       failed when fetching such documents, the host will be removed from the</span>
+<span class="sd">       hostname database through :func:`~darc.db.drop_hostname`, and considered</span>
+<span class="sd">       as new when next encounter.</span>
+
+<span class="sd">    Also, if the submission API is provided, :func:`~darc.submit.submit_new_host`</span>
+<span class="sd">    will be called and submit the documents just fetched.</span>
+
+<span class="sd">    If ``robots.txt`` presented, and :data:`~darc.const.FORCE` is</span>
+<span class="sd">    :data:`False`, :mod:`darc` will check if allowed to crawl the URL.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        The root path (e.g. ``/`` in https://www.example.com/) will always</span>
+<span class="sd">        be crawled ignoring ``robots.txt``.</span>
+
+<span class="sd">    At this point, :mod:`darc` will call the customised hook function</span>
+<span class="sd">    from :mod:`darc.sites` to crawl and get the final response object.</span>
+<span class="sd">    :mod:`darc` will save the session cookies and header information,</span>
+<span class="sd">    using :func:`~darc.save.save_headers`.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        If :exc:`requests.exceptions.InvalidSchema` is raised, the link</span>
+<span class="sd">        will be saved by :func:`~darc.proxy.null.save_invalid`. Further</span>
+<span class="sd">        processing is dropped, and the link will be removed from the</span>
+<span class="sd">        :mod:`requests` database through :func:`~darc.db.drop_requests`.</span>
+
+<span class="sd">        If :exc:`~darc.error.LinkNoReturn` is raised, the link will be</span>
+<span class="sd">        removed from the :mod:`requests` database through</span>
+<span class="sd">        :func:`~darc.db.drop_requests`.</span>
+
+<span class="sd">    If the content type of response document is not ignored (c.f.</span>
+<span class="sd">    :data:`~darc.const.MIME_WHITE_LIST` and :data:`~darc.const.MIME_BLACK_LIST`),</span>
+<span class="sd">    :func:`~darc.submit.submit_requests` will be called and submit the document</span>
+<span class="sd">    just fetched.</span>
+
+<span class="sd">    If the response document is HTML (``text/html`` and ``application/xhtml+xml``),</span>
+<span class="sd">    :func:`~darc.parse.extract_links` will be called then to extract</span>
+<span class="sd">    all possible links from the HTML document and save such links into</span>
+<span class="sd">    the database (c.f. :func:`~darc.db.save_requests`).</span>
+
+<span class="sd">    And if the response status code is between ``400`` and ``600``,</span>
+<span class="sd">    the URL will be saved back to the link database</span>
+<span class="sd">    (c.f. :func:`~darc.db.save_requests`). If **NOT**, the URL will</span>
+<span class="sd">    be saved into :mod:`selenium` link database to proceed next steps</span>
+<span class="sd">    (c.f. :func:`~darc.db.save_selenium`).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Requesting </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">match_proxy</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">proxy</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Ignored proxy type from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">proxy</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+                               <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+            <span class="n">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">match_host</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Ignored hostname from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">proxy</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+                               <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+            <span class="n">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># timestamp</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="c1"># get the session object in advance</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">request_session</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+
+        <span class="c1"># check whether schema supported by :mod:`requests`</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">get_adapter</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># test for adapter</span>
+            <span class="n">requests_supported</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidSchema</span><span class="p">:</span>
+            <span class="n">requests_supported</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># if need to test for new host</span>
+        <span class="k">if</span> <span class="n">requests_supported</span><span class="p">:</span>
+            <span class="c1"># if it&#39;s a new host</span>
+            <span class="n">flag_have</span><span class="p">,</span> <span class="n">force_fetch</span> <span class="o">=</span> <span class="n">have_hostname</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_have</span> <span class="ow">or</span> <span class="n">force_fetch</span><span class="p">:</span>
+                <span class="n">partial</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">proxy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;zeronet&#39;</span><span class="p">,</span> <span class="s1">&#39;freenet&#39;</span><span class="p">):</span>
+                    <span class="c1"># fetch sitemap.xml</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">fetch_sitemap</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_fetch</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">error</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[Error fetching sitemap of </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">]&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span> <span class="o">+</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span>  <span class="c1"># pylint: disable=line-too-long</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                        <span class="n">partial</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">proxy</span> <span class="o">==</span> <span class="s1">&#39;i2p&#39;</span><span class="p">:</span>
+                    <span class="c1"># fetch hosts.txt</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">fetch_hosts</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_fetch</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">error</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[Error subscribing hosts from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">]&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span> <span class="o">+</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span>  <span class="c1"># pylint: disable=line-too-long</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                        <span class="n">partial</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="c1"># submit data / drop hostname from db</span>
+                <span class="k">if</span> <span class="n">partial</span><span class="p">:</span>
+                    <span class="n">drop_hostname</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+                <span class="n">submit_new_host</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">link</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_fetch</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">FORCE</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">check_robots</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Robots disallowed link from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">return</span>
+
+        <span class="c1"># reuse the session object</span>
+        <span class="k">with</span> <span class="n">session</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># requests session hook</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">crawler_hook</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidSchema</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Failed on </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">save_invalid</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+                <span class="n">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Failed on </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">save_requests</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="n">LinkNoReturn</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Removing from database: </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">drop</span><span class="p">:</span>
+                    <span class="n">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="c1"># save headers</span>
+            <span class="n">save_headers</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">link</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+
+            <span class="c1"># check content type</span>
+            <span class="n">ct_type</span> <span class="o">=</span> <span class="n">get_content_type</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ct_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;text/html&#39;</span><span class="p">,</span> <span class="s1">&#39;application/xhtml+xml&#39;</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Generic content type from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">ct_type</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+
+                <span class="c1"># probably hosts.txt</span>
+                <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">proxy</span> <span class="o">==</span> <span class="s1">&#39;i2p&#39;</span> <span class="ow">and</span> <span class="n">ct_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="s1">&#39;text/text&#39;</span><span class="p">]:</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+                    <span class="n">save_requests</span><span class="p">(</span><span class="n">read_hosts</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">match_mime</span><span class="p">(</span><span class="n">ct_type</span><span class="p">):</span>
+                    <span class="n">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+                    <span class="k">return</span>
+
+                <span class="c1"># submit data</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+                <span class="n">submit_requests</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">link</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime_type</span><span class="o">=</span><span class="n">ct_type</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                <span class="k">return</span>
+
+            <span class="n">html</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">html</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Empty response from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">save_requests</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="c1"># submit data</span>
+            <span class="n">submit_requests</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">link</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">html</span><span class="p">,</span> <span class="n">mime_type</span><span class="o">=</span><span class="n">ct_type</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># add link to queue</span>
+            <span class="n">save_requests</span><span class="p">(</span><span class="n">extract_links</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">html</span><span class="p">),</span> <span class="n">score</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Failed on </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> [</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">save_requests</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="c1"># add link to queue</span>
+            <span class="n">save_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">SAVE_DB</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+                <span class="n">host</span> <span class="o">=</span> <span class="n">HostnameModel</span><span class="o">.</span><span class="n">get_or_none</span><span class="p">(</span><span class="n">HostnameModel</span><span class="o">.</span><span class="n">hostname</span> <span class="o">==</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>  <span class="c1"># type: Optional[HostnameModel]</span>
+                <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">host</span><span class="o">.</span><span class="n">alive</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">host</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="n">URLModel</span><span class="o">.</span><span class="n">get_or_none</span><span class="p">(</span><span class="n">URLModel</span><span class="o">.</span><span class="n">hash</span> <span class="o">==</span> <span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: Optional[URLModel]</span>
+                <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">url</span><span class="o">.</span><span class="n">alias</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">url</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="n">error</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[Error from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">]&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span> <span class="o">+</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span>  <span class="c1"># type: ignore # pylint: disable=line-too-long</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># type: ignore # pylint: disable=no-member</span>
+        <span class="n">save_requests</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Requested </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="loader"><a class="viewcode-back" href="../../darc/crawl.html#darc.crawl.loader">[docs]</a><span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Single :mod:`selenium` loader for an entry link.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        Link: URL to be crawled by :mod:`selenium`.</span>
+
+<span class="sd">    The function will first parse the URL using :func:`~darc.link.parse_link`</span>
+<span class="sd">    and start loading the URL using :mod:`selenium` with Google Chrome.</span>
+
+<span class="sd">    At this point, :mod:`darc` will call the customised hook function</span>
+<span class="sd">    from :mod:`darc.sites` to load and return the original</span>
+<span class="sd">    :class:`selenium.webdriver.chrome.webdriver.WebDriver` object.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        If :exc:`~darc.error.LinkNoReturn` is raised, the link will be</span>
+<span class="sd">        removed from the :mod:`selenium` database through</span>
+<span class="sd">        :func:`~darc.db.drop_selenium`.</span>
+
+<span class="sd">    If successful, the rendered source HTML document will be saved, and a</span>
+<span class="sd">    full-page screenshot will be taken and saved.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">       When taking full-page screenshot, :func:`~darc.crawl.loader` will</span>
+<span class="sd">       use :javascript:`document.body.scrollHeight` to get the total</span>
+<span class="sd">       height of web page. If the page height is *less than* **1,000 pixels**,</span>
+<span class="sd">       then :mod:`darc` will by default set the height as **1,000 pixels**.</span>
+
+<span class="sd">       Later :mod:`darc` will tell :mod:`selenium` to resize the window (in</span>
+<span class="sd">       *headless* mode) to **1,024 pixels** in width and **110%** of the</span>
+<span class="sd">       page height in height, and take a *PNG* screenshot.</span>
+
+<span class="sd">    If the submission API is provided, :func:`~darc.submit.submit_selenium`</span>
+<span class="sd">    will be called and submit the document just loaded.</span>
+
+<span class="sd">    Later, :func:`~darc.parse.extract_links` will be called then to</span>
+<span class="sd">    extract all possible links from the HTML document and save such</span>
+<span class="sd">    links into the :mod:`requests` database (c.f. :func:`~darc.db.save_requests`).</span>
+
+<span class="sd">    .. seealso::</span>
+
+<span class="sd">       * :data:`darc.const.SE_EMPTY`</span>
+<span class="sd">       * :data:`darc.const.SE_WAIT`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Loading </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># timestamp</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="c1"># retrieve source from Chrome</span>
+        <span class="k">with</span> <span class="n">request_driver</span><span class="p">(</span><span class="n">link</span><span class="p">)</span> <span class="k">as</span> <span class="n">driver</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># selenium driver hook</span>
+                <span class="n">driver</span> <span class="o">=</span> <span class="n">loader_hook</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">urllib3_exceptions</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Fail to load </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">save_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="n">selenium_exceptions</span><span class="o">.</span><span class="n">WebDriverException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Fail to load </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">save_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="n">LinkNoReturn</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Removing from database: </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">drop</span><span class="p">:</span>
+                    <span class="n">drop_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="c1"># get HTML source</span>
+            <span class="n">html</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
+
+            <span class="k">if</span> <span class="n">html</span> <span class="o">==</span> <span class="n">SE_EMPTY</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Empty page from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">save_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="n">screenshot</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># get maximum height</span>
+                <span class="n">height</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return document.body.scrollHeight&#39;</span><span class="p">)</span>
+
+                <span class="c1"># resize window (with some magic numbers)</span>
+                <span class="k">if</span> <span class="n">height</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+                    <span class="n">height</span> <span class="o">=</span> <span class="mi">1000</span>
+                <span class="n">driver</span><span class="o">.</span><span class="n">set_window_size</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">height</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">))</span>
+
+                <span class="c1"># take a full page screenshot</span>
+                <span class="n">screenshot</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_base64</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Fail to save screenshot from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+
+            <span class="c1"># submit data</span>
+            <span class="n">submit_selenium</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">link</span><span class="p">,</span> <span class="n">html</span><span class="p">,</span> <span class="n">screenshot</span><span class="p">)</span>
+
+            <span class="c1"># add link to queue</span>
+            <span class="n">save_requests</span><span class="p">(</span><span class="n">extract_links</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">html</span><span class="p">),</span> <span class="n">score</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[Error from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">]&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span> <span class="o">+</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span>  <span class="c1"># type: ignore # pylint: disable=line-too-long</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>  <span class="c1"># type: ignore # pylint: disable=no-member</span>
+        <span class="n">save_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Loaded </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darc.model.abc &#8212; darc 0.9.2 documentation</title>
+    <title>darc.model.abc &#8212; darc 0.9.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -40,12 +40,17 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
 <span class="kn">import</span> <span class="nn">peewee</span>
-<span class="kn">import</span> <span class="nn">playhouse.shortcuts</span>
+<span class="kn">import</span> <span class="nn">playhouse.shortcuts</span> <span class="k">as</span> <span class="nn">playhouse_shortcuts</span>
 
 <span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DB</span> <span class="k">as</span> <span class="n">database</span>
 <span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DB_WEB</span> <span class="k">as</span> <span class="n">database_web</span>
 <span class="kn">from</span> <span class="nn">darc.model.utils</span> <span class="kn">import</span> <span class="n">table_function</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="n">Metadata</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;BaseMeta&#39;</span><span class="p">,</span> <span class="s1">&#39;BaseModel&#39;</span><span class="p">,</span>
@@ -66,7 +71,10 @@
     <span class="sd">&quot;&quot;&quot;Basic metadata for data models of data submission.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Reference database storage (c.f. :class:`~darc.const.DB`).</span>
-    <span class="n">database</span> <span class="o">=</span> <span class="n">database_web</span></div>
+    <span class="n">database</span> <span class="o">=</span> <span class="n">database_web</span>
+
+    <span class="c1">#: Generate table name dynamically (c.f. :func:`~darc.models.utils.table_function`).</span>
+    <span class="n">table_function</span> <span class="o">=</span> <span class="n">table_function</span></div>
 
 
 <div class="viewcode-block" id="BaseModel"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.BaseModel">[docs]</a><span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">peewee</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
@@ -80,6 +88,7 @@
 
     <span class="c1">#: Basic metadata for data models.</span>
     <span class="n">Meta</span> <span class="o">=</span> <span class="n">BaseMeta</span>
+    <span class="n">_meta</span><span class="p">:</span> <span class="s1">&#39;Metadata&#39;</span>
 
 <div class="viewcode-block" id="BaseModel.to_dict"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.BaseModel.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convert record to :obj:`dict`.</span>
@@ -91,7 +100,7 @@
 <span class="sd">            The data converted through :func:`playhouse.shortcuts.model_to_dict`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">playhouse</span><span class="o">.</span><span class="n">shortcuts</span><span class="o">.</span><span class="n">model_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">playhouse_shortcuts</span><span class="o">.</span><span class="n">model_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">keep_id</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">data</span>
 

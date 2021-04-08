@@ -1,0 +1,492 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darc.parse &#8212; darc 0.9.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for darc.parse</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># pylint: disable=ungrouped-imports</span>
+<span class="sd">&quot;&quot;&quot;Source Parsing</span>
+<span class="sd">====================</span>
+
+<span class="sd">The :mod:`darc.parse` module provides auxiliary functions</span>
+<span class="sd">to read ``robots.txt``, sitemaps and HTML documents. It</span>
+<span class="sd">also contains utility functions to check if the proxy type,</span>
+<span class="sd">hostname and content type if in any of the black and white</span>
+<span class="sd">lists.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">concurrent.futures</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">bs4</span>
+<span class="kn">import</span> <span class="nn">magic</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">stem.util.term</span> <span class="k">as</span> <span class="nn">stem_term</span>
+
+<span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">RobotFileParser</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="p">(</span><span class="n">CHECK</span><span class="p">,</span> <span class="n">CHECK_NG</span><span class="p">,</span> <span class="n">LINK_BLACK_LIST</span><span class="p">,</span> <span class="n">LINK_FALLBACK</span><span class="p">,</span> <span class="n">LINK_WHITE_LIST</span><span class="p">,</span>
+                        <span class="n">MIME_BLACK_LIST</span><span class="p">,</span> <span class="n">MIME_FALLBACK</span><span class="p">,</span> <span class="n">MIME_WHITE_LIST</span><span class="p">,</span> <span class="n">PROXY_BLACK_LIST</span><span class="p">,</span>
+                        <span class="n">PROXY_FALLBACK</span><span class="p">,</span> <span class="n">PROXY_WHITE_LIST</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">render_error</span>
+<span class="kn">from</span> <span class="nn">darc.link</span> <span class="kn">import</span> <span class="n">parse_link</span><span class="p">,</span> <span class="n">urljoin</span><span class="p">,</span> <span class="n">urlsplit</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+    <span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">Response</span>
+    <span class="kn">from</span> <span class="nn">requests_futures.sessions</span> <span class="kn">import</span> <span class="n">FuturesSession</span>
+
+    <span class="kn">import</span> <span class="nn">darc.link</span> <span class="k">as</span> <span class="nn">darc_link</span>  <span class="c1"># Link</span>
+
+<span class="c1"># Regular expression patterns to match all reasonable URLs.</span>
+<span class="n">URL_PAT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># gfm.autolink.URL_RE (https://pythonhosted.org/py-gfm/_modules/gfm/autolink.html#AutolinkExtension)</span>
+    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?i)\b((?:(?:ftp|https?|wss?|irc)://|www\d{0,3}[.])(?:[^\s()&lt;&gt;]+|&#39;</span>
+                       <span class="sa">r</span><span class="s1">&#39;\(([^\s()&lt;&gt;]+|(\([^\s()&lt;&gt;]+\)))*\))+(?:\(([^\s()&lt;&gt;]+|(\([^\s()&#39;</span>
+                       <span class="sa">r</span><span class="s1">&#39;&lt;&gt;]+\)))*\)|[^\s`!()\[\]</span><span class="si">{}</span><span class="s1">;:&#39;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;&quot;.,&lt;&gt;?«»“”‘’]))&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">ASCII</span><span class="p">),</span>
+    <span class="c1"># gfm.automail.MAIL_RE (https://pythonhosted.org/py-gfm/_modules/gfm/automail.html#AutomailExtension)</span>
+    <span class="s1">&#39;mailto:&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?i)\b(?P&lt;url&gt;(?:mailto:)?[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+)\b&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">ASCII</span><span class="p">),</span>
+
+    <span class="c1"># BTC</span>
+    <span class="s1">&#39;bitcoin&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?i)\b(?P&lt;url&gt;(?:(?:bitcoin|btc):)?[13][a-z0-9]{27,34})\b&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">ASCII</span><span class="p">),</span>
+    <span class="c1"># ETH</span>
+    <span class="s1">&#39;ethereum&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?i)\b(?P&lt;url&gt;(?:(?:ethereum|eth):)?(?:0x)?[0-9a-f]</span><span class="si">{40}</span><span class="s1">)\b&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">ASCII</span><span class="p">),</span>
+
+    <span class="c1"># HTTP(S) and other *regular* URLs, e.g. WebSocket, IRC, etc.</span>
+    <span class="c1">#re.compile(r&#39;(?P&lt;url&gt;((https?|wss?|irc):)?(//)?\w+(\.\w+)+/?\S*)&#39;, re.UNICODE),</span>
+    <span class="c1"># bitcoin / data / ed2k / magnet / mail / script / tel, etc.</span>
+    <span class="c1">#re.compile(r&#39;(?P&lt;url&gt;(bitcoin|data|ed2k|magnet|mailto|script|tel):\w+)&#39;, re.ASCII),</span>
+<span class="p">}</span>
+<span class="n">URL_PAT</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">scheme</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span> <span class="o">|</span> <span class="n">re</span><span class="o">.</span><span class="n">ASCII</span><span class="p">)</span>  <span class="c1"># pattern string + compiling flags</span>
+                <span class="k">for</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">flags</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_URL_PAT&#39;</span><span class="p">,</span> <span class="s1">&#39;[]&#39;</span><span class="p">))})</span>
+
+
+<div class="viewcode-block" id="match_proxy"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.match_proxy">[docs]</a><span class="k">def</span> <span class="nf">match_proxy</span><span class="p">(</span><span class="n">proxy</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check if proxy type in black list.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        proxy: Proxy type to be checked.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        If ``proxy`` in  black list.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        If ``proxy`` is ``script``, then it</span>
+<span class="sd">        will always return :data:`True`.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :data:`darc.const.PROXY_WHITE_LIST`</span>
+<span class="sd">        * :data:`darc.const.PROXY_BLACK_LIST`</span>
+<span class="sd">        * :data:`darc.const.PROXY_FALLBACK`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">proxy</span> <span class="o">==</span> <span class="s1">&#39;script&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># any matching black list</span>
+    <span class="k">if</span> <span class="n">proxy</span> <span class="ow">in</span> <span class="n">PROXY_BLACK_LIST</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># any matching white list</span>
+    <span class="k">if</span> <span class="n">proxy</span> <span class="ow">in</span> <span class="n">PROXY_WHITE_LIST</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># fallback</span>
+    <span class="k">return</span> <span class="n">PROXY_FALLBACK</span></div>
+
+
+<div class="viewcode-block" id="match_host"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.match_host">[docs]</a><span class="k">def</span> <span class="nf">match_host</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="s1">&#39;Optional[str]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check if hostname in black list.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        host: Hostname to be checked.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        If ``host`` in  black list.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        If ``host`` is :data:`None`, then it</span>
+<span class="sd">        will always return :data:`True`.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :data:`darc.const.LINK_WHITE_LIST`</span>
+<span class="sd">        * :data:`darc.const.LINK_BLACK_LIST`</span>
+<span class="sd">        * :data:`darc.const.LINK_FALLBACK`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># invalid hostname</span>
+    <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># any matching black list</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">host</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">LINK_BLACK_LIST</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># any matching white list</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">host</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">LINK_WHITE_LIST</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># fallback</span>
+    <span class="k">return</span> <span class="n">LINK_FALLBACK</span></div>
+
+
+<div class="viewcode-block" id="match_mime"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.match_mime">[docs]</a><span class="k">def</span> <span class="nf">match_mime</span><span class="p">(</span><span class="n">mime</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check if content type in black list.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mime: Content type to be checked.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        If ``mime`` in  black list.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :data:`darc.const.MIME_WHITE_LIST`</span>
+<span class="sd">        * :data:`darc.const.MIME_BLACK_LIST`</span>
+<span class="sd">        * :data:`darc.const.MIME_FALLBACK`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># any matching black list</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">mime</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">MIME_BLACK_LIST</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># any matching white list</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">mime</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">MIME_WHITE_LIST</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># fallback</span>
+    <span class="k">return</span> <span class="n">MIME_FALLBACK</span></div>
+
+
+<div class="viewcode-block" id="check_robots"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.check_robots">[docs]</a><span class="k">def</span> <span class="nf">check_robots</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check if ``link`` is allowed in ``robots.txt``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: The link object to be checked.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        If ``link`` is allowed in ``robots.txt``.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        The root path of a URL will always return :data:`True`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># bypass robots for root path</span>
+    <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">url_parse</span><span class="o">.</span><span class="n">path</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="n">robots</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="s1">&#39;robots.txt&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">robots</span><span class="p">):</span>
+        <span class="n">rp</span> <span class="o">=</span> <span class="n">RobotFileParser</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">robots</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">rp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">darc.requests</span> <span class="kn">import</span> <span class="n">default_user_agent</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+        <span class="k">return</span> <span class="n">rp</span><span class="o">.</span><span class="n">can_fetch</span><span class="p">(</span><span class="n">default_user_agent</span><span class="p">(),</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="_check_ng"><a class="viewcode-back" href="../../darc/parse.html#darc.parse._check_ng">[docs]</a><span class="k">def</span> <span class="nf">_check_ng</span><span class="p">(</span><span class="n">temp_list</span><span class="p">:</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check content type of links through ``HEAD`` requests.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        temp_list: List of links to be checked.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of links matches the requirements.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.parse.match_host`</span>
+<span class="sd">        * :func:`darc.parse.match_proxy`</span>
+<span class="sd">        * :func:`darc.parse.match_mime`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">darc.crawl</span> <span class="kn">import</span> <span class="n">request_session</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+
+    <span class="n">session_map</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[str, FuturesSession]</span>
+    <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">temp_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">match_host</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">match_proxy</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">proxy</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># get session</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">session_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">proxy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">session</span> <span class="o">=</span> <span class="n">request_session</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">futures</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">session_map</span><span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">proxy</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Checking content type from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">link_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">result_list</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>  <span class="c1"># type: Response</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Checking failed &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
+                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="k">continue</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Failed on </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
+                               <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+            <span class="n">link_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">ct_type</span> <span class="o">=</span> <span class="n">get_content_type</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Checked content type from </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">ct_type</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">match_mime</span><span class="p">(</span><span class="n">ct_type</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">temp_link</span> <span class="o">=</span> <span class="n">parse_link</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">link_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_link</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">link_list</span></div>
+
+
+<div class="viewcode-block" id="_check"><a class="viewcode-back" href="../../darc/parse.html#darc.parse._check">[docs]</a><span class="k">def</span> <span class="nf">_check</span><span class="p">(</span><span class="n">temp_list</span><span class="p">:</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check hostname and proxy type of links.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        temp_list: List of links to be checked.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of links matches the requirements.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        If :data:`~darc.const.CHECK_NG` is :data:`True`,</span>
+<span class="sd">        the function will directly call :func:`~darc.parse._check_ng`</span>
+<span class="sd">        instead.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.parse.match_host`</span>
+<span class="sd">        * :func:`darc.parse.match_proxy`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">CHECK_NG</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_check_ng</span><span class="p">(</span><span class="n">temp_list</span><span class="p">)</span>
+
+    <span class="n">link_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">temp_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">match_host</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">match_proxy</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">proxy</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">link_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">link_list</span></div>
+
+
+<div class="viewcode-block" id="get_content_type"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.get_content_type">[docs]</a><span class="k">def</span> <span class="nf">get_content_type</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="s1">&#39;Response&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get content type from ``response``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        response (:class:`requests.Response`): Response object.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The content type from ``response``.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        If the ``Content-Type`` header is not defined in ``response``,</span>
+<span class="sd">        the function will utilise |magic|_ to detect its content type.</span>
+
+<span class="sd">    .. |Response| replace:: ``requests.Response``.</span>
+<span class="sd">    .. _Response: https://requests.readthedocs.io/en/latest/api/index.html#requests.Response</span>
+
+<span class="sd">    .. |magic| replace:: ``magic``</span>
+<span class="sd">    .. _magic: https://pypi.org/project/python-magic/</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ct_type</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ct_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ct_type</span> <span class="o">=</span> <span class="n">magic</span><span class="o">.</span><span class="n">detect_from_content</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">mime_type</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">ct_type</span> <span class="o">=</span> <span class="s1">&#39;(null)&#39;</span>
+    <span class="k">return</span> <span class="n">ct_type</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="extract_links"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.extract_links">[docs]</a><span class="k">def</span> <span class="nf">extract_links</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span> <span class="n">html</span><span class="p">:</span> <span class="s1">&#39;Union[str, bytes]&#39;</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CHECK</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Extract links from HTML document.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Original link of the HTML document.</span>
+<span class="sd">        html: Content of the HTML document.</span>
+<span class="sd">        check: If perform checks on extracted links,</span>
+<span class="sd">            default to :data:`~darc.const.CHECK`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of extracted links.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.parse._check`</span>
+<span class="sd">        * :func:`darc.parse._check_ng`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;html5lib&#39;</span><span class="p">)</span>
+
+    <span class="n">temp_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="k">lambda</span> <span class="n">tag</span><span class="p">:</span> <span class="n">tag</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">tag</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">href</span> <span class="o">:=</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">)))</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">temp_link</span> <span class="o">=</span> <span class="n">parse_link</span><span class="p">(</span><span class="n">urljoin</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">href</span><span class="p">),</span> <span class="n">backref</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+        <span class="n">temp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_link</span><span class="p">)</span>
+
+    <span class="c1"># extract links from text</span>
+    <span class="n">temp_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extract_links_from_text</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">soup</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+
+    <span class="c1"># check content / proxy type</span>
+    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_check</span><span class="p">(</span><span class="n">temp_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">temp_list</span></div>
+
+
+<div class="viewcode-block" id="extract_links_from_text"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.extract_links_from_text">[docs]</a><span class="k">def</span> <span class="nf">extract_links_from_text</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Extract links from raw text source.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Original link of the source document.</span>
+<span class="sd">        text: Content of source text document.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of extracted links.</span>
+
+<span class="sd">    Important:</span>
+<span class="sd">        The extraction is **NOT** as reliable since we did not</span>
+<span class="sd">        perform `TLD`_ checks on the extracted links and we cannot</span>
+<span class="sd">        guarantee all links to be extracted.</span>
+
+<span class="sd">        .. _TLD: https://pypi.org/project/tld/</span>
+
+<span class="sd">        The URL patterns used to extract links are defined by</span>
+<span class="sd">        :data:`darc.parse.URL_PAT` and you may register your</span>
+<span class="sd">        own expressions by :envvar:`DARC_URL_PAT`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">temp_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">URL_PAT</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">part</span><span class="p">):</span>
+                <span class="n">match_url</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+
+                <span class="c1"># add scheme if not exist</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">urlsplit</span><span class="p">(</span><span class="n">match_url</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="p">:</span>
+                    <span class="n">match_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">match_url</span><span class="si">}</span><span class="s1">&#39;</span>
+
+                <span class="n">temp_link</span> <span class="o">=</span> <span class="n">parse_link</span><span class="p">(</span><span class="n">match_url</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+                <span class="n">temp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_link</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">temp_list</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,492 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darc.process &#8212; darc 0.9.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for darc.process</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># pylint: disable=ungrouped-imports</span>
+<span class="sd">&quot;&quot;&quot;Main Processing</span>
+<span class="sd">=====================</span>
+
+<span class="sd">The :mod:`darc.process` module contains the main processing</span>
+<span class="sd">logic of the :mod:`darc` module.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">import</span> <span class="nn">stem.util.term</span> <span class="k">as</span> <span class="nn">stem_term</span>
+
+<span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">strsignal</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DARC_CPU</span><span class="p">,</span> <span class="n">DARC_WAIT</span><span class="p">,</span> <span class="n">FLAG_MP</span><span class="p">,</span> <span class="n">FLAG_TH</span><span class="p">,</span> <span class="n">PATH_ID</span><span class="p">,</span> <span class="n">REBOOT</span><span class="p">,</span> <span class="n">getpid</span>
+<span class="kn">from</span> <span class="nn">darc.crawl</span> <span class="kn">import</span> <span class="n">crawler</span><span class="p">,</span> <span class="n">loader</span>
+<span class="kn">from</span> <span class="nn">darc.db</span> <span class="kn">import</span> <span class="n">load_requests</span><span class="p">,</span> <span class="n">load_selenium</span>
+<span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">HookExecutionFailed</span><span class="p">,</span> <span class="n">WorkerBreak</span>
+<span class="kn">from</span> <span class="nn">darc.link</span> <span class="kn">import</span> <span class="n">Link</span>
+<span class="kn">from</span> <span class="nn">darc.proxy.freenet</span> <span class="kn">import</span> <span class="n">_FREENET_BS_FLAG</span><span class="p">,</span> <span class="n">freenet_bootstrap</span>
+<span class="kn">from</span> <span class="nn">darc.proxy.i2p</span> <span class="kn">import</span> <span class="n">_I2P_BS_FLAG</span><span class="p">,</span> <span class="n">i2p_bootstrap</span>
+<span class="kn">from</span> <span class="nn">darc.proxy.tor</span> <span class="kn">import</span> <span class="n">_TOR_BS_FLAG</span><span class="p">,</span> <span class="n">renew_tor_session</span><span class="p">,</span> <span class="n">tor_bootstrap</span>
+<span class="kn">from</span> <span class="nn">darc.proxy.zeronet</span> <span class="kn">import</span> <span class="n">_ZERONET_BS_FLAG</span><span class="p">,</span> <span class="n">zeronet_bootstrap</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span>
+    <span class="kn">from</span> <span class="nn">signal</span> <span class="kn">import</span> <span class="n">Signals</span>  <span class="c1"># pylint: disable=no-name-in-module</span>
+    <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+    <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FrameType</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="c1">#: List[Union[Process, Thread]]: List of</span>
+<span class="c1">#: active child processes and/or threads.</span>
+<span class="n">_WORKER_POOL</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[Union[Process, Thread]]</span>
+
+<span class="c1">#: List[Callable[[Literal[&#39;crawler&#39;, &#39;loader&#39;], List[Link]]]: List of hook functions to</span>
+<span class="c1">#: be called between each *round*.</span>
+<span class="n">_HOOK_REGISTRY</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[Callable[[Literal[&quot;crawler&quot;, &quot;loader&quot;], List[Link]], None]]</span>
+
+
+<div class="viewcode-block" id="register"><a class="viewcode-back" href="../../darc/process.html#darc.process.register">[docs]</a><span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">hook</span><span class="p">:</span> <span class="s1">&#39;Callable[[Literal[&quot;crawler&quot;, &quot;loader&quot;], List[Link]], None]&#39;</span><span class="p">,</span>
+             <span class="o">*</span><span class="p">,</span> <span class="n">_index</span><span class="p">:</span> <span class="s1">&#39;Optional[int]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Register hook function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        hook: Hook function to be registered.</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        _index: Position index for the hook function.</span>
+
+<span class="sd">    The hook function takes two parameters:</span>
+
+<span class="sd">    1. a :obj:`str` object indicating the type of worker,</span>
+<span class="sd">       i.e. ``&#39;crawler&#39;`` or ``&#39;loader&#39;``;</span>
+<span class="sd">    2. a :obj:`list` object containing :class:`~darc.link.Link`</span>
+<span class="sd">       objects, as the current processed link pool.</span>
+
+<span class="sd">    The hook function may raises :exc:`~darc.error.WorkerBreak`</span>
+<span class="sd">    so that the worker shall break from its indefinite loop upon</span>
+<span class="sd">    finishing of current *round*. Any value returned from the</span>
+<span class="sd">    hook function will be ignored by the workers.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        The hook functions will be saved into</span>
+<span class="sd">        :data:`~darc.process._HOOK_REGISTRY`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_HOOK_REGISTRY</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hook</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_HOOK_REGISTRY</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">_index</span><span class="p">,</span> <span class="n">hook</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_signal_handler"><a class="viewcode-back" href="../../darc/process.html#darc.process._signal_handler">[docs]</a><span class="k">def</span> <span class="nf">_signal_handler</span><span class="p">(</span><span class="n">signum</span><span class="p">:</span> <span class="s1">&#39;Optional[Union[int, Signals]]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">frame</span><span class="p">:</span> <span class="s1">&#39;Optional[FrameType]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Signal handler.</span>
+
+<span class="sd">    If the current process is not the main process, the function</span>
+<span class="sd">    shall do nothing.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        signum: The signal to handle.</span>
+<span class="sd">        frame (types.FrameType): The traceback frame from the signal.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.const.getpid`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span> <span class="o">!=</span> <span class="n">getpid</span><span class="p">():</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">FLAG_MP</span> <span class="ow">and</span> <span class="n">_WORKER_POOL</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;List[Process]&#39;</span><span class="p">,</span> <span class="n">_WORKER_POOL</span><span class="p">):</span>
+            <span class="n">proc</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+            <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">FLAG_TH</span> <span class="ow">and</span> <span class="n">_WORKER_POOL</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">thrd</span> <span class="ow">in</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;List[Thread]&#39;</span><span class="p">,</span> <span class="n">_WORKER_POOL</span><span class="p">):</span>
+            <span class="n">thrd</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>  <span class="c1"># type: ignore[attr-defined] # pylint: disable=protected-access</span>
+            <span class="n">thrd</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PATH_ID</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">PATH_ID</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sig</span> <span class="o">=</span> <span class="n">strsignal</span><span class="p">(</span><span class="n">signum</span><span class="p">)</span> <span class="k">if</span> <span class="n">signum</span> <span class="k">else</span> <span class="n">signum</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">sig</span> <span class="o">=</span> <span class="n">signum</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">stem_term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DARC] Exit with signal: </span><span class="si">{</span><span class="n">sig</span><span class="si">}</span><span class="s1"> &lt;</span><span class="si">{</span><span class="n">frame</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
+                           <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span></div>
+
+
+<div class="viewcode-block" id="process_crawler"><a class="viewcode-back" href="../../darc/process.html#darc.process.process_crawler">[docs]</a><span class="k">def</span> <span class="nf">process_crawler</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A worker to run the :func:`~darc.crawl.crawler` process.</span>
+
+<span class="sd">    Warns:</span>
+<span class="sd">        HookExecutionFailed: When hook function raises an error.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] Starting first round...&#39;</span><span class="p">)</span>
+
+    <span class="c1"># start mainloop</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># requests crawler</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="n">load_requests</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">link_pool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">DARC_WAIT</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">DARC_WAIT</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">link_pool</span><span class="p">:</span>
+            <span class="n">crawler</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+
+        <span class="n">time2break</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">hook</span> <span class="ow">in</span> <span class="n">_HOOK_REGISTRY</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">hook</span><span class="p">(</span><span class="s1">&#39;crawler&#39;</span><span class="p">,</span> <span class="n">link_pool</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">WorkerBreak</span><span class="p">:</span>
+                <span class="n">time2break</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[CRAWLER] hook execution failed: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
+
+        <span class="c1"># marked to break by hook function</span>
+        <span class="k">if</span> <span class="n">time2break</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># quit in reboot mode</span>
+        <span class="k">if</span> <span class="n">REBOOT</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># renew Tor session</span>
+        <span class="n">renew_tor_session</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] Starting next round...&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] Stopping mainloop...&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="process_loader"><a class="viewcode-back" href="../../darc/process.html#darc.process.process_loader">[docs]</a><span class="k">def</span> <span class="nf">process_loader</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A worker to run the :func:`~darc.crawl.loader` process.</span>
+
+<span class="sd">    Warns:</span>
+<span class="sd">        HookExecutionFailed: When hook function raises an error.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[LOADER] Starting first round...&#39;</span><span class="p">)</span>
+
+    <span class="c1"># start mainloop</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># selenium loader</span>
+        <span class="n">link_pool</span> <span class="o">=</span> <span class="n">load_selenium</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">link_pool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">DARC_WAIT</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">DARC_WAIT</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">link_pool</span><span class="p">:</span>
+            <span class="n">loader</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+
+        <span class="n">time2break</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">hook</span> <span class="ow">in</span> <span class="n">_HOOK_REGISTRY</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">hook</span><span class="p">(</span><span class="s1">&#39;loader&#39;</span><span class="p">,</span> <span class="n">link_pool</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">WorkerBreak</span><span class="p">:</span>
+                <span class="n">time2break</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[LOADER] hook execution failed: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
+
+        <span class="c1"># marked to break by hook function</span>
+        <span class="k">if</span> <span class="n">time2break</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># quit in reboot mode</span>
+        <span class="k">if</span> <span class="n">REBOOT</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># renew Tor session</span>
+        <span class="n">renew_tor_session</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[LOADER] Starting next round...&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[LOADER] Stopping mainloop...&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_process"><a class="viewcode-back" href="../../darc/process.html#darc.process._process">[docs]</a><span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="n">worker</span><span class="p">:</span> <span class="s1">&#39;Union[process_crawler, process_loader]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[valid-type]</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper function to start the worker process.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_WORKER_POOL</span>  <span class="c1"># pylint: disable=global-statement</span>
+
+    <span class="k">if</span> <span class="n">FLAG_MP</span><span class="p">:</span>
+        <span class="n">_WORKER_POOL</span> <span class="o">=</span> <span class="p">[</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">worker</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">DARC_CPU</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">_WORKER_POOL</span><span class="p">:</span>
+            <span class="n">proc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">_WORKER_POOL</span><span class="p">:</span>
+            <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="n">FLAG_TH</span><span class="p">:</span>
+        <span class="n">_WORKER_POOL</span> <span class="o">=</span> <span class="p">[</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">worker</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">DARC_CPU</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">_WORKER_POOL</span><span class="p">:</span>
+            <span class="n">proc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">_WORKER_POOL</span><span class="p">:</span>
+            <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">worker</span><span class="p">()</span>  <span class="c1"># type: ignore[misc]</span></div>
+
+
+<div class="viewcode-block" id="process"><a class="viewcode-back" href="../../darc/process.html#darc.process.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">worker</span><span class="p">:</span> <span class="s1">&#39;Literal[&quot;crawler&quot;, &quot;loader&quot;]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Main process.</span>
+
+<span class="sd">    The function will register :func:`~darc.process._signal_handler` for ``SIGTERM``,</span>
+<span class="sd">    and start the main process of the :mod:`darc` darkweb crawlers.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        worker: Worker process type.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If ``worker`` is not a valid value.</span>
+
+<span class="sd">    Before starting the workers, the function will start proxies through</span>
+
+<span class="sd">    * :func:`darc.proxy.tor.tor_proxy`</span>
+<span class="sd">    * :func:`darc.proxy.i2p.i2p_proxy`</span>
+<span class="sd">    * :func:`darc.proxy.zeronet.zeronet_proxy`</span>
+<span class="sd">    * :func:`darc.proxy.freenet.freenet_proxy`</span>
+
+<span class="sd">    The general process can be described as following for *workers* of ``crawler`` type:</span>
+
+<span class="sd">    1. :func:`~darc.process.process_crawler`: obtain URLs from the :mod:`requests`</span>
+<span class="sd">       link database (c.f. :func:`~darc.db.load_requests`), and feed such URLs to</span>
+<span class="sd">       :func:`~darc.crawl.crawler`.</span>
+
+<span class="sd">       .. note::</span>
+
+<span class="sd">          If :data:`~darc.const.FLAG_MP` is :data:`True`, the function will be</span>
+<span class="sd">          called with *multiprocessing* support; if :data:`~darc.const.FLAG_TH`</span>
+<span class="sd">          if :data:`True`, the function will be called with *multithreading*</span>
+<span class="sd">          support; if none, the function will be called in single-threading.</span>
+
+<span class="sd">    2. :func:`~darc.crawl.crawler`: parse the URL using</span>
+<span class="sd">       :func:`~darc.link.parse_link`, and check if need to crawl the</span>
+<span class="sd">       URL (c.f. :data:`~darc.const.PROXY_WHITE_LIST`, :data:`~darc.const.PROXY_BLACK_LIST`</span>
+<span class="sd">       , :data:`~darc.const.LINK_WHITE_LIST` and :data:`~darc.const.LINK_BLACK_LIST`);</span>
+<span class="sd">       if true, then crawl the URL with :mod:`requests`.</span>
+
+<span class="sd">       If the URL is from a brand new host, :mod:`darc` will first try</span>
+<span class="sd">       to fetch and save ``robots.txt`` and sitemaps of the host</span>
+<span class="sd">       (c.f. :func:`~darc.proxy.null.save_robots` and :func:`~darc.proxy.null.save_sitemap`),</span>
+<span class="sd">       and extract then save the links from sitemaps (c.f. :func:`~darc.proxy.null.read_sitemap`)</span>
+<span class="sd">       into link database for future crawling (c.f. :func:`~darc.db.save_requests`).</span>
+<span class="sd">       Also, if the submission API is provided, :func:`~darc.submit.submit_new_host`</span>
+<span class="sd">       will be called and submit the documents just fetched.</span>
+
+<span class="sd">       If ``robots.txt`` presented, and :data:`~darc.const.FORCE` is</span>
+<span class="sd">       :data:`False`, :mod:`darc` will check if allowed to crawl the URL.</span>
+
+<span class="sd">       .. note::</span>
+
+<span class="sd">          The root path (e.g. ``/`` in https://www.example.com/) will always</span>
+<span class="sd">          be crawled ignoring ``robots.txt``.</span>
+
+<span class="sd">       At this point, :mod:`darc` will call the customised hook function</span>
+<span class="sd">       from :mod:`darc.sites` to crawl and get the final response object.</span>
+<span class="sd">       :mod:`darc` will save the session cookies and header information,</span>
+<span class="sd">       using :func:`~darc.save.save_headers`.</span>
+
+<span class="sd">       .. note::</span>
+
+<span class="sd">          If :exc:`requests.exceptions.InvalidSchema` is raised, the link</span>
+<span class="sd">          will be saved by :func:`~darc.proxy.null.save_invalid`. Further</span>
+<span class="sd">          processing is dropped.</span>
+
+<span class="sd">       If the content type of response document is not ignored (c.f.</span>
+<span class="sd">       :data:`~darc.const.MIME_WHITE_LIST` and :data:`~darc.const.MIME_BLACK_LIST`),</span>
+<span class="sd">       :func:`~darc.submit.submit_requests` will be called and submit the document</span>
+<span class="sd">       just fetched.</span>
+
+<span class="sd">       If the response document is HTML (``text/html`` and ``application/xhtml+xml``),</span>
+<span class="sd">       :func:`~darc.parse.extract_links` will be called then to extract all possible</span>
+<span class="sd">       links from the HTML document and save such links into the database</span>
+<span class="sd">       (c.f. :func:`~darc.db.save_requests`).</span>
+
+<span class="sd">       And if the response status code is between ``400`` and ``600``,</span>
+<span class="sd">       the URL will be saved back to the link database</span>
+<span class="sd">       (c.f. :func:`~darc.db.save_requests`). If **NOT**, the URL will</span>
+<span class="sd">       be saved into :mod:`selenium` link database to proceed next steps</span>
+<span class="sd">       (c.f. :func:`~darc.db.save_selenium`).</span>
+
+<span class="sd">    The general process can be described as following for *workers* of ``loader`` type:</span>
+
+<span class="sd">    1. :func:`~darc.process.process_loader`: in the meanwhile, :mod:`darc` will</span>
+<span class="sd">       obtain URLs from the :mod:`selenium` link database (c.f. :func:`~darc.db.load_selenium`),</span>
+<span class="sd">       and feed such URLs to :func:`~darc.crawl.loader`.</span>
+
+<span class="sd">       .. note::</span>
+
+<span class="sd">          If :data:`~darc.const.FLAG_MP` is :data:`True`, the function will be</span>
+<span class="sd">          called with *multiprocessing* support; if :data:`~darc.const.FLAG_TH`</span>
+<span class="sd">          if :data:`True`, the function will be called with *multithreading*</span>
+<span class="sd">          support; if none, the function will be called in single-threading.</span>
+
+<span class="sd">    2. :func:`~darc.crawl.loader`: parse the URL using</span>
+<span class="sd">       :func:`~darc.link.parse_link` and start loading the URL using</span>
+<span class="sd">       :mod:`selenium` with Google Chrome.</span>
+
+<span class="sd">       At this point, :mod:`darc` will call the customised hook function</span>
+<span class="sd">       from :mod:`darc.sites` to load and return the original</span>
+<span class="sd">       :class:`~selenium.webdriver.Chrome` object.</span>
+
+<span class="sd">       If successful, the rendered source HTML document will be saved, and a</span>
+<span class="sd">       full-page screenshot will be taken and saved.</span>
+
+<span class="sd">       If the submission API is provided, :func:`~darc.submit.submit_selenium`</span>
+<span class="sd">       will be called and submit the document just loaded.</span>
+
+<span class="sd">       Later, :func:`~darc.parse.extract_links` will be called then to</span>
+<span class="sd">       extract all possible links from the HTML document and save such</span>
+<span class="sd">       links into the :mod:`requests` database (c.f. :func:`~darc.db.save_requests`).</span>
+
+<span class="sd">    After each *round*, :mod:`darc` will call registered hook functions in</span>
+<span class="sd">    sequential order, with the type of worker (``&#39;crawler&#39;`` or ``&#39;loader&#39;``)</span>
+<span class="sd">    and the current link pool as its parameters, see :func:`~darc.process.register`</span>
+<span class="sd">    for more information.</span>
+
+<span class="sd">    If in reboot mode, i.e. :data:`~darc.const.REBOOT` is :data:`True`, the function</span>
+<span class="sd">    will exit after first round. If not, it will renew the Tor connections (if</span>
+<span class="sd">    bootstrapped), c.f. :func:`~darc.proxy.tor.renew_tor_session`, and start</span>
+<span class="sd">    another round.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#signal.signal(signal.SIGINT, _signal_handler)</span>
+    <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">_signal_handler</span><span class="p">)</span>
+    <span class="c1">#signal.signal(signal.SIGKILL, _signal_handler)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DARC] Starting </span><span class="si">{</span><span class="n">worker</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_TOR_BS_FLAG</span><span class="p">:</span>
+        <span class="n">tor_bootstrap</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_I2P_BS_FLAG</span><span class="p">:</span>
+        <span class="n">i2p_bootstrap</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_ZERONET_BS_FLAG</span><span class="p">:</span>
+        <span class="n">zeronet_bootstrap</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_FREENET_BS_FLAG</span><span class="p">:</span>
+        <span class="n">freenet_bootstrap</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">worker</span> <span class="o">==</span> <span class="s1">&#39;crawler&#39;</span><span class="p">:</span>
+        <span class="n">_process</span><span class="p">(</span><span class="n">process_crawler</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">worker</span> <span class="o">==</span> <span class="s1">&#39;loader&#39;</span><span class="p">:</span>
+        <span class="n">_process</span><span class="p">(</span><span class="n">process_loader</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;invalid worker type: </span><span class="si">{</span><span class="n">worker</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DARC] Gracefully existing </span><span class="si">{</span><span class="n">worker</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

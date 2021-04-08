@@ -67,13 +67,14 @@ General Configurations
 
 .. envvar:: DARC_URL_PAT
 
-   :type: List[Tuple[:obj:`str`, :obj:`int`]] (JSON)
+   :type: List[Tuple[:obj:`str`, :obj:`str`, :obj:`int`]] (JSON)
    :default: ``[]``
 
    Regular expression patterns to match all reasonable URLs.
 
    The environment variable should be **JSON** encoded, as an *array* of
-   *two-element pairs*. In each pair, it contains one Python regular
+   *three-element pairs*. In each pair, it contains one scheme (:obj:`str`)
+   as the fallback default scheme for matched URL, one Python regular
    expression string (:obj:`str`) as described in the builtin :mod:`re`
    module and one numeric value (:obj:`int`) representing the flags
    as defined in the builtin :mod:`re` module as well.
@@ -83,6 +84,9 @@ General Configurations
       The patterns **must** have a named match group ``url``, e.g.
       ``(?P<url>bitcoin:\w+)`` so that the function can extract matched
       URLs from the given pattern.
+
+      And the regular expression will always be used in **ASCII** mode,
+      i.e., with :data:`re.ASCII` flag to compile.
 
 .. envvar:: DARC_CPU
 

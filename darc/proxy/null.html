@@ -4,8 +4,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>&lt;no title&gt; &#8212; darc 0.9.2 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>No Proxy &#8212; darc 0.9.3 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -14,8 +15,8 @@
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="script.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="mail.html" />
+    <link rel="next" title="JavaScript Links" href="script.html" />
+    <link rel="prev" title="Email Addresses" href="mail.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -32,9 +33,252 @@
 
           <div class="body" role="main">
             
-  <dl class="py data">
-<dt id="darc.proxy.null.PATH">
-<code class="sig-prename descclassname">darc.proxy.null.</code><code class="sig-name descname">PATH</code><em class="property"> = '{PATH_MISC}/invalid.txt'</em><a class="headerlink" href="#darc.proxy.null.PATH" title="Permalink to this definition">¶</a></dt>
+  <span class="target" id="module-darc.proxy.null"></span><section id="no-proxy">
+<h1>No Proxy<a class="headerlink" href="#no-proxy" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-darc.proxy.null" title="darc.proxy.null"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy.null</span></code></a> module contains the auxiliary functions
+around managing and processing normal websites with no proxy.</p>
+<dl class="py function">
+<dt id="darc.proxy.null.fetch_sitemap">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">fetch_sitemap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/null.html#fetch_sitemap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.null.fetch_sitemap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch sitemap.</p>
+<p>The function will first fetch the <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>, then
+fetch the sitemaps accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to fetch for its sitemaps.</p></li>
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Force refetch its sitemaps.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Contents of <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> and sitemaps.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#darc.proxy.null.read_robots" title="darc.proxy.null.read_robots"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.null.read_robots()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#darc.proxy.null.read_sitemap" title="darc.proxy.null.read_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.null.read_sitemap()</span></code></a></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.parse.get_sitemap()</span></code></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.proxy.null.get_sitemap">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">get_sitemap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/null.html#get_sitemap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.null.get_sitemap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch link to other sitemaps from a sitemap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Original link to the sitemap.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of the sitemap.</p></li>
+<li><p><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Hostname of the URL to the sitemap,
+the value may not be same as in <code class="docutils literal notranslate"><span class="pre">link</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of link to sitemaps.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As specified in the sitemap protocol,
+it may contain links to other sitemaps. <a class="footnote-reference brackets" href="#id2" id="id1">*</a></p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">*</a></span></dt>
+<dd><p><a class="reference external" href="https://www.sitemaps.org/protocol.html#index">https://www.sitemaps.org/protocol.html#index</a></p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.proxy.null.have_robots">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">have_robots</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/null.html#have_robots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.null.have_robots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> already exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to check if <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> already exists.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> exists, return the path to <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>,
+i.e. <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/robots.txt</span></code>.</p></li>
+<li><p>If not, return <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.proxy.null.have_sitemap">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">have_sitemap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/null.html#have_sitemap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.null.have_sitemap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if sitemap already exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to check if sitemap already exists.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>If sitemap exists, return the path to the sitemap,
+i.e. <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/sitemap_&lt;hash&gt;.xml</span></code>.</p></li>
+<li><p>If not, return <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.proxy.null.read_robots">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">read_robots</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/null.html#read_robots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.null.read_robots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> to fetch link to sitemaps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Original link to <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p></li>
+<li><p><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Hostname of the URL to <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>,
+the value may not be same as in <code class="docutils literal notranslate"><span class="pre">link</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of link to sitemaps.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the link to sitemap is not specified in
+<code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> <a class="footnote-reference brackets" href="#id4" id="id3">†</a>, the fallback link
+<code class="docutils literal notranslate"><span class="pre">/sitemap.xml</span></code> will be used.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id3">†</a></span></dt>
+<dd><p><a class="reference external" href="https://www.sitemaps.org/protocol.html#submit_robots">https://www.sitemaps.org/protocol.html#submit_robots</a></p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.proxy.null.read_sitemap">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">read_sitemap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/null.html#read_sitemap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.null.read_sitemap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read sitemap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Original link to the sitemap.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of the sitemap.</p></li>
+<li><p><strong>check</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If perform checks on extracted links,
+default to <a class="reference internal" href="../const.html#darc.const.CHECK" title="darc.const.CHECK"><code class="xref py py-data docutils literal notranslate"><span class="pre">CHECK</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of links extracted.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../parse.html#darc.parse._check" title="darc.parse._check"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.parse._check()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../parse.html#darc.parse._check_ng" title="darc.parse._check_ng"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.parse._check_ng()</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.proxy.null.save_invalid">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">save_invalid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/null.html#save_invalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.null.save_invalid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save link with invalid scheme.</p>
+<p>The function will save link with invalid scheme to the file
+as defined in <a class="reference internal" href="#darc.proxy.null.darc.proxy.null.PATH" title="darc.proxy.null.darc.proxy.null.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object representing the link with invalid scheme.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.proxy.null.save_robots">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">save_robots</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/null.html#save_robots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.null.save_robots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Saved path to <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>, i.e.
+<code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/robots.txt</span></code>.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../save.html#darc.save.sanitise" title="darc.save.sanitise"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.save.sanitise()</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darc.proxy.null.save_sitemap">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">save_sitemap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/null.html#save_sitemap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.null.save_sitemap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save sitemap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of sitemap.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of sitemap.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Saved path to sitemap, i.e.
+<code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/sitemap_&lt;hash&gt;.xml</span></code>.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../save.html#darc.save.sanitise" title="darc.save.sanitise"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.save.sanitise()</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+</section>
+<dl class="py data">
+<dt id="darc.proxy.null.darc.proxy.null.PATH">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">PATH</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_MISC}/invalid.txt'</span></em><a class="headerlink" href="#darc.proxy.null.darc.proxy.null.PATH" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the data storage of links with invalid scheme.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -45,9 +289,9 @@
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.proxy.null.LOCK">
-<code class="sig-prename descclassname">darc.proxy.null.</code><code class="sig-name descname">LOCK</code><em class="property">: Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Lock" title="(in Python v3.9)">multiprocessing.Lock</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Lock" title="(in Python v3.9)">threading.Lock</a><span class="p">, </span>contextlib.nullcontext<span class="p">]</span></em><a class="headerlink" href="#darc.proxy.null.LOCK" title="Permalink to this definition">¶</a></dt>
-<dd><p>I/O lock for saving links with invalid scheme <a class="reference internal" href="#darc.proxy.null.PATH" title="darc.proxy.null.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
+<dt id="darc.proxy.null.darc.proxy.null.LOCK">
+<code class="sig-prename descclassname"><span class="pre">darc.proxy.null.</span></code><code class="sig-name descname"><span class="pre">LOCK</span></code><em class="property"><span class="pre">:</span> <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Lock" title="(in Python v3.9)"><span class="pre">multiprocessing.Lock</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Lock" title="(in Python v3.9)"><span class="pre">threading.Lock</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">contextlib.nullcontext</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.null.darc.proxy.null.LOCK" title="Permalink to this definition">¶</a></dt>
+<dd><p>I/O lock for saving links with invalid scheme <a class="reference internal" href="#darc.proxy.null.darc.proxy.null.PATH" title="darc.proxy.null.darc.proxy.null.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -81,9 +325,25 @@
 
 
 <h3>Navigation</h3>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Technical Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../process.html">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crawl.html">Web Crawlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html">Source Saving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html">Selenium Wrapper</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Proxy Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sites/index.html">Sites Customisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Data Models</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
@@ -99,8 +359,8 @@
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Technical Documentation</a><ul>
   <li><a href="index.html">Proxy Utilities</a><ul>
-      <li>Previous: <a href="mail.html" title="previous chapter">&lt;no title&gt;</a></li>
-      <li>Next: <a href="script.html" title="next chapter">&lt;no title&gt;</a></li>
+      <li>Previous: <a href="mail.html" title="previous chapter">Email Addresses</a></li>
+      <li>Next: <a href="script.html" title="next chapter">JavaScript Links</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

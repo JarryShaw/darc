@@ -4,8 +4,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Data Models Demo &#8212; darc 0.9.2 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Data Models Demo &#8212; darc 0.9.3 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="data-models-demo">
+  <section id="data-models-demo">
 <h1>Data Models Demo<a class="headerlink" href="#data-models-demo" title="Permalink to this headline">¶</a></h1>
 <p>This is a demo of data models for database storage of
 the submitted data from the <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> crawlers.</p>
@@ -45,11 +46,12 @@ the submitted data from the <a class="reference internal" href="../darc/index.ht
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span> <span class="nn">peewee</span>
+<span class="kn">import</span> <span class="nn">playhouse.mysql_ext</span>
 <span class="kn">import</span> <span class="nn">playhouse.shortcuts</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="c1"># database client</span>
 <span class="n">DB</span> <span class="o">=</span> <span class="n">playhouse</span><span class="o">.</span><span class="n">db_url</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_URL&#39;</span><span class="p">,</span> <span class="s1">&#39;mysql://127.0.0.1&#39;</span><span class="p">))</span>
@@ -190,6 +192,51 @@ the submitted data from the <a class="reference internal" href="../darc/index.ht
     <span class="c1">#: Link hash (c.f. :attr:`link.name &lt;darc.link.Link.name&gt;`).</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">FixedCharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_by_url</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;URLModel&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Select by URL.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            url: URL to select.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Selected URL model.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">url</span> <span class="o">==</span> <span class="n">url</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[URLModel]&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Back reference to where the URL was identified.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">URLModel</span>
+                <span class="o">.</span><span class="n">select</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">URLThroughModel</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">URLThroughModel</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">URLThroughModel</span><span class="o">.</span><span class="n">child</span> <span class="o">==</span> <span class="bp">self</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">URLModel</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">childrent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[URLModel]&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Back reference to which URLs were identified from the URL.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">URLModel</span>
+                <span class="o">.</span><span class="n">select</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">URLThroughModel</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">URLThroughModel</span><span class="o">.</span><span class="n">child</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">URLThroughModel</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="bp">self</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">URLModel</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">URLThroughModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Data model for the map of URL extration chain.&quot;&quot;&quot;</span>
+
+    <span class="c1">#: Back reference to where the URL was identified.</span>
+    <span class="n">parent</span><span class="p">:</span> <span class="s1">&#39;List[URLModel]&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">URLModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;parents&#39;</span><span class="p">)</span>
+    <span class="c1">#: Back reference to which URLs were identified from the URL.</span>
+    <span class="n">child</span><span class="p">:</span> <span class="s1">&#39;List[URLModel]&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">URLModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">BaseMeta</span><span class="p">):</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="c1"># Specify a unique multi-column index on from/to-user.</span>
+            <span class="p">((</span><span class="s1">&#39;parent&#39;</span><span class="p">,</span> <span class="s1">&#39;child&#39;</span><span class="p">),</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">RequestsDocumentModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Data model for documents from ``requests`` submission.&quot;&quot;&quot;</span>
@@ -215,7 +262,7 @@ the submitted data from the <a class="reference internal" href="../darc/index.ht
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
+</section>
 
 
           </div>

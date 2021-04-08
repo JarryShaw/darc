@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darc.link &#8212; darc 0.9.2 documentation</title>
+    <title>darc.link &#8212; darc 0.9.3 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -32,7 +32,7 @@
             
   <h1>Source code for darc.link</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1"># pylint: disable=unsubscriptable-object,ungrouped-imports</span>
+<span class="c1"># pylint: disable=unsubscriptable-object,ungrouped-imports,line-too-long</span>
 <span class="sd">&quot;&quot;&quot;URL Utilities</span>
 <span class="sd">===================</span>
 
@@ -52,7 +52,7 @@
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">urllib.parse</span>
+<span class="kn">import</span> <span class="nn">urllib.parse</span> <span class="k">as</span> <span class="nn">urllib_parse</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">PATH_DB</span>
@@ -64,7 +64,7 @@
     <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">PurePosixPath</span> <span class="k">as</span> <span class="n">PosixPath</span>  <span class="c1"># type: ignore[misc]</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">AnyStr</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">AnyStr</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
     <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">ParseResult</span>
 
     <span class="n">_Str</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
@@ -89,7 +89,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">safe</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">safe</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
@@ -111,7 +111,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">unquote</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
@@ -133,7 +133,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">allow_fragments</span><span class="o">=</span><span class="n">allow_fragments</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">allow_fragments</span><span class="o">=</span><span class="n">allow_fragments</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">base</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span></div>
@@ -158,11 +158,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">allow_fragments</span><span class="o">=</span><span class="n">allow_fragments</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">ParseResult</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">scheme</span><span class="p">,</span> <span class="n">netloc</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fragment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">allow_fragments</span><span class="o">=</span><span class="n">allow_fragments</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">ParseResult</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">scheme</span><span class="p">,</span> <span class="n">netloc</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fragment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="urlsplit"><a class="viewcode-back" href="../../darc/link.html#darc.link.urlsplit">[docs]</a><span class="k">def</span> <span class="nf">urlsplit</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">allow_fragments</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">SplitResult</span><span class="p">:</span>
+<div class="viewcode-block" id="urlsplit"><a class="viewcode-back" href="../../darc/link.html#darc.link.urlsplit">[docs]</a><span class="k">def</span> <span class="nf">urlsplit</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">allow_fragments</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">SplitResult</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Wrapper function for :func:`urllib.parse.urlsplit`.</span>
 
 <span class="sd">    Args:</span>
@@ -181,8 +181,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlsplit</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">allow_fragments</span><span class="o">=</span><span class="n">allow_fragments</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">SplitResult</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">scheme</span><span class="p">,</span> <span class="n">netloc</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fragment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">urlsplit</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">allow_fragments</span><span class="o">=</span><span class="n">allow_fragments</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">SplitResult</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">scheme</span><span class="p">,</span> <span class="n">netloc</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fragment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Link"><a class="viewcode-back" href="../../darc/link.html#darc.link.Link">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
@@ -197,6 +197,8 @@
 <span class="sd">        base: base folder for saving files</span>
 <span class="sd">        name: hashed link for saving files</span>
 <span class="sd">        url_parse: parsed URL from :func:`urllib.parse.urlparse`</span>
+<span class="sd">        url_backref: optional :class:`~darc.link.Link` instance</span>
+<span class="sd">            from which current link was extracted</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        :class:`~darc.link.Link`: Parsed link object.</span>
@@ -214,15 +216,18 @@
     <span class="c1">#: proxy type</span>
     <span class="n">proxy</span><span class="p">:</span> <span class="nb">str</span>
 
-    <span class="c1">#: parsed URL from :func:`urllib.parse.urlparse`</span>
-    <span class="n">url_parse</span><span class="p">:</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">ParseResult</span>
-
     <span class="c1">#: URL&#39;s hostname</span>
     <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;Optional[str]&#39;</span>
     <span class="c1">#: base folder for saving files</span>
     <span class="n">base</span><span class="p">:</span> <span class="nb">str</span>
     <span class="c1">#: hashed link for saving files</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="c1">#: parsed URL from :func:`urllib.parse.urlparse`</span>
+    <span class="n">url_parse</span><span class="p">:</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">ParseResult</span>
+    <span class="c1">#: optional :class:`~darc.link.Link` instance</span>
+    <span class="c1">#: from which current link was extracted</span>
+    <span class="n">url_backref</span><span class="p">:</span> <span class="s1">&#39;Optional[Link]&#39;</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Link.__hash__"><a class="viewcode-back" href="../../darc/link.html#darc.link.Link.__hash__">[docs]</a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Provide hash support to the :class:`~darc.link.Link` object.&quot;&quot;&quot;</span>
@@ -239,15 +244,30 @@
     <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Link</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">&lt;</span> <span class="n">value</span><span class="o">.</span><span class="n">url</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;&lt;&#39; not supported between instances of &#39;Link&#39; and </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;&lt;&#39; not supported between instances of &#39;Link&#39; and </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Link.asdict"><a class="viewcode-back" href="../../darc/link.html#darc.link.Link.asdict">[docs]</a>    <span class="k">def</span> <span class="nf">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Dict[str, Any]&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert to a :obj:`dict` instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="s1">&#39;proxy&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="p">,</span>
+            <span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+            <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="n">PATH_DB</span><span class="p">),</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s1">&#39;backref&#39;</span><span class="p">:</span> <span class="n">backref</span><span class="o">.</span><span class="n">url</span> <span class="k">if</span> <span class="p">(</span><span class="n">backref</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_backref</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># pylint: disable=used-before-assignment</span>
+        <span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="parse_link"><a class="viewcode-back" href="../../darc/link.html#darc.link.parse_link">[docs]</a><span class="k">def</span> <span class="nf">parse_link</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;Optional[str]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Link&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="parse_link"><a class="viewcode-back" href="../../darc/link.html#darc.link.parse_link">[docs]</a><span class="k">def</span> <span class="nf">parse_link</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;Optional[str]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">backref</span><span class="p">:</span> <span class="s1">&#39;Optional[Link]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Link&#39;</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Parse link.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: link to be parsed</span>
 <span class="sd">        host: hostname of the link</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        backref: optional :class:`~darc.link.Link` instance</span>
+<span class="sd">            from which current link was extracted</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The parsed link object.</span>
@@ -267,48 +287,50 @@
 <span class="sd">        JavaScript codes, set ``proxy`` as ``script``.</span>
 <span class="sd">    3.  If the scheme is ``bitcoin``, then the link is a Bitcoin</span>
 <span class="sd">        address, set ``proxy`` as ``bitcoin``.</span>
-<span class="sd">    4.  If the scheme is ``ed2k``, then the link is an ED2K magnet</span>
+<span class="sd">    4.  If the scheme is ``ethereum``, then the link is an Ethereum</span>
+<span class="sd">        address, set ``proxy`` as ``ethereum``.</span>
+<span class="sd">    5.  If the scheme is ``ed2k``, then the link is an ED2K magnet</span>
 <span class="sd">        link, set ``proxy`` as ``ed2k``.</span>
-<span class="sd">    5.  If the scheme is ``magnet``, then the link is a magnet</span>
+<span class="sd">    6.  If the scheme is ``magnet``, then the link is a magnet</span>
 <span class="sd">        link, set ``proxy`` as ``magnet``.</span>
-<span class="sd">    6.  If the scheme is ``mailto``, then the link is an email</span>
+<span class="sd">    7.  If the scheme is ``mailto``, then the link is an email</span>
 <span class="sd">        address, set ``proxy`` as ``mail``.</span>
-<span class="sd">    7.  If the scheme is ``irc``, then the link is an IRC</span>
+<span class="sd">    8.  If the scheme is ``irc``, then the link is an IRC</span>
 <span class="sd">        link, set ``proxy`` as ``irc``.</span>
-<span class="sd">    8.  If the scheme is **NOT** any of ``http`` or ``https``,</span>
+<span class="sd">    9.  If the scheme is **NOT** any of ``http`` or ``https``,</span>
 <span class="sd">        then set ``proxy`` to the scheme.</span>
-<span class="sd">    9.  If the host is :data:`None`, set ``hostname`` to ``(null)``,</span>
+<span class="sd">    10. If the host is :data:`None`, set ``hostname`` to ``(null)``,</span>
 <span class="sd">        set ``proxy`` to ``null``.</span>
-<span class="sd">    10. If the host is an onion (``.onion``) address,</span>
+<span class="sd">    11. If the host is an onion (``.onion``) address,</span>
 <span class="sd">        set ``proxy`` to ``tor``.</span>
-<span class="sd">    11. If the host is an I2P (``.i2p``) address, or</span>
+<span class="sd">    12. If the host is an I2P (``.i2p``) address, or</span>
 <span class="sd">        any of ``localhost:7657`` and ``localhost:7658``,</span>
 <span class="sd">        set ``proxy`` to ``i2p``.</span>
-<span class="sd">    12. If the host is *localhost* on :data:`~darc.proxy.zeronet.ZERONET_PORT`,</span>
+<span class="sd">    13. If the host is *localhost* on :data:`~darc.proxy.zeronet.ZERONET_PORT`,</span>
 <span class="sd">        and the path is not ``/``, i.e. **NOT** root path, set ``proxy``</span>
 <span class="sd">        to ``zeronet``; and set the first part of its path as ``hostname``.</span>
 
 <span class="sd">        Example:</span>
 
-<span class="sd">           For a ZeroNet address, e.g.</span>
-<span class="sd">           http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D,</span>
+<span class="sd">           For a ZeroNet address, e.g.,</span>
+<span class="sd">           ``http://127.0.0.1:43110/1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D``,</span>
 <span class="sd">           :func:`~darc.link.parse_link` will parse the ``hostname`` as</span>
 <span class="sd">           ``1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D``.</span>
 
-<span class="sd">    13. If the host is *localhost* on :data:`~darc.proxy.freenet.FREENET_PORT`,</span>
+<span class="sd">    14. If the host is *localhost* on :data:`~darc.proxy.freenet.FREENET_PORT`,</span>
 <span class="sd">        and the path is not ``/``, i.e. **NOT** root path, set ``proxy``</span>
 <span class="sd">        to ``freenet``; and set the first part of its path as ``hostname``.</span>
 
 <span class="sd">        Example:</span>
 
-<span class="sd">           For a Freenet address, e.g.</span>
-<span class="sd">           http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/,</span>
+<span class="sd">           For a Freenet address, e.g.,</span>
+<span class="sd">           ``http://127.0.0.1:8888/USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE/sone/77/``,</span>
 <span class="sd">           :func:`~darc.link.parse_link` will parse the ``hostname`` as</span>
 <span class="sd">           ``USK@nwa8lHa271k2QvJ8aa0Ov7IHAV-DFOCFgmDt3X6BpCI,DuQSUZiI~agF8c-6tjsFFGuZ8eICrzWCILB60nT8KKo,AQACAAE``.</span>
 
-<span class="sd">    14. If the host is a proxied onion (``.onion.sh``) address,</span>
+<span class="sd">    15. If the host is a proxied onion (``.onion.sh``) address,</span>
 <span class="sd">        set ``proxy`` to ``tor2web``.</span>
-<span class="sd">    15. If none of the cases above satisfied, the ``proxy`` will be set</span>
+<span class="sd">    16. If none of the cases above satisfied, the ``proxy`` will be set</span>
 <span class="sd">        as ``null``, marking it a plain normal link.</span>
 
 <span class="sd">    The ``base`` for parsed link :class:`~darc.link.Link` object is defined as</span>
@@ -342,9 +364,12 @@
     <span class="k">elif</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;javascript&#39;</span><span class="p">:</span>
         <span class="n">proxy_type</span> <span class="o">=</span> <span class="s1">&#39;script&#39;</span>
         <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;(script)&#39;</span>
-    <span class="k">elif</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;bitcoin&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bitcoin&#39;</span><span class="p">,</span> <span class="s1">&#39;btc&#39;</span><span class="p">):</span>
         <span class="n">proxy_type</span> <span class="o">=</span> <span class="s1">&#39;bitcoin&#39;</span>
         <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;(bitcoin)&#39;</span>
+    <span class="k">elif</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ethereum&#39;</span><span class="p">,</span> <span class="s1">&#39;eth&#39;</span><span class="p">):</span>
+        <span class="n">proxy_type</span> <span class="o">=</span> <span class="s1">&#39;ethereum&#39;</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;(ethereum)&#39;</span>
     <span class="k">elif</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;ed2k&#39;</span><span class="p">:</span>
         <span class="n">proxy_type</span> <span class="o">=</span> <span class="s1">&#39;ed2k&#39;</span>
         <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;(ed2k)&#39;</span>
@@ -404,6 +429,7 @@
     <span class="k">return</span> <span class="n">Link</span><span class="p">(</span>
         <span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">,</span>
         <span class="n">url_parse</span><span class="o">=</span><span class="n">parse</span><span class="p">,</span>
+        <span class="n">url_backref</span><span class="o">=</span><span class="n">backref</span><span class="p">,</span>
         <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span>
         <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>

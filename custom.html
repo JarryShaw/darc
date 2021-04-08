@@ -4,8 +4,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Customisations &#8212; darc 0.9.2 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Customisations &#8212; darc 0.9.3 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,15 +33,15 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="customisations">
+  <section id="customisations">
 <h1>Customisations<a class="headerlink" href="#customisations" title="Permalink to this headline">¶</a></h1>
 <p>Currently, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> provides three major customisation points, besides the
 various <a class="reference internal" href="config.html"><span class="doc">environment variables</span></a>.</p>
-<div class="section" id="hooks-between-rounds">
+<section id="hooks-between-rounds">
 <h2>Hooks between Rounds<a class="headerlink" href="#hooks-between-rounds" title="Permalink to this headline">¶</a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>See <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.process.register()</span></code> for technical information.</p>
+<p>See <a class="reference internal" href="darc/process.html#darc.process.register" title="darc.process.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.process.register()</span></code></a> for technical information.</p>
 </div>
 <p>As the workers are defined as indefinite loops, we introduced the
 <em>hooks between rounds</em> to be called at end of each loop. Such hook
@@ -84,8 +85,8 @@ that we can stop the workers in an elegant way.</p>
 <span class="n">register</span><span class="p">(</span><span class="n">dummy_hook</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="custom-proxy">
+</section>
+<section id="custom-proxy">
 <h2>Custom Proxy<a class="headerlink" href="#custom-proxy" title="Permalink to this headline">¶</a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -98,7 +99,7 @@ that we can stop the workers in an elegant way.</p>
 network and I2P proxy. <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> decides if it need to use a proxy for
 connection based on the <a class="reference internal" href="darc/link.html#darc.link.Link.proxy" title="darc.link.Link.proxy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">proxy</span></code></a> value of the target
 link.</p>
-<p>By default, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> uses <em>no proxy</em> for <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> sessions
+<p>By default, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> uses <em>no proxy</em> for <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> sessions
 and <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> drivers. However, you may use your own proxies by
 registering and/or customising the corresponding factory functions.</p>
 <p>A typical factory function pair (e.g., for Socks5 proxy) can be
@@ -166,14 +167,14 @@ defined as following:</p>
 <span class="n">register</span><span class="p">(</span><span class="s1">&#39;socks5&#39;</span><span class="p">,</span> <span class="n">socks5_session</span><span class="p">,</span> <span class="n">socks5_driver</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="sites-customisation">
+</section>
+<section id="sites-customisation">
 <h2>Sites Customisation<a class="headerlink" href="#sites-customisation" title="Permalink to this headline">¶</a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="howto/sites.html"><span class="doc">How to implement a sites customisation?</span></a></p></li>
-<li><p>See <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code> for technical information.</p></li>
+<li><p>See <a class="reference internal" href="darc/sites/index.html#darc.sites.register" title="darc.sites.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code></a> for technical information.</p></li>
 </ul>
 </div>
 <p>Since websites may require authentication and/or anti-robot checks,
@@ -181,10 +182,10 @@ we need to insert certain cookies, animate some user interactions to
 bypass such requirements. <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> decides which customisation to
 use based on the hostname, i.e. <a class="reference internal" href="darc/link.html#darc.link.Link.host" title="darc.link.Link.host"><code class="xref py py-attr docutils literal notranslate"><span class="pre">host</span></code></a> value of
 the target link.</p>
-<p>By default, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites.default</span></code> as the <em>no op</em>
-for both <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> sessions and <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> drivers. However,
+<p>By default, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> uses <a class="reference internal" href="darc/sites/default.html#module-darc.sites.default" title="darc.sites.default"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites.default</span></code></a> as the <em>no op</em>
+for both <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> sessions and <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> drivers. However,
 you may use your own sites customisation by registering and/or customising
-the corresponding classes, which inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code>.</p>
+the corresponding classes, which inherited from <a class="reference internal" href="darc/sites/_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>.</p>
 <p>A typical sites customisation class (for better demonstration) can be
 defined as following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
@@ -256,10 +257,10 @@ defined as following:</p>
 <p class="admonition-title">Important</p>
 <p>Please note that you may raise <a class="reference internal" href="darc/error.html#darc.error.LinkNoReturn" title="darc.error.LinkNoReturn"><code class="xref py py-exc docutils literal notranslate"><span class="pre">darc.error.LinkNoReturn</span></code></a> in the <code class="docutils literal notranslate"><span class="pre">crawler</span></code>
 and/or <code class="docutils literal notranslate"><span class="pre">loader</span></code> methods to indicate that such link should be ignored and removed
-from the task queues, e.g. <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites.data</span></code>.</p>
+from the task queues, e.g. <a class="reference internal" href="darc/sites/data.html#module-darc.sites.data" title="darc.sites.data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites.data</span></code></a>.</p>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
