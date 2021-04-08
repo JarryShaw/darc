@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darc.proxy.null &#8212; darc 0.9.3 documentation</title>
+    <title>darc.proxy.null &#8212; darc 0.9.4 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -42,6 +42,7 @@
 
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
@@ -78,9 +79,12 @@
 <span class="sd">        link: Link object representing the link with invalid scheme.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="n">LOCK</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+    <span class="k">with</span> <span class="n">LOCK</span><span class="p">:</span>  <span class="c1"># type: ignore[union-attr]</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">PATH</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+                <span class="s1">&#39;src&#39;</span><span class="p">:</span> <span class="n">backref</span><span class="o">.</span><span class="n">url</span> <span class="k">if</span> <span class="p">(</span><span class="n">backref</span> <span class="o">:=</span> <span class="n">link</span><span class="o">.</span><span class="n">url_backref</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># pylint: disable=used-before-assignment</span>
+                <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="p">}),</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="save_robots"><a class="viewcode-back" href="../../../darc/proxy/null.html#darc.proxy.null.save_robots">[docs]</a><span class="k">def</span> <span class="nf">save_robots</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

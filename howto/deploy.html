@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>How to gracefully deploy darc? &#8212; darc 0.9.3 documentation</title>
+    <title>How to gracefully deploy darc? &#8212; darc 0.9.4 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -186,7 +186,7 @@ job as mentioned in <a class="reference internal" href="../aux.html"><span class
 </pre></div>
 </div>
 <p>and add the cron job into the file opened:</p>
-<div class="highlight-cron notranslate"><div class="highlight"><pre><span></span>10 0 * * * ( cd /path/to/darc/ &amp;&amp; /path/to/python3 /path/to/darc/extra/upload.py --host ftp://hostname --user username:password ) &gt;&gt; /path/to/darc/logs/cron/darc-upload.log 2&gt;&amp;1
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">10</span> <span class="mi">0</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="p">(</span> <span class="n">cd</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">darc</span><span class="o">/</span> <span class="o">&amp;&amp;</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">python3</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">darc</span><span class="o">/</span><span class="n">extra</span><span class="o">/</span><span class="n">upload</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">host</span> <span class="n">ftp</span><span class="p">:</span><span class="o">//</span><span class="n">hostname</span> <span class="o">--</span><span class="n">user</span> <span class="n">username</span><span class="p">:</span><span class="n">password</span> <span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">darc</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">cron</span><span class="o">/</span><span class="n">darc</span><span class="o">-</span><span class="n">upload</span><span class="o">.</span><span class="n">log</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span>
 </pre></div>
 </div>
 <p>just remember to change the paths, hostname and credential

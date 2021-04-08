@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darc.model.web.url &#8212; darc 0.9.3 documentation</title>
+    <title>darc.model.web.url &#8212; darc 0.9.4 documentation</title>
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
@@ -62,8 +62,8 @@
     <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">datetime</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">SPHINX_BUILD</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">darc.model.web.selenium</span> <span class="kn">import</span> <span class="n">SeleniumModel</span> <span class="c1"># pylint: disable=unused-import</span>
-        <span class="kn">from</span> <span class="nn">darc.model.web.requests</span> <span class="kn">import</span> <span class="n">RequestsModel</span> <span class="c1"># pylint: disable=unused-import</span>
+        <span class="kn">from</span> <span class="nn">darc.model.web.requests</span> <span class="kn">import</span> <span class="n">RequestsModel</span>  <span class="c1"># pylint: disable=unused-import</span>
+        <span class="kn">from</span> <span class="nn">darc.model.web.selenium</span> <span class="kn">import</span> <span class="n">SeleniumModel</span>  <span class="c1"># pylint: disable=unused-import</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">RequestsModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;RequestsModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.requests.RequestsModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
         <span class="n">SeleniumModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;SeleniumModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.selenium.SeleniumModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>

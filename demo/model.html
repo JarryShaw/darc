@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>Data Models Demo &#8212; darc 0.9.3 documentation</title>
+    <title>Data Models Demo &#8212; darc 0.9.4 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -234,9 +234,10 @@ the submitted data from the <a class="reference internal" href="../darc/index.ht
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">BaseMeta</span><span class="p">):</span>
         <span class="n">indexes</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="c1"># Specify a unique multi-column index on from/to-user.</span>
+            <span class="c1"># Specify a unique multi-column index on from/to-url.</span>
             <span class="p">((</span><span class="s1">&#39;parent&#39;</span><span class="p">,</span> <span class="s1">&#39;child&#39;</span><span class="p">),</span> <span class="kc">True</span><span class="p">),</span>
         <span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">RequestsDocumentModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Data model for documents from ``requests`` submission.&quot;&quot;&quot;</span>
