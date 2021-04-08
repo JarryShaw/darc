@@ -9,6 +9,7 @@ around managing and processing normal websites with no proxy.
 
 import gzip
 import io
+import json
 import os
 import sys
 from typing import TYPE_CHECKING
@@ -45,9 +46,12 @@ def save_invalid(link: 'darc_link.Link') -> None:
         link: Link object representing the link with invalid scheme.
 
     """
-    with LOCK:  # type: ignore
+    with LOCK:  # type: ignore[union-attr]
         with open(PATH, 'a') as file:
-            print(link.url, file=file)
+            print(json.dumps({
+                'src': backref.url if (backref := link.url_backref) is not None else None,  # pylint: disable=used-before-assignment
+                'url': link.url,
+            }), file=file)
 
 
 def save_robots(link: 'darc_link.Link', text: str) -> str:

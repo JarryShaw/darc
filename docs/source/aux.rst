@@ -102,7 +102,7 @@ Redis Clinic
 
 Since Redis may take more and more memory as the growth of crawled
 data and task queues, this script will truncate the Redis task queues
-(``queue_requests & ``queue_selenium``), as well as the corresponding
+(``queue_requests`` & ``queue_selenium``), as well as the corresponding
 :mod:`pickle` caches of :class:`darc.link.Link`.
 
 .. note::

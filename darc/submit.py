@@ -274,7 +274,7 @@ def submit_new_host(time: 'datetime', link: 'darc_link.Link', partial: bool = Fa
 
     The data submitted should have following format:
 
-    .. code-block:: jsonc
+    .. code-block::
 
         {
             // partial flag - true / false
@@ -429,7 +429,7 @@ def submit_requests(time: 'datetime', link: 'darc_link.Link',
 
     The data submitted should have following format:
 
-    .. code-block:: jsonc
+    .. code-block::
 
         {
             // metadata of URL
@@ -649,7 +649,7 @@ def submit_selenium(time: 'datetime', link: 'darc_link.Link',
 
     The data submitted should have following format:
 
-    .. code-block:: jsonc
+    .. code-block::
 
         {
             // metadata of URL

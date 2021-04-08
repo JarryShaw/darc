@@ -193,9 +193,10 @@ class URLThroughModel(BaseModel):
 
     class Meta(BaseMeta):
         indexes = (
-            # Specify a unique multi-column index on from/to-user.
+            # Specify a unique multi-column index on from/to-url.
             (('parent', 'child'), True),
         )
+
 
 class RequestsDocumentModel(BaseModel):
     """Data model for documents from ``requests`` submission."""

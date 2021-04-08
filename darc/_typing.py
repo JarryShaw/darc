@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Typing declrations."""
 
-import re
 import os
+import re
 import sys
 
 from typing_extensions import Literal, TypedDict

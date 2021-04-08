@@ -15,9 +15,9 @@ import platform
 import shutil
 from typing import TYPE_CHECKING
 
-import selenium.webdriver.common.desired_capabilities as selenium_desired_capabilities
 import selenium.webdriver.chrome.options as selenium_options
 import selenium.webdriver.chrome.webdriver as selenium_webdriver
+import selenium.webdriver.common.desired_capabilities as selenium_desired_capabilities
 
 from darc.const import DEBUG
 from darc.error import UnsupportedLink, UnsupportedPlatform, UnsupportedProxy
@@ -27,8 +27,8 @@ from darc.proxy.tor import TOR_PORT, TOR_SELENIUM_PROXY
 if TYPE_CHECKING:
     from typing import Dict
 
-    from selenium.webdriver.chrome.webdriver import WebDriver
     from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.chrome.webdriver import WebDriver
 
     import darc.link as darc_link  # Link
 

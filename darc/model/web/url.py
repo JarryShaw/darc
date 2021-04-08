@@ -29,8 +29,8 @@ if TYPE_CHECKING:
     from darc._compat import datetime
 
     if not SPHINX_BUILD:
-        from darc.model.web.selenium import SeleniumModel # pylint: disable=unused-import
-        from darc.model.web.requests import RequestsModel # pylint: disable=unused-import
+        from darc.model.web.requests import RequestsModel  # pylint: disable=unused-import
+        from darc.model.web.selenium import SeleniumModel  # pylint: disable=unused-import
     else:
         RequestsModel = TypeVar('RequestsModel', bound='darc.model.web.requests.RequestsModel')  # type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long
         SeleniumModel = TypeVar('SeleniumModel', bound='darc.model.web.selenium.SeleniumModel')  # type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long

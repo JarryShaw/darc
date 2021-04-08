@@ -40,7 +40,9 @@ def new_host() -> 'Response':
                 //   HTML from requests - <base>/<name>_<timestamp>_raw.html
                 //   HTML from selenium - <base>/<name>_<timestamp>.html
                 //   generic data files - <base>/<name>_<timestamp>.dat
-                "name": ...
+                "name": ...,
+                // originate URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+                "backref": ...
             },
             // requested timestamp in ISO format as in name of saved file
             "Timestamp": ...,
@@ -110,7 +112,9 @@ def from_requests() -> 'Response':
                 //   HTML from requests - <base>/<name>_<timestamp>_raw.html
                 //   HTML from selenium - <base>/<name>_<timestamp>.html
                 //   generic data files - <base>/<name>_<timestamp>.dat
-                "name": ...
+                "name": ...,
+                // originate URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+                "backref": ...
             },
             // requested timestamp in ISO format as in name of saved file
             "Timestamp": ...,
@@ -195,7 +199,9 @@ def from_selenium() -> 'Response':
                 //   HTML from requests - <base>/<name>_<timestamp>_raw.html
                 //   HTML from selenium - <base>/<name>_<timestamp>.html
                 //   generic data files - <base>/<name>_<timestamp>.dat
-                "name": ...
+                "name": ...,
+                // originate URL - <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+                "backref": ...
             },
             // requested timestamp in ISO format as in name of saved file
             "Timestamp": ...,
