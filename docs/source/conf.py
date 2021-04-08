@@ -94,7 +94,7 @@ manpages_url = 'https://linux.die.net/man/{section}/{page}'
 
 do_include_todos = True
 
-#set_type_checking_flag = True
+set_type_checking_flag = True
 typehints_fully_qualified = False
 always_document_param_types = False
 typehints_document_rtype = True
@@ -177,15 +177,15 @@ def source_read(app: 'Sphinx', docname: str, source_text: str) -> None:  # pylin
 
 def setup(app: 'Sphinx') -> None:
     #app.connect('autodoc-process-docstring', process_docstring, 0)
-    app.connect("autodoc-process-docstring", remove_module_docstring)
+    #app.connect("autodoc-process-docstring", remove_module_docstring)
     app.connect('autodoc-skip-member', maybe_skip_member)
     #app.connect('source-read', source_read)
 
-    typing.TYPE_CHECKING = True
-    for name, module in sys.modules.copy().items():
-        if 'darc' not in name:
-            continue
+    # typing.TYPE_CHECKING = True
+    # for name, module in sys.modules.copy().items():
+    #     if 'darc' not in name:
+    #         continue
 
-        logger.info('reloading module: %s', name)
-        importlib.reload(module)
-        logger.info('reloaded module: %s', name)
+    #     logger.info('reloading module: %s', name)
+    #     importlib.reload(module)
+    #     logger.info('reloaded module: %s', name)
