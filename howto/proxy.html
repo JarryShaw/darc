@@ -4,8 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>How to implement a custom proxy middleware? &#8212; darc 0.9.4 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
@@ -33,7 +32,7 @@
 
           <div class="body" role="main">
             
-  <section id="how-to-implement-a-custom-proxy-middleware">
+  <div class="section" id="how-to-implement-a-custom-proxy-middleware">
 <h1>How to implement a custom proxy middleware?<a class="headerlink" href="#how-to-implement-a-custom-proxy-middleware" title="Permalink to this headline">¶</a></h1>
 <p>As had been discussed already in the <a class="reference external" href="https://darc.jarryshaw.me/en/latest/custom.html#custom-proxy">documentation</a>, the implementation
 of a custom proxy is merely two <em>factory</em> functions: one yields a
@@ -44,7 +43,7 @@ of a custom proxy is merely two <em>factory</em> functions: one yields a
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.proxy</span> <span class="kn">import</span> <span class="n">register</span>
 </pre></div>
 </div>
-<section id="session-factory">
+<div class="section" id="session-factory">
 <h2>Session Factory<a class="headerlink" href="#session-factory" title="Permalink to this headline">¶</a></h2>
 <p>The session factory returns a <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Session" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> and/or
 <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.sessions.FuturesSession</span></code> instance with presets,
@@ -93,8 +92,8 @@ with other presets same as the default factory function, c.f.
 <p>In this case when <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> needs to use a Socks5 session for its <em>crawler</em>
 worker nodes, it will call the <code class="docutils literal notranslate"><span class="pre">socks5_session</span></code> function to obtain a preset
 session instance.</p>
-</section>
-<section id="driver-factory">
+</div>
+<div class="section" id="driver-factory">
 <h2>Driver Factory<a class="headerlink" href="#driver-factory" title="Permalink to this headline">¶</a></h2>
 <p>The driver factory returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.Chrome</span></code> instance with
 presets, e.g. proxies, options/switches, etc.</p>
@@ -139,8 +138,8 @@ with other presets same as the default factory function, c.f.
 <p>In this case when <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> needs to use a Socks5 driver for its <em>loader</em>
 worker nodes, it will call the <code class="docutils literal notranslate"><span class="pre">socks5_driver</span></code> function to obtain a preset
 driver instance.</p>
-</section>
-<section id="what-should-i-do-to-register-the-proxy">
+</div>
+<div class="section" id="what-should-i-do-to-register-the-proxy">
 <h2>What should I do to register the proxy?<a class="headerlink" href="#what-should-i-do-to-register-the-proxy" title="Permalink to this headline">¶</a></h2>
 <p>All proxies are managed in the <a class="reference internal" href="../darc/proxy/index.html#module-darc.proxy" title="darc.proxy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy</span></code></a> module and you can register
 your own proxy through <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.register()</span></code>:</p>
@@ -154,8 +153,8 @@ positional arguments: proxy type, session and driver factory functions.</p>
 <p class="admonition-title">See also</p>
 <p><a class="reference download internal" download="" href="../_downloads/e400098bbb0e2952b7a9746362aecd7f/socks5.py"><code class="xref download docutils literal notranslate"><span class="pre">socks5.py</span></code></a></p>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
           </div>

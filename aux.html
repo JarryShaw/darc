@@ -4,8 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Auxiliary Scripts &#8212; darc 0.9.4 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
@@ -32,11 +31,11 @@
 
           <div class="body" role="main">
             
-  <section id="auxiliary-scripts">
+  <div class="section" id="auxiliary-scripts">
 <h1>Auxiliary Scripts<a class="headerlink" href="#auxiliary-scripts" title="Permalink to this headline">¶</a></h1>
 <p>Since the <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project can be deployed through <a class="reference internal" href="docker.html"><span class="doc">Docker Integration</span></a>,
 we provided some auxiliary scripts to help with the deployment.</p>
-<section id="health-check">
+<div class="section" id="health-check">
 <h2>Health Check<a class="headerlink" href="#health-check" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">File location</dt>
@@ -67,8 +66,8 @@ bring the containers back alive.</p>
 remains <em>healthy</em>, the script will watch if the program is still active
 through its output messages. If inactive, the script will restart the
 containers.</p>
-</section>
-<section id="upload-api-submission-files">
+</div>
+<div class="section" id="upload-api-submission-files">
 <h2>Upload API Submission Files<a class="headerlink" href="#upload-api-submission-files" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">File location</dt>
@@ -101,8 +100,8 @@ such files by the saved dates. Therefore, as the <em class="manpage"><a class="m
 sample suggests, the script should better be run everyday <em>slightly
 after</em> <strong>12:00 AM</strong> (<em>0:00</em> in 24-hour format).</p>
 </div>
-</section>
-<section id="remove-repeated-lines">
+</div>
+<div class="section" id="remove-repeated-lines">
 <h2>Remove Repeated Lines<a class="headerlink" href="#remove-repeated-lines" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">File location</dt>
@@ -111,8 +110,8 @@ after</em> <strong>12:00 AM</strong> (<em>0:00</em> in 24-hour format).</p>
 </dl>
 <p>This script works the same as <em class="manpage"><a class="manpage reference external" href="https://linux.die.net/man/1/uniq">uniq(1)</a></em>, except it filters one input
 line at a time without putting pressure onto memory utilisation.</p>
-</section>
-<section id="redis-clinic">
+</div>
+<div class="section" id="redis-clinic">
 <h2>Redis Clinic<a class="headerlink" href="#redis-clinic" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">File location</dt>
@@ -149,8 +148,8 @@ data and task queues, this script will truncate the Redis task queues
 it may bring burden to the host server if running through Redis
 client.</p>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
           </div>
