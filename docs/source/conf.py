@@ -37,7 +37,7 @@ copyright = '2019-2020, Jarry Shaw'  # pylint: disable=redefined-builtin
 author = 'Jarry Shaw'
 
 # The full version, including alpha/beta/rc tags
-release = '0.9.4'
+release = '0.9.4.post1'
 
 
 # -- General configuration ---------------------------------------------------

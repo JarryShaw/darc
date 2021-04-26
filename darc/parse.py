@@ -40,7 +40,7 @@ if TYPE_CHECKING:
 # Regular expression patterns to match all reasonable URLs.
 URL_PAT = {
     # gfm.autolink.URL_RE (https://pythonhosted.org/py-gfm/_modules/gfm/autolink.html#AutolinkExtension)
-    'http': re.compile(r'(?i)\b((?:(?:ftp|https?|wss?|irc)://|www\d{0,3}[.])(?:[^\s()<>]+|'
+    'http': re.compile(r'(?i)\b(?P<url>(?:(?:ftp|https?|wss?|irc)://|www\d{0,3}[.])(?:[^\s()<>]+|'
                        r'\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()'
                        r'<>]+\)))*\)|[^\s`!()\[\]{};:' + r"'" + r'".,<>?«»“”‘’]))', re.ASCII),
     # gfm.automail.MAIL_RE (https://pythonhosted.org/py-gfm/_modules/gfm/automail.html#AutomailExtension)
