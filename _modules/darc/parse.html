@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darc.parse &#8212; darc 0.9.4 documentation</title>
+    <title>darc.parse &#8212; darc 0.9.4.post1 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -73,7 +73,7 @@
 <span class="c1"># Regular expression patterns to match all reasonable URLs.</span>
 <span class="n">URL_PAT</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># gfm.autolink.URL_RE (https://pythonhosted.org/py-gfm/_modules/gfm/autolink.html#AutolinkExtension)</span>
-    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?i)\b((?:(?:ftp|https?|wss?|irc)://|www\d{0,3}[.])(?:[^\s()&lt;&gt;]+|&#39;</span>
+    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?i)\b(?P&lt;url&gt;(?:(?:ftp|https?|wss?|irc)://|www\d{0,3}[.])(?:[^\s()&lt;&gt;]+|&#39;</span>
                        <span class="sa">r</span><span class="s1">&#39;\(([^\s()&lt;&gt;]+|(\([^\s()&lt;&gt;]+\)))*\))+(?:\(([^\s()&lt;&gt;]+|(\([^\s()&#39;</span>
                        <span class="sa">r</span><span class="s1">&#39;&lt;&gt;]+\)))*\)|[^\s`!()\[\]</span><span class="si">{}</span><span class="s1">;:&#39;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;&quot;.,&lt;&gt;?«»“”‘’]))&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">ASCII</span><span class="p">),</span>
     <span class="c1"># gfm.automail.MAIL_RE (https://pythonhosted.org/py-gfm/_modules/gfm/automail.html#AutomailExtension)</span>
