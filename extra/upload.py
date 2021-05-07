@@ -9,7 +9,7 @@ import os
 import shutil
 import subprocess  # nosec: B404
 import sys
-import time
+#import time
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

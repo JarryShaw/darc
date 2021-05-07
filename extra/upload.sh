@@ -28,3 +28,15 @@ else
     retry curl -T ${filename} ${HOST} --user ${USER}
 fi
 rm ${filename}
+
+# upload outdated archives
+for file in $(ls darc-api-*.tar.gz); do
+    if [ -f ${file} ]; then
+        if [ -z ${USER} ]; then
+            retry curl -T ${file} ${HOST}
+        else
+            retry curl -T ${file} ${HOST} --user ${USER}
+        fi
+        rm ${file}
+    fi
+done
