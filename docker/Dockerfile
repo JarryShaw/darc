@@ -4,7 +4,7 @@ LABEL org.opencontainers.image.title="darc" \
       org.opencontainers.image.description="Darkweb Crawler Project" \
       org.opencontainers.image.url="https://darc.jarryshaw.me/" \
       org.opencontainers.image.source="https://github.com/JarryShaw/darc" \
-      org.opencontainers.image.version="0.9.4.post1" \
+      org.opencontainers.image.version="0.9.4.post2" \
       org.opencontainers.image.licenses='BSD 3-Clause "New" or "Revised" License'
 
 STOPSIGNAL SIGINT
@@ -21,7 +21,7 @@ ENV LANG="C.UTF-8" \
 
 COPY extra/retry.sh /usr/local/bin/retry
 COPY extra/install.py /usr/local/bin/pty-install
-#COPY vendor/jdk-11.0.10_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
+#COPY vendor/jdk-11.0.11_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
 
 RUN set -x \
  && apt-get update \
@@ -49,8 +49,8 @@ RUN apt-get update \
  && ln -sf /usr/bin/python3.9 /usr/local/bin/python3
 # workaround for Git LFS as Docker Hub not supporting yet
 RUN mkdir -p /var/cache/oracle-jdk11-installer-local/ \
- && wget -O /var/cache/oracle-jdk11-installer-local/jdk-11.0.10_linux-x64_bin.tar.gz \
-        https://github.com/JarryShaw/darc/raw/master/vendor/jdk-11.0.10_linux-x64_bin.tar.gz
+ && wget -O /var/cache/oracle-jdk11-installer-local/jdk-11.0.11_linux-x64_bin.tar.gz \
+        https://github.com/JarryShaw/darc/raw/master/vendor/jdk-11.0.11_linux-x64_bin.tar.gz
 RUN pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
  && pty-install --stdin 'yes' apt-get install --yes \
