@@ -18,8 +18,8 @@ filename="darc-api-$(hostname -I | awk '{print $1}')-$(date +%Y%m%d-%H%M%S).tar.
 api_path="api/${DATE}"
 
 # compare API files
-retry tar -czf ${filename} ${api_path}
-rm -r ${api_path}
+retry tar -czf ${filename} ${api_path} misc/*.txt
+rm -r ${api_path} misc/*.txt
 
 # upload archive
 if [ -z ${USER} ]; then
