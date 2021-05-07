@@ -72,8 +72,8 @@ def main() -> int:
         parser.error('curl: command not found')
 
     os.makedirs('logs', exist_ok=True)
-    if os.path.isfile('logs/upload.log'):
-        os.rename('logs/upload.log', f'logs/upload-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
+    #if os.path.isfile('logs/upload.log'):
+    #    os.rename('logs/upload.log', f'logs/upload-{time.strftime(r"%Y%m%d-%H%M%S")}.log')
 
     with open('logs/upload.log', 'at', buffering=1) as file:
         date = datetime.datetime.now().ctime()
