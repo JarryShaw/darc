@@ -165,8 +165,12 @@ def clinic(file: str, timeout: int, *services: str) -> None:
     print(f'[{datetime.datetime.now().isoformat()}] Stopped DARC services')
 
     print(f'[{datetime.datetime.now().isoformat()}] Cleaning out task queues')
-    number_requests = _redis_command('eval', SCPT, 1, 'queue_requests', 0, time.time())
-    number_selenium = _redis_command('eval', SCPT, 1, 'queue_selenium', 0, time.time())
+    #number_requests = _redis_command('evalsha', SCPT.sha, 1, 'queue_requests', 0, time.time())
+    #number_selenium = _redis_command('evalsha', SCPT.sha, 1, 'queue_selenium', 0, time.time())
+
+    number_requests = SCPT(keys=['queue_requests'], args=[0, time.time()])
+    number_requests = SCPT(keys=['queue_selenium'], args=[0, time.time()])
+
     #while True:
     #    pool: List[bytes] = [_redis_command('get', name) for name in _redis_command('zrangebyscore', 'queue_requests',  # pylint: disable=line-too-long
     #                                                                                min=0, max=time.time(), start=0, num=MAX_POOL)]  # pylint: disable=line-too-long
