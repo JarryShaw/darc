@@ -110,3 +110,10 @@ data and task queues, this script will truncate the Redis task queues
    We used Lua scrpit to slightly accelerate the whole procedure, as
    it may bring burden to the host server if running through Redis
    client.
+
+.. warning::
+
+   Due to restriction on the Alibaba Cloud (Aliyun) customised version
+   of Redis, i.e. AsparaDB for Redis, this Lua script is not allowed be
+   to executed. It is recommended to manually cleanup the database
+   before we find out an alternative solution.
