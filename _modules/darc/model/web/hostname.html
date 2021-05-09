@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darc.model.web.hostname &#8212; darc 0.9.4.post2 documentation</title>
+    <title>darc.model.web.hostname &#8212; darc 0.9.5 documentation</title>
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
@@ -47,7 +47,7 @@
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="n">DateTimeField</span><span class="p">,</span> <span class="n">TextField</span>
+<span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="n">CharField</span><span class="p">,</span> <span class="n">DateTimeField</span>
 
 <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">cached_property</span>
 <span class="kn">from</span> <span class="nn">darc._typing</span> <span class="kn">import</span> <span class="n">SPHINX_BUILD</span>
@@ -98,8 +98,10 @@
     <span class="c1">#: :attr:`URLModel.hostname &lt;darc.model.web.url.URLModel.hostname&gt;`.</span>
     <span class="n">urls</span><span class="p">:</span> <span class="s1">&#39;List[URLModel]&#39;</span>
 
-    <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`).</span>
-    <span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">()</span>
+    <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`). The maximum length of</span>
+    <span class="c1">#: the host name and of the fully qualified domain name (FQDN) is 63 bytes per</span>
+    <span class="c1">#: label and 255 characters per FQDN.</span>
+    <span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># a valid FQDN is at most 255 characters</span>
     <span class="c1">#: Proxy type (c.f. :attr:`link.proxy &lt;darc.link.Link.proxy&gt;`).</span>
     <span class="n">proxy</span><span class="p">:</span> <span class="n">Proxy</span> <span class="o">=</span> <span class="n">IntEnumField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">Proxy</span><span class="p">)</span>
 

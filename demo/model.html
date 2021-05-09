@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Data Models Demo &#8212; darc 0.9.4.post2 documentation</title>
+    <title>Data Models Demo &#8212; darc 0.9.5 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -38,9 +38,15 @@
 the submitted data from the <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> crawlers.</p>
 <p>Assuming the database is using <a class="reference external" href="https://docs.peewee-orm.com/"><code class="docutils literal notranslate"><span class="pre">peewee</span></code></a> as ORM and
 <a class="reference external" href="https://mysql.com/">MySQL</a> as backend.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>For more updated, battlefield-tested version of the
+data models, please refer to <a class="reference internal" href="../darc/model/web.html#module-darc.model.web" title="darc.model.web"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.web</span></code></a>.</p>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1"># pylint: disable=ungrouped-imports</span>
 
+<span class="kn">import</span> <span class="nn">enum</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
@@ -50,10 +56,65 @@ the submitted data from the <a class="reference internal" href="../darc/index.ht
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+    <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="c1"># database client</span>
 <span class="n">DB</span> <span class="o">=</span> <span class="n">playhouse</span><span class="o">.</span><span class="n">db_url</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_URL&#39;</span><span class="p">,</span> <span class="s1">&#39;mysql://127.0.0.1&#39;</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">IntEnumField</span><span class="p">(</span><span class="n">peewee</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;:class:`enum.IntEnum` data field.&quot;&quot;&quot;</span>
+
+    <span class="c1">#: The original :class:`enum.IntEnum` class.</span>
+    <span class="n">choices</span><span class="p">:</span> <span class="s1">&#39;IntEnum&#39;</span>
+
+    <span class="c1"># def db_value(self, value: &#39;Optional[IntEnum]&#39;) -&gt; &#39;Optional[str]&#39;:  # pylint: disable=inconsistent-return-statements</span>
+    <span class="c1">#     &quot;&quot;&quot;Dump the value for database storage.</span>
+
+    <span class="c1">#     Args:</span>
+    <span class="c1">#         val: Original enumeration object.</span>
+
+    <span class="c1">#     Returns:</span>
+    <span class="c1">#         Integral representation of the enumeration.</span>
+
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     if value is not None:</span>
+    <span class="c1">#         return value</span>
+
+    <span class="k">def</span> <span class="nf">python_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Optional[int]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[IntEnum]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
+        <span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: Integral representation of the enumeration.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Original enumeration object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">class</span> <span class="nc">Proxy</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Proxy types supported by :mod:`darc`.</span>
+
+<span class="sd">    .. _tor2web: https://onion.sh/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: No proxy.</span>
+    <span class="n">NULL</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="c1">#: Tor proxy.</span>
+    <span class="n">TOR</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="c1">#: I2P proxy.</span>
+    <span class="n">I2P</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="c1">#: ZeroNet proxy.</span>
+    <span class="n">ZERONET</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="c1">#: Freenet proxy.</span>
+    <span class="n">FREENET</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="c1">#: Proxied Tor (`tor2web`_, no proxy).</span>
+    <span class="n">TOR2WEB</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">table_function</span><span class="p">(</span><span class="n">model_class</span><span class="p">:</span> <span class="n">peewee</span><span class="o">.</span><span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -121,9 +182,9 @@ the submitted data from the <a class="reference internal" href="../darc/index.ht
     <span class="sd">&quot;&quot;&quot;Data model for a hostname record.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`).</span>
-    <span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+    <span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># a valid FQDN is at most 255 characters</span>
     <span class="c1">#: Proxy type (c.f. :attr:`link.proxy &lt;darc.link.Link.proxy&gt;`).</span>
-    <span class="n">proxy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">proxy</span><span class="p">:</span> <span class="s1">&#39;Proxy&#39;</span> <span class="o">=</span> <span class="n">IntEnumField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">Proxy</span><span class="p">)</span>
 
     <span class="c1">#: Timestamp of first ``new_host`` submission.</span>
     <span class="n">discovery</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
