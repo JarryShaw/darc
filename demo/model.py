@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=ungrouped-imports
 
+import enum
 import os
 from typing import TYPE_CHECKING
 
@@ -10,10 +11,65 @@ import playhouse.shortcuts
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from typing import Any, Dict, List
+    from enum import IntEnum
+    from typing import Any, Dict, List, Optional
 
 # database client
 DB = playhouse.db_url.connect(os.getenv('DB_URL', 'mysql://127.0.0.1'))
+
+
+class IntEnumField(peewee.IntegerField):
+    """:class:`enum.IntEnum` data field."""
+
+    #: The original :class:`enum.IntEnum` class.
+    choices: 'IntEnum'
+
+    # def db_value(self, value: 'Optional[IntEnum]') -> 'Optional[str]':  # pylint: disable=inconsistent-return-statements
+    #     """Dump the value for database storage.
+
+    #     Args:
+    #         val: Original enumeration object.
+
+    #     Returns:
+    #         Integral representation of the enumeration.
+
+    #     """
+    #     if value is not None:
+    #         return value
+
+    def python_value(self, value: 'Optional[int]') -> 'Optional[IntEnum]':  # pylint: disable=inconsistent-return-statements
+        """Load the value from database storage.
+
+        Args:
+            value: Integral representation of the enumeration.
+
+        Returns:
+            Original enumeration object.
+
+        """
+        if value is not None:
+            return self.choices(value)  # type: ignore
+        return None
+
+
+class Proxy(enum.IntEnum):
+    """Proxy types supported by :mod:`darc`.
+
+    .. _tor2web: https://onion.sh/
+    """
+
+    #: No proxy.
+    NULL = enum.auto()
+    #: Tor proxy.
+    TOR = enum.auto()
+    #: I2P proxy.
+    I2P = enum.auto()
+    #: ZeroNet proxy.
+    ZERONET = enum.auto()
+    #: Freenet proxy.
+    FREENET = enum.auto()
+    #: Proxied Tor (`tor2web`_, no proxy).
+    TOR2WEB = enum.auto()
 
 
 def table_function(model_class: peewee.Model) -> str:
@@ -81,9 +137,9 @@ class HostnameModel(BaseModel):
     """Data model for a hostname record."""
 
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
-    hostname: str = peewee.TextField()
+    hostname: str = peewee.CharField(max_length=255, unique=True)  # a valid FQDN is at most 255 characters
     #: Proxy type (c.f. :attr:`link.proxy <darc.link.Link.proxy>`).
-    proxy: str = peewee.CharField(max_length=8)
+    proxy: 'Proxy' = IntEnumField(choices=Proxy)
 
     #: Timestamp of first ``new_host`` submission.
     discovery: 'datetime' = peewee.DateTimeField()

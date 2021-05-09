@@ -14,7 +14,7 @@ representing hostnames, specifically from ``new_host`` submission.
 
 from typing import TYPE_CHECKING
 
-from peewee import DateTimeField, TextField
+from peewee import CharField, DateTimeField
 
 from darc._compat import cached_property
 from darc._typing import SPHINX_BUILD
@@ -65,8 +65,10 @@ class HostnameModel(BaseModel):
     #: :attr:`URLModel.hostname <darc.model.web.url.URLModel.hostname>`.
     urls: 'List[URLModel]'
 
-    #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
-    hostname: str = TextField()
+    #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`). The maximum length of
+    #: the host name and of the fully qualified domain name (FQDN) is 63 bytes per
+    #: label and 255 characters per FQDN.
+    hostname: str = CharField(max_length=255, unique=True)  # a valid FQDN is at most 255 characters
     #: Proxy type (c.f. :attr:`link.proxy <darc.link.Link.proxy>`).
     proxy: Proxy = IntEnumField(choices=Proxy)
 

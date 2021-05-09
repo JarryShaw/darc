@@ -16,7 +16,7 @@ defined for the hostname queue.
 
 from typing import TYPE_CHECKING
 
-from peewee import DateTimeField, TextField
+from peewee import CharField, DateTimeField
 
 from darc.model.abc import BaseModel
 
@@ -30,6 +30,6 @@ class HostnameQueueModel(BaseModel):
     """Hostname task queue."""
 
     #: Hostname (c.f. :attr:`link.host <darc.link.Link.host>`).
-    hostname: str = TextField()
+    hostname: str = CharField(max_length=255, unique=True)  # a valid FQDN is at most 255 characters
     #: Timestamp of last update.
     timestamp: 'datetime' = DateTimeField()
