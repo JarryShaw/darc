@@ -80,7 +80,7 @@ def _zeronet_bootstrap() -> None:
     tor_bootstrap()
 
     # launch ZeroNet process
-    _ZERONET_PROC = subprocess.Popen(  # nosec
+    _ZERONET_PROC = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
         _ZERONET_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 
