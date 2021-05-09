@@ -148,6 +148,13 @@ data and task queues, this script will truncate the Redis task queues
 it may bring burden to the host server if running through Redis
 client.</p>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Due to restriction on the Alibaba Cloud (Aliyun) customised version
+of Redis, i.e. AsparaDB for Redis, this Lua script is not allowed be
+to executed. It is recommended to manually cleanup the database
+before we find out an alternative solution.</p>
+</div>
 </div>
 </div>
 
