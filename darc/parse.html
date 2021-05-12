@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Source Parsing &#8212; darc 0.9.5 documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-darc.parse"></span><div class="section" id="source-parsing">
+  <span class="target" id="module-darc.parse"></span><section id="source-parsing">
 <h1>Source Parsing<a class="headerlink" href="#source-parsing" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="#module-darc.parse" title="darc.parse"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.parse</span></code></a> module provides auxiliary functions
 to read <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>, sitemaps and HTML documents. It
@@ -40,8 +41,8 @@ also contains utility functions to check if the proxy type,
 hostname and content type if in any of the black and white
 lists.</p>
 <dl class="py function">
-<dt id="darc.parse._check">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">_check</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse._check" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse._check">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse._check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check hostname and proxy type of links.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -70,8 +71,8 @@ instead.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="darc.parse._check_ng">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">_check_ng</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#_check_ng"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse._check_ng" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse._check_ng">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">_check_ng</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#_check_ng"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse._check_ng" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check content type of links through <code class="docutils literal notranslate"><span class="pre">HEAD</span></code> requests.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -95,8 +96,8 @@ instead.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="darc.parse.check_robots">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">check_robots</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#check_robots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.check_robots" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse.check_robots">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">check_robots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#check_robots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.check_robots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if <code class="docutils literal notranslate"><span class="pre">link</span></code> is allowed in <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -116,8 +117,8 @@ instead.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="darc.parse.extract_links">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">extract_links</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#extract_links"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.extract_links" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse.extract_links">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">extract_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#extract_links"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.extract_links" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract links from HTML document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -145,8 +146,8 @@ default to <a class="reference internal" href="const.html#darc.const.CHECK" titl
 </dd></dl>
 
 <dl class="py function">
-<dt id="darc.parse.extract_links_from_text">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">extract_links_from_text</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#extract_links_from_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.extract_links_from_text" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse.extract_links_from_text">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">extract_links_from_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#extract_links_from_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.extract_links_from_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract links from raw text source.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -174,8 +175,8 @@ own expressions by <span class="target" id="index-0"></span><a class="reference 
 </dd></dl>
 
 <dl class="py function">
-<dt id="darc.parse.get_content_type">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">get_content_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#get_content_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.get_content_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse.get_content_type">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">get_content_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#get_content_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.get_content_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get content type from <code class="docutils literal notranslate"><span class="pre">response</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -196,8 +197,8 @@ the function will utilise <a class="reference external" href="https://pypi.org/p
 </dd></dl>
 
 <dl class="py function">
-<dt id="darc.parse.match_host">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">match_host</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#match_host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.match_host" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse.match_host">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">match_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#match_host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.match_host" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if hostname in black list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -226,8 +227,8 @@ will always return <a class="reference external" href="https://docs.python.org/3
 </dd></dl>
 
 <dl class="py function">
-<dt id="darc.parse.match_mime">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">match_mime</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#match_mime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.match_mime" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse.match_mime">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">match_mime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#match_mime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.match_mime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if content type in black list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -251,8 +252,8 @@ will always return <a class="reference external" href="https://docs.python.org/3
 </dd></dl>
 
 <dl class="py function">
-<dt id="darc.parse.match_proxy">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">match_proxy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#match_proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.match_proxy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse.match_proxy">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">match_proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#match_proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.match_proxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if proxy type in black list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -280,10 +281,10 @@ will always return <a class="reference external" href="https://docs.python.org/3
 </div>
 </dd></dl>
 
-</div>
+</section>
 <dl class="py data">
-<dt id="darc.parse.darc.parse.URL_PAT">
-<code class="sig-prename descclassname"><span class="pre">darc.parse.</span></code><code class="sig-name descname"><span class="pre">URL_PAT</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.parse.darc.parse.URL_PAT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.parse.darc.parse.URL_PAT">
+<span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">URL_PAT</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.parse.darc.parse.URL_PAT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Regular expression patterns to match all reasonable URLs.</p>
 <p>Currently, we have two builtin patterns:</p>
 <ol class="arabic simple">

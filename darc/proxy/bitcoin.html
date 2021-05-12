@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Bitcoin Addresses &#8212; darc 0.9.5 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-darc.proxy.bitcoin"></span><div class="section" id="bitcoin-addresses">
+  <span class="target" id="module-darc.proxy.bitcoin"></span><section id="bitcoin-addresses">
 <h1>Bitcoin Addresses<a class="headerlink" href="#bitcoin-addresses" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="#module-darc.proxy.bitcoin" title="darc.proxy.bitcoin"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy.bitcoin</span></code></a> module contains the auxiliary functions
 around managing and processing the bitcoin addresses.</p>
@@ -40,8 +41,8 @@ around managing and processing the bitcoin addresses.</p>
 addresses extracted to the data storage file
 <a class="reference internal" href="#darc.proxy.bitcoin.darc.proxy.bitcoin.PATH" title="darc.proxy.bitcoin.darc.proxy.bitcoin.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a> without further processing.</p>
 <dl class="py function">
-<dt id="darc.proxy.bitcoin.save_bitcoin">
-<code class="sig-prename descclassname"><span class="pre">darc.proxy.bitcoin.</span></code><code class="sig-name descname"><span class="pre">save_bitcoin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/bitcoin.html#save_bitcoin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.bitcoin.save_bitcoin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.bitcoin.save_bitcoin">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.bitcoin.</span></span><span class="sig-name descname"><span class="pre">save_bitcoin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/bitcoin.html#save_bitcoin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.bitcoin.save_bitcoin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save bitcoin address.</p>
 <p>The function will save bitcoin address to the file
 as defined in <a class="reference internal" href="#darc.proxy.bitcoin.darc.proxy.bitcoin.PATH" title="darc.proxy.bitcoin.darc.proxy.bitcoin.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
@@ -55,10 +56,10 @@ as defined in <a class="reference internal" href="#darc.proxy.bitcoin.darc.proxy
 </dl>
 </dd></dl>
 
-</div>
+</section>
 <dl class="py data">
-<dt id="darc.proxy.bitcoin.darc.proxy.bitcoin.PATH">
-<code class="sig-prename descclassname"><span class="pre">darc.proxy.bitcoin.</span></code><code class="sig-name descname"><span class="pre">PATH</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_MISC}/bitcoin.txt'</span></em><a class="headerlink" href="#darc.proxy.bitcoin.darc.proxy.bitcoin.PATH" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.bitcoin.darc.proxy.bitcoin.PATH">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.bitcoin.</span></span><span class="sig-name descname"><span class="pre">PATH</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_MISC}/bitcoin.txt'</span></em><a class="headerlink" href="#darc.proxy.bitcoin.darc.proxy.bitcoin.PATH" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the data storage of bitcoin addresses.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -69,8 +70,8 @@ as defined in <a class="reference internal" href="#darc.proxy.bitcoin.darc.proxy
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.proxy.bitcoin.darc.proxy.bitcoin.LOCK">
-<code class="sig-prename descclassname"><span class="pre">darc.proxy.bitcoin.</span></code><code class="sig-name descname"><span class="pre">LOCK</span></code><em class="property"><span class="pre">:</span> <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Lock" title="(in Python v3.9)"><span class="pre">multiprocessing.Lock</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Lock" title="(in Python v3.9)"><span class="pre">threading.Lock</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">contextlib.nullcontext</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.bitcoin.darc.proxy.bitcoin.LOCK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.bitcoin.darc.proxy.bitcoin.LOCK">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.bitcoin.</span></span><span class="sig-name descname"><span class="pre">LOCK</span></span><em class="property"><span class="pre">:</span> <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Lock" title="(in Python v3.9)"><span class="pre">multiprocessing.Lock</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Lock" title="(in Python v3.9)"><span class="pre">threading.Lock</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">contextlib.nullcontext</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.bitcoin.darc.proxy.bitcoin.LOCK" title="Permalink to this definition">¶</a></dt>
 <dd><p>I/O lock for saving bitcoin addresses <a class="reference internal" href="#darc.proxy.bitcoin.darc.proxy.bitcoin.PATH" title="darc.proxy.bitcoin.darc.proxy.bitcoin.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>

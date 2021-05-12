@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Module Constants &#8212; darc 0.9.5 documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
@@ -32,13 +33,13 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-constants">
+  <section id="module-constants">
 <h1>Module Constants<a class="headerlink" href="#module-constants" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="auxiliary-function">
+<section id="auxiliary-function">
 <h2>Auxiliary Function<a class="headerlink" href="#auxiliary-function" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="darc.const.getpid">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">getpid</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/const.html#getpid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.const.getpid" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.getpid">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">getpid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/const.html#getpid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.const.getpid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get process ID.</p>
 <p>The process ID will be saved under the <a class="reference internal" href="#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_DB</span></code></a>
 folder, in a file named <code class="docutils literal notranslate"><span class="pre">darc.pid</span></code>. If no such file exists,
@@ -60,8 +61,8 @@ folder, in a file named <code class="docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py function">
-<dt id="darc.const.get_lock">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">get_lock</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/const.html#get_lock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.const.get_lock" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.get_lock">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">get_lock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/const.html#get_lock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.const.get_lock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a lock.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -74,12 +75,12 @@ and <a class="reference internal" href="#darc.const.FLAG_TH" title="darc.const.F
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="general-configurations">
+</section>
+<section id="general-configurations">
 <h2>General Configurations<a class="headerlink" href="#general-configurations" title="Permalink to this headline">¶</a></h2>
 <dl class="py data">
-<dt id="darc.const.REBOOT">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">REBOOT</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.REBOOT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.REBOOT">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">REBOOT</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.REBOOT" title="Permalink to this definition">¶</a></dt>
 <dd><p>If exit the program after first round, i.e. crawled all links from the
 <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> link database and loaded all links from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>
 link database.</p>
@@ -97,8 +98,8 @@ to save some space before continuing next round. See
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.DEBUG">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">DEBUG</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.DEBUG">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">DEBUG</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.DEBUG" title="Permalink to this definition">¶</a></dt>
 <dd><p>If run the program in debugging mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -111,8 +112,8 @@ to save some space before continuing next round. See
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.VERBOSE">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">VERBOSE</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.VERBOSE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.VERBOSE">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">VERBOSE</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.VERBOSE" title="Permalink to this definition">¶</a></dt>
 <dd><p>If run the program in verbose mode. If <a class="reference internal" href="#darc.const.DEBUG" title="darc.const.DEBUG"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEBUG</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>,
 then the verbose mode will be always enabled.</p>
 <dl class="field-list simple">
@@ -126,8 +127,8 @@ then the verbose mode will be always enabled.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.FORCE">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">FORCE</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.FORCE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.FORCE">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">FORCE</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.FORCE" title="Permalink to this definition">¶</a></dt>
 <dd><p>If ignore <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> rules when crawling (c.f. <a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -140,8 +141,8 @@ then the verbose mode will be always enabled.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.CHECK">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">CHECK</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.CHECK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.CHECK">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">CHECK</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.CHECK" title="Permalink to this definition">¶</a></dt>
 <dd><p>If check proxy and hostname before crawling (when calling
 <a class="reference internal" href="parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a>, <a class="reference internal" href="proxy/null.html#darc.proxy.null.read_sitemap" title="darc.proxy.null.read_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code></a>
 and <a class="reference internal" href="proxy/i2p.html#darc.proxy.i2p.read_hosts" title="darc.proxy.i2p.read_hosts"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code></a>).</p>
@@ -158,8 +159,8 @@ variable will be always set as <a class="reference external" href="https://docs.
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.CHECK_NG">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">CHECK_NG</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.CHECK_NG" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.CHECK_NG">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">CHECK_NG</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.CHECK_NG" title="Permalink to this definition">¶</a></dt>
 <dd><p>If check content type through <code class="docutils literal notranslate"><span class="pre">HEAD</span></code> requests before crawling
 (when calling <a class="reference internal" href="parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a>,
 <a class="reference internal" href="proxy/null.html#darc.proxy.null.read_sitemap" title="darc.proxy.null.read_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code></a> and <a class="reference internal" href="proxy/i2p.html#darc.proxy.i2p.read_hosts" title="darc.proxy.i2p.read_hosts"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code></a>).</p>
@@ -174,20 +175,20 @@ variable will be always set as <a class="reference external" href="https://docs.
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.ROOT">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">ROOT</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.const.ROOT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.ROOT">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">ROOT</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.const.ROOT" title="Permalink to this definition">¶</a></dt>
 <dd><p>The root folder of the project.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.CWD">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">CWD</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'.'</span></em><a class="headerlink" href="#darc.const.CWD" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.CWD">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">CWD</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'.'</span></em><a class="headerlink" href="#darc.const.CWD" title="Permalink to this definition">¶</a></dt>
 <dd><p>The current working direcory.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.DARC_CPU">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">DARC_CPU</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.const.DARC_CPU" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.DARC_CPU">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">DARC_CPU</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.const.DARC_CPU" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of concurrent processes. If not provided, then the number of
 system CPUs will be used.</p>
 <dl class="field-list simple">
@@ -201,8 +202,8 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.FLAG_MP">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">FLAG_MP</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.FLAG_MP" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.FLAG_MP">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">FLAG_MP</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.FLAG_MP" title="Permalink to this definition">¶</a></dt>
 <dd><p>If enable <em>multiprocessing</em> support.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -215,8 +216,8 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.FLAG_TH">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">FLAG_TH</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.FLAG_TH" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.FLAG_TH">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">FLAG_TH</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.FLAG_TH" title="Permalink to this definition">¶</a></dt>
 <dd><p>If enable <em>multithreading</em> support.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -234,8 +235,8 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.DARC_USER">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">DARC_USER</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.const.DARC_USER" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.DARC_USER">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">DARC_USER</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.const.DARC_USER" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>Non-root</em> user for proxies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -247,16 +248,16 @@ system CPUs will be used.</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="data-storage">
+</section>
+<section id="data-storage">
 <h2>Data Storage<a class="headerlink" href="#data-storage" title="Permalink to this headline">¶</a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>See <a class="reference internal" href="db.html#module-darc.db" title="darc.db"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code></a> for more information about database integration.</p>
 </div>
 <dl class="py data">
-<dt id="darc.const.REDIS">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">REDIS</span></code><em class="property"><span class="pre">:</span> <span class="pre">redis.Redis</span></em><a class="headerlink" href="#darc.const.REDIS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.REDIS">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">REDIS</span></span><em class="property"><span class="pre">:</span> <span class="pre">redis.Redis</span></em><a class="headerlink" href="#darc.const.REDIS" title="Permalink to this definition">¶</a></dt>
 <dd><p>URL to the Redis database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -269,8 +270,8 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.DB">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">DB</span></code><em class="property"><span class="pre">:</span> <span class="pre">peewee.Database</span></em><a class="headerlink" href="#darc.const.DB" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.DB">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">DB</span></span><em class="property"><span class="pre">:</span> <span class="pre">peewee.Database</span></em><a class="headerlink" href="#darc.const.DB" title="Permalink to this definition">¶</a></dt>
 <dd><p>URL to the RDS storage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -283,8 +284,8 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.DB_WEB">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">DB_WEB</span></code><em class="property"><span class="pre">:</span> <span class="pre">peewee.Database</span></em><a class="headerlink" href="#darc.const.DB_WEB" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.DB_WEB">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">DB_WEB</span></span><em class="property"><span class="pre">:</span> <span class="pre">peewee.Database</span></em><a class="headerlink" href="#darc.const.DB_WEB" title="Permalink to this definition">¶</a></dt>
 <dd><p>URL to the data submission storage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -297,16 +298,16 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.FLAG_DB">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">FLAG_DB</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.FLAG_DB" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.FLAG_DB">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">FLAG_DB</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.FLAG_DB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flag if uses RDS as the task queue backend.
 If <span class="target" id="index-11"></span><a class="reference internal" href="../config.html#envvar-REDIS_URL"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">REDIS_URL</span></code></a> is provided, then
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>; else, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.PATH_DB">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">PATH_DB</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.const.PATH_DB" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.PATH_DB">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">PATH_DB</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.const.PATH_DB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to data storage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -323,8 +324,8 @@ If <span class="target" id="index-11"></span><a class="reference internal" href=
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.PATH_MISC">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">PATH_MISC</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_DB}/misc/'</span></em><a class="headerlink" href="#darc.const.PATH_MISC" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.PATH_MISC">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">PATH_MISC</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_DB}/misc/'</span></em><a class="headerlink" href="#darc.const.PATH_MISC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to miscellaneous data storage, i.e. <code class="docutils literal notranslate"><span class="pre">misc</span></code> folder under the
 root of data storage.</p>
 <div class="admonition seealso">
@@ -336,8 +337,8 @@ root of data storage.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.PATH_LN">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">PATH_LN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_DB}/link.csv'</span></em><a class="headerlink" href="#darc.const.PATH_LN" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.PATH_LN">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">PATH_LN</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_DB}/link.csv'</span></em><a class="headerlink" href="#darc.const.PATH_LN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the link CSV file, <code class="docutils literal notranslate"><span class="pre">link.csv</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -349,8 +350,8 @@ root of data storage.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.PATH_ID">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">PATH_ID</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_DB}/darc.pid'</span></em><a class="headerlink" href="#darc.const.PATH_ID" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.PATH_ID">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">PATH_ID</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'{PATH_DB}/darc.pid'</span></em><a class="headerlink" href="#darc.const.PATH_ID" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the process ID file, <code class="docutils literal notranslate"><span class="pre">darc.pid</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -361,12 +362,12 @@ root of data storage.</p>
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="web-crawlers">
+</section>
+<section id="web-crawlers">
 <h2>Web Crawlers<a class="headerlink" href="#web-crawlers" title="Permalink to this headline">¶</a></h2>
 <dl class="py data">
-<dt id="darc.const.DARC_WAIT">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">DARC_WAIT</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.DARC_WAIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.DARC_WAIT">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">DARC_WAIT</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.DARC_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time interval between each round when the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> and/or
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> database are empty.</p>
 <dl class="field-list simple">
@@ -380,8 +381,8 @@ root of data storage.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.TIME_CACHE">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">TIME_CACHE</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a></em><a class="headerlink" href="#darc.const.TIME_CACHE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.TIME_CACHE">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">TIME_CACHE</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a></em><a class="headerlink" href="#darc.const.TIME_CACHE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time delta for caches in seconds.</p>
 <p>The <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project supports <em>caching</em> for fetched files.
 <a class="reference internal" href="#darc.const.TIME_CACHE" title="darc.const.TIME_CACHE"><code class="xref py py-data docutils literal notranslate"><span class="pre">TIME_CACHE</span></code></a> will specify for how log the
@@ -402,8 +403,8 @@ will be marked as <em>forever</em>.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.SE_WAIT">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">SE_WAIT</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a></em><a class="headerlink" href="#darc.const.SE_WAIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.SE_WAIT">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">SE_WAIT</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a></em><a class="headerlink" href="#darc.const.SE_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time to wait for <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> to finish loading pages.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -423,8 +424,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.SE_EMPTY">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">SE_EMPTY</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;'</span></em><a class="headerlink" href="#darc.const.SE_EMPTY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.SE_EMPTY">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">SE_EMPTY</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;'</span></em><a class="headerlink" href="#darc.const.SE_EMPTY" title="Permalink to this definition">¶</a></dt>
 <dd><p>The empty page from <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -434,12 +435,12 @@ running after the event.</p>
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="white-black-lists">
+</section>
+<section id="white-black-lists">
 <h2>White / Black Lists<a class="headerlink" href="#white-black-lists" title="Permalink to this headline">¶</a></h2>
 <dl class="py data">
-<dt id="darc.const.LINK_WHITE_LIST">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">LINK_WHITE_LIST</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.LINK_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.LINK_WHITE_LIST">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">LINK_WHITE_LIST</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.LINK_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><p>White list of hostnames should be crawled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -456,8 +457,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.LINK_BLACK_LIST">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">LINK_BLACK_LIST</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.LINK_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.LINK_BLACK_LIST">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">LINK_BLACK_LIST</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.LINK_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><p>Black list of hostnames should be crawled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -474,8 +475,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.LINK_FALLBACK">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">LINK_FALLBACK</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.LINK_FALLBACK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.LINK_FALLBACK">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">LINK_FALLBACK</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.LINK_FALLBACK" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fallback value for <a class="reference internal" href="parse.html#darc.parse.match_host" title="darc.parse.match_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">match_host()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -488,8 +489,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.MIME_WHITE_LIST">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">MIME_WHITE_LIST</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.MIME_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.MIME_WHITE_LIST">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">MIME_WHITE_LIST</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.MIME_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><p>White list of content types should be crawled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -506,8 +507,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.MIME_BLACK_LIST">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">MIME_BLACK_LIST</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.MIME_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.MIME_BLACK_LIST">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">MIME_BLACK_LIST</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.MIME_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><p>Black list of content types should be crawled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -524,8 +525,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.MIME_FALLBACK">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">MIME_FALLBACK</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.MIME_FALLBACK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.MIME_FALLBACK">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">MIME_FALLBACK</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.MIME_FALLBACK" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fallback value for <a class="reference internal" href="parse.html#darc.parse.match_mime" title="darc.parse.match_mime"><code class="xref py py-func docutils literal notranslate"><span class="pre">match_mime()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -538,8 +539,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.PROXY_WHITE_LIST">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">PROXY_WHITE_LIST</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.PROXY_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.PROXY_WHITE_LIST">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">PROXY_WHITE_LIST</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.PROXY_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><p>White list of proxy types should be crawled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -556,8 +557,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.PROXY_BLACK_LIST">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">PROXY_BLACK_LIST</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.PROXY_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.PROXY_BLACK_LIST">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">PROXY_BLACK_LIST</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.const.PROXY_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><p>Black list of proxy types should be crawled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -574,8 +575,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="darc.const.PROXY_FALLBACK">
-<code class="sig-prename descclassname"><span class="pre">darc.const.</span></code><code class="sig-name descname"><span class="pre">PROXY_FALLBACK</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.PROXY_FALLBACK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.const.PROXY_FALLBACK">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">PROXY_FALLBACK</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.PROXY_FALLBACK" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fallback value for <a class="reference internal" href="parse.html#darc.parse.match_proxy" title="darc.parse.match_proxy"><code class="xref py py-func docutils literal notranslate"><span class="pre">match_proxy()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -587,8 +588,8 @@ running after the event.</p>
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

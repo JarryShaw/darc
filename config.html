@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Configuration &#8212; darc 0.9.5 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -32,16 +33,16 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="configuration">
+  <section id="configuration">
 <h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project is generally configurable through numerous
 environment variables. Below is the full list of supported environment
 variables you may use to configure the behaviour of <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>.</p>
-<div class="section" id="general-configurations">
+<section id="general-configurations">
 <h2>General Configurations<a class="headerlink" href="#general-configurations" title="Permalink to this headline">¶</a></h2>
 <dl class="std envvar">
-<dt id="envvar-DARC_REBOOT">
-<code class="sig-name descname"><span class="pre">DARC_REBOOT</span></code><a class="headerlink" href="#envvar-DARC_REBOOT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_REBOOT">
+<span class="sig-name descname"><span class="pre">DARC_REBOOT</span></span><a class="headerlink" href="#envvar-DARC_REBOOT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -59,8 +60,8 @@ to save some space before continuing next round. See
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_DEBUG">
-<code class="sig-name descname"><span class="pre">DARC_DEBUG</span></code><a class="headerlink" href="#envvar-DARC_DEBUG" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_DEBUG">
+<span class="sig-name descname"><span class="pre">DARC_DEBUG</span></span><a class="headerlink" href="#envvar-DARC_DEBUG" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -73,8 +74,8 @@ to save some space before continuing next round. See
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_VERBOSE">
-<code class="sig-name descname"><span class="pre">DARC_VERBOSE</span></code><a class="headerlink" href="#envvar-DARC_VERBOSE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_VERBOSE">
+<span class="sig-name descname"><span class="pre">DARC_VERBOSE</span></span><a class="headerlink" href="#envvar-DARC_VERBOSE" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -88,8 +89,8 @@ then the verbose mode will be always enabled.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_FORCE">
-<code class="sig-name descname"><span class="pre">DARC_FORCE</span></code><a class="headerlink" href="#envvar-DARC_FORCE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_FORCE">
+<span class="sig-name descname"><span class="pre">DARC_FORCE</span></span><a class="headerlink" href="#envvar-DARC_FORCE" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -102,8 +103,8 @@ then the verbose mode will be always enabled.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_CHECK">
-<code class="sig-name descname"><span class="pre">DARC_CHECK</span></code><a class="headerlink" href="#envvar-DARC_CHECK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_CHECK">
+<span class="sig-name descname"><span class="pre">DARC_CHECK</span></span><a class="headerlink" href="#envvar-DARC_CHECK" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -120,8 +121,8 @@ variable will be always set as <a class="reference external" href="https://docs.
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_CHECK_CONTENT_TYPE">
-<code class="sig-name descname"><span class="pre">DARC_CHECK_CONTENT_TYPE</span></code><a class="headerlink" href="#envvar-DARC_CHECK_CONTENT_TYPE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_CHECK_CONTENT_TYPE">
+<span class="sig-name descname"><span class="pre">DARC_CHECK_CONTENT_TYPE</span></span><a class="headerlink" href="#envvar-DARC_CHECK_CONTENT_TYPE" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -136,8 +137,8 @@ variable will be always set as <a class="reference external" href="https://docs.
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_URL_PAT">
-<code class="sig-name descname"><span class="pre">DARC_URL_PAT</span></code><a class="headerlink" href="#envvar-DARC_URL_PAT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_URL_PAT">
+<span class="sig-name descname"><span class="pre">DARC_URL_PAT</span></span><a class="headerlink" href="#envvar-DARC_URL_PAT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>List[Tuple[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>]] (JSON)</p>
@@ -164,8 +165,8 @@ i.e., with <a class="reference external" href="https://docs.python.org/3/library
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_CPU">
-<code class="sig-name descname"><span class="pre">DARC_CPU</span></code><a class="headerlink" href="#envvar-DARC_CPU" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_CPU">
+<span class="sig-name descname"><span class="pre">DARC_CPU</span></span><a class="headerlink" href="#envvar-DARC_CPU" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -179,8 +180,8 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_MULTIPROCESSING">
-<code class="sig-name descname"><span class="pre">DARC_MULTIPROCESSING</span></code><a class="headerlink" href="#envvar-DARC_MULTIPROCESSING" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_MULTIPROCESSING">
+<span class="sig-name descname"><span class="pre">DARC_MULTIPROCESSING</span></span><a class="headerlink" href="#envvar-DARC_MULTIPROCESSING" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -193,8 +194,8 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_MULTITHREADING">
-<code class="sig-name descname"><span class="pre">DARC_MULTITHREADING</span></code><a class="headerlink" href="#envvar-DARC_MULTITHREADING" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_MULTITHREADING">
+<span class="sig-name descname"><span class="pre">DARC_MULTITHREADING</span></span><a class="headerlink" href="#envvar-DARC_MULTITHREADING" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -212,8 +213,8 @@ system CPUs will be used.</p>
 <strong>NOT</strong> be toggled at the same time.</p>
 </div>
 <dl class="std envvar">
-<dt id="envvar-DARC_USER">
-<code class="sig-name descname"><span class="pre">DARC_USER</span></code><a class="headerlink" href="#envvar-DARC_USER" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_USER">
+<span class="sig-name descname"><span class="pre">DARC_USER</span></span><a class="headerlink" href="#envvar-DARC_USER" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a></p>
@@ -225,8 +226,8 @@ system CPUs will be used.</p>
 <p><em>Non-root</em> user for proxies.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="data-storage">
+</section>
+<section id="data-storage">
 <h2>Data Storage<a class="headerlink" href="#data-storage" title="Permalink to this headline">¶</a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -234,8 +235,8 @@ system CPUs will be used.</p>
 <p>See <a class="reference internal" href="darc/db.html#module-darc.db" title="darc.db"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code></a> for more information about database integration.</p>
 </div>
 <dl class="std envvar">
-<dt id="envvar-PATH_DATA">
-<code class="sig-name descname"><span class="pre">PATH_DATA</span></code><a class="headerlink" href="#envvar-PATH_DATA" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-PATH_DATA">
+<span class="sig-name descname"><span class="pre">PATH_DATA</span></span><a class="headerlink" href="#envvar-PATH_DATA" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> (path)</p>
@@ -248,8 +249,8 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-REDIS_URL">
-<code class="sig-name descname"><span class="pre">REDIS_URL</span></code><a class="headerlink" href="#envvar-REDIS_URL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-REDIS_URL">
+<span class="sig-name descname"><span class="pre">REDIS_URL</span></span><a class="headerlink" href="#envvar-REDIS_URL" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> (url)</p>
@@ -262,8 +263,8 @@ system CPUs will be used.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DB_URL">
-<code class="sig-name descname"><span class="pre">DB_URL</span></code><a class="headerlink" href="#envvar-DB_URL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DB_URL">
+<span class="sig-name descname"><span class="pre">DB_URL</span></span><a class="headerlink" href="#envvar-DB_URL" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> (url)</p>
@@ -280,8 +281,8 @@ the data submittsion will be saved to <code class="docutils literal notranslate"
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_BULK_SIZE">
-<code class="sig-name descname"><span class="pre">DARC_BULK_SIZE</span></code><a class="headerlink" href="#envvar-DARC_BULK_SIZE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_BULK_SIZE">
+<span class="sig-name descname"><span class="pre">DARC_BULK_SIZE</span></span><a class="headerlink" href="#envvar-DARC_BULK_SIZE" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -301,8 +302,8 @@ the data submittsion will be saved to <code class="docutils literal notranslate"
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-LOCK_TIMEOUT">
-<code class="sig-name descname"><span class="pre">LOCK_TIMEOUT</span></code><a class="headerlink" href="#envvar-LOCK_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-LOCK_TIMEOUT">
+<span class="sig-name descname"><span class="pre">LOCK_TIMEOUT</span></span><a class="headerlink" href="#envvar-LOCK_TIMEOUT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a></p>
@@ -323,8 +324,8 @@ the data submittsion will be saved to <code class="docutils literal notranslate"
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_MAX_POOL">
-<code class="sig-name descname"><span class="pre">DARC_MAX_POOL</span></code><a class="headerlink" href="#envvar-DARC_MAX_POOL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_MAX_POOL">
+<span class="sig-name descname"><span class="pre">DARC_MAX_POOL</span></span><a class="headerlink" href="#envvar-DARC_MAX_POOL" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -348,8 +349,8 @@ the data submittsion will be saved to <code class="docutils literal notranslate"
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-REDIS_LOCK">
-<code class="sig-name descname"><span class="pre">REDIS_LOCK</span></code><a class="headerlink" href="#envvar-REDIS_LOCK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-REDIS_LOCK">
+<span class="sig-name descname"><span class="pre">REDIS_LOCK</span></span><a class="headerlink" href="#envvar-REDIS_LOCK" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -366,8 +367,8 @@ the data submittsion will be saved to <code class="docutils literal notranslate"
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-RETRY_INTERVAL">
-<code class="sig-name descname"><span class="pre">RETRY_INTERVAL</span></code><a class="headerlink" href="#envvar-RETRY_INTERVAL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-RETRY_INTERVAL">
+<span class="sig-name descname"><span class="pre">RETRY_INTERVAL</span></span><a class="headerlink" href="#envvar-RETRY_INTERVAL" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -387,12 +388,12 @@ the data submittsion will be saved to <code class="docutils literal notranslate"
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="web-crawlers">
+</section>
+<section id="web-crawlers">
 <h2>Web Crawlers<a class="headerlink" href="#web-crawlers" title="Permalink to this headline">¶</a></h2>
 <dl class="std envvar">
-<dt id="envvar-DARC_WAIT">
-<code class="sig-name descname"><span class="pre">DARC_WAIT</span></code><a class="headerlink" href="#envvar-DARC_WAIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_WAIT">
+<span class="sig-name descname"><span class="pre">DARC_WAIT</span></span><a class="headerlink" href="#envvar-DARC_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a></p>
@@ -406,8 +407,8 @@ the data submittsion will be saved to <code class="docutils literal notranslate"
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_SAVE">
-<code class="sig-name descname"><span class="pre">DARC_SAVE</span></code><a class="headerlink" href="#envvar-DARC_SAVE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_SAVE">
+<span class="sig-name descname"><span class="pre">DARC_SAVE</span></span><a class="headerlink" href="#envvar-DARC_SAVE" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -429,8 +430,8 @@ and <span class="target" id="index-2"></span><a class="reference internal" href=
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_SAVE_REQUESTS">
-<code class="sig-name descname"><span class="pre">DARC_SAVE_REQUESTS</span></code><a class="headerlink" href="#envvar-DARC_SAVE_REQUESTS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_SAVE_REQUESTS">
+<span class="sig-name descname"><span class="pre">DARC_SAVE_REQUESTS</span></span><a class="headerlink" href="#envvar-DARC_SAVE_REQUESTS" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -447,8 +448,8 @@ and <span class="target" id="index-2"></span><a class="reference internal" href=
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-DARC_SAVE_SELENIUM">
-<code class="sig-name descname"><span class="pre">DARC_SAVE_SELENIUM</span></code><a class="headerlink" href="#envvar-DARC_SAVE_SELENIUM" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_SAVE_SELENIUM">
+<span class="sig-name descname"><span class="pre">DARC_SAVE_SELENIUM</span></span><a class="headerlink" href="#envvar-DARC_SAVE_SELENIUM" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -465,8 +466,8 @@ and <span class="target" id="index-2"></span><a class="reference internal" href=
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-TIME_CACHE">
-<code class="sig-name descname"><span class="pre">TIME_CACHE</span></code><a class="headerlink" href="#envvar-TIME_CACHE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-TIME_CACHE">
+<span class="sig-name descname"><span class="pre">TIME_CACHE</span></span><a class="headerlink" href="#envvar-TIME_CACHE" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a></p>
@@ -487,8 +488,8 @@ as <em>forever</em>.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-SE_WAIT">
-<code class="sig-name descname"><span class="pre">SE_WAIT</span></code><a class="headerlink" href="#envvar-SE_WAIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-SE_WAIT">
+<span class="sig-name descname"><span class="pre">SE_WAIT</span></span><a class="headerlink" href="#envvar-SE_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a></p>
@@ -508,8 +509,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-CHROME_BINARY_LOCATION">
-<code class="sig-name descname"><span class="pre">CHROME_BINARY_LOCATION</span></code><a class="headerlink" href="#envvar-CHROME_BINARY_LOCATION" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-CHROME_BINARY_LOCATION">
+<span class="sig-name descname"><span class="pre">CHROME_BINARY_LOCATION</span></span><a class="headerlink" href="#envvar-CHROME_BINARY_LOCATION" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a></p>
@@ -529,12 +530,12 @@ running after the event.</p>
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="white-black-lists">
+</section>
+<section id="white-black-lists">
 <h2>White / Black Lists<a class="headerlink" href="#white-black-lists" title="Permalink to this headline">¶</a></h2>
 <dl class="std envvar">
-<dt id="envvar-LINK_WHITE_LIST">
-<code class="sig-name descname"><span class="pre">LINK_WHITE_LIST</span></code><a class="headerlink" href="#envvar-LINK_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-LINK_WHITE_LIST">
+<span class="sig-name descname"><span class="pre">LINK_WHITE_LIST</span></span><a class="headerlink" href="#envvar-LINK_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">List[str]</span></code> (JSON)</p>
@@ -551,8 +552,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-LINK_BLACK_LIST">
-<code class="sig-name descname"><span class="pre">LINK_BLACK_LIST</span></code><a class="headerlink" href="#envvar-LINK_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-LINK_BLACK_LIST">
+<span class="sig-name descname"><span class="pre">LINK_BLACK_LIST</span></span><a class="headerlink" href="#envvar-LINK_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">List[str]</span></code> (JSON)</p>
@@ -569,8 +570,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-LINK_FALLBACK">
-<code class="sig-name descname"><span class="pre">LINK_FALLBACK</span></code><a class="headerlink" href="#envvar-LINK_FALLBACK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-LINK_FALLBACK">
+<span class="sig-name descname"><span class="pre">LINK_FALLBACK</span></span><a class="headerlink" href="#envvar-LINK_FALLBACK" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -583,8 +584,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-MIME_WHITE_LIST">
-<code class="sig-name descname"><span class="pre">MIME_WHITE_LIST</span></code><a class="headerlink" href="#envvar-MIME_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-MIME_WHITE_LIST">
+<span class="sig-name descname"><span class="pre">MIME_WHITE_LIST</span></span><a class="headerlink" href="#envvar-MIME_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">List[str]</span></code> (JSON)</p>
@@ -601,8 +602,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-MIME_BLACK_LIST">
-<code class="sig-name descname"><span class="pre">MIME_BLACK_LIST</span></code><a class="headerlink" href="#envvar-MIME_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-MIME_BLACK_LIST">
+<span class="sig-name descname"><span class="pre">MIME_BLACK_LIST</span></span><a class="headerlink" href="#envvar-MIME_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">List[str]</span></code> (JSON)</p>
@@ -619,8 +620,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-MIME_FALLBACK">
-<code class="sig-name descname"><span class="pre">MIME_FALLBACK</span></code><a class="headerlink" href="#envvar-MIME_FALLBACK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-MIME_FALLBACK">
+<span class="sig-name descname"><span class="pre">MIME_FALLBACK</span></span><a class="headerlink" href="#envvar-MIME_FALLBACK" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -633,8 +634,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-PROXY_WHITE_LIST">
-<code class="sig-name descname"><span class="pre">PROXY_WHITE_LIST</span></code><a class="headerlink" href="#envvar-PROXY_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-PROXY_WHITE_LIST">
+<span class="sig-name descname"><span class="pre">PROXY_WHITE_LIST</span></span><a class="headerlink" href="#envvar-PROXY_WHITE_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">List[str]</span></code> (JSON)</p>
@@ -651,8 +652,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-PROXY_BLACK_LIST">
-<code class="sig-name descname"><span class="pre">PROXY_BLACK_LIST</span></code><a class="headerlink" href="#envvar-PROXY_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-PROXY_BLACK_LIST">
+<span class="sig-name descname"><span class="pre">PROXY_BLACK_LIST</span></span><a class="headerlink" href="#envvar-PROXY_BLACK_LIST" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">List[str]</span></code> (JSON)</p>
@@ -669,8 +670,8 @@ running after the event.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-PROXY_FALLBACK">
-<code class="sig-name descname"><span class="pre">PROXY_FALLBACK</span></code><a class="headerlink" href="#envvar-PROXY_FALLBACK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-PROXY_FALLBACK">
+<span class="sig-name descname"><span class="pre">PROXY_FALLBACK</span></span><a class="headerlink" href="#envvar-PROXY_FALLBACK" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -690,12 +691,12 @@ running after the event.</p>
 <code class="xref py py-data docutils literal notranslate"><span class="pre">PROXY_WHITE_LIST</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">PROXY_BLACK_LIST</span></code>
 should all be JSON encoded strings.</p>
 </div>
-</div>
-<div class="section" id="data-submission">
+</section>
+<section id="data-submission">
 <h2>Data Submission<a class="headerlink" href="#data-submission" title="Permalink to this headline">¶</a></h2>
 <dl class="std envvar">
-<dt id="envvar-SAVE_DB">
-<code class="sig-name descname"><span class="pre">SAVE_DB</span></code><a class="headerlink" href="#envvar-SAVE_DB" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-SAVE_DB">
+<span class="sig-name descname"><span class="pre">SAVE_DB</span></span><a class="headerlink" href="#envvar-SAVE_DB" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a></p>
@@ -708,8 +709,8 @@ should all be JSON encoded strings.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-API_RETRY">
-<code class="sig-name descname"><span class="pre">API_RETRY</span></code><a class="headerlink" href="#envvar-API_RETRY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-API_RETRY">
+<span class="sig-name descname"><span class="pre">API_RETRY</span></span><a class="headerlink" href="#envvar-API_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -722,8 +723,8 @@ should all be JSON encoded strings.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-API_NEW_HOST">
-<code class="sig-name descname"><span class="pre">API_NEW_HOST</span></code><a class="headerlink" href="#envvar-API_NEW_HOST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-API_NEW_HOST">
+<span class="sig-name descname"><span class="pre">API_NEW_HOST</span></span><a class="headerlink" href="#envvar-API_NEW_HOST" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a></p>
@@ -736,8 +737,8 @@ should all be JSON encoded strings.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-API_REQUESTS">
-<code class="sig-name descname"><span class="pre">API_REQUESTS</span></code><a class="headerlink" href="#envvar-API_REQUESTS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-API_REQUESTS">
+<span class="sig-name descname"><span class="pre">API_REQUESTS</span></span><a class="headerlink" href="#envvar-API_REQUESTS" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a></p>
@@ -750,8 +751,8 @@ should all be JSON encoded strings.</p>
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-API_SELENIUM">
-<code class="sig-name descname"><span class="pre">API_SELENIUM</span></code><a class="headerlink" href="#envvar-API_SELENIUM" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-API_SELENIUM">
+<span class="sig-name descname"><span class="pre">API_SELENIUM</span></span><a class="headerlink" href="#envvar-API_SELENIUM" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a></p>
@@ -770,12 +771,12 @@ and <code class="xref py py-data docutils literal notranslate"><span class="pre"
 submit function will save the JSON data in the path
 specified by <code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_DATA</span></code>.</p>
 </div>
-</div>
-<div class="section" id="tor-proxy-configuration">
+</section>
+<section id="tor-proxy-configuration">
 <h2>Tor Proxy Configuration<a class="headerlink" href="#tor-proxy-configuration" title="Permalink to this headline">¶</a></h2>
 <dl class="std envvar">
-<dt id="envvar-DARC_TOR">
-<code class="sig-name descname"><span class="pre">DARC_TOR</span></code><a class="headerlink" href="#envvar-DARC_TOR" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_TOR">
+<span class="sig-name descname"><span class="pre">DARC_TOR</span></span><a class="headerlink" href="#envvar-DARC_TOR" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -788,8 +789,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-TOR_PORT">
-<code class="sig-name descname"><span class="pre">TOR_PORT</span></code><a class="headerlink" href="#envvar-TOR_PORT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-TOR_PORT">
+<span class="sig-name descname"><span class="pre">TOR_PORT</span></span><a class="headerlink" href="#envvar-TOR_PORT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -802,8 +803,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-TOR_CTRL">
-<code class="sig-name descname"><span class="pre">TOR_CTRL</span></code><a class="headerlink" href="#envvar-TOR_CTRL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-TOR_CTRL">
+<span class="sig-name descname"><span class="pre">TOR_CTRL</span></span><a class="headerlink" href="#envvar-TOR_CTRL" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -816,8 +817,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-TOR_PASS">
-<code class="sig-name descname"><span class="pre">TOR_PASS</span></code><a class="headerlink" href="#envvar-TOR_PASS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-TOR_PASS">
+<span class="sig-name descname"><span class="pre">TOR_PASS</span></span><a class="headerlink" href="#envvar-TOR_PASS" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a></p>
@@ -834,8 +835,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-TOR_RETRY">
-<code class="sig-name descname"><span class="pre">TOR_RETRY</span></code><a class="headerlink" href="#envvar-TOR_RETRY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-TOR_RETRY">
+<span class="sig-name descname"><span class="pre">TOR_RETRY</span></span><a class="headerlink" href="#envvar-TOR_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -848,8 +849,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-TOR_WAIT">
-<code class="sig-name descname"><span class="pre">TOR_WAIT</span></code><a class="headerlink" href="#envvar-TOR_WAIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-TOR_WAIT">
+<span class="sig-name descname"><span class="pre">TOR_WAIT</span></span><a class="headerlink" href="#envvar-TOR_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a></p>
@@ -866,8 +867,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-TOR_CFG">
-<code class="sig-name descname"><span class="pre">TOR_CFG</span></code><a class="headerlink" href="#envvar-TOR_CFG" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-TOR_CFG">
+<span class="sig-name descname"><span class="pre">TOR_CFG</span></span><a class="headerlink" href="#envvar-TOR_CFG" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Dict[str,</span> <span class="pre">Any]</span></code> (JSON)</p>
@@ -883,12 +884,12 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="i2p-proxy-configuration">
+</section>
+<section id="i2p-proxy-configuration">
 <h2>I2P Proxy Configuration<a class="headerlink" href="#i2p-proxy-configuration" title="Permalink to this headline">¶</a></h2>
 <dl class="std envvar">
-<dt id="envvar-DARC_I2P">
-<code class="sig-name descname"><span class="pre">DARC_I2P</span></code><a class="headerlink" href="#envvar-DARC_I2P" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_I2P">
+<span class="sig-name descname"><span class="pre">DARC_I2P</span></span><a class="headerlink" href="#envvar-DARC_I2P" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -901,8 +902,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-I2P_PORT">
-<code class="sig-name descname"><span class="pre">I2P_PORT</span></code><a class="headerlink" href="#envvar-I2P_PORT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-I2P_PORT">
+<span class="sig-name descname"><span class="pre">I2P_PORT</span></span><a class="headerlink" href="#envvar-I2P_PORT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -915,8 +916,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-I2P_RETRY">
-<code class="sig-name descname"><span class="pre">I2P_RETRY</span></code><a class="headerlink" href="#envvar-I2P_RETRY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-I2P_RETRY">
+<span class="sig-name descname"><span class="pre">I2P_RETRY</span></span><a class="headerlink" href="#envvar-I2P_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -929,8 +930,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-I2P_WAIT">
-<code class="sig-name descname"><span class="pre">I2P_WAIT</span></code><a class="headerlink" href="#envvar-I2P_WAIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-I2P_WAIT">
+<span class="sig-name descname"><span class="pre">I2P_WAIT</span></span><a class="headerlink" href="#envvar-I2P_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a></p>
@@ -947,8 +948,8 @@ specified by <code class="xref py py-data docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-I2P_ARGS">
-<code class="sig-name descname"><span class="pre">I2P_ARGS</span></code><a class="headerlink" href="#envvar-I2P_ARGS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-I2P_ARGS">
+<span class="sig-name descname"><span class="pre">I2P_ARGS</span></span><a class="headerlink" href="#envvar-I2P_ARGS" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> (Shell)</p>
@@ -967,12 +968,12 @@ user (c.f. <a class="reference external" href="https://docs.python.org/3/library
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="zeronet-proxy-configuration">
+</section>
+<section id="zeronet-proxy-configuration">
 <h2>ZeroNet Proxy Configuration<a class="headerlink" href="#zeronet-proxy-configuration" title="Permalink to this headline">¶</a></h2>
 <dl class="std envvar">
-<dt id="envvar-DARC_ZERONET">
-<code class="sig-name descname"><span class="pre">DARC_ZERONET</span></code><a class="headerlink" href="#envvar-DARC_ZERONET" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_ZERONET">
+<span class="sig-name descname"><span class="pre">DARC_ZERONET</span></span><a class="headerlink" href="#envvar-DARC_ZERONET" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -985,8 +986,8 @@ user (c.f. <a class="reference external" href="https://docs.python.org/3/library
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-ZERONET_PORT">
-<code class="sig-name descname"><span class="pre">ZERONET_PORT</span></code><a class="headerlink" href="#envvar-ZERONET_PORT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-ZERONET_PORT">
+<span class="sig-name descname"><span class="pre">ZERONET_PORT</span></span><a class="headerlink" href="#envvar-ZERONET_PORT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -999,8 +1000,8 @@ user (c.f. <a class="reference external" href="https://docs.python.org/3/library
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-ZERONET_RETRY">
-<code class="sig-name descname"><span class="pre">ZERONET_RETRY</span></code><a class="headerlink" href="#envvar-ZERONET_RETRY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-ZERONET_RETRY">
+<span class="sig-name descname"><span class="pre">ZERONET_RETRY</span></span><a class="headerlink" href="#envvar-ZERONET_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -1013,8 +1014,8 @@ user (c.f. <a class="reference external" href="https://docs.python.org/3/library
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-ZERONET_WAIT">
-<code class="sig-name descname"><span class="pre">ZERONET_WAIT</span></code><a class="headerlink" href="#envvar-ZERONET_WAIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-ZERONET_WAIT">
+<span class="sig-name descname"><span class="pre">ZERONET_WAIT</span></span><a class="headerlink" href="#envvar-ZERONET_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a></p>
@@ -1031,8 +1032,8 @@ user (c.f. <a class="reference external" href="https://docs.python.org/3/library
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-ZERONET_PATH">
-<code class="sig-name descname"><span class="pre">ZERONET_PATH</span></code><a class="headerlink" href="#envvar-ZERONET_PATH" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-ZERONET_PATH">
+<span class="sig-name descname"><span class="pre">ZERONET_PATH</span></span><a class="headerlink" href="#envvar-ZERONET_PATH" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> (path)</p>
@@ -1045,8 +1046,8 @@ user (c.f. <a class="reference external" href="https://docs.python.org/3/library
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-ZERONET_ARGS">
-<code class="sig-name descname"><span class="pre">ZERONET_ARGS</span></code><a class="headerlink" href="#envvar-ZERONET_ARGS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-ZERONET_ARGS">
+<span class="sig-name descname"><span class="pre">ZERONET_ARGS</span></span><a class="headerlink" href="#envvar-ZERONET_ARGS" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> (Shell)</p>
@@ -1063,12 +1064,12 @@ line arguments (c.f. <a class="reference external" href="https://docs.python.org
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="freenet-proxy-configuration">
+</section>
+<section id="freenet-proxy-configuration">
 <h2>Freenet Proxy Configuration<a class="headerlink" href="#freenet-proxy-configuration" title="Permalink to this headline">¶</a></h2>
 <dl class="std envvar">
-<dt id="envvar-DARC_FREENET">
-<code class="sig-name descname"><span class="pre">DARC_FREENET</span></code><a class="headerlink" href="#envvar-DARC_FREENET" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-DARC_FREENET">
+<span class="sig-name descname"><span class="pre">DARC_FREENET</span></span><a class="headerlink" href="#envvar-DARC_FREENET" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>)</p>
@@ -1081,8 +1082,8 @@ line arguments (c.f. <a class="reference external" href="https://docs.python.org
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-FREENET_PORT">
-<code class="sig-name descname"><span class="pre">FREENET_PORT</span></code><a class="headerlink" href="#envvar-FREENET_PORT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-FREENET_PORT">
+<span class="sig-name descname"><span class="pre">FREENET_PORT</span></span><a class="headerlink" href="#envvar-FREENET_PORT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -1095,8 +1096,8 @@ line arguments (c.f. <a class="reference external" href="https://docs.python.org
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-FREENET_RETRY">
-<code class="sig-name descname"><span class="pre">FREENET_RETRY</span></code><a class="headerlink" href="#envvar-FREENET_RETRY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-FREENET_RETRY">
+<span class="sig-name descname"><span class="pre">FREENET_RETRY</span></span><a class="headerlink" href="#envvar-FREENET_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></p>
@@ -1109,8 +1110,8 @@ line arguments (c.f. <a class="reference external" href="https://docs.python.org
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-FREENET_WAIT">
-<code class="sig-name descname"><span class="pre">FREENET_WAIT</span></code><a class="headerlink" href="#envvar-FREENET_WAIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-FREENET_WAIT">
+<span class="sig-name descname"><span class="pre">FREENET_WAIT</span></span><a class="headerlink" href="#envvar-FREENET_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a></p>
@@ -1127,8 +1128,8 @@ line arguments (c.f. <a class="reference external" href="https://docs.python.org
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-FREENET_PATH">
-<code class="sig-name descname"><span class="pre">FREENET_PATH</span></code><a class="headerlink" href="#envvar-FREENET_PATH" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-FREENET_PATH">
+<span class="sig-name descname"><span class="pre">FREENET_PATH</span></span><a class="headerlink" href="#envvar-FREENET_PATH" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> (path)</p>
@@ -1141,8 +1142,8 @@ line arguments (c.f. <a class="reference external" href="https://docs.python.org
 </dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-FREENET_ARGS">
-<code class="sig-name descname"><span class="pre">FREENET_ARGS</span></code><a class="headerlink" href="#envvar-FREENET_ARGS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-FREENET_ARGS">
+<span class="sig-name descname"><span class="pre">FREENET_ARGS</span></span><a class="headerlink" href="#envvar-FREENET_ARGS" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> (Shell)</p>
@@ -1161,8 +1162,8 @@ user (c.f. <a class="reference external" href="https://docs.python.org/3/library
 </div>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
