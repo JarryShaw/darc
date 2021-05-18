@@ -1,5 +1,5 @@
 # sphinx
-Sphinx==4.0.0
+Sphinx==4.0.1
 
 # sphinx-autodoc-typehints
 sphinx-autodoc-typehints==1.12.0
