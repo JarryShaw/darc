@@ -4,8 +4,8 @@
 # To regenerate from the project's Pipfile, run:
 
 # Python packages
-pip==21.1.1
-setuptools==56.2.0
+pip==21.1.2
+setuptools==57.0.0
 wheel==0.36.2
 
 # Python dependencies
