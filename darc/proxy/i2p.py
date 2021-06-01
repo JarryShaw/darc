@@ -127,8 +127,8 @@ def _i2p_bootstrap() -> None:
     returncode = _I2P_PROC.returncode
     if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _I2P_ARGS,
-                                            cast('IO[bytes]', _I2P_PROC.stdout).read(),
-                                            cast('IO[bytes]', _I2P_PROC.stderr).read())
+                                            b''.join(cast('IO[bytes]', _I2P_PROC.stdout).readlines()),
+                                            b''.join(cast('IO[bytes]', _I2P_PROC.stderr).readlines()))
 
     # update flag
     _I2P_BS_FLAG = True

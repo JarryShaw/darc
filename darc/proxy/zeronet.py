@@ -97,8 +97,8 @@ def _zeronet_bootstrap() -> None:
     returncode = _ZERONET_PROC.returncode
     if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _ZERONET_ARGS,
-                                            cast('IO[bytes]', _ZERONET_PROC.stdout).read(),
-                                            cast('IO[bytes]', _ZERONET_PROC.stderr).read())
+                                            b''.join(cast('IO[bytes]', _ZERONET_PROC.stdout).readlines()),
+                                            b''.join(cast('IO[bytes]', _ZERONET_PROC.stderr).readlines()))
 
     # update flag
     _ZERONET_BS_FLAG = True

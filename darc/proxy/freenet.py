@@ -107,8 +107,8 @@ def _freenet_bootstrap() -> None:
     returncode = _FREENET_PROC.returncode
     if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _FREENET_ARGS,
-                                            cast('IO[bytes]', _FREENET_PROC.stdout).read(),
-                                            cast('IO[bytes]', _FREENET_PROC.stderr).read())
+                                            b''.join(cast('IO[bytes]', _FREENET_PROC.stdout).readlines()),
+                                            b''.join(cast('IO[bytes]', _FREENET_PROC.stderr).readlines()))
 
     # update flag
     _FREENET_BS_FLAG = True
