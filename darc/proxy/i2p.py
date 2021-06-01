@@ -124,7 +124,7 @@ def _i2p_bootstrap() -> None:
     if stderr is not None:
         print(render_error(stderr, stem_term.Color.RED))  # pylint: disable=no-member
 
-    returncode = _I2P_PROC.returncode
+    returncode = _I2P_PROC.returncode or -1
     if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _I2P_ARGS, stdout, stderr)
 

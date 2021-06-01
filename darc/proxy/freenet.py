@@ -104,7 +104,7 @@ def _freenet_bootstrap() -> None:
     if stderr is not None:
         print(render_error(stderr, stem_term.Color.RED))  # pylint: disable=no-member
 
-    returncode = _FREENET_PROC.returncode
+    returncode = _FREENET_PROC.returncode or -1
     if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _FREENET_ARGS, stdout, stderr)
 

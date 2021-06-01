@@ -94,7 +94,7 @@ def _zeronet_bootstrap() -> None:
     if stderr is not None:
         print(render_error(stderr, stem_term.Color.RED))  # pylint: disable=no-member
 
-    returncode = _ZERONET_PROC.returncode
+    returncode = _ZERONET_PROC.returncode or -1
     if returncode != 0:
         raise subprocess.CalledProcessError(returncode, _ZERONET_ARGS, stdout, stderr)
 
