@@ -18,7 +18,7 @@ import subprocess  # nosec: B404
 import sys
 import traceback
 import warnings
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 import stem.util.term as stem_term
 
@@ -106,9 +106,7 @@ def _freenet_bootstrap() -> None:
 
     returncode = _FREENET_PROC.returncode
     if returncode != 0:
-        raise subprocess.CalledProcessError(returncode, _FREENET_ARGS,
-                                            b''.join(cast('IO[bytes]', _FREENET_PROC.stdout).readlines()),
-                                            b''.join(cast('IO[bytes]', _FREENET_PROC.stderr).readlines()))
+        raise subprocess.CalledProcessError(returncode, _FREENET_ARGS, stdout, stderr)
 
     # update flag
     _FREENET_BS_FLAG = True

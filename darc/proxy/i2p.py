@@ -20,7 +20,7 @@ import subprocess  # nosec: B404
 import sys
 import traceback
 import warnings
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 import requests
 import selenium.webdriver.common.proxy as selenium_proxy
@@ -126,9 +126,7 @@ def _i2p_bootstrap() -> None:
 
     returncode = _I2P_PROC.returncode
     if returncode != 0:
-        raise subprocess.CalledProcessError(returncode, _I2P_ARGS,
-                                            b''.join(cast('IO[bytes]', _I2P_PROC.stdout).readlines()),
-                                            b''.join(cast('IO[bytes]', _I2P_PROC.stderr).readlines()))
+        raise subprocess.CalledProcessError(returncode, _I2P_ARGS, stdout, stderr)
 
     # update flag
     _I2P_BS_FLAG = True

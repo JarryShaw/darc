@@ -16,7 +16,7 @@ import subprocess  # nosec: B404
 import sys
 import traceback
 import warnings
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 import stem.util.term as stem_term
 
@@ -96,9 +96,7 @@ def _zeronet_bootstrap() -> None:
 
     returncode = _ZERONET_PROC.returncode
     if returncode != 0:
-        raise subprocess.CalledProcessError(returncode, _ZERONET_ARGS,
-                                            b''.join(cast('IO[bytes]', _ZERONET_PROC.stdout).readlines()),
-                                            b''.join(cast('IO[bytes]', _ZERONET_PROC.stderr).readlines()))
+        raise subprocess.CalledProcessError(returncode, _ZERONET_ARGS, stdout, stderr)
 
     # update flag
     _ZERONET_BS_FLAG = True
