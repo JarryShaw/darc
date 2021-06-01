@@ -127,7 +127,7 @@
     <span class="k">if</span> <span class="n">stderr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
 
-    <span class="n">returncode</span> <span class="o">=</span> <span class="n">_ZERONET_PROC</span><span class="o">.</span><span class="n">returncode</span>
+    <span class="n">returncode</span> <span class="o">=</span> <span class="n">_ZERONET_PROC</span><span class="o">.</span><span class="n">returncode</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span>
     <span class="k">if</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span><span class="n">returncode</span><span class="p">,</span> <span class="n">_ZERONET_ARGS</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">)</span>
 
