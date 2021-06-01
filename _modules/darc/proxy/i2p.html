@@ -53,7 +53,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">selenium.webdriver.common.proxy</span> <span class="k">as</span> <span class="nn">selenium_proxy</span>
@@ -159,9 +159,7 @@
 
     <span class="n">returncode</span> <span class="o">=</span> <span class="n">_I2P_PROC</span><span class="o">.</span><span class="n">returncode</span>
     <span class="k">if</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span><span class="n">returncode</span><span class="p">,</span> <span class="n">_I2P_ARGS</span><span class="p">,</span>
-                                            <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;IO[bytes]&#39;</span><span class="p">,</span> <span class="n">_I2P_PROC</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()),</span>
-                                            <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;IO[bytes]&#39;</span><span class="p">,</span> <span class="n">_I2P_PROC</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()))</span>
+        <span class="k">raise</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span><span class="n">returncode</span><span class="p">,</span> <span class="n">_I2P_ARGS</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">)</span>
 
     <span class="c1"># update flag</span>
     <span class="n">_I2P_BS_FLAG</span> <span class="o">=</span> <span class="kc">True</span></div>
