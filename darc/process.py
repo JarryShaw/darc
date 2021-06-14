@@ -9,17 +9,13 @@ logic of the :mod:`darc` module.
 """
 
 import multiprocessing
-import os
 import signal
 import threading
 import time
 import warnings
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
-import stem.util.term as stem_term
-
-from darc._compat import strsignal
-from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, PATH_ID, REBOOT, getpid
+from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, REBOOT
 from darc.crawl import crawler, loader
 from darc.db import load_requests, load_selenium
 from darc.error import HookExecutionFailed, WorkerBreak
@@ -28,12 +24,12 @@ from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap
 from darc.proxy.i2p import _I2P_BS_FLAG, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, renew_tor_session, tor_bootstrap
 from darc.proxy.zeronet import _ZERONET_BS_FLAG, zeronet_bootstrap
+from darc.signal import register as register_signal
+from darc.signal import exit_signal
 
 if TYPE_CHECKING:
     from multiprocessing import Process
-    from signal import Signals  # pylint: disable=no-name-in-module
     from threading import Thread
-    from types import FrameType
     from typing import Callable, List, Literal, Optional, Union
 
 #: List[Union[Process, Thread]]: List of
@@ -76,45 +72,6 @@ def register(hook: 'Callable[[Literal["crawler", "loader"], List[Link]], None]',
         _HOOK_REGISTRY.append(hook)
     else:
         _HOOK_REGISTRY.insert(_index, hook)
-
-
-def _signal_handler(signum: 'Optional[Union[int, Signals]]' = None,
-                    frame: 'Optional[FrameType]' = None) -> None:
-    """Signal handler.
-
-    If the current process is not the main process, the function
-    shall do nothing.
-
-    Args:
-        signum: The signal to handle.
-        frame (types.FrameType): The traceback frame from the signal.
-
-    See Also:
-        * :func:`darc.const.getpid`
-
-    """
-    if os.getpid() != getpid():
-        return
-
-    if FLAG_MP and _WORKER_POOL:
-        for proc in cast('List[Process]', _WORKER_POOL):
-            proc.kill()
-            proc.join()
-
-    if FLAG_TH and _WORKER_POOL:
-        for thrd in cast('List[Thread]', _WORKER_POOL):
-            thrd._stop()  # type: ignore[attr-defined] # pylint: disable=protected-access
-            thrd.join()
-
-    if os.path.isfile(PATH_ID):
-        os.remove(PATH_ID)
-
-    try:
-        sig = strsignal(signum) if signum else signum
-    except Exception:
-        sig = signum
-    print(stem_term.format(f'[DARC] Exit with signal: {sig} <{frame}>',
-                           stem_term.Color.MAGENTA))  # pylint: disable=no-member
 
 
 def process_crawler() -> None:
@@ -352,9 +309,9 @@ def process(worker: 'Literal["crawler", "loader"]') -> None:
     another round.
 
     """
-    #signal.signal(signal.SIGINT, _signal_handler)
-    signal.signal(signal.SIGTERM, _signal_handler)
-    #signal.signal(signal.SIGKILL, _signal_handler)
+    register_signal(signal.SIGINT, exit_signal)
+    register_signal(signal.SIGTERM, exit_signal)
+    #register_signal(signal.SIGKILL, exit_signal)
 
     print(f'[DARC] Starting {worker}...')
 
