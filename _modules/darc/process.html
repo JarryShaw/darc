@@ -42,17 +42,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span> <span class="nn">stem.util.term</span> <span class="k">as</span> <span class="nn">stem_term</span>
-
-<span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">strsignal</span>
-<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DARC_CPU</span><span class="p">,</span> <span class="n">DARC_WAIT</span><span class="p">,</span> <span class="n">FLAG_MP</span><span class="p">,</span> <span class="n">FLAG_TH</span><span class="p">,</span> <span class="n">PATH_ID</span><span class="p">,</span> <span class="n">REBOOT</span><span class="p">,</span> <span class="n">getpid</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DARC_CPU</span><span class="p">,</span> <span class="n">DARC_WAIT</span><span class="p">,</span> <span class="n">FLAG_MP</span><span class="p">,</span> <span class="n">FLAG_TH</span><span class="p">,</span> <span class="n">REBOOT</span>
 <span class="kn">from</span> <span class="nn">darc.crawl</span> <span class="kn">import</span> <span class="n">crawler</span><span class="p">,</span> <span class="n">loader</span>
 <span class="kn">from</span> <span class="nn">darc.db</span> <span class="kn">import</span> <span class="n">load_requests</span><span class="p">,</span> <span class="n">load_selenium</span>
 <span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">HookExecutionFailed</span><span class="p">,</span> <span class="n">WorkerBreak</span>
@@ -61,12 +57,12 @@
 <span class="kn">from</span> <span class="nn">darc.proxy.i2p</span> <span class="kn">import</span> <span class="n">_I2P_BS_FLAG</span><span class="p">,</span> <span class="n">i2p_bootstrap</span>
 <span class="kn">from</span> <span class="nn">darc.proxy.tor</span> <span class="kn">import</span> <span class="n">_TOR_BS_FLAG</span><span class="p">,</span> <span class="n">renew_tor_session</span><span class="p">,</span> <span class="n">tor_bootstrap</span>
 <span class="kn">from</span> <span class="nn">darc.proxy.zeronet</span> <span class="kn">import</span> <span class="n">_ZERONET_BS_FLAG</span><span class="p">,</span> <span class="n">zeronet_bootstrap</span>
+<span class="kn">from</span> <span class="nn">darc.signal</span> <span class="kn">import</span> <span class="n">register</span> <span class="k">as</span> <span class="n">register_signal</span>
+<span class="kn">from</span> <span class="nn">darc.signal</span> <span class="kn">import</span> <span class="n">exit_signal</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span>
-    <span class="kn">from</span> <span class="nn">signal</span> <span class="kn">import</span> <span class="n">Signals</span>  <span class="c1"># pylint: disable=no-name-in-module</span>
     <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
-    <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FrameType</span>
     <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="c1">#: List[Union[Process, Thread]]: List of</span>
@@ -109,45 +105,6 @@
         <span class="n">_HOOK_REGISTRY</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hook</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">_HOOK_REGISTRY</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">_index</span><span class="p">,</span> <span class="n">hook</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="_signal_handler"><a class="viewcode-back" href="../../darc/process.html#darc.process._signal_handler">[docs]</a><span class="k">def</span> <span class="nf">_signal_handler</span><span class="p">(</span><span class="n">signum</span><span class="p">:</span> <span class="s1">&#39;Optional[Union[int, Signals]]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">frame</span><span class="p">:</span> <span class="s1">&#39;Optional[FrameType]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Signal handler.</span>
-
-<span class="sd">    If the current process is not the main process, the function</span>
-<span class="sd">    shall do nothing.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        signum: The signal to handle.</span>
-<span class="sd">        frame (types.FrameType): The traceback frame from the signal.</span>
-
-<span class="sd">    See Also:</span>
-<span class="sd">        * :func:`darc.const.getpid`</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span> <span class="o">!=</span> <span class="n">getpid</span><span class="p">():</span>
-        <span class="k">return</span>
-
-    <span class="k">if</span> <span class="n">FLAG_MP</span> <span class="ow">and</span> <span class="n">_WORKER_POOL</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;List[Process]&#39;</span><span class="p">,</span> <span class="n">_WORKER_POOL</span><span class="p">):</span>
-            <span class="n">proc</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
-            <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">FLAG_TH</span> <span class="ow">and</span> <span class="n">_WORKER_POOL</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">thrd</span> <span class="ow">in</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;List[Thread]&#39;</span><span class="p">,</span> <span class="n">_WORKER_POOL</span><span class="p">):</span>
-            <span class="n">thrd</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>  <span class="c1"># type: ignore[attr-defined] # pylint: disable=protected-access</span>
-            <span class="n">thrd</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PATH_ID</span><span class="p">):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">PATH_ID</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">sig</span> <span class="o">=</span> <span class="n">strsignal</span><span class="p">(</span><span class="n">signum</span><span class="p">)</span> <span class="k">if</span> <span class="n">signum</span> <span class="k">else</span> <span class="n">signum</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">sig</span> <span class="o">=</span> <span class="n">signum</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">stem_term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DARC] Exit with signal: </span><span class="si">{</span><span class="n">sig</span><span class="si">}</span><span class="s1"> &lt;</span><span class="si">{</span><span class="n">frame</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
-                           <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span></div>
 
 
 <div class="viewcode-block" id="process_crawler"><a class="viewcode-back" href="../../darc/process.html#darc.process.process_crawler">[docs]</a><span class="k">def</span> <span class="nf">process_crawler</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -385,9 +342,9 @@
 <span class="sd">    another round.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">#signal.signal(signal.SIGINT, _signal_handler)</span>
-    <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">_signal_handler</span><span class="p">)</span>
-    <span class="c1">#signal.signal(signal.SIGKILL, _signal_handler)</span>
+    <span class="n">register_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">exit_signal</span><span class="p">)</span>
+    <span class="n">register_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">exit_signal</span><span class="p">)</span>
+    <span class="c1">#register_signal(signal.SIGKILL, exit_signal)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DARC] Starting </span><span class="si">{</span><span class="n">worker</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
 
