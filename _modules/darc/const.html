@@ -55,6 +55,7 @@
 
 <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">nullcontext</span>
 <span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">render_error</span>
+<span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">DEBUG</span> <span class="k">as</span> <span class="n">LEVEL_DEBUG</span><span class="p">,</span> <span class="n">VERBOSE</span> <span class="k">as</span> <span class="n">LEVEL_VERBOSE</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
@@ -65,14 +66,21 @@
     <span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="n">Database</span>
     <span class="kn">from</span> <span class="nn">redis</span> <span class="kn">import</span> <span class="n">Redis</span>
 
+<span class="c1"># logger instance</span>
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
 <span class="c1"># reboot mode?</span>
 <span class="n">REBOOT</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_REBOOT&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span>
 
 <span class="c1"># debug mode?</span>
 <span class="n">DEBUG</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_DEBUG&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span>
+<span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">LEVEL_DEBUG</span><span class="p">)</span>
 
 <span class="c1"># verbose mode?</span>
 <span class="n">VERBOSE</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_VERBOSE&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">DEBUG</span>
+<span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">LEVEL_VERBOSE</span><span class="p">)</span>
 
 <span class="c1"># force mode?</span>
 <span class="n">FORCE</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_FORCE&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span>
@@ -117,10 +125,12 @@
 
 <span class="c1"># extract link pattern</span>
 <span class="n">_LINK_WHITE_LIST</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;LINK_WHITE_LIST&#39;</span><span class="p">,</span> <span class="s1">&#39;[]&#39;</span><span class="p">))</span>
-<span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">stem_term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;-*- LINK WHITE LIST -*-&#39;</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">_LINK_WHITE_LIST</span><span class="p">),</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">stem_term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+<span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;-*- LINK WHITE LIST -*-</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">_LINK_WHITE_LIST</span><span class="p">),</span>
+             <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="c1"># if DEBUG:</span>
+<span class="c1">#     print(stem_term.format(&#39;-*- LINK WHITE LIST -*-&#39;, stem_term.Color.MAGENTA))  # pylint: disable=no-member</span>
+<span class="c1">#     print(render_error(pprint.pformat(_LINK_WHITE_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member</span>
+<span class="c1">#     print(stem_term.format(&#39;-&#39; * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member</span>
 <span class="n">LINK_WHITE_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">_LINK_WHITE_LIST</span><span class="p">]</span>
 
 <span class="c1"># link black list</span>
