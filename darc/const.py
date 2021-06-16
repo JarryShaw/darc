@@ -22,6 +22,7 @@ import stem.util.term as stem_term
 
 from darc._compat import nullcontext
 from darc.error import render_error
+from darc.logging import get_logger, DEBUG as LEVEL_DEBUG, VERBOSE as LEVEL_VERBOSE
 
 if TYPE_CHECKING:
     from datetime import timedelta
@@ -32,14 +33,21 @@ if TYPE_CHECKING:
     from peewee import Database
     from redis import Redis
 
+# logger instance
+LOGGER = get_logger()
+
 # reboot mode?
 REBOOT = bool(int(os.getenv('DARC_REBOOT', '0')))
 
 # debug mode?
 DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
+if DEBUG:
+    LOGGER.setLevel(LEVEL_DEBUG)
 
 # verbose mode?
 VERBOSE = bool(int(os.getenv('DARC_VERBOSE', '0'))) or DEBUG
+if VERBOSE:
+    LOGGER.setLevel(LEVEL_VERBOSE)
 
 # force mode?
 FORCE = bool(int(os.getenv('DARC_FORCE', '0')))
@@ -84,10 +92,12 @@ PATH_ID = os.path.join(PATH_DB, 'darc.pid')
 
 # extract link pattern
 _LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
-if DEBUG:
-    print(stem_term.format('-*- LINK WHITE LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_LINK_WHITE_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+LOGGER.debug('-*- LINK WHITE LIST -*-\n%s\n%s', pprint.pformat(_LINK_WHITE_LIST),
+             '-' * shutil.get_terminal_size().columns)
+# if DEBUG:
+#     print(stem_term.format('-*- LINK WHITE LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+#     print(render_error(pprint.pformat(_LINK_WHITE_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
+#     print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
 LINK_WHITE_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_WHITE_LIST]
 
 # link black list
