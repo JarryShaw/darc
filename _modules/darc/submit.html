@@ -271,10 +271,8 @@
                 <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
                     <span class="k">return</span>
-            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:</span><span class="si">%d</span><span class="s1">: </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">  </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">242</span><span class="p">,</span>
-                             <span class="n">APIRequestFailed</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
-                             <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">domain</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">] response = requests.post(api, json=data)&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">domain</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">] response = requests.post(api, json=data)&#39;</span><span class="p">,</span> <span class="n">APIRequestFailed</span><span class="p">)</span>
     <span class="n">save_submit</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
 
 
@@ -400,9 +398,8 @@
                               <span class="n">host</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
                               <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
                               <span class="n">document</span><span class="o">=</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">hosts</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:</span><span class="si">%d</span><span class="s1">: </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">  </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="n">error</span><span class="o">.</span><span class="n">__traceback__</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">,</span>
-                         <span class="n">DatabaseOperaionFailed</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="s1">&#39;submit_new_host(...)&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="s1">&#39;submit_new_host(...)&#39;</span><span class="p">,</span> <span class="n">DatabaseOperaionFailed</span><span class="p">)</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;$PARTIAL$&#39;</span><span class="p">:</span> <span class="n">partial</span><span class="p">,</span>
@@ -588,10 +585,8 @@
                               <span class="n">cookies</span><span class="o">=</span><span class="n">history</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">get_dict</span><span class="p">(),</span>
                               <span class="n">request</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">),</span>
                               <span class="n">response</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">headers</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:</span><span class="si">%d</span><span class="s1">: </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">  </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">495</span><span class="p">,</span>
-                         <span class="n">DatabaseOperaionFailed</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
-                         <span class="s1">&#39;submit_requests(...)&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="s1">&#39;submit_requests(...)&#39;</span><span class="p">,</span> <span class="n">DatabaseOperaionFailed</span><span class="p">)</span>
 
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">asdict</span><span class="p">()</span>
     <span class="n">ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
@@ -755,10 +750,8 @@
                           <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
                           <span class="n">document</span><span class="o">=</span><span class="n">html</span><span class="p">,</span>
                           <span class="n">screenshot</span><span class="o">=</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">screenshot</span><span class="p">)</span> <span class="k">if</span> <span class="n">screenshot</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:</span><span class="si">%d</span><span class="s1">: </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">  </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">,</span> <span class="mi">688</span><span class="p">,</span>
-                         <span class="n">DatabaseOperaionFailed</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
-                         <span class="s1">&#39;submit_selenium(...)&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="s1">&#39;submit_selenium(...)&#39;</span><span class="p">,</span> <span class="n">DatabaseOperaionFailed</span><span class="p">)</span>
 
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">asdict</span><span class="p">()</span>
     <span class="n">ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>

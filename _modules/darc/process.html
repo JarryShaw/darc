@@ -45,7 +45,6 @@
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DARC_CPU</span><span class="p">,</span> <span class="n">DARC_WAIT</span><span class="p">,</span> <span class="n">FLAG_MP</span><span class="p">,</span> <span class="n">FLAG_TH</span><span class="p">,</span> <span class="n">REBOOT</span><span class="p">,</span> <span class="n">LOGGER</span>
@@ -135,9 +134,8 @@
                 <span class="n">hook</span><span class="p">(</span><span class="s1">&#39;crawler&#39;</span><span class="p">,</span> <span class="n">link_pool</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">WorkerBreak</span><span class="p">:</span>
                 <span class="n">time2break</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[CRAWLER] hook execution failed: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span> <span class="s1">&#39;[CRAWLER] hook execution failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">pwarning</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] hook execution failed&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
 
         <span class="c1"># marked to break by hook function</span>
         <span class="k">if</span> <span class="n">time2break</span><span class="p">:</span>
@@ -149,9 +147,9 @@
 
         <span class="c1"># renew Tor session</span>
         <span class="n">renew_tor_session</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] Starting next round...&#39;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] Starting next round...&#39;</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] Stopping mainloop...&#39;</span><span class="p">)</span></div>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] Stopping mainloop...&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="process_loader"><a class="viewcode-back" href="../../darc/process.html#darc.process.process_loader">[docs]</a><span class="k">def</span> <span class="nf">process_loader</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -161,7 +159,8 @@
 <span class="sd">        HookExecutionFailed: When hook function raises an error.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[LOADER] Starting first round...&#39;</span><span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] Starting mainloop...&#39;</span><span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[LOADER] Starting first round...&#39;</span><span class="p">)</span>
 
     <span class="c1"># start mainloop</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -181,8 +180,8 @@
                 <span class="n">hook</span><span class="p">(</span><span class="s1">&#39;loader&#39;</span><span class="p">,</span> <span class="n">link_pool</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">WorkerBreak</span><span class="p">:</span>
                 <span class="n">time2break</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[LOADER] hook execution failed: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">pwarning</span><span class="p">(</span><span class="s1">&#39;[LOADER] hook execution failed&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
 
         <span class="c1"># marked to break by hook function</span>
         <span class="k">if</span> <span class="n">time2break</span><span class="p">:</span>
@@ -194,9 +193,9 @@
 
         <span class="c1"># renew Tor session</span>
         <span class="n">renew_tor_session</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[LOADER] Starting next round...&#39;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[LOADER] Starting next round...&#39;</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[LOADER] Stopping mainloop...&#39;</span><span class="p">)</span></div>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[LOADER] Stopping mainloop...&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="_process"><a class="viewcode-back" href="../../darc/process.html#darc.process._process">[docs]</a><span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="n">worker</span><span class="p">:</span> <span class="s1">&#39;Union[process_crawler, process_loader]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[valid-type]</span>
@@ -348,7 +347,7 @@
     <span class="n">register_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">exit_signal</span><span class="p">)</span>
     <span class="c1">#register_signal(signal.SIGKILL, exit_signal)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DARC] Starting </span><span class="si">{</span><span class="n">worker</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[DARC] Starting </span><span class="si">%s</span><span class="s1">...&#39;</span><span class="p">,</span> <span class="n">worker</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_TOR_BS_FLAG</span><span class="p">:</span>
         <span class="n">tor_bootstrap</span><span class="p">()</span>
@@ -366,7 +365,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;invalid worker type: </span><span class="si">{</span><span class="n">worker</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DARC] Gracefully existing </span><span class="si">{</span><span class="n">worker</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span></div>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[DARC] Gracefully existing </span><span class="si">%s</span><span class="s1">...&#39;</span><span class="p">,</span> <span class="n">worker</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
