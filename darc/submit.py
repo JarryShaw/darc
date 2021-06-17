@@ -36,21 +36,17 @@ import contextlib
 import glob
 import json
 import os
-import pprint
-import shutil
-import sys
-import warnings
 from datetime import date
 from typing import TYPE_CHECKING, cast
 
 import peewee
 import requests
-import stem.util.term as stem_term
 
 from darc._compat import datetime
-from darc.const import DEBUG, PATH_DB
+from darc.const import LOGGER, PATH_DB
 from darc.db import _db_operation
-from darc.error import APIRequestFailed, DatabaseOperaionFailed, render_error
+from darc.error import APIRequestFailed, DatabaseOperaionFailed
+from darc.logging import DEBUG as LOG_DEBUG
 from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, RequestsModel, RobotsModel,
                         SeleniumModel, SitemapModel, URLModel, URLThroughModel)
 from darc.model.utils import Proxy
@@ -81,13 +77,8 @@ os.makedirs(PATH_API, exist_ok=True)
 API_NEW_HOST = os.getenv('API_NEW_HOST')
 API_REQUESTS = os.getenv('API_REQUESTS')
 API_SELENIUM = os.getenv('API_SELENIUM')
-
-if DEBUG:
-    print(stem_term.format('-*- SUBMIT API -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format(f'NEW HOST: {API_NEW_HOST}', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format(f'REQUESTS: {API_REQUESTS}', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format(f'SELENIUM: {API_SELENIUM}', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+LOGGER.debug('-*- SUBMIT API -*-\nNEW HOST: %s\nREQUESTS: %s\nSELENIUM: %s\n%s',
+             API_NEW_HOST, API_REQUESTS, API_SELENIUM, LOGGER.horizon)
 
 # UNIX epoch
 EPOCH = datetime(1970, 1, 1, 0, 0)  # 1970-01-01T00:00:00
@@ -248,9 +239,9 @@ def submit(api: str, domain: 'Domain', data: 'Dict[str, Any]') -> None:
                 if response.ok:
                     return
             except requests.RequestException as error:
-                warning = warnings.formatwarning(str(error), APIRequestFailed, __file__, 262,
-                                                 f'[{domain.upper()}] response = requests.post(api, json=data)')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+                LOGGER.error('%s:%d: %s: %s\n  %s', __file__, 242,
+                             APIRequestFailed.__name__, error,
+                             f'[{domain.upper()}] response = requests.post(api, json=data)')
     save_submit(domain, data)
 
 
@@ -377,9 +368,8 @@ def submit_new_host(time: 'datetime', link: 'darc_link.Link', partial: bool = Fa
                               timestamp=time,
                               document=base64.b64decode(hosts['data']).decode())
         except Exception as error:
-            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 371,
-                                             'submit_new_host(...)')
-            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            LOGGER.error('%s:%d: %s: %s\n  %s', __file__, error.__traceback__.tb_lineno,
+                         DatabaseOperaionFailed.__name__, error, 'submit_new_host(...)')
 
     data = {
         '$PARTIAL$': partial,
@@ -391,12 +381,7 @@ def submit_new_host(time: 'datetime', link: 'darc_link.Link', partial: bool = Fa
         'Sitemaps': sitemaps,
         'Hosts': hosts,
     }
-
-    if DEBUG:
-        print(stem_term.format('-*- NEW HOST DATA -*-',
-                               stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(data), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    LOGGER.plog(LOG_DEBUG, '-*- NEW HOST DATA -*-', object=data)
 
     if API_NEW_HOST is None:
         save_submit('new_host', data)
@@ -571,9 +556,9 @@ def submit_requests(time: 'datetime', link: 'darc_link.Link',
                               request=dict(history.request.headers),
                               response=dict(history.headers))
         except Exception as error:
-            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 528,
-                                             'submit_requests(...)')
-            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            LOGGER.error('%s:%d: %s: %s\n  %s', __file__, 495,
+                         DatabaseOperaionFailed.__name__, error,
+                         'submit_requests(...)')
 
     metadata = link.asdict()
     ts = time.isoformat()
@@ -610,12 +595,7 @@ def submit_requests(time: 'datetime', link: 'darc_link.Link',
             'Document': base64.b64encode(history.content).decode(),
         } for history in response.history],
     }
-
-    if DEBUG:
-        print(stem_term.format('-*- REQUESTS DATA -*-',
-                               stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(data), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    LOGGER.plog(LOG_DEBUG, '-*- REQUESTS DATA -*-', object=data)
 
     if API_REQUESTS is None:
         save_submit('requests', data)
@@ -743,9 +723,9 @@ def submit_selenium(time: 'datetime', link: 'darc_link.Link',
                           document=html,
                           screenshot=base64.b64decode(screenshot) if screenshot else None)
         except Exception as error:
-            warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 720,
-                                             'submit_selenium(...)')
-            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            LOGGER.error('%s:%d: %s: %s\n  %s', __file__, 688,
+                         DatabaseOperaionFailed.__name__, error,
+                         'submit_selenium(...)')
 
     metadata = link.asdict()
     ts = time.isoformat()
@@ -768,12 +748,7 @@ def submit_selenium(time: 'datetime', link: 'darc_link.Link',
         },
         'Screenshot': ss,
     }
-
-    if DEBUG:
-        print(stem_term.format('-*- SELENIUM DATA -*-',
-                               stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(data), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    LOGGER.plog(LOG_DEBUG, '-*- SELENIUM DATA -*-', object=data)
 
     if API_SELENIUM is None:
         save_submit('selenium', data)

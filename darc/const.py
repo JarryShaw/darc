@@ -8,9 +8,7 @@ import json
 import math
 import multiprocessing
 import os
-import pprint
 import re
-import shutil
 import sys
 import threading
 from typing import TYPE_CHECKING
@@ -18,11 +16,11 @@ from typing import TYPE_CHECKING
 import peewee
 import playhouse.db_url as playhouse_db_url
 import redis
-import stem.util.term as stem_term
 
 from darc._compat import nullcontext
-from darc.error import render_error
-from darc.logging import get_logger, DEBUG as LEVEL_DEBUG, VERBOSE as LEVEL_VERBOSE
+from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import VERBOSE as LOG_VERBOSE
+from darc.logging import get_logger
 
 if TYPE_CHECKING:
     from datetime import timedelta
@@ -42,12 +40,12 @@ REBOOT = bool(int(os.getenv('DARC_REBOOT', '0')))
 # debug mode?
 DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
 if DEBUG:
-    LOGGER.setLevel(LEVEL_DEBUG)
+    LOGGER.setLevel(LOG_DEBUG)
 
 # verbose mode?
 VERBOSE = bool(int(os.getenv('DARC_VERBOSE', '0'))) or DEBUG
 if VERBOSE:
-    LOGGER.setLevel(LEVEL_VERBOSE)
+    LOGGER.setLevel(LOG_VERBOSE)
 
 # force mode?
 FORCE = bool(int(os.getenv('DARC_FORCE', '0')))
@@ -92,63 +90,45 @@ PATH_ID = os.path.join(PATH_DB, 'darc.pid')
 
 # extract link pattern
 _LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
-LOGGER.debug('-*- LINK WHITE LIST -*-\n%s\n%s', pprint.pformat(_LINK_WHITE_LIST),
-             '-' * shutil.get_terminal_size().columns)
-# if DEBUG:
-#     print(stem_term.format('-*- LINK WHITE LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-#     print(render_error(pprint.pformat(_LINK_WHITE_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-#     print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+LOGGER.plog(LOG_DEBUG, '-*- LINK WHITE LIST -*-', object=_LINK_WHITE_LIST)
 LINK_WHITE_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_WHITE_LIST]
+del _LINK_WHITE_LIST
 
 # link black list
 _LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
-if DEBUG:
-    print(stem_term.format('-*- LINK BLACK LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_LINK_BLACK_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+LOGGER.plog(LOG_DEBUG, '-*- LINK BLACK LIST -*-', object=_LINK_BLACK_LIST)
 LINK_BLACK_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_BLACK_LIST]
+del _LINK_BLACK_LIST
 
 # link fallback value
 LINK_FALLBACK = bool(int(os.getenv('LINK_FALLBACK', '0')))
 
 # content type white list
 _MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
-if DEBUG:
-    print(stem_term.format('-*- MIME WHITE LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_MIME_WHITE_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+LOGGER.plog(LOG_DEBUG, '-*- MIME WHITE LIST -*-', object=_MIME_WHITE_LIST)
 MIME_WHITE_LIST = [re.compile(mime, re.IGNORECASE) for mime in _MIME_WHITE_LIST]
 del _MIME_WHITE_LIST
 
 # content type black list
 _MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
-if DEBUG:
-    print(stem_term.format('-*- MIME BLACK LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_MIME_BLACK_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+LOGGER.plog(LOG_DEBUG, '-*- MIME BLACK LIST -*-', object=_MIME_BLACK_LIST)
 MIME_BLACK_LIST = [re.compile(mime, re.IGNORECASE) for mime in _MIME_BLACK_LIST]
 del _MIME_BLACK_LIST
 
 # content type fallback value
 MIME_FALLBACK = bool(int(os.getenv('MIME_FALLBACK', '0')))
 
-# proxy type black list
-_PROXY_BLACK_LIST = json.loads(os.getenv('PROXY_BLACK_LIST', '[]').casefold())
-if DEBUG:
-    print(stem_term.format('-*- PROXY BLACK LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_PROXY_BLACK_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
-PROXY_BLACK_LIST = [proxy.casefold() for proxy in _PROXY_BLACK_LIST]
-del _PROXY_BLACK_LIST
-
 # proxy type white list
 _PROXY_WHITE_LIST = json.loads(os.getenv('PROXY_WHITE_LIST', '[]').casefold())
-if DEBUG:
-    print(stem_term.format('-*- PROXY WHITE LIST -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_PROXY_WHITE_LIST), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+LOGGER.plog(LOG_DEBUG, '-*- PROXY WHITE LIST -*-', object=_PROXY_WHITE_LIST)
 PROXY_WHITE_LIST = [proxy.casefold() for proxy in _PROXY_WHITE_LIST]
 del _PROXY_WHITE_LIST
+
+# proxy type black list
+_PROXY_BLACK_LIST = json.loads(os.getenv('PROXY_BLACK_LIST', '[]').casefold())
+LOGGER.plog(LOG_DEBUG, '-*- PROXY BLACK LIST -*-', object=_PROXY_BLACK_LIST)
+PROXY_BLACK_LIST = [proxy.casefold() for proxy in _PROXY_BLACK_LIST]
+del _PROXY_BLACK_LIST
 
 # proxy type fallback value
 PROXY_FALLBACK = bool(int(os.getenv('PROXY_FALLBACK', '0')))

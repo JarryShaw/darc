@@ -15,7 +15,7 @@ import time
 import warnings
 from typing import TYPE_CHECKING
 
-from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, REBOOT
+from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, REBOOT, LOGGER
 from darc.crawl import crawler, loader
 from darc.db import load_requests, load_selenium
 from darc.error import HookExecutionFailed, WorkerBreak
@@ -24,8 +24,8 @@ from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap
 from darc.proxy.i2p import _I2P_BS_FLAG, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, renew_tor_session, tor_bootstrap
 from darc.proxy.zeronet import _ZERONET_BS_FLAG, zeronet_bootstrap
-from darc.signal import register as register_signal
 from darc.signal import exit_signal
+from darc.signal import register as register_signal
 
 if TYPE_CHECKING:
     from multiprocessing import Process
@@ -81,7 +81,8 @@ def process_crawler() -> None:
         HookExecutionFailed: When hook function raises an error.
 
     """
-    print('[CRAWLER] Starting first round...')
+    LOGGER.info('[CRAWLER] Starting mainloop...')
+    LOGGER.debug('[CRAWLER] Starting first round...')
 
     # start mainloop
     while True:
@@ -103,6 +104,7 @@ def process_crawler() -> None:
                 time2break = True
             except Exception as error:
                 warnings.warn(f'[CRAWLER] hook execution failed: {error}', HookExecutionFailed)
+                LOGGER.warning( '[CRAWLER] hook execution failed: %s', error)
 
         # marked to break by hook function
         if time2break:

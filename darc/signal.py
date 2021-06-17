@@ -14,16 +14,14 @@ import os
 import signal
 from typing import TYPE_CHECKING, cast
 
-import stem.util.term as stem_term
-
 from darc._compat import strsignal
-from darc.const import FLAG_MP, FLAG_TH, PATH_ID, getpid
+from darc.const import FLAG_MP, FLAG_TH, LOGGER, PATH_ID, getpid
 
 __all__ = ['register']
 
 if TYPE_CHECKING:
     from multiprocessing import Process
-    from signal import Signals, Handlers  # pylint: disable=no-name-in-module
+    from signal import Handlers, Signals  # pylint: disable=no-name-in-module
     from threading import Thread
     from types import FrameType
     from typing import Any, Callable, Dict, List, Optional, Union
@@ -102,8 +100,7 @@ def generic_handler(signum: 'Optional[Union[int, Signals]]' = None,
         sig = strsignal(signum) if signum else signum
     except Exception:
         sig = signum
-    print(stem_term.format(f'[DARC] Handled signal: {sig} <{frame}>',
-                           stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    LOGGER.info('[DARC] Handled signal: %s <%s>', sig, frame)
 
 
 def exit_signal(signum: 'Optional[Union[int, Signals]]' = None,
@@ -139,5 +136,4 @@ def exit_signal(signum: 'Optional[Union[int, Signals]]' = None,
         sig = strsignal(signum) if signum else signum
     except Exception:
         sig = signum
-    print(stem_term.format(f'[DARC] Exit with signal: {sig} <{frame}>',
-                           stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    LOGGER.info('[DARC] Exit with signal: %s <%s>', sig, frame)

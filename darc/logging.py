@@ -3,20 +3,26 @@
 """Logging System
 ====================
 
-
+The module extended the builtin :mod:`logging` module and provides
+a coloured version of :class:`~logging.Logger` to better demonstrate
+the logging information of :mod:`darc`.
 
 """
 
+import inspect
 import logging
-from typing import TYPE_CHECKING
+import pprint as pp
+import shutil
+import sys
+from typing import TYPE_CHECKING, cast
 
 import stem.util.term as stem_term
 
 __all__ = ['get_logger']
 
 if TYPE_CHECKING:
-    from logging import LogRecord, Logger
-    from typing import AnyStr, Any
+    from logging import LogRecord
+    from typing import Any, AnyStr, Optional
 
 #: ``VERBOSE`` logging level.
 VERBOSE = 5
@@ -92,8 +98,24 @@ class ColorFormatter(logging.Formatter):
 class DarcLogger(logging.Logger):
     """The tailored logger for :mod:`darc` module."""
 
+    @property
+    def horizon(self) -> str:
+        """Horizon line.
+
+        See Also:
+            The property uses :func:`shutil.get_terminal_size` to calculate the desired
+            length of the ``-`` horizon line.
+
+        """
+        return '-' * shutil.get_terminal_size().columns
+
     def verbose(self, msg: 'Any', *args: 'Any', **kwargs: 'Any') -> None:
-        """Log 'msg % args' with severity :data:`~darc.logging.VERBOSE`.
+        """Log ``msg % args`` with severity :data:`~darc.logging.VERBOSE`.
+
+        Args:
+            msg: Message to be logged.
+            *args: Arbitrary positional arguments for interploration.
+            **kwargs: Arbitrary keyword arguments for log information.
 
         To pass exception information, use the keyword argument ``exc_info`` with
         a true value, e.g.
@@ -106,8 +128,76 @@ class DarcLogger(logging.Logger):
         if self.isEnabledFor(VERBOSE):
             self._log(VERBOSE, msg, args, **kwargs)
 
+    def plog(self, level: int, msg: 'Any', *args: 'Any', object: 'Any',  # pylint: disable=redefined-builtin
+             pprint: 'Optional[dict[str, Any]]' = None, **kwargs: 'Any') -> None:
+        """Log ``msg % args`` into a pretty-printed representation with severity ``level``.
 
-def get_logger() -> 'Logger':
+        Args:
+            level: Log severity level.
+            msg: Message to be logged.
+            *args: Arbitrary positional arguments for interploration.
+
+        Keyword Args:
+            object: Object to be pretty printed.
+            pprint: Arbitrary arguments for :func:`pprint.pformat`.
+            **kwargs: Arbitrary keyword arguments for log information.
+
+        To pass exception information, use the keyword argument ``exc_info`` with
+        a true value, e.g.
+
+        .. code-block:: python
+
+           logger.plog(level, "Houston, we have a %s", "thorny problem", object=object, exc_info=1)
+
+        See Also:
+            The method uses :func:`pprint.pformat` to format the target ``object``
+            with ``pprint`` arguments.
+
+        """
+        if self.isEnabledFor(level):
+            pformat = pp.pformat(object, **pprint or {})
+            horizon = '-' * shutil.get_terminal_size().columns
+
+            message = '%s\n%%s\n%%s' % msg
+            msgargs = (*args, pformat, horizon)
+            self._log(level, message, msgargs, **kwargs)
+
+    def perror(self, msg: 'Any', *args: 'Any', **kwargs: 'Any') -> None:
+        """Log ``msg % args`` with severity :data:`~darc.logging.ERROR`.
+
+        Args:
+            msg: Message to be logged.
+            *args: Arbitrary positional arguments for interploration.
+
+        Keyword Args:
+            **kwargs: Arbitrary keyword arguments for log information.
+
+        To pass exception information, use the keyword argument ``exc_info`` with
+        a true value, e.g.
+
+        .. code-block:: python
+
+           logger.perror("Houston, we have a %s", "thorny problem", object=object, exc_info=1)
+
+        See Also:
+            The method mocks the output of :func:`warnings.warn` for the log message.
+
+        """
+        if self.isEnabledFor(ERROR):
+            message = '%s:%d: %s: %s\n  %s'
+
+            exc_info = sys.exc_info()
+            traceback = exc_info[2]
+            if traceback is None:
+                return
+
+            filename = inspect.getfile(traceback)
+            lineno = traceback.tb_lineno
+
+            self._log(ERROR, message, (filename, lineno, '', '', msg))
+
+
+def get_logger() -> 'DarcLogger':
     """Create a logger.
 
     Returns:
@@ -123,7 +213,7 @@ def get_logger() -> 'Logger':
         datefmt=r'%m/%d/%Y %I:%M:%S %p'
     ))
 
-    logger = logging.getLogger('darc')
+    logger = cast('DarcLogger', logging.getLogger('darc'))
     logger.addHandler(handler)
-    logger.setLevel(VERBOSE)
+    logger.setLevel(INFO)
     return logger
