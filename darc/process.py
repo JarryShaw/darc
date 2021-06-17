@@ -12,7 +12,6 @@ import multiprocessing
 import signal
 import threading
 import time
-import warnings
 from typing import TYPE_CHECKING
 
 from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, REBOOT, LOGGER
@@ -102,9 +101,8 @@ def process_crawler() -> None:
                 hook('crawler', link_pool)
             except WorkerBreak:
                 time2break = True
-            except Exception as error:
-                warnings.warn(f'[CRAWLER] hook execution failed: {error}', HookExecutionFailed)
-                LOGGER.warning( '[CRAWLER] hook execution failed: %s', error)
+            except Exception:
+                LOGGER.pwarning('[CRAWLER] hook execution failed', HookExecutionFailed)
 
         # marked to break by hook function
         if time2break:
@@ -116,9 +114,9 @@ def process_crawler() -> None:
 
         # renew Tor session
         renew_tor_session()
-        print('[CRAWLER] Starting next round...')
+        LOGGER.debug('[CRAWLER] Starting next round...')
 
-    print('[CRAWLER] Stopping mainloop...')
+    LOGGER.info('[CRAWLER] Stopping mainloop...')
 
 
 def process_loader() -> None:
@@ -128,7 +126,8 @@ def process_loader() -> None:
         HookExecutionFailed: When hook function raises an error.
 
     """
-    print('[LOADER] Starting first round...')
+    LOGGER.info('[CRAWLER] Starting mainloop...')
+    LOGGER.debug('[LOADER] Starting first round...')
 
     # start mainloop
     while True:
@@ -148,8 +147,8 @@ def process_loader() -> None:
                 hook('loader', link_pool)
             except WorkerBreak:
                 time2break = True
-            except Exception as error:
-                warnings.warn(f'[LOADER] hook execution failed: {error}', HookExecutionFailed)
+            except Exception:
+                LOGGER.pwarning('[LOADER] hook execution failed', HookExecutionFailed)
 
         # marked to break by hook function
         if time2break:
@@ -161,9 +160,9 @@ def process_loader() -> None:
 
         # renew Tor session
         renew_tor_session()
-        print('[LOADER] Starting next round...')
+        LOGGER.debug('[LOADER] Starting next round...')
 
-    print('[LOADER] Stopping mainloop...')
+    LOGGER.info('[LOADER] Stopping mainloop...')
 
 
 def _process(worker: 'Union[process_crawler, process_loader]') -> None:  # type: ignore[valid-type]
@@ -315,7 +314,7 @@ def process(worker: 'Literal["crawler", "loader"]') -> None:
     register_signal(signal.SIGTERM, exit_signal)
     #register_signal(signal.SIGKILL, exit_signal)
 
-    print(f'[DARC] Starting {worker}...')
+    LOGGER.info('[DARC] Starting %s...', worker)
 
     if not _TOR_BS_FLAG:
         tor_bootstrap()
@@ -333,4 +332,4 @@ def process(worker: 'Literal["crawler", "loader"]') -> None:
     else:
         raise ValueError(f'invalid worker type: {worker!r}')
 
-    print(f'[DARC] Gracefully existing {worker}...')
+    LOGGER.info('[DARC] Gracefully existing %s...', worker)

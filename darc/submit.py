@@ -238,10 +238,8 @@ def submit(api: str, domain: 'Domain', data: 'Dict[str, Any]') -> None:
                 response = session.post(api, json=data)
                 if response.ok:
                     return
-            except requests.RequestException as error:
-                LOGGER.error('%s:%d: %s: %s\n  %s', __file__, 242,
-                             APIRequestFailed.__name__, error,
-                             f'[{domain.upper()}] response = requests.post(api, json=data)')
+            except requests.RequestException:
+                LOGGER.perror(f'[{domain.upper()}] response = requests.post(api, json=data)', APIRequestFailed)
     save_submit(domain, data)
 
 
@@ -367,9 +365,8 @@ def submit_new_host(time: 'datetime', link: 'darc_link.Link', partial: bool = Fa
                               host=model,
                               timestamp=time,
                               document=base64.b64decode(hosts['data']).decode())
-        except Exception as error:
-            LOGGER.error('%s:%d: %s: %s\n  %s', __file__, error.__traceback__.tb_lineno,
-                         DatabaseOperaionFailed.__name__, error, 'submit_new_host(...)')
+        except Exception:
+            LOGGER.perror('submit_new_host(...)', DatabaseOperaionFailed)
 
     data = {
         '$PARTIAL$': partial,
@@ -555,10 +552,8 @@ def submit_requests(time: 'datetime', link: 'darc_link.Link',
                               cookies=history.cookies.get_dict(),
                               request=dict(history.request.headers),
                               response=dict(history.headers))
-        except Exception as error:
-            LOGGER.error('%s:%d: %s: %s\n  %s', __file__, 495,
-                         DatabaseOperaionFailed.__name__, error,
-                         'submit_requests(...)')
+        except Exception:
+            LOGGER.perror('submit_requests(...)', DatabaseOperaionFailed)
 
     metadata = link.asdict()
     ts = time.isoformat()
@@ -722,10 +717,8 @@ def submit_selenium(time: 'datetime', link: 'darc_link.Link',
                           timestamp=time,
                           document=html,
                           screenshot=base64.b64decode(screenshot) if screenshot else None)
-        except Exception as error:
-            LOGGER.error('%s:%d: %s: %s\n  %s', __file__, 688,
-                         DatabaseOperaionFailed.__name__, error,
-                         'submit_selenium(...)')
+        except Exception:
+            LOGGER.perror('submit_selenium(...)', DatabaseOperaionFailed)
 
     metadata = link.asdict()
     ts = time.isoformat()

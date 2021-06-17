@@ -22,7 +22,8 @@ __all__ = ['get_logger']
 
 if TYPE_CHECKING:
     from logging import LogRecord
-    from typing import Any, AnyStr, Optional
+    from typing import Any, AnyStr, Optional, Type
+    from types import TracebackType
 
 #: ``VERBOSE`` logging level.
 VERBOSE = 5
@@ -162,12 +163,52 @@ class DarcLogger(logging.Logger):
             msgargs = (*args, pformat, horizon)
             self._log(level, message, msgargs, **kwargs)
 
-    def perror(self, msg: 'Any', *args: 'Any', **kwargs: 'Any') -> None:
+    def pwarning(self, line: str, type: 'Type[Warning]', **kwargs: 'Any') -> None:  # pylint: disable=redefined-builtin
+        """Log ``msg % args`` with severity :data:`~darc.logging.WARNING`.
+
+        Args:
+            line: Original warning message.
+            type: Warning category.
+
+        Keyword Args:
+            **kwargs: Arbitrary keyword arguments for log information.
+
+        To pass exception information, use the keyword argument ``exc_info`` with
+        a true value, e.g.
+
+        .. code-block:: python
+
+           logger.pwarning("Houston, we have a %s", "thorny problem", object=object, exc_info=1)
+
+        See Also:
+            The method mocks the output of :func:`warnings.warn` for the log message.
+
+        """
+        if self.isEnabledFor(WARNING):
+            exc_info = cast('tuple[Type[BaseException], BaseException, TracebackType]',
+                            sys.exc_info())
+            exc_class = exc_info[0]
+            message = exc_info[1]
+            traceback = exc_info[2]
+
+            category = f'{type}: {exc_class.__name__}'
+            filename = inspect.getfile(traceback)
+            lineno = traceback.tb_lineno
+
+            source_lines, source_lineno = inspect.getsourcelines(traceback)
+            if source_lineno <= 0:
+                source_lineno = 1
+            source = source_lines[lineno-source_lineno].strip()
+
+            self._log(WARNING, '%s:%d: %s: %s: %s\n  %s',
+                      (filename, lineno, category, line, message, source), **kwargs)
+
+    def perror(self, line: 'Optional[str]' = None, type: 'Optional[Type[Warning]]' = None, **kwargs: 'Any') -> None:  # pylint: disable=redefined-builtin
         """Log ``msg % args`` with severity :data:`~darc.logging.ERROR`.
 
         Args:
-            msg: Message to be logged.
-            *args: Arbitrary positional arguments for interploration.
+            line: Optional source line of code (as comments).
+            type: Warning category.
 
         Keyword Args:
             **kwargs: Arbitrary keyword arguments for log information.
@@ -184,17 +225,31 @@ class DarcLogger(logging.Logger):
 
         """
         if self.isEnabledFor(ERROR):
-            message = '%s:%d: %s: %s\n  %s'
-
-            exc_info = sys.exc_info()
+            exc_info = cast('tuple[Type[BaseException], BaseException, TracebackType]',
+                            sys.exc_info())
+            exc_class = exc_info[0]
+            message = exc_info[1]
             traceback = exc_info[2]
-            if traceback is None:
-                return
+
+            if type is None:
+                category = exc_class.__name__
+            else:
+                category = f'{type}: {exc_class.__name__}'
 
             filename = inspect.getfile(traceback)
             lineno = traceback.tb_lineno
 
-            self._log(ERROR, message, (filename, lineno, '', '', msg))
+            source_lines, source_lineno = inspect.getsourcelines(traceback)
+            if source_lineno <= 0:
+                source_lineno = 1
+            source = source_lines[lineno-source_lineno].strip()
+
+            if line is None:
+                self._log(ERROR, '%s:%d: %s: %s\n  %s',
+                          (filename, lineno, category, message, source), **kwargs)
+            else:
+                self._log(ERROR, '%s:%d: %s: %s\n  # %s\n  %s',
+                          (filename, lineno, category, message, line.strip(), source), **kwargs)
 
 
 def get_logger() -> 'DarcLogger':
