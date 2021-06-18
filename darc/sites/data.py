@@ -8,12 +8,10 @@ handle data URI schemes.
 
 """
 
-import sys
 from typing import TYPE_CHECKING
 
-import stem.util.term as stem_term
-
-from darc.error import LinkNoReturn, render_error
+from darc.error import LinkNoReturn
+from darc.logging import logger
 from darc.proxy.data import save_data
 from darc.sites._abc import BaseSite
 
@@ -45,9 +43,8 @@ class DataURI(BaseSite):
         """
         try:
             save_data(link)
-        except ValueError as error:
-            print(render_error(f'[REQUESTS] Failed to save data URI from {link.url} <{error}>',
-                               stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+        except ValueError:
+            logger.perror(f'[REQUESTS] Failed to save data URI from {link.url}')
         raise LinkNoReturn(link)
 
     @staticmethod

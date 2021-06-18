@@ -11,22 +11,20 @@ The :mod:`darc.crawl` module provides two types of crawlers.
 
 import contextlib
 import math
-import os
-import shutil
-import sys
 import traceback
 from typing import TYPE_CHECKING
 
 import requests
 import selenium.common.exceptions as selenium_exceptions
-import stem.util.term as stem_term
 import urllib3.exceptions as urllib3_exceptions
 
 from darc._compat import datetime
 from darc.const import FORCE, SE_EMPTY
 from darc.db import (drop_hostname, drop_requests, drop_selenium, have_hostname, save_requests,
                      save_selenium)
-from darc.error import LinkNoReturn, render_error
+from darc.error import LinkNoReturn
+from darc.logging import WARNING as LOG_WARNING
+from darc.logging import logger
 from darc.model import HostnameModel, URLModel
 from darc.parse import (check_robots, extract_links, get_content_type, match_host, match_mime,
                         match_proxy)
@@ -115,17 +113,15 @@ def crawler(link: 'darc_link.Link') -> None:
     (c.f. :func:`~darc.db.save_selenium`).
 
     """
-    print(f'[REQUESTS] Requesting {link.url}')
+    logger.info('[REQUESTS] Requesting %s', link.url)
     try:
         if match_proxy(link.proxy):
-            print(render_error(f'[REQUESTS] Ignored proxy type from {link.url} ({link.proxy})',
-                               stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+            logger.warning('[REQUESTS] Ignored proxy type from %s (%s)', link.url, link.proxy)
             drop_requests(link)
             return
 
         if match_host(link.host):
-            print(render_error(f'[REQUESTS] Ignored hostname from {link.url} ({link.proxy})',
-                               stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+            logger.warning('[REQUESTS] Ignored hostname from %s (%s)', link.url, link.proxy)
             drop_requests(link)
             return
 
@@ -154,8 +150,8 @@ def crawler(link: 'darc_link.Link') -> None:
                     try:
                         fetch_sitemap(link, force=force_fetch)
                     except Exception:
-                        error = f'[Error fetching sitemap of {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                        print(render_error(error, stem_term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                        logger.error('[Error fetching sitemap of %s]\n%s%s', link.url,
+                                     traceback.format_exc(), logger.horizon)
                         partial = True
 
                 if link.proxy == 'i2p':
@@ -163,8 +159,8 @@ def crawler(link: 'darc_link.Link') -> None:
                     try:
                         fetch_hosts(link, force=force_fetch)
                     except Exception:
-                        error = f'[Error subscribing hosts from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # pylint: disable=line-too-long
-                        print(render_error(error, stem_term.Color.CYAN), file=sys.stderr)  # pylint: disable=no-member
+                        logger.critical('[Error subscribing hosts from %s]\n%s%s', link.url,
+                                     traceback.format_exc(), logger.horizon)
                         partial = True
 
                 # submit data / drop hostname from db
@@ -173,8 +169,7 @@ def crawler(link: 'darc_link.Link') -> None:
                 submit_new_host(timestamp, link, partial=partial, force=force_fetch)
 
             if not FORCE and not check_robots(link):
-                print(render_error(f'[REQUESTS] Robots disallowed link from {link.url}',
-                                stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                logger.warning('[REQUESTS] Robots disallowed link from %s', link.url)
                 return
 
         # reuse the session object
@@ -182,20 +177,17 @@ def crawler(link: 'darc_link.Link') -> None:
             try:
                 # requests session hook
                 response = crawler_hook(timestamp, session, link)
-            except requests.exceptions.InvalidSchema as error:
-                print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            except requests.exceptions.InvalidSchema:
+                logger.perror(f'[REQUESTS] Fail to crawl {link.url}')
                 save_invalid(link)
                 drop_requests(link)
                 return
             except requests.RequestException as error:
-                print(render_error(f'[REQUESTS] Failed on {link.url} <{error}>',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                logger.perror(f'[REQUESTS] Fail to crawl {link.url}')
                 save_requests(link, single=True)
                 return
             except LinkNoReturn as error:
-                print(render_error(f'[REQUESTS] Removing from database: {link.url}',
-                                   stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                logger.perror(f'[REQUESTS] Removing from database: {link.url}', level=LOG_WARNING)
                 if error.drop:
                     drop_requests(link)
                 return
@@ -206,8 +198,7 @@ def crawler(link: 'darc_link.Link') -> None:
             # check content type
             ct_type = get_content_type(response)
             if ct_type not in ['text/html', 'application/xhtml+xml']:
-                print(render_error(f'[REQUESTS] Generic content type from {link.url} ({ct_type})',
-                                   stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                logger.warning('[REQUESTS] Generic content type from %s (%s)', link.url, ct_type)
 
                 # probably hosts.txt
                 if link.proxy == 'i2p' and ct_type in ['text/plain', 'text/text']:
@@ -226,8 +217,7 @@ def crawler(link: 'darc_link.Link') -> None:
 
             html = response.content
             if not html:
-                print(render_error(f'[REQUESTS] Empty response from {link.url}',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                logger.error('[REQUESTS] Empty response from %s', link.url)
                 save_requests(link, single=True)
                 return
 
@@ -238,8 +228,7 @@ def crawler(link: 'darc_link.Link') -> None:
             save_requests(extract_links(link, html), score=0, nx=True)
 
             if not response.ok:
-                print(render_error(f'[REQUESTS] Failed on {link.url} [{response.status_code}]',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                logger.error('[REQUESTS] Failed on %s [%d]', link.url, response.status_code)
                 save_requests(link, single=True)
                 return
 
@@ -259,10 +248,10 @@ def crawler(link: 'darc_link.Link') -> None:
                     url.alias = False
                     url.save()
 
-        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # type: ignore # pylint: disable=line-too-long
-        print(render_error(error, stem_term.Color.CYAN), file=sys.stderr)  # type: ignore # pylint: disable=no-member
+        logger.critical('[Error from %s]\n%s%s', link.url, traceback.format_exc(), logger.horizon)
         save_requests(link, single=True)
-    print(f'[REQUESTS] Requested {link.url}')
+
+    logger.info('[REQUESTS] Requested %s', link.url)
 
 
 def loader(link: 'darc_link.Link') -> None:
@@ -311,7 +300,7 @@ def loader(link: 'darc_link.Link') -> None:
        * :data:`darc.const.SE_WAIT`
 
     """
-    print(f'[SELENIUM] Loading {link.url}')
+    logger.info('[SELENIUM] Loading %s', link.url)
     try:
         # timestamp
         timestamp = datetime.now()
@@ -321,19 +310,16 @@ def loader(link: 'darc_link.Link') -> None:
             try:
                 # selenium driver hook
                 driver = loader_hook(timestamp, driver, link)
-            except urllib3_exceptions.HTTPError as error:
-                print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            except urllib3_exceptions.HTTPError:
+                logger.perror(f'[SELENIUM] Fail to load {link.url}')
                 save_selenium(link, single=True)
                 return
             except selenium_exceptions.WebDriverException as error:
-                print(render_error(f'[SELENIUM] Fail to load {link.url} <{error}>',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                logger.perror(f'[SELENIUM] Fail to load {link.url}')
                 save_selenium(link, single=True)
                 return
             except LinkNoReturn as error:
-                print(render_error(f'[SELENIUM] Removing from database: {link.url}',
-                                   stem_term.Color.YELLOW), file=sys.stderr)  # pylint: disable=no-member
+                logger.perror(f'[SELENIUM] Removing from database: {link.url}', level=LOG_WARNING)
                 if error.drop:
                     drop_selenium(link)
                 return
@@ -342,8 +328,7 @@ def loader(link: 'darc_link.Link') -> None:
             html = driver.page_source
 
             if html == SE_EMPTY:
-                print(render_error(f'[SELENIUM] Empty page from {link.url}',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                logger.error('[SELENIUM] Empty page from %s', link.url)
                 save_selenium(link, single=True)
                 return
 
@@ -353,15 +338,12 @@ def loader(link: 'darc_link.Link') -> None:
                 height = driver.execute_script('return document.body.scrollHeight')
 
                 # resize window (with some magic numbers)
-                if height < 1000:
-                    height = 1000
-                driver.set_window_size(1024, math.ceil(height * 1.1))
+                driver.set_window_size(1024, math.ceil(max(height, 1000) * 1.1))
 
                 # take a full page screenshot
                 screenshot = driver.get_screenshot_as_base64()
-            except Exception as error:
-                print(render_error(f'[SELENIUM] Fail to save screenshot from {link.url} <{error}>',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                logger.perror(f'[SELENIUM] Fail to save screenshot from {link.url}')
 
             # submit data
             submit_selenium(timestamp, link, html, screenshot)
@@ -369,7 +351,7 @@ def loader(link: 'darc_link.Link') -> None:
             # add link to queue
             save_requests(extract_links(link, html), score=0, nx=True)
     except Exception:
-        error = f'[Error from {link.url}]' + os.linesep + traceback.format_exc() + '-' * shutil.get_terminal_size().columns  # type: ignore # pylint: disable=line-too-long
-        print(render_error(error, stem_term.Color.CYAN), file=sys.stderr)  # type: ignore # pylint: disable=no-member
+        logger.critical('[Error from %s]\n%s%s', link.url, traceback.format_exc(), logger.horizon)
         save_selenium(link, single=True)
-    print(f'[SELENIUM] Loaded {link.url}')
+
+    logger.info('[SELENIUM] Loaded %s', link.url)

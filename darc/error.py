@@ -2,9 +2,6 @@
 """Custom Exceptions
 =======================
 
-The :func:`~darc.error.render_error` function can be used to render
-multi-line error messages with :mod:`stem.util.term` colours.
-
 The :mod:`darc` project provides following custom exceptions:
 
 * :exc:`~darc.error.LinkNoReturn`
@@ -35,16 +32,6 @@ The :mod:`darc` project provides following custom warnings:
    All warnings are inherited from :exc:`~darc.error._BaseWarning`.
 
 """
-
-from typing import TYPE_CHECKING
-
-import stem.util.term as stem_term
-
-if TYPE_CHECKING:
-    from typing import AnyStr
-
-    from stem.util.term import Color
-
 
 class _BaseException(Exception):
     """Base exception class for :mod:`darc` module."""
@@ -129,23 +116,3 @@ class LockWarning(_BaseWarning):
 
 class HookExecutionFailed(_BaseWarning):
     """Failed to execute hook function."""
-
-
-def render_error(message: 'AnyStr', colour: 'Color') -> str:
-    """Render error message.
-
-    The function wraps the :func:`stem.util.term.format` function to
-    provide multi-line formatting support.
-
-    Args:
-        message: Multi-line message to be rendered with ``colour``.
-        colour (stem.util.term.Color): Front colour of text, c.f.
-            :class:`stem.util.term.Color`.
-
-    Returns:
-        The rendered error message.
-
-    """
-    return ''.join(
-        stem_term.format(line, colour) for line in message.splitlines(True)
-    )

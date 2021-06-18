@@ -76,6 +76,7 @@
         "perror",
         "pexpect",
         "pformat",
+        "pline",
         "posixpath",
         "prouter",
         "psycopg",

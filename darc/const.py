@@ -20,7 +20,7 @@ import redis
 from darc._compat import nullcontext
 from darc.logging import DEBUG as LOG_DEBUG
 from darc.logging import VERBOSE as LOG_VERBOSE
-from darc.logging import get_logger
+from darc.logging import logger
 
 if TYPE_CHECKING:
     from datetime import timedelta
@@ -31,21 +31,18 @@ if TYPE_CHECKING:
     from peewee import Database
     from redis import Redis
 
-# logger instance
-LOGGER = get_logger()
-
 # reboot mode?
 REBOOT = bool(int(os.getenv('DARC_REBOOT', '0')))
 
 # debug mode?
 DEBUG = bool(int(os.getenv('DARC_DEBUG', '0')))
 if DEBUG:
-    LOGGER.setLevel(LOG_DEBUG)
+    logger.setLevel(LOG_DEBUG)
 
 # verbose mode?
 VERBOSE = bool(int(os.getenv('DARC_VERBOSE', '0'))) or DEBUG
 if VERBOSE:
-    LOGGER.setLevel(LOG_VERBOSE)
+    logger.setLevel(LOG_VERBOSE)
 
 # force mode?
 FORCE = bool(int(os.getenv('DARC_FORCE', '0')))
@@ -90,13 +87,13 @@ PATH_ID = os.path.join(PATH_DB, 'darc.pid')
 
 # extract link pattern
 _LINK_WHITE_LIST = json.loads(os.getenv('LINK_WHITE_LIST', '[]'))
-LOGGER.plog(LOG_DEBUG, '-*- LINK WHITE LIST -*-', object=_LINK_WHITE_LIST)
+logger.plog(LOG_DEBUG, '-*- LINK WHITE LIST -*-', object=_LINK_WHITE_LIST)
 LINK_WHITE_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_WHITE_LIST]
 del _LINK_WHITE_LIST
 
 # link black list
 _LINK_BLACK_LIST = json.loads(os.getenv('LINK_BLACK_LIST', '[]'))
-LOGGER.plog(LOG_DEBUG, '-*- LINK BLACK LIST -*-', object=_LINK_BLACK_LIST)
+logger.plog(LOG_DEBUG, '-*- LINK BLACK LIST -*-', object=_LINK_BLACK_LIST)
 LINK_BLACK_LIST = [re.compile(link, re.IGNORECASE) for link in _LINK_BLACK_LIST]
 del _LINK_BLACK_LIST
 
@@ -105,13 +102,13 @@ LINK_FALLBACK = bool(int(os.getenv('LINK_FALLBACK', '0')))
 
 # content type white list
 _MIME_WHITE_LIST = json.loads(os.getenv('MIME_WHITE_LIST', '[]'))
-LOGGER.plog(LOG_DEBUG, '-*- MIME WHITE LIST -*-', object=_MIME_WHITE_LIST)
+logger.plog(LOG_DEBUG, '-*- MIME WHITE LIST -*-', object=_MIME_WHITE_LIST)
 MIME_WHITE_LIST = [re.compile(mime, re.IGNORECASE) for mime in _MIME_WHITE_LIST]
 del _MIME_WHITE_LIST
 
 # content type black list
 _MIME_BLACK_LIST = json.loads(os.getenv('MIME_BLACK_LIST', '[]'))
-LOGGER.plog(LOG_DEBUG, '-*- MIME BLACK LIST -*-', object=_MIME_BLACK_LIST)
+logger.plog(LOG_DEBUG, '-*- MIME BLACK LIST -*-', object=_MIME_BLACK_LIST)
 MIME_BLACK_LIST = [re.compile(mime, re.IGNORECASE) for mime in _MIME_BLACK_LIST]
 del _MIME_BLACK_LIST
 
@@ -120,13 +117,13 @@ MIME_FALLBACK = bool(int(os.getenv('MIME_FALLBACK', '0')))
 
 # proxy type white list
 _PROXY_WHITE_LIST = json.loads(os.getenv('PROXY_WHITE_LIST', '[]').casefold())
-LOGGER.plog(LOG_DEBUG, '-*- PROXY WHITE LIST -*-', object=_PROXY_WHITE_LIST)
+logger.plog(LOG_DEBUG, '-*- PROXY WHITE LIST -*-', object=_PROXY_WHITE_LIST)
 PROXY_WHITE_LIST = [proxy.casefold() for proxy in _PROXY_WHITE_LIST]
 del _PROXY_WHITE_LIST
 
 # proxy type black list
 _PROXY_BLACK_LIST = json.loads(os.getenv('PROXY_BLACK_LIST', '[]').casefold())
-LOGGER.plog(LOG_DEBUG, '-*- PROXY BLACK LIST -*-', object=_PROXY_BLACK_LIST)
+logger.plog(LOG_DEBUG, '-*- PROXY BLACK LIST -*-', object=_PROXY_BLACK_LIST)
 PROXY_BLACK_LIST = [proxy.casefold() for proxy in _PROXY_BLACK_LIST]
 del _PROXY_BLACK_LIST
 

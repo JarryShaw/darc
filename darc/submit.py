@@ -43,10 +43,11 @@ import peewee
 import requests
 
 from darc._compat import datetime
-from darc.const import LOGGER, PATH_DB
+from darc.const import PATH_DB
 from darc.db import _db_operation
 from darc.error import APIRequestFailed, DatabaseOperaionFailed
 from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import logger
 from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, RequestsModel, RobotsModel,
                         SeleniumModel, SitemapModel, URLModel, URLThroughModel)
 from darc.model.utils import Proxy
@@ -77,8 +78,8 @@ os.makedirs(PATH_API, exist_ok=True)
 API_NEW_HOST = os.getenv('API_NEW_HOST')
 API_REQUESTS = os.getenv('API_REQUESTS')
 API_SELENIUM = os.getenv('API_SELENIUM')
-LOGGER.debug('-*- SUBMIT API -*-\nNEW HOST: %s\nREQUESTS: %s\nSELENIUM: %s\n%s',
-             API_NEW_HOST, API_REQUESTS, API_SELENIUM, LOGGER.horizon)
+logger.debug('-*- SUBMIT API -*-\nNEW HOST: %s\nREQUESTS: %s\nSELENIUM: %s\n%s',
+             API_NEW_HOST, API_REQUESTS, API_SELENIUM, logger.horizon)
 
 # UNIX epoch
 EPOCH = datetime(1970, 1, 1, 0, 0)  # 1970-01-01T00:00:00
@@ -239,7 +240,7 @@ def submit(api: str, domain: 'Domain', data: 'Dict[str, Any]') -> None:
                 if response.ok:
                     return
             except requests.RequestException:
-                LOGGER.perror(f'[{domain.upper()}] response = requests.post(api, json=data)', APIRequestFailed)
+                logger.perror(f'[{domain.upper()}] response = requests.post(api, json=data)', APIRequestFailed)
     save_submit(domain, data)
 
 
@@ -366,7 +367,7 @@ def submit_new_host(time: 'datetime', link: 'darc_link.Link', partial: bool = Fa
                               timestamp=time,
                               document=base64.b64decode(hosts['data']).decode())
         except Exception:
-            LOGGER.perror('submit_new_host(...)', DatabaseOperaionFailed)
+            logger.perror('submit_new_host(...)', DatabaseOperaionFailed)
 
     data = {
         '$PARTIAL$': partial,
@@ -378,7 +379,7 @@ def submit_new_host(time: 'datetime', link: 'darc_link.Link', partial: bool = Fa
         'Sitemaps': sitemaps,
         'Hosts': hosts,
     }
-    LOGGER.plog(LOG_DEBUG, '-*- NEW HOST DATA -*-', object=data)
+    logger.plog(LOG_DEBUG, '-*- NEW HOST DATA -*-', object=data)
 
     if API_NEW_HOST is None:
         save_submit('new_host', data)
@@ -553,7 +554,7 @@ def submit_requests(time: 'datetime', link: 'darc_link.Link',
                               request=dict(history.request.headers),
                               response=dict(history.headers))
         except Exception:
-            LOGGER.perror('submit_requests(...)', DatabaseOperaionFailed)
+            logger.perror('submit_requests(...)', DatabaseOperaionFailed)
 
     metadata = link.asdict()
     ts = time.isoformat()
@@ -590,7 +591,7 @@ def submit_requests(time: 'datetime', link: 'darc_link.Link',
             'Document': base64.b64encode(history.content).decode(),
         } for history in response.history],
     }
-    LOGGER.plog(LOG_DEBUG, '-*- REQUESTS DATA -*-', object=data)
+    logger.plog(LOG_DEBUG, '-*- REQUESTS DATA -*-', object=data)
 
     if API_REQUESTS is None:
         save_submit('requests', data)
@@ -718,7 +719,7 @@ def submit_selenium(time: 'datetime', link: 'darc_link.Link',
                           document=html,
                           screenshot=base64.b64decode(screenshot) if screenshot else None)
         except Exception:
-            LOGGER.perror('submit_selenium(...)', DatabaseOperaionFailed)
+            logger.perror('submit_selenium(...)', DatabaseOperaionFailed)
 
     metadata = link.asdict()
     ts = time.isoformat()
@@ -741,7 +742,7 @@ def submit_selenium(time: 'datetime', link: 'darc_link.Link',
         },
         'Screenshot': ss,
     }
-    LOGGER.plog(LOG_DEBUG, '-*- SELENIUM DATA -*-', object=data)
+    logger.plog(LOG_DEBUG, '-*- SELENIUM DATA -*-', object=data)
 
     if API_SELENIUM is None:
         save_submit('selenium', data)

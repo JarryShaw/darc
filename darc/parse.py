@@ -20,14 +20,13 @@ from typing import TYPE_CHECKING
 import bs4
 import magic
 import requests
-import stem.util.term as stem_term
 
 from darc._compat import RobotFileParser
 from darc.const import (CHECK, CHECK_NG, LINK_BLACK_LIST, LINK_FALLBACK, LINK_WHITE_LIST,
                         MIME_BLACK_LIST, MIME_FALLBACK, MIME_WHITE_LIST, PROXY_BLACK_LIST,
                         PROXY_FALLBACK, PROXY_WHITE_LIST)
-from darc.error import render_error
 from darc.link import parse_link, urljoin, urlsplit
+from darc.logging import logger
 
 if TYPE_CHECKING:
     from typing import Dict, List, Optional, Union
@@ -218,7 +217,7 @@ def _check_ng(temp_list: 'List[darc_link.Link]') -> 'List[darc_link.Link]':
         result = session.head(link.url, allow_redirects=True)
         result_list.append(result)
 
-        print(f'[HEAD] Checking content type from {link.url}')
+        logger.info('[HEAD] Checking content type from %s', link.url)
 
     link_list = []
     for result in concurrent.futures.as_completed(result_list):  # type: ignore
@@ -226,16 +225,14 @@ def _check_ng(temp_list: 'List[darc_link.Link]') -> 'List[darc_link.Link]':
             response = result.result()  # type: Response
         except requests.RequestException as error:
             if error.response is None:
-                print(render_error(f'[HEAD] Checking failed <{error}>',
-                                   stem_term.Color.RED))  # pylint: disable=no-member
+                logger.perror(f'[HEAD] Checking failed <{error}>')
                 continue
-            print(render_error(f'[HEAD] Failed on {error.response.url} <{error}>',
-                               stem_term.Color.RED))  # pylint: disable=no-member
+            logger.perror(f'[HEAD] Failed on {error.response.url}')
             link_list.append(error.response.url)
             continue
         ct_type = get_content_type(response)
 
-        print(f'[HEAD] Checked content type from {response.url} ({ct_type})')
+        logger.info('[HEAD] Checked content type from %s (%s)', response.url, ct_type)
 
         if match_mime(ct_type):
             continue

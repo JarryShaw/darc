@@ -21,7 +21,8 @@ from typing import TYPE_CHECKING
 import stem.util.term as stem_term
 
 from darc.const import DEBUG, VERBOSE
-from darc.error import ZeroNetBootstrapFailed, render_error
+from darc.error import ZeroNetBootstrapFailed
+from darc.logging import logger, DEBUG as LOG_DEBUG
 from darc.proxy.tor import tor_bootstrap
 
 if TYPE_CHECKING:
@@ -52,11 +53,7 @@ _ZERONET_PROC = None
 # ZeroNet bootstrap args
 _ZERONET_ARGS = [os.path.join(ZERONET_PATH, 'ZeroNet.sh'), 'main']
 _ZERONET_ARGS.extend(ZERONET_ARGS)
-
-if DEBUG:
-    print(stem_term.format('-*- ZERONET PROXY -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_ZERONET_ARGS), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+logger.plog(LOG_DEBUG, '-*- ZERONET PROXY -*-', object=_ZERONET_ARGS)
 
 
 def _zeronet_bootstrap() -> None:

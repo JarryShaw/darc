@@ -14,11 +14,12 @@ import threading
 import time
 from typing import TYPE_CHECKING
 
-from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, REBOOT, LOGGER
+from darc.const import DARC_CPU, DARC_WAIT, FLAG_MP, FLAG_TH, REBOOT
 from darc.crawl import crawler, loader
 from darc.db import load_requests, load_selenium
 from darc.error import HookExecutionFailed, WorkerBreak
 from darc.link import Link
+from darc.logging import logger
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap
 from darc.proxy.i2p import _I2P_BS_FLAG, i2p_bootstrap
 from darc.proxy.tor import _TOR_BS_FLAG, renew_tor_session, tor_bootstrap
@@ -80,8 +81,8 @@ def process_crawler() -> None:
         HookExecutionFailed: When hook function raises an error.
 
     """
-    LOGGER.info('[CRAWLER] Starting mainloop...')
-    LOGGER.debug('[CRAWLER] Starting first round...')
+    logger.info('[CRAWLER] Starting mainloop...')
+    logger.debug('[CRAWLER] Starting first round...')
 
     # start mainloop
     while True:
@@ -102,7 +103,7 @@ def process_crawler() -> None:
             except WorkerBreak:
                 time2break = True
             except Exception:
-                LOGGER.pwarning('[CRAWLER] hook execution failed', HookExecutionFailed)
+                logger.pwarning('[CRAWLER] hook execution failed', HookExecutionFailed)
 
         # marked to break by hook function
         if time2break:
@@ -114,9 +115,9 @@ def process_crawler() -> None:
 
         # renew Tor session
         renew_tor_session()
-        LOGGER.debug('[CRAWLER] Starting next round...')
+        logger.debug('[CRAWLER] Starting next round...')
 
-    LOGGER.info('[CRAWLER] Stopping mainloop...')
+    logger.info('[CRAWLER] Stopping mainloop...')
 
 
 def process_loader() -> None:
@@ -126,8 +127,8 @@ def process_loader() -> None:
         HookExecutionFailed: When hook function raises an error.
 
     """
-    LOGGER.info('[CRAWLER] Starting mainloop...')
-    LOGGER.debug('[LOADER] Starting first round...')
+    logger.info('[CRAWLER] Starting mainloop...')
+    logger.debug('[LOADER] Starting first round...')
 
     # start mainloop
     while True:
@@ -148,7 +149,7 @@ def process_loader() -> None:
             except WorkerBreak:
                 time2break = True
             except Exception:
-                LOGGER.pwarning('[LOADER] hook execution failed', HookExecutionFailed)
+                logger.pwarning('[LOADER] hook execution failed', HookExecutionFailed)
 
         # marked to break by hook function
         if time2break:
@@ -160,9 +161,9 @@ def process_loader() -> None:
 
         # renew Tor session
         renew_tor_session()
-        LOGGER.debug('[LOADER] Starting next round...')
+        logger.debug('[LOADER] Starting next round...')
 
-    LOGGER.info('[LOADER] Stopping mainloop...')
+    logger.info('[LOADER] Stopping mainloop...')
 
 
 def _process(worker: 'Union[process_crawler, process_loader]') -> None:  # type: ignore[valid-type]
@@ -314,7 +315,7 @@ def process(worker: 'Literal["crawler", "loader"]') -> None:
     register_signal(signal.SIGTERM, exit_signal)
     #register_signal(signal.SIGKILL, exit_signal)
 
-    LOGGER.info('[DARC] Starting %s...', worker)
+    logger.info('[DARC] Starting %s...', worker)
 
     if not _TOR_BS_FLAG:
         tor_bootstrap()
@@ -332,4 +333,4 @@ def process(worker: 'Literal["crawler", "loader"]') -> None:
     else:
         raise ValueError(f'invalid worker type: {worker!r}')
 
-    LOGGER.info('[DARC] Gracefully existing %s...', worker)
+    logger.info('[DARC] Gracefully existing %s...', worker)

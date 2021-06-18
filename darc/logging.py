@@ -18,12 +18,12 @@ from typing import TYPE_CHECKING, cast
 
 import stem.util.term as stem_term
 
-__all__ = ['get_logger']
+__all__ = ['logger']
 
 if TYPE_CHECKING:
     from logging import LogRecord
-    from typing import Any, AnyStr, Optional, Type
     from types import TracebackType
+    from typing import Any, AnyStr, Optional, Type
 
 #: ``VERBOSE`` logging level.
 VERBOSE = 5
@@ -41,11 +41,11 @@ CRITICAL = logging.CRITICAL
 #: Dict[int, Tuple[str]]: Mapping of logging levels with corresponding color format.
 _LOG_ATTR = {
     VERBOSE: (stem_term.Color.BLUE,),  # pylint: disable=no-member
-    DEBUG: (stem_term.Color.MAGENTA,),  # pylint: disable=no-member
-    INFO: (stem_term.Color.CYAN,),  # pylint: disable=no-member
+    DEBUG: (stem_term.Color.CYAN,),  # pylint: disable=no-member
+    INFO: (stem_term.Color.GREEN,),  # pylint: disable=no-member
     WARNING: (stem_term.Color.YELLOW,),  # pylint: disable=no-member
     ERROR: (stem_term.Color.RED,),  # pylint: disable=no-member
-    CRITICAL: (stem_term.Color.RED, stem_term.Attr.UNDERLINE),  # pylint: disable=no-member
+    CRITICAL: (stem_term.Color.MAGENTA, stem_term.Attr.HIGHLIGHT),  # pylint: disable=no-member
 }
 
 
@@ -91,6 +91,39 @@ class ColorFormatter(logging.Formatter):
         """
         msg = super().format(record)
         attr = _LOG_ATTR.get(record.levelno)
+        if attr is None:
+            return msg
+        return render_message(msg, *attr)  # pylint: disable=no-member
+
+
+class LineColorFormatter(ColorFormatter):
+    """Color formatter based on record levels for horizon lines."""
+
+    def format(self, record: 'LogRecord') -> str:
+        """Format the specific record as text.
+
+        Args:
+            record: logging record
+
+        Returns:
+            Formatted logging message.
+
+        See Also:
+            :data:`~darc.logging._LOG_ATTR` contains the color mapping
+            for each logging level.
+
+        """
+        msg = super().format(record)
+        attr = _LOG_ATTR.get(record.levelno)
+
+        columns = shutil.get_terminal_size().columns
+        msg_len = len(msg)
+
+        if columns > msg_len:
+            msg = '%s%s' % (msg, '-' * (columns - msg_len))
+        else:
+            msg = '%s%s' % (msg, '-' * (columns - msg_len % columns))
+
         if attr is None:
             return msg
         return render_message(msg, *attr)  # pylint: disable=no-member
@@ -171,6 +204,7 @@ class DarcLogger(logging.Logger):
             type: Warning category.
 
         Keyword Args:
+            level: Log severity level.
             **kwargs: Arbitrary keyword arguments for log information.
 
         To pass exception information, use the keyword argument ``exc_info`` with
@@ -178,13 +212,14 @@ class DarcLogger(logging.Logger):
 
         .. code-block:: python
 
-           logger.pwarning("Houston, we have a %s", "thorny problem", object=object, exc_info=1)
+           logger.pwarning("Houston, we have a thorny problem", type, exc_info=1)
 
         See Also:
             The method mocks the output of :func:`warnings.warn` for the log message.
 
         """
-        if self.isEnabledFor(WARNING):
+        level = kwargs.pop('level', WARNING)
+        if self.isEnabledFor(level):
             exc_info = cast('tuple[Type[BaseException], BaseException, TracebackType]',
                             sys.exc_info())
             exc_class = exc_info[0]
@@ -200,7 +235,7 @@ class DarcLogger(logging.Logger):
                 source_lineno = 1
             source = source_lines[lineno-source_lineno].strip()
 
-            self._log(WARNING, '%s:%d: %s: %s: %s\n  %s',
+            self._log(level, '%s:%d: %s: %s: %s\n  %s',
                       (filename, lineno, category, line, message, source), **kwargs)
 
     def perror(self, line: 'Optional[str]' = None, type: 'Optional[Type[Warning]]' = None, **kwargs: 'Any') -> None:  # pylint: disable=redefined-builtin
@@ -211,6 +246,7 @@ class DarcLogger(logging.Logger):
             type: Warning category.
 
         Keyword Args:
+            level: Log severity level.
             **kwargs: Arbitrary keyword arguments for log information.
 
         To pass exception information, use the keyword argument ``exc_info`` with
@@ -218,13 +254,14 @@ class DarcLogger(logging.Logger):
 
         .. code-block:: python
 
-           logger.perror("Houston, we have a %s", "thorny problem", object=object, exc_info=1)
+           logger.perror("Houston, we have a thorny problem", type, exc_info=1)
 
         See Also:
             The method mocks the output of :func:`warnings.warn` for the log message.
 
         """
-        if self.isEnabledFor(ERROR):
+        level = kwargs.pop('level', ERROR)
+        if self.isEnabledFor(level):
             exc_info = cast('tuple[Type[BaseException], BaseException, TracebackType]',
                             sys.exc_info())
             exc_class = exc_info[0]
@@ -245,30 +282,61 @@ class DarcLogger(logging.Logger):
             source = source_lines[lineno-source_lineno].strip()
 
             if line is None:
-                self._log(ERROR, '%s:%d: %s: %s\n  %s',
+                self._log(level, '%s:%d: %s: %s\n  %s',
                           (filename, lineno, category, message, source), **kwargs)
             else:
-                self._log(ERROR, '%s:%d: %s: %s\n  # %s\n  %s',
+                self._log(level, '%s:%d: %s: %s\n  # %s\n  %s',
                           (filename, lineno, category, message, line.strip(), source), **kwargs)
 
+    def pline(self, level: int, **kwargs: 'Any') -> None:
+        """Log horizon line with severity ``level``.
 
-def get_logger() -> 'DarcLogger':
-    """Create a logger.
+        Args:
+            level: Log severity level.
 
-    Returns:
-        :class:`~logging.Logger` instance with pre-defined
-        formats, handlers, etc.
+        Keyword Args:
+            **kwargs: Arbitrary keyword arguments for log information.
 
-    """
-    logging.setLoggerClass(DarcLogger)
+        To pass exception information, use the keyword argument ``exc_info`` with
+        a true value, e.g.
 
-    handler = logging.StreamHandler()
-    handler.setFormatter(ColorFormatter(
-        fmt='[%(levelname)s] %(asctime)s - %(message)s',
-        datefmt=r'%m/%d/%Y %I:%M:%S %p'
-    ))
+        .. code-block:: python
 
-    logger = cast('DarcLogger', logging.getLogger('darc'))
-    logger.addHandler(handler)
-    logger.setLevel(INFO)
-    return logger
+           logger.pline(level, exc_info=1)
+
+        See Also:
+            The method uses :func:`shutil.get_terminal_size` to calculate the desired
+            length of the ``-`` horizon line.
+
+        """
+        if self.isEnabledFor(level):
+            logging._acquireLock()  # type: ignore[attr-defined] # pylint: disable=protected-access
+            try:
+                handler.setFormatter(line_formatter)
+                self._log(level, '', (), **kwargs)
+            finally:
+                handler.setFormatter(formatter)
+                logging._releaseLock()  # type: ignore[attr-defined] # pylint: disable=protected-access
+
+
+# change logger factory
+logging.setLoggerClass(DarcLogger)
+
+#: Log formatter instance for :data:`~darc.logging.handler`.
+formatter = ColorFormatter(
+    fmt='[%(levelname)s] %(asctime)s - %(message)s',
+    datefmt=r'%m/%d/%Y %I:%M:%S %p',
+)
+line_formatter = LineColorFormatter(
+    fmt='[%(levelname)s] %(asctime)s - %(message)s',
+    datefmt=r'%m/%d/%Y %I:%M:%S %p',
+)
+
+#: Log handler instance for :data:`~darc.logging.logger`.
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+
+#: darc.logging.DarcLogger: Logger instance for :mod:`darc`.
+logger = cast('DarcLogger', logging.getLogger('darc'))
+logger.addHandler(handler)
+logger.setLevel(INFO)

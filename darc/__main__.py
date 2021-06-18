@@ -5,18 +5,17 @@
 import argparse
 import contextlib
 import os
-import shutil
 import sys
 import traceback
-import warnings
 from typing import TYPE_CHECKING
-
-import stem.util.term as stem_term
 
 from darc.const import DB, DB_WEB, DEBUG, FLAG_DB, PATH_ID, PATH_LN
 from darc.db import _db_operation, _redis_command, save_requests
-from darc.error import DatabaseOperaionFailed, render_error
+from darc.error import DatabaseOperaionFailed
 from darc.link import parse_link
+from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import WARNING as LOG_WARNING
+from darc.logging import logger
 from darc.model import (HostnameModel, HostnameQueueModel, HostsModel, RequestsHistoryModel,
                         RequestsModel, RequestsQueueModel, RobotsModel, SeleniumModel,
                         SeleniumQueueModel, SitemapModel, URLModel, URLThroughModel)
@@ -110,10 +109,8 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
                     _db_operation(DB.create_tables, [
                         HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel,
                     ])
-            except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 102,  # type: ignore[arg-type]
-                                                 'DB.create_tables([HostnameQueueModel, ...])')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                logger.perror('DB.create_tables([HostnameQueueModel, ...]', DatabaseOperaionFailed, level=LOG_WARNING)
                 continue
             break
 
@@ -126,26 +123,21 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
                         RobotsModel, SitemapModel, HostsModel,
                         RequestsModel, RequestsHistoryModel, SeleniumModel,
                     ])
-            except Exception as error:
-                warning = warnings.formatwarning(error, DatabaseOperaionFailed, __file__, 117,  # type: ignore[arg-type]
-                                                 'DB.create_tables([HostnameModel, ...])')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                logger.perror('DB.create_tables([HostnameModel, ...]', DatabaseOperaionFailed, level=LOG_WARNING)
                 continue
             break
 
-    if DEBUG:
-        print(stem_term.format('-*- Initialisation -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-
+    logger.debug('-*- Initialisation -*-')
+    if DEBUG and not FLAG_DB:
         # nuke the db
-        if not FLAG_DB:
-            _redis_command('delete', 'queue_hostname')
-            _redis_command('delete', 'queue_requests')
-            _redis_command('delete', 'queue_selenium')
+        _redis_command('delete', 'queue_hostname')
+        _redis_command('delete', 'queue_requests')
+        _redis_command('delete', 'queue_selenium')
 
     link_list = []
     for link in filter(None, map(lambda s: s.strip(), args.link)):  # type: ignore[name-defined,var-annotated]
-        if DEBUG:
-            print(stem_term.format(link, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        logger.debug(link)
         link_list.append(link)
 
     if args.file is not None:
@@ -154,16 +146,13 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
                 for line in filter(None, map(lambda s: s.strip(), file)):
                     if line.startswith('#'):
                         continue
-                    if DEBUG:
-                        print(stem_term.format(line, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+                    logger.debug(line)
                     link_list.append(line)
 
     # write to database
     link_pool = [parse_link(link, backref=None) for link in link_list]
     save_requests(link_pool, score=0, nx=True)
-
-    if DEBUG:
-        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    logger.pline(LOG_DEBUG)
 
     # init link file
     if not os.path.isfile(PATH_LN):

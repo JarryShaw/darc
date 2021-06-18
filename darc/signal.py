@@ -15,7 +15,8 @@ import signal
 from typing import TYPE_CHECKING, cast
 
 from darc._compat import strsignal
-from darc.const import FLAG_MP, FLAG_TH, LOGGER, PATH_ID, getpid
+from darc.const import FLAG_MP, FLAG_TH, PATH_ID, getpid
+from darc.logging import logger
 
 __all__ = ['register']
 
@@ -100,7 +101,7 @@ def generic_handler(signum: 'Optional[Union[int, Signals]]' = None,
         sig = strsignal(signum) if signum else signum
     except Exception:
         sig = signum
-    LOGGER.info('[DARC] Handled signal: %s <%s>', sig, frame)
+    logger.info('[DARC] Handled signal: %s <%s>', sig, frame)
 
 
 def exit_signal(signum: 'Optional[Union[int, Signals]]' = None,
@@ -136,4 +137,4 @@ def exit_signal(signum: 'Optional[Union[int, Signals]]' = None,
         sig = strsignal(signum) if signum else signum
     except Exception:
         sig = signum
-    LOGGER.info('[DARC] Exit with signal: %s <%s>', sig, frame)
+    logger.info('[DARC] Exit with signal: %s <%s>', sig, frame)

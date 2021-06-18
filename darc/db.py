@@ -35,12 +35,9 @@ import contextlib
 import math
 import os
 import pickle  # nosec: B403
-import pprint
 import shutil
-import sys
 import textwrap
 import time
-import warnings
 from datetime import timedelta
 from typing import TYPE_CHECKING, TypeVar, cast
 
@@ -48,16 +45,18 @@ import peewee
 import pottery.exceptions as pottery_exceptions
 import pottery.redlock as pottery_redlock
 import redis as redis_lib
-import stem.util.term as stem_term
 
 from darc._compat import datetime, nullcontext
 from darc.const import CHECK
 from darc.const import DB as database
 from darc.const import FLAG_DB
 from darc.const import REDIS as redis
-from darc.const import TIME_CACHE, VERBOSE
-from darc.error import DatabaseOperaionFailed, LockWarning, RedisCommandFailed, render_error
+from darc.const import TIME_CACHE
+from darc.error import DatabaseOperaionFailed, LockWarning, RedisCommandFailed
 from darc.link import Link
+from darc.logging import VERBOSE as LOG_VERBOSE
+from darc.logging import WARNING as LOG_WARNING
+from darc.logging import logger
 from darc.model.tasks import HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel
 from darc.parse import _check
 
@@ -151,13 +150,10 @@ def _redis_command(command: str, *args: 'Any', **kwargs: 'Any') -> 'Any':
     while True:
         try:
             value = method(*args, **kwargs)
-        except (redis_lib.exceptions.ConnectionError, pottery_exceptions.PotteryError) as error:
+        except (redis_lib.exceptions.ConnectionError, pottery_exceptions.PotteryError):
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
-
-            warning = warnings.formatwarning(f'{type(error).__name__}: {error}', RedisCommandFailed, __file__, 153,
-                                             f'value = redis.{command}({_arg_msg})')
-            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            logger.perror(f'value = redis.{command}({_arg_msg})', RedisCommandFailed)
 
             if RETRY_INTERVAL is not None:
                 time.sleep(RETRY_INTERVAL)
@@ -186,14 +182,12 @@ def _db_operation(operation: 'Callable[..., _T]', *args: 'Any', **kwargs: 'Any')
     while True:
         try:
             value = operation(*args, **kwargs)
-        except (peewee.OperationalError, peewee.InterfaceError) as error:
+        except (peewee.OperationalError, peewee.InterfaceError):
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
             model = cast('MethodType', operation).__self__.__class__.__name__
-            warning = warnings.formatwarning(f'{type(error).__name__}: {error}', DatabaseOperaionFailed, __file__, 188,
-                                             f'{model}.{operation.__name__}({_arg_msg})')
-            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            logger.perror(f'{model}.{operation.__name__}({_arg_msg})', DatabaseOperaionFailed)
 
             if RETRY_INTERVAL is not None:
                 time.sleep(RETRY_INTERVAL)
@@ -242,10 +236,8 @@ def have_hostname(link: 'Link') -> 'Tuple[bool, bool]':
         with database.connection_context():
             try:
                 return _have_hostname_db(link)
-            except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 244,
-                                                 f'_have_hostname_db({link})')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                logger.perror(link.url, DatabaseOperaionFailed)
                 return False, False
     return _have_hostname_redis(link)
 
@@ -338,10 +330,8 @@ def drop_hostname(link: 'Link') -> None:
         with database.connection_context():
             try:
                 return _drop_hostname_db(link)
-            except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 340,
-                                                 f'_drop_hostname_db({link})')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                logger.perror(link.url, DatabaseOperaionFailed)
                 return None
     return _drop_hostname_redis(link)
 
@@ -389,10 +379,8 @@ def drop_requests(link: 'Link') -> None:  # pylint: disable=inconsistent-return-
         with database.connection_context():
             try:
                 return _drop_requests_db(link)
-            except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 391,
-                                                 f'_drop_requests_db({link})')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                logger.perror(link.url, DatabaseOperaionFailed)
                 return None
     return _drop_requests_redis(link)
 
@@ -441,10 +429,8 @@ def drop_selenium(link: 'Link') -> None:  # pylint: disable=inconsistent-return-
         with database.connection_context():
             try:
                 return _drop_selenium_db(link)
-            except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 443,
-                                                 f'_drop_selenium_db({link})')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                logger.perror(link.url, DatabaseOperaionFailed)
                 return None
     return _drop_selenium_redis(link)
 
@@ -513,10 +499,12 @@ def save_requests(entries: 'Union[Link, List[Link]]', single: bool = False,
         with database.connection_context():
             try:
                 return _save_requests_db(entries, single, score, nx, xx)
-            except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 515,
-                                                 '_save_requests_db(...)')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                if single:
+                    line = cast('Link', entries).url
+                else:
+                    line = '%s, ...' % cast('list[Link]', entries)[0].url
+                logger.perror(line, DatabaseOperaionFailed, level=LOG_WARNING)
                 return None
     return _save_requests_redis(entries, single, score, nx, xx)
 
@@ -694,10 +682,12 @@ def save_selenium(entries: 'Union[Link, List[Link]]', single: bool = False,  # p
         with database.connection_context():
             try:
                 return _save_selenium_db(entries, single, score, nx, xx)
-            except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 696,
-                                                 '_save_selenium_db(...)')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                if single:
+                    line = cast('Link', entries).url
+                else:
+                    line = '%s, ...' % cast('list[Link]', entries)[0].url
+                logger.perror(line, DatabaseOperaionFailed, level=LOG_WARNING)
                 return None
     return _save_selenium_redis(entries, single, score, nx, xx)
 
@@ -875,10 +865,8 @@ def load_requests(check: bool = CHECK) -> 'List[Link]':
         with database.connection_context():
             try:
                 link_pool = _load_requests_db()
-            except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 877,
-                                                 '_load_requests_db()')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                logger.perror(type=DatabaseOperaionFailed)
                 link_pool = []
     else:
         link_pool = _load_requests_redis()
@@ -886,10 +874,8 @@ def load_requests(check: bool = CHECK) -> 'List[Link]':
     if check:
         link_pool = _check(link_pool)
 
-    if VERBOSE:
-        print(stem_term.format('-*- [REQUESTS] LINK POOL -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(sorted(link.url for link in link_pool)), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    logger.plog(LOG_VERBOSE, '-*- [REQUESTS] LINK POOL -*-',
+                object=sorted(link.url for link in link_pool))
     return link_pool
 
 
@@ -962,9 +948,7 @@ def _load_requests_redis() -> 'List[Link]':
                 new_score = now + sec_delta
                 _save_requests_redis(link_pool, score=new_score)  # force update records
     except pottery_exceptions.PotteryError:
-        warning = warnings.formatwarning(f'[REQUESTS] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 957, "_redis_get_lock('queue_requests')")
-        print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+        logger.perror(f'[REQUESTS] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)', LockWarning)
         link_pool = []
     return link_pool
 
@@ -992,10 +976,8 @@ def load_selenium(check: bool = CHECK) -> 'List[Link]':
         with database.connection_context():
             try:
                 link_pool = _load_selenium_db()
-            except Exception as error:
-                warning = warnings.formatwarning(str(error), DatabaseOperaionFailed, __file__, 994,
-                                                 '_load_selenium_db()')
-                print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+            except Exception:
+                logger.perror(type=DatabaseOperaionFailed)
                 link_pool = []
     else:
         link_pool = _load_selenium_redis()
@@ -1003,10 +985,8 @@ def load_selenium(check: bool = CHECK) -> 'List[Link]':
     if check:
         link_pool = _check(link_pool)
 
-    if VERBOSE:
-        print(stem_term.format('-*- [SELENIUM] LINK POOL -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(render_error(pprint.pformat(sorted(link.url for link in link_pool)), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-        print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    logger.plog(LOG_VERBOSE, '-*- [SELENIUM] LINK POOL -*-',
+                object=sorted(link.url for link in link_pool))
     return link_pool
 
 
@@ -1083,8 +1063,6 @@ def _load_selenium_redis() -> 'List[Link]':
                 new_score = now + sec_delta
                 _save_selenium_redis(link_pool, score=new_score)  # force update records
     except pottery_exceptions.PotteryError:
-        warning = warnings.formatwarning(f'[SELENIUM] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
-                                         LockWarning, __file__, 1078, "_redis_get_lock('queue_selenium')")
-        print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+        logger.perror(f'[SELENIUM] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)', LockWarning)
         link_pool = []
     return link_pool
