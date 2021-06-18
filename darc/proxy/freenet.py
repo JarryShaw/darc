@@ -11,22 +11,15 @@ around managing and processing the Freenet proxy.
 import getpass
 import os
 import platform
-import pprint
 import shlex
-import shutil
 import subprocess  # nosec: B404
-import sys
 import traceback
-import warnings
-from typing import TYPE_CHECKING
 
-import stem.util.term as stem_term
-
-from darc.const import DARC_USER, DEBUG, VERBOSE
-from darc.error import FreenetBootstrapFailed, UnsupportedPlatform, render_error
-
-if TYPE_CHECKING:
-    from typing import IO
+from darc.const import DARC_USER
+from darc.error import FreenetBootstrapFailed, UnsupportedPlatform
+from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import WARNING as LOG_WARNING
+from darc.logging import logger
 
 # ZeroNet args
 FREENET_ARGS = shlex.split(os.getenv('FREENET_ARGS', ''))
@@ -63,13 +56,9 @@ else:
     _FREENET_ARGS = [os.path.join(FREENET_PATH, 'run.sh'), 'start']
 _FREENET_ARGS.extend(FREENET_ARGS)
 
-if DEBUG:
-    print(stem_term.format('-*- FREENET PROXY -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    if _unsupported:
-        print(stem_term.format(f'unsupported system: {platform.system()}', stem_term.Color.RED))  # pylint: disable=no-member
-    else:
-        print(render_error(pprint.pformat(_FREENET_ARGS), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+logger.plog(LOG_DEBUG, '-*- FREENET PROXY -*-', object=(
+    f'unsupported system: {platform.system()}' if _unsupported else _FREENET_ARGS
+))
 
 
 def _freenet_bootstrap() -> None:
@@ -90,7 +79,7 @@ def _freenet_bootstrap() -> None:
     global _FREENET_BS_FLAG, _FREENET_PROC  # pylint: disable=global-statement
 
     # launch Freenet process
-    _FREENET_PROC = subprocess.Popen(  # nosec
+    _FREENET_PROC = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
         _FREENET_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 
@@ -98,11 +87,10 @@ def _freenet_bootstrap() -> None:
         stdout, stderr = _FREENET_PROC.communicate(timeout=BS_WAIT)
     except subprocess.TimeoutExpired as error:
         stdout, stderr = error.stdout, error.stderr
-    if VERBOSE:
-        if stdout is not None:
-            print(render_error(stdout, stem_term.Color.BLUE))  # pylint: disable=no-member
+    if stdout is not None:
+        logger.verbose(stdout)
     if stderr is not None:
-        print(render_error(stderr, stem_term.Color.RED))  # pylint: disable=no-member
+        logger.error(stderr)
 
     returncode = _FREENET_PROC.returncode or -1
     if returncode != 0:
@@ -140,18 +128,12 @@ def freenet_bootstrap() -> None:
     if _FREENET_BS_FLAG:
         return
 
-    print(stem_term.format('-*- Freenet Bootstrap -*-',
-                                stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    logger.debug('-*- Freenet Bootstrap -*-')
     for _ in range(FREENET_RETRY+1):
         try:
             _freenet_bootstrap()
             break
-        except Exception as error:
-            if DEBUG:
-                message = '[Error bootstraping Freenet proxy]' + os.linesep + traceback.format_exc()
-                print(render_error(message, stem_term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
-
-            warning = warnings.formatwarning(str(error), FreenetBootstrapFailed, __file__, 147, 'freenet_bootstrap()')
-            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns,
-                                stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        except Exception:
+            logger.debug('[Error bootstraping Freenet proxy]\n%s', traceback.format_exc().rstrip())
+            logger.perror('freenet_bootstrap()', FreenetBootstrapFailed, level=LOG_WARNING)
+    logger.pline(LOG_DEBUG, logger.horizon)

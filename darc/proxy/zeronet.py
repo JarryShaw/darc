@@ -9,24 +9,15 @@ around managing and processing the ZeroNet proxy.
 """
 
 import os
-import pprint
 import shlex
-import shutil
 import subprocess  # nosec: B404
-import sys
 import traceback
-import warnings
-from typing import TYPE_CHECKING
 
-import stem.util.term as stem_term
-
-from darc.const import DEBUG, VERBOSE
 from darc.error import ZeroNetBootstrapFailed
-from darc.logging import logger, DEBUG as LOG_DEBUG
+from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import WARNING as LOG_WARNING
+from darc.logging import logger
 from darc.proxy.tor import tor_bootstrap
-
-if TYPE_CHECKING:
-    from typing import IO
 
 # ZeroNet args
 ZERONET_ARGS = shlex.split(os.getenv('ZERONET_ARGS', ''))
@@ -85,11 +76,10 @@ def _zeronet_bootstrap() -> None:
         stdout, stderr = _ZERONET_PROC.communicate(timeout=BS_WAIT)
     except subprocess.TimeoutExpired as error:
         stdout, stderr = error.stdout, error.stderr
-    if VERBOSE:
-        if stdout is not None:
-            print(render_error(stdout, stem_term.Color.BLUE))  # pylint: disable=no-member
+    if stdout is not None:
+        logger.verbose(stdout)
     if stderr is not None:
-        print(render_error(stderr, stem_term.Color.RED))  # pylint: disable=no-member
+        logger.error(stderr)
 
     returncode = _ZERONET_PROC.returncode or -1
     if returncode != 0:
@@ -124,16 +114,12 @@ def zeronet_bootstrap() -> None:
     if _ZERONET_BS_FLAG:
         return
 
-    print(stem_term.format('-*- ZeroNet Bootstrap -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    logger.debug('-*- ZeroNet Bootstrap -*-')
     for _ in range(ZERONET_RETRY+1):
         try:
             _zeronet_bootstrap()
             break
-        except Exception as error:
-            if DEBUG:
-                message = '[Error bootstraping ZeroNet proxy]' + os.linesep + traceback.format_exc()
-                print(render_error(message, stem_term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
-
-            warning = warnings.formatwarning(str(error), ZeroNetBootstrapFailed, __file__, 135, 'zeronet_bootstrap()')
-            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        except Exception:
+            logger.debug('[Error bootstraping ZeroNet proxy]\n%s', traceback.format_exc().rstrip())
+            logger.perror('zeronet_bootstrap()', ZeroNetBootstrapFailed, level=LOG_WARNING)
+    logger.pline(LOG_DEBUG, logger.horizon)

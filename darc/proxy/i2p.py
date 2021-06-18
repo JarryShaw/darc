@@ -12,27 +12,25 @@ import base64
 import getpass
 import os
 import platform
-import pprint
 import re
 import shlex
-import shutil
 import subprocess  # nosec: B404
-import sys
 import traceback
-import warnings
 from typing import TYPE_CHECKING
 
 import requests
 import selenium.webdriver.common.proxy as selenium_proxy
-import stem.util.term as stem_term
 
-from darc.const import CHECK, DARC_USER, DEBUG, PATH_DB, VERBOSE
-from darc.error import I2PBootstrapFailed, UnsupportedPlatform, render_error
+from darc.const import CHECK, DARC_USER, PATH_DB
+from darc.error import I2PBootstrapFailed, UnsupportedPlatform
 from darc.link import parse_link, urljoin
+from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import WARNING as LOG_WARNING
+from darc.logging import logger
 from darc.parse import _check, get_content_type
 
 if TYPE_CHECKING:
-    from typing import IO, List, Optional
+    from typing import List, Optional
 
     import darc.link as darc_link  # Link
     from darc._typing import File
@@ -80,13 +78,9 @@ else:
     _I2P_ARGS = ['i2prouter', 'start']
 _I2P_ARGS.extend(I2P_ARGS)
 
-if DEBUG:
-    print(stem_term.format('-*- I2P PROXY -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    if _unsupported:
-        print(stem_term.format(f'unsupported system: {platform.system()}', stem_term.Color.RED))  # pylint: disable=no-member
-    else:
-        print(render_error(pprint.pformat(_I2P_ARGS), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+logger.plog(LOG_DEBUG, '-*- I2P PROXY -*-', object=(
+    f'unsupported system: {platform.system()}' if _unsupported else _I2P_ARGS
+))
 
 # I2P link regular expression
 I2P_REGEX = re.compile(r'.*\.i2p', re.IGNORECASE)
@@ -110,7 +104,7 @@ def _i2p_bootstrap() -> None:
     global _I2P_BS_FLAG, _I2P_PROC  # pylint: disable=global-statement
 
     # launch I2P process
-    _I2P_PROC = subprocess.Popen(  # nosec
+    _I2P_PROC = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
         _I2P_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 
@@ -118,11 +112,10 @@ def _i2p_bootstrap() -> None:
         stdout, stderr = _I2P_PROC.communicate(timeout=BS_WAIT)
     except subprocess.TimeoutExpired as error:
         stdout, stderr = error.stdout, error.stderr
-    if VERBOSE:
-        if stdout is not None:
-            print(render_error(stdout, stem_term.Color.BLUE))  # pylint: disable=no-member
+    if stdout is not None:
+        logger.verbose(stdout)
     if stderr is not None:
-        print(render_error(stderr, stem_term.Color.RED))  # pylint: disable=no-member
+        logger.error(stderr)
 
     returncode = _I2P_PROC.returncode or -1
     if returncode != 0:
@@ -160,21 +153,15 @@ def i2p_bootstrap() -> None:
     if _I2P_BS_FLAG:
         return
 
-    print(stem_term.format('-*- I2P Bootstrap -*-',
-                                stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    logger.debug('-*- I2P Bootstrap -*-')
     for _ in range(I2P_RETRY+1):
         try:
             _i2p_bootstrap()
             break
-        except Exception as error:
-            if DEBUG:
-                message = '[Error bootstraping I2P proxy]' + os.linesep + traceback.format_exc()
-                print(render_error(message, stem_term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
-
-            warning = warnings.formatwarning(str(error), I2PBootstrapFailed, __file__, 166, 'i2p_bootstrap()')
-            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns,
-                                stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        except Exception:
+            logger.debug('[Error bootstraping I2P proxy]\n%s', traceback.format_exc().rstrip())
+            logger.perror('i2p_bootstrap()', I2PBootstrapFailed, level=LOG_WARNING)
+    logger.pline(LOG_DEBUG, logger.horizon)
 
 
 def get_hosts(link: 'darc_link.Link') -> 'Optional[File]':
@@ -291,14 +278,12 @@ def fetch_hosts(link: 'darc_link.Link', force: bool = False) -> None:
 
     """
     if force:
-        print(stem_term.format(f'[HOSTS] Force refetch {link.url}',
-                                    stem_term.Color.YELLOW))  # pylint: disable=no-member
+        logger.warning('[HOSTS] Force refetch %s', link.url)
 
     hosts_path = None if force else have_hosts(link)
     if hosts_path is not None:
 
-        print(stem_term.format(f'[HOSTS] Cached {link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
-
+        logger.warning('[HOSTS] Cached %s', link.url)  # pylint: disable=no-member
         with open(hosts_path) as hosts_file:
             hosts_text = hosts_file.read()
 
@@ -307,31 +292,28 @@ def fetch_hosts(link: 'darc_link.Link', force: bool = False) -> None:
         from darc.requests import i2p_session  # pylint: disable=import-outside-toplevel
 
         hosts_link = parse_link(urljoin(link.url, '/hosts.txt'), backref=link)
-        print(f'[HOSTS] Subscribing {hosts_link.url}')
+        logger.info('[HOSTS] Subscribing %s', hosts_link.url)
 
         with i2p_session() as session:
             try:
                 response = session.get(hosts_link.url)
-            except requests.RequestException as error:
-                print(render_error(f'[HOSTS] Failed on {hosts_link.url} <{error}>',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            except requests.RequestException:
+                logger.perror(f'[HOSTS] Failed on {hosts_link.url}')
                 return
 
         if not response.ok:
-            print(render_error(f'[HOSTS] Failed on {hosts_link.url} [{response.status_code}]',
-                               stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            logger.error('[HOSTS] Failed on %s [%d]', hosts_link.url, response.status_code)
             return
 
         ct_type = get_content_type(response)
         if ct_type not in ['text/text', 'text/plain']:
-            print(render_error(f'[HOSTS] Unresolved content type on {hosts_link.url} ({ct_type})',
-                               stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            logger.error('[HOSTS] Unresolved content type on %s (%s)', hosts_link.url, ct_type)
             return
 
         hosts_text = response.text
         save_hosts(hosts_link, hosts_text)
 
-        print(f'[HOSTS] Subscribed {hosts_link.url}')
+        logger.info('[HOSTS] Subscribed %s', hosts_link.url)
 
     from darc.db import save_requests  # pylint: disable=import-outside-toplevel
 

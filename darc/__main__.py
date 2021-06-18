@@ -152,7 +152,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
     # write to database
     link_pool = [parse_link(link, backref=None) for link in link_list]
     save_requests(link_pool, score=0, nx=True)
-    logger.pline(LOG_DEBUG)
+    logger.pline(LOG_DEBUG, logger.horizon)
 
     # init link file
     if not os.path.isfile(PATH_LN):

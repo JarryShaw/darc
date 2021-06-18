@@ -11,18 +11,16 @@ import gzip
 import io
 import json
 import os
-import sys
 from typing import TYPE_CHECKING
 
 import bs4
 import requests
-import stem.util.term as stem_term
 
 from darc._compat import RobotFileParser
 from darc.const import CHECK, PATH_MISC, get_lock
 from darc.db import save_requests
-from darc.error import render_error
 from darc.link import parse_link
+from darc.logging import logger
 from darc.parse import _check, get_content_type, urljoin
 from darc.requests import request_session
 from darc.save import save_link
@@ -250,52 +248,49 @@ def fetch_sitemap(link: 'darc_link.Link', force: bool = False) -> None:
 
     """
     if force:
-        print(stem_term.format(f'[ROBOTS] Force refetch {link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
+        logger.warning('[ROBOTS] Force refetch %s', link.url)
 
     robots_path = None if force else have_robots(link)
     if robots_path is not None:
 
-        print(stem_term.format(f'[ROBOTS] Cached {link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
+        logger.warning('[ROBOTS] Cached %s', link.url)
         with open(robots_path) as file:
             robots_text = file.read()
 
     else:
 
         robots_link = parse_link(urljoin(link.url, '/robots.txt'), backref=link)
-        print(f'[ROBOTS] Checking {robots_link.url}')
+        logger.info('[ROBOTS] Checking %s', robots_link.url)
 
         with request_session(robots_link) as session:
             try:
                 response = session.get(robots_link.url)
-            except requests.RequestException as error:
-                print(render_error(f'[ROBOTS] Failed on {robots_link.url} <{error}>',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            except requests.RequestException:
+                logger.perror(f'[ROBOTS] Failed on {robots_link.url}')
                 return
 
         if response.ok:
             ct_type = get_content_type(response)
             if ct_type not in ['text/text', 'text/plain']:
-                print(render_error(f'[ROBOTS] Unresolved content type on {robots_link.url} ({ct_type})',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                logger.error('[ROBOTS] Unresolved content type on %s (%s)', robots_link.url, ct_type)
                 robots_text = ''
             else:
                 robots_text = response.text
                 save_robots(robots_link, robots_text)
-                print(f'[ROBOTS] Checked {robots_link.url}')
+                logger.info('[ROBOTS] Checked %s', robots_link.url)
         else:
-            print(render_error(f'[ROBOTS] Failed on {robots_link.url} [{response.status_code}]',
-                               stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+            logger.error('[ROBOTS] Failed on %s [%d]', robots_link.url, response.status_code)
             robots_text = ''
 
     if force:
-        print(stem_term.format(f'[SITEMAP] Force refetch {link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
+        logger.warning('[SITEMAP] Force refetch %s', link.url)
 
     sitemaps = read_robots(link, robots_text, host=link.host)
     for sitemap_link in sitemaps:
         sitemap_path = None if force else have_sitemap(sitemap_link)
         if sitemap_path is not None:
 
-            print(stem_term.format(f'[SITEMAP] Cached {sitemap_link.url}', stem_term.Color.YELLOW))  # pylint: disable=no-member
+            logger.warning('[SITEMAP] Cached %s', sitemap_link.url)
             with open(sitemap_path) as file:
                 sitemap_text = file.read()
 
@@ -306,14 +301,12 @@ def fetch_sitemap(link: 'darc_link.Link', force: bool = False) -> None:
             with request_session(sitemap_link) as session:
                 try:
                     response = session.get(sitemap_link.url)
-                except requests.RequestException as error:
-                    print(render_error(f'[SITEMAP] Failed on {sitemap_link.url} <{error}>',
-                                       stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                except requests.RequestException:
+                    logger.perror(f'[SITEMAP] Failed on {sitemap_link.url}')
                     continue
 
             if not response.ok:
-                print(render_error(f'[SITEMAP] Failed on {sitemap_link.url} [{response.status_code}]',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                logger.error('[SITEMAP] Failed on %s [%d]', sitemap_link.url, response.status_code)
                 continue
 
             # check content type
@@ -327,11 +320,10 @@ def fetch_sitemap(link: 'darc_link.Link', force: bool = False) -> None:
                 sitemap_text = response.text
                 save_sitemap(sitemap_link, sitemap_text)
             else:
-                print(render_error(f'[SITEMAP] Unresolved content type on {sitemap_link.url} ({ct_type})',
-                                   stem_term.Color.RED), file=sys.stderr)  # pylint: disable=no-member
+                logger.error('[SITEMAP] Unresolved content type on %s (%s)', sitemap_link.url, ct_type)
                 continue
 
-            print(f'[SITEMAP] Fetched {sitemap_link.url}')
+            logger.info(f'[SITEMAP] Fetched %s', sitemap_link.url)
 
         # get more sitemaps
         sitemaps.extend(get_sitemap(sitemap_link, sitemap_text, host=link.host))

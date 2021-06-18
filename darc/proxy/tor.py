@@ -11,21 +11,19 @@ around managing and processing the Tor proxy.
 import getpass
 import json
 import os
-import pprint
-import shutil
-import sys
 import traceback
-import warnings
 from typing import TYPE_CHECKING
 
 import selenium.webdriver
 import selenium.webdriver.common.proxy
 import stem.control
 import stem.process
-import stem.util.term as stem_term
 
-from darc.const import DEBUG
-from darc.error import TorBootstrapFailed, TorRenewFailed, render_error
+from darc.error import TorBootstrapFailed, TorRenewFailed
+from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import INFO as LOG_INFO
+from darc.logging import WARNING as LOG_WARNING
+from darc.logging import logger
 
 if TYPE_CHECKING:
     from subprocess import Popen  # nosec: B404
@@ -77,11 +75,7 @@ _TOR_CONFIG = {
     'ControlPort': TOR_CTRL,
 }
 _TOR_CONFIG.update(TOR_CFG)
-
-if DEBUG:
-    print(stem_term.format('-*- TOR PROXY -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(render_error(pprint.pformat(_TOR_CONFIG), stem_term.Color.MAGENTA))  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+logger.plog(LOG_DEBUG, '-*- TOR PROXY -*-', object=_TOR_CONFIG)
 
 
 def renew_tor_session() -> None:
@@ -94,10 +88,9 @@ def renew_tor_session() -> None:
             _TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))
             _TOR_CTRL.authenticate(TOR_PASS)
         _TOR_CTRL.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
-    except Exception as error:
-        warning = warnings.formatwarning(str(error), TorRenewFailed, __file__, 94,
-                                         '_TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))')
-        print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
+    except Exception:
+        logger.perror('_TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))',
+                      TorRenewFailed, level=LOG_WARNING)
 
 
 def print_bootstrap_lines(line: str) -> None:
@@ -107,12 +100,11 @@ def print_bootstrap_lines(line: str) -> None:
         line: Tor bootstrap line.
 
     """
-    if DEBUG:
-        print(stem_term.format(line, stem_term.Color.BLUE))  # pylint: disable=no-member
-        return
-
     if 'Bootstrapped ' in line:
-        print(stem_term.format(line, stem_term.Color.BLUE))  # pylint: disable=no-member
+        level = LOG_INFO
+    else:
+        level = LOG_DEBUG
+    logger.log(level, line)
 
 
 def _tor_bootstrap() -> None:
@@ -169,16 +161,12 @@ def tor_bootstrap() -> None:
     if _TOR_BS_FLAG:
         return
 
-    print(stem_term.format('-*- Tor Bootstrap -*-', stem_term.Color.MAGENTA))  # pylint: disable=no-member
+    logger.debug('-*- Tor Bootstrap -*-')
     for _ in range(TOR_RETRY+1):
         try:
             _tor_bootstrap()
             break
-        except Exception as error:
-            if DEBUG:
-                message = '[Error bootstraping Tor proxy]' + os.linesep + traceback.format_exc()
-                print(render_error(message, stem_term.Color.RED), end='', file=sys.stderr)  # pylint: disable=no-member
-
-            warning = warnings.formatwarning(str(error), TorBootstrapFailed, __file__, 175, 'tor_bootstrap()')
-            print(render_error(warning, stem_term.Color.YELLOW), end='', file=sys.stderr)  # pylint: disable=no-member
-    print(stem_term.format('-' * shutil.get_terminal_size().columns, stem_term.Color.MAGENTA))  # pylint: disable=no-member
+        except Exception:
+            logger.debug('[Error bootstraping Tor proxy]\n%s', traceback.format_exc().rstrip())
+            logger.perror('tor_bootstrap()', TorBootstrapFailed, level=LOG_WARNING)
+    logger.pline(LOG_DEBUG, logger.horizon)

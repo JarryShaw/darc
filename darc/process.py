@@ -41,8 +41,8 @@ _WORKER_POOL = []  # type: List[Union[Process, Thread]]
 _HOOK_REGISTRY = []  # type: List[Callable[[Literal["crawler", "loader"], List[Link]], None]]
 
 
-def register(hook: 'Callable[[Literal["crawler", "loader"], List[Link]], None]',
-             *, _index: 'Optional[int]' = None) -> None:
+def register(hook: 'Callable[[Literal["crawler", "loader"], List[Link]], None]', *,
+             _index: 'Optional[int]' = None) -> None:
     """Register hook function.
 
     Args:

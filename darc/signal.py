@@ -34,8 +34,8 @@ _HANDLER_REGISTRY = collections.defaultdict(list)  # type: Dict[int, List[Callab
 
 def register(
         signum: 'Union[int, Signals]',
-        handler: 'Callable[[Optional[Union[int, Signals]], Optional[FrameType]], Any]',
-        *, _index: 'Optional[int]' = None
+        handler: 'Callable[[Optional[Union[int, Signals]], Optional[FrameType]], Any]', *,
+        _index: 'Optional[int]' = None
     ) -> 'Union[Callable[[Signals, FrameType], Any], int, Handlers, None]':
     """Register signal handler.
 
