@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darc.selenium &#8212; darc 0.9.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for darc.selenium</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># pylint: disable=ungrouped-imports</span>
+<span class="sd">&quot;&quot;&quot;Selenium Wrapper</span>
+<span class="sd">======================</span>
+
+<span class="sd">The :mod:`darc.selenium` module wraps around the :mod:`selenium`</span>
+<span class="sd">module, and provides some simple interface for the :mod:`darc`</span>
+<span class="sd">project.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">getpass</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">selenium.webdriver.chrome.options</span> <span class="k">as</span> <span class="nn">selenium_options</span>
+<span class="kn">import</span> <span class="nn">selenium.webdriver.chrome.webdriver</span> <span class="k">as</span> <span class="nn">selenium_webdriver</span>
+<span class="kn">import</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="k">as</span> <span class="nn">selenium_desired_capabilities</span>
+
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DEBUG</span>
+<span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">UnsupportedLink</span><span class="p">,</span> <span class="n">UnsupportedPlatform</span><span class="p">,</span> <span class="n">UnsupportedProxy</span>
+<span class="kn">from</span> <span class="nn">darc.proxy.i2p</span> <span class="kn">import</span> <span class="n">I2P_PORT</span><span class="p">,</span> <span class="n">I2P_SELENIUM_PROXY</span>
+<span class="kn">from</span> <span class="nn">darc.proxy.tor</span> <span class="kn">import</span> <span class="n">TOR_PORT</span><span class="p">,</span> <span class="n">TOR_SELENIUM_PROXY</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+
+    <span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.options</span> <span class="kn">import</span> <span class="n">Options</span>
+    <span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span>
+
+    <span class="kn">import</span> <span class="nn">darc.link</span> <span class="k">as</span> <span class="nn">darc_link</span>  <span class="c1"># Link</span>
+
+<span class="c1"># Google Chrome binary location.</span>
+<span class="n">BINARY_LOCATION</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;CHROME_BINARY_LOCATION&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">BINARY_LOCATION</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">_system</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">_system</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+        <span class="n">BINARY_LOCATION</span> <span class="o">=</span> <span class="s1">&#39;/Applications/Google Chrome.app/Contents/MacOS/Google Chrome&#39;</span>
+    <span class="k">elif</span> <span class="n">_system</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>
+        <span class="n">BINARY_LOCATION</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;google-chrome&#39;</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">_system</span>
+
+
+<div class="viewcode-block" id="request_driver"><a class="viewcode-back" href="../../darc/selenium.html#darc.selenium.request_driver">[docs]</a><span class="k">def</span> <span class="nf">request_driver</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;WebDriver&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get selenium driver.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link requesting for :class:`~selenium.webdriver.chrome.webdriver.WebDriver`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        selenium.webdriver.chrome.webdriver.WebDriver: The web driver object with corresponding proxy settings.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        UnsupportedLink: If the proxy type of ``link``</span>
+<span class="sd">            if not specified in the :data:`~darc.proxy.LINK_MAP`.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :data:`darc.proxy.LINK_MAP`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">darc.proxy</span> <span class="kn">import</span> <span class="n">LINK_MAP</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">driver</span> <span class="o">=</span> <span class="n">LINK_MAP</span><span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">proxy</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">driver</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnsupportedLink</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">driver</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_options"><a class="viewcode-back" href="../../darc/selenium.html#darc.selenium.get_options">[docs]</a><span class="k">def</span> <span class="nf">get_options</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;null&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Options&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+    <span class="sd">&quot;&quot;&quot;Generate options.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        type: Proxy type for options.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        selenium.webdriver.chrome.options.Options: The options for the web driver</span>
+<span class="sd">            :class:`~selenium.webdriver.chrome.webdriver.WebDriver`.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        UnsupportedPlatform: If the operation system is **NOT**</span>
+<span class="sd">            macOS or Linux and :envvar:`CHROME_BINARY_LOCATION`</span>
+<span class="sd">            is **NOT** set.</span>
+<span class="sd">        UnsupportedProxy: If the proxy type is **NOT**</span>
+<span class="sd">            ``null``, ``tor`` or ``i2p``.</span>
+
+<span class="sd">    Important:</span>
+<span class="sd">        The function raises :exc:`UnsupportedPlatform` in cases where</span>
+<span class="sd">        :data:`~darc.selenium.BINARY_LOCATION` is :data:`None`.</span>
+
+<span class="sd">        Please provide :envvar:`CHROME_BINARY_LOCATION` when running</span>
+<span class="sd">        :mod:`darc` in ``loader`` mode on non *macOS* and/or *Linux*</span>
+<span class="sd">        systems.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :data:`darc.proxy.tor.TOR_PORT`</span>
+<span class="sd">        * :data:`darc.proxy.i2p.I2P_PORT`</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        * `Google Chrome command line switches &lt;https://peter.sh/experiments/chromium-command-line-switches/&gt;`__</span>
+<span class="sd">        * Disable sandbox (``--no-sandbox``) when running as ``root`` user</span>
+
+<span class="sd">          - https://crbug.com/638180</span>
+<span class="sd">          - https://stackoverflow.com/a/50642913/7218152</span>
+
+<span class="sd">        * Disable usage of ``/dev/shm``</span>
+
+<span class="sd">          - http://crbug.com/715363</span>
+
+<span class="sd">        * `Using Socks proxy &lt;https://www.chromium.org/developers/design-documents/network-stack/socks-proxy&gt;`__</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_system</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+
+    <span class="c1"># initiate options</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">selenium_options</span><span class="o">.</span><span class="n">Options</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">BINARY_LOCATION</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnsupportedPlatform</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unsupported system: </span><span class="si">{</span><span class="n">_system</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">binary_location</span> <span class="o">=</span> <span class="n">BINARY_LOCATION</span>
+
+    <span class="c1"># https://peter.sh/experiments/chromium-command-line-switches/</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">DEBUG</span><span class="p">:</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--headless&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_system</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;/.dockerenv&#39;</span><span class="p">):</span>  <span class="c1"># check if in Docker</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">headless</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># force headless option in Docker environment</span>
+
+        <span class="c1"># c.f. https://crbug.com/638180; https://stackoverflow.com/a/50642913/7218152</span>
+        <span class="k">if</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;root&#39;</span><span class="p">:</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--no-sandbox&#39;</span><span class="p">)</span>
+
+        <span class="c1"># c.f. http://crbug.com/715363</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--disable-dev-shm-usage&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">!=</span> <span class="s1">&#39;null&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;tor&#39;</span><span class="p">:</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="n">TOR_PORT</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;i2p&#39;</span><span class="p">:</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="n">I2P_PORT</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnsupportedProxy</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unsupported proxy: </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># c.f. https://www.chromium.org/developers/design-documents/network-stack/socks-proxy</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;--proxy-server=socks5://localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--host-resolver-rules=&quot;MAP * ~NOTFOUND , EXCLUDE localhost&quot;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">options</span></div>
+
+
+<div class="viewcode-block" id="get_capabilities"><a class="viewcode-back" href="../../darc/selenium.html#darc.selenium.get_capabilities">[docs]</a><span class="k">def</span> <span class="nf">get_capabilities</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;null&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Dict[str, str]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+    <span class="sd">&quot;&quot;&quot;Generate desied capabilities.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        type: Proxy type for capabilities.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The desied capabilities for the web driver :class:`~selenium.webdriver.chrome.webdriver.WebDriver`.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        UnsupportedProxy: If the proxy type is **NOT**</span>
+<span class="sd">            ``null``, ``tor`` or ``i2p``.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :data:`darc.proxy.tor.TOR_SELENIUM_PROXY`</span>
+<span class="sd">        * :data:`darc.proxy.i2p.I2P_SELENIUM_PROXY`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># do not modify source dict</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">selenium_desired_capabilities</span><span class="o">.</span><span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">CHROME</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;null&#39;</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;tor&#39;</span><span class="p">:</span>
+        <span class="n">TOR_SELENIUM_PROXY</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;i2p&#39;</span><span class="p">:</span>
+        <span class="n">I2P_SELENIUM_PROXY</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnsupportedProxy</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unsupported proxy: </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">capabilities</span></div>
+
+
+<div class="viewcode-block" id="i2p_driver"><a class="viewcode-back" href="../../darc/selenium.html#darc.selenium.i2p_driver">[docs]</a><span class="k">def</span> <span class="nf">i2p_driver</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;WebDriver&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;I2P (``.i2p``) driver.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        selenium.webdriver.chrome.webdriver.WebDriver: The web driver object with I2P proxy settings.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.selenium.get_options`</span>
+<span class="sd">        * :func:`darc.selenium.get_capabilities`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">(</span><span class="s1">&#39;i2p&#39;</span><span class="p">)</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">get_capabilities</span><span class="p">(</span><span class="s1">&#39;i2p&#39;</span><span class="p">)</span>
+
+    <span class="c1"># initiate driver</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">selenium_webdriver</span><span class="o">.</span><span class="n">WebDriver</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+                                          <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">driver</span></div>
+
+
+<div class="viewcode-block" id="tor_driver"><a class="viewcode-back" href="../../darc/selenium.html#darc.selenium.tor_driver">[docs]</a><span class="k">def</span> <span class="nf">tor_driver</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;WebDriver&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Tor (``.onion``) driver.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        selenium.webdriver.chrome.webdriver.WebDriver: The web driver object with Tor proxy settings.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.selenium.get_options`</span>
+<span class="sd">        * :func:`darc.selenium.get_capabilities`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">(</span><span class="s1">&#39;tor&#39;</span><span class="p">)</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">get_capabilities</span><span class="p">(</span><span class="s1">&#39;tor&#39;</span><span class="p">)</span>
+
+    <span class="c1"># initiate driver</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">selenium_webdriver</span><span class="o">.</span><span class="n">WebDriver</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+                                          <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">driver</span></div>
+
+
+<div class="viewcode-block" id="null_driver"><a class="viewcode-back" href="../../darc/selenium.html#darc.selenium.null_driver">[docs]</a><span class="k">def</span> <span class="nf">null_driver</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;WebDriver&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;No proxy driver.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        selenium.webdriver.chrome.webdriver.WebDriver: The web driver object with no proxy settings.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :func:`darc.selenium.get_options`</span>
+<span class="sd">        * :func:`darc.selenium.get_capabilities`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">(</span><span class="s1">&#39;null&#39;</span><span class="p">)</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">get_capabilities</span><span class="p">(</span><span class="s1">&#39;null&#39;</span><span class="p">)</span>
+
+    <span class="c1"># initiate driver</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">selenium_webdriver</span><span class="o">.</span><span class="n">WebDriver</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+                                          <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">driver</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>&lt;no title&gt; &#8212; darc 0.9.5 documentation</title>
+    <title>Default Hooks &#8212; darc 0.9.5 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -15,8 +15,8 @@
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="bitcoin.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="_abc.html" />
+    <link rel="next" title="Bitcoin Addresses" href="bitcoin.html" />
+    <link rel="prev" title="Base Sites Customisation" href="_abc.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -33,7 +33,84 @@
 
           <div class="body" role="main">
             
-  
+  <span class="target" id="module-darc.sites.default"></span><section id="default-hooks">
+<h1>Default Hooks<a class="headerlink" href="#default-hooks" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-darc.sites.default" title="darc.sites.default"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites.default</span></code></a> module is the fallback for sites
+customisation.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="darc.sites.default.DefaultSite">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">darc.sites.default.</span></span><span class="sig-name descname"><span class="pre">DefaultSite</span></span><a class="reference internal" href="../../_modules/darc/sites/default.html#DefaultSite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.default.DefaultSite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites._abc.BaseSite</span></code></a></p>
+<p>Default hooks.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="darc.sites.default.DefaultSite.crawler">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">crawler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites/default.html#DefaultSite.crawler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.default.DefaultSite.crawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default crawler hook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
+<li><p><strong>session</strong> (<a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Session" title="(in Requests v2.25.1)"><em>requests.Session</em></a>) – Session object with proxy settings.</p></li>
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be crawled.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The final response object with crawled data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Response" title="(in Requests v2.25.1)">requests.Response</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.crawler()</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="darc.sites.default.DefaultSite.loader">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites/default.html#DefaultSite.loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.default.DefaultSite.loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default loader hook.</p>
+<p>When loading, if <a class="reference internal" href="../const.html#darc.const.SE_WAIT" title="darc.const.SE_WAIT"><code class="xref py py-data docutils literal notranslate"><span class="pre">SE_WAIT</span></code></a> is a valid time lapse,
+the function will sleep for such time to wait for the page to finish
+loading contents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
+<li><p><strong>driver</strong> (<em>selenium.webdriver.Chrome</em>) – Web driver object with proxy settings.</p></li>
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be loaded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The web driver object with loaded data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>selenium.webdriver.Chrome</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Internally, <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> will wait for the browser to finish
+loading the pages before return (i.e. the web API event
+<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event"><code class="docutils literal notranslate"><span class="pre">DOMContentLoaded</span></code></a>). However, some extra scripts may take more time
+running after the event.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.loader()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../const.html#darc.const.SE_WAIT" title="darc.const.SE_WAIT"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.const.SE_WAIT</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
 
           </div>
           
@@ -58,9 +135,25 @@
 
 
 <h3>Navigation</h3>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Technical Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../process.html">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crawl.html">Web Crawlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html">Source Saving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html">Selenium Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../proxy/index.html">Proxy Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sites Customisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Data Models</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
@@ -76,8 +169,8 @@
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Technical Documentation</a><ul>
   <li><a href="index.html">Sites Customisation</a><ul>
-      <li>Previous: <a href="_abc.html" title="previous chapter">&lt;no title&gt;</a></li>
-      <li>Next: <a href="bitcoin.html" title="next chapter">&lt;no title&gt;</a></li>
+      <li>Previous: <a href="_abc.html" title="previous chapter">Base Sites Customisation</a></li>
+      <li>Next: <a href="bitcoin.html" title="next chapter">Bitcoin Addresses</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

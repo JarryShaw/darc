@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>darc.sites &#8212; darc 0.9.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for darc.sites</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># pylint: disable=ungrouped-imports</span>
+<span class="sd">&quot;&quot;&quot;Sites Customisation</span>
+<span class="sd">=========================</span>
+
+<span class="sd">As websites may have authentication requirements, etc., over</span>
+<span class="sd">its content, the :mod:`darc.sites` module provides site</span>
+<span class="sd">customisation hooks to both :mod:`requests` and :mod:`selenium`</span>
+<span class="sd">crawling processes.</span>
+
+<span class="sd">Important:</span>
+<span class="sd">    To create a sites customisation, define your class by inheriting</span>
+<span class="sd">    :class:`darc.sites.BaseSite` and register it to the :mod:`darc`</span>
+<span class="sd">    module through :func:`darc.sites.register`.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">SiteNotFoundWarning</span>
+<span class="kn">from</span> <span class="nn">darc.sites._abc</span> <span class="kn">import</span> <span class="n">BaseSite</span>
+<span class="kn">from</span> <span class="nn">darc.sites.bitcoin</span> <span class="kn">import</span> <span class="n">Bitcoin</span>
+<span class="kn">from</span> <span class="nn">darc.sites.data</span> <span class="kn">import</span> <span class="n">DataURI</span>
+<span class="kn">from</span> <span class="nn">darc.sites.default</span> <span class="kn">import</span> <span class="n">DefaultSite</span>
+<span class="kn">from</span> <span class="nn">darc.sites.ed2k</span> <span class="kn">import</span> <span class="n">ED2K</span>
+<span class="kn">from</span> <span class="nn">darc.sites.ethereum</span> <span class="kn">import</span> <span class="n">Ethereum</span>
+<span class="kn">from</span> <span class="nn">darc.sites.irc</span> <span class="kn">import</span> <span class="n">IRC</span>
+<span class="kn">from</span> <span class="nn">darc.sites.magnet</span> <span class="kn">import</span> <span class="n">Magnet</span>
+<span class="kn">from</span> <span class="nn">darc.sites.mail</span> <span class="kn">import</span> <span class="n">Email</span>
+<span class="kn">from</span> <span class="nn">darc.sites.script</span> <span class="kn">import</span> <span class="n">Script</span>
+<span class="kn">from</span> <span class="nn">darc.sites.tel</span> <span class="kn">import</span> <span class="n">Tel</span>
+<span class="kn">from</span> <span class="nn">darc.sites.ws</span> <span class="kn">import</span> <span class="n">WebSocket</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">DefaultDict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span>
+
+    <span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">Response</span><span class="p">,</span> <span class="n">Session</span>
+    <span class="kn">from</span> <span class="nn">selenium.webdriver</span> <span class="kn">import</span> <span class="n">Chrome</span> <span class="k">as</span> <span class="n">Driver</span>
+
+    <span class="kn">import</span> <span class="nn">darc.link</span> <span class="k">as</span> <span class="nn">darc_link</span>  <span class="c1"># Link</span>
+    <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="n">SITEMAP</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DefaultSite</span><span class="p">,</span> <span class="p">{</span>
+    <span class="c1"># misc/special links</span>
+    <span class="s1">&#39;(data)&#39;</span><span class="p">:</span> <span class="n">DataURI</span><span class="p">,</span>
+    <span class="s1">&#39;(script)&#39;</span><span class="p">:</span> <span class="n">Script</span><span class="p">,</span>
+    <span class="s1">&#39;(bitcoin)&#39;</span><span class="p">:</span> <span class="n">Bitcoin</span><span class="p">,</span>
+    <span class="s1">&#39;(ed2k)&#39;</span><span class="p">:</span> <span class="n">ED2K</span><span class="p">,</span>
+    <span class="s1">&#39;(magnet)&#39;</span><span class="p">:</span> <span class="n">Magnet</span><span class="p">,</span>
+    <span class="s1">&#39;(mail)&#39;</span><span class="p">:</span> <span class="n">Email</span><span class="p">,</span>
+    <span class="s1">&#39;(tel)&#39;</span><span class="p">:</span> <span class="n">Tel</span><span class="p">,</span>
+    <span class="s1">&#39;(irc)&#39;</span><span class="p">:</span> <span class="n">IRC</span><span class="p">,</span>
+    <span class="s1">&#39;(ws)&#39;</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">,</span>
+    <span class="s1">&#39;(ethereum)&#39;</span><span class="p">:</span> <span class="n">Ethereum</span><span class="p">,</span>
+<span class="p">})</span>  <span class="c1"># type: DefaultDict[str, Type[BaseSite]]</span>
+
+
+<div class="viewcode-block" id="register"><a class="viewcode-back" href="../../darc/sites/index.html#darc.sites.register">[docs]</a><span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">site</span><span class="p">:</span> <span class="s1">&#39;Type[BaseSite]&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Register new site map.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        site: Sites customisation class inherited from</span>
+<span class="sd">            :class:`~darc.sites._abc.BaseSite`.</span>
+<span class="sd">        *hostname (Tuple[str]): Optional list of hostnames the sites</span>
+<span class="sd">            customisation should be registered with.</span>
+<span class="sd">            By default, we use :attr:`site.hostname`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">site</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">site</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;List[str]&#39;</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">hostname</span><span class="p">:</span>
+        <span class="n">SITEMAP</span><span class="p">[</span><span class="n">domain</span><span class="o">.</span><span class="n">casefold</span><span class="p">()]</span> <span class="o">=</span> <span class="n">site</span></div>
+
+
+<div class="viewcode-block" id="_get_site"><a class="viewcode-back" href="../../darc/sites/index.html#darc.sites._get_site">[docs]</a><span class="k">def</span> <span class="nf">_get_site</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Type[BaseSite]&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load sites customisation if any.</span>
+
+<span class="sd">    If the sites customisation does not exist, it will</span>
+<span class="sd">    fallback to the default hooks, :class:`~darc.sites.default.DefaultSite`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        link: Link object to fetch sites customisation class.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The sites customisation class.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :data:`darc.sites.SITEMAP`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">host</span> <span class="ow">or</span> <span class="s1">&#39;&lt;null&gt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">SITEMAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">site</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">site</span> <span class="o">=</span> <span class="n">DefaultSite</span>
+
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sites customisation not found: </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">SiteNotFoundWarning</span><span class="p">)</span>
+        <span class="n">SITEMAP</span><span class="p">[</span><span class="n">host</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span>  <span class="c1"># set for cache</span>
+    <span class="k">return</span> <span class="n">site</span></div>
+
+
+<div class="viewcode-block" id="crawler_hook"><a class="viewcode-back" href="../../darc/sites/index.html#darc.sites.crawler_hook">[docs]</a><span class="k">def</span> <span class="nf">crawler_hook</span><span class="p">(</span><span class="n">timestamp</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="s1">&#39;Session&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Response&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Customisation as to :mod:`requests` sessions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        timestamp: Timestamp of the worker node reference.</span>
+<span class="sd">        session (requests.Session): Session object with proxy settings.</span>
+<span class="sd">        link: Link object to be crawled.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        requests.Response: The final response object with crawled data.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :data:`darc.sites.SITE_MAP`</span>
+<span class="sd">        * :func:`darc.sites._get_site`</span>
+<span class="sd">        * :func:`darc.crawl.crawler`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">_get_site</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">site</span><span class="o">.</span><span class="n">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="loader_hook"><a class="viewcode-back" href="../../darc/sites/index.html#darc.sites.loader_hook">[docs]</a><span class="k">def</span> <span class="nf">loader_hook</span><span class="p">(</span><span class="n">timestamp</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">driver</span><span class="p">:</span> <span class="s1">&#39;Driver&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Driver&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Customisation as to :mod:`selenium` drivers.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        timestamp: Timestamp of the worker node reference.</span>
+<span class="sd">        driver (selenium.webdriver.Chrome): Web driver object with proxy settings.</span>
+<span class="sd">        link: Link object to be loaded.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        selenium.webdriver.Chrome: The web driver object with loaded data.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :data:`darc.sites.SITE_MAP`</span>
+<span class="sd">        * :func:`darc.sites._get_site`</span>
+<span class="sd">        * :func:`darc.crawl.loader`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">_get_site</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">site</span><span class="o">.</span><span class="n">loader</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../darc/index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2020, Jarry Shaw.
+      
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

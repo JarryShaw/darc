@@ -15,8 +15,8 @@
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="_abc.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="../proxy/zeronet.html" />
+    <link rel="next" title="Base Sites Customisation" href="_abc.html" />
+    <link rel="prev" title="ZeroNet Proxy" href="../proxy/zeronet.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -43,35 +43,127 @@ crawling processes.</p>
 <p class="admonition-title">Important</p>
 <p>To create a sites customisation, define your class by inheriting
 <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.BaseSite</span></code> and register it to the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
-module through <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code>.</p>
+module through <a class="reference internal" href="#darc.sites.register" title="darc.sites.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code></a>.</p>
 </div>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_abc.html">Base Sites Customisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="default.html">Default Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bitcoin.html">Bitcoin Addresses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data URI Schemes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ed2k.html">ED2K Magnet Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethereum.html">Ethereum Addresses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="irc.html">IRC Addresses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnet.html">Magnet Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mail.html">Email Addresses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="script.html">JavaScript Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tel.html">Telephone Numbers</a></li>
+</ul>
 </div>
 <p>To start with, you just need to define your sites customisation by
-inheriting <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code> and overload corresponding
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">crawler()</span></code> and/or
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">loader()</span></code> methods.</p>
+inheriting <a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a> and overload corresponding
+<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite.crawler" title="darc.sites._abc.BaseSite.crawler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">crawler()</span></code></a> and/or
+<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite.loader" title="darc.sites._abc.BaseSite.loader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">loader()</span></code></a> methods.</p>
 <p>To customise behaviours over <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, you sites customisation
 class should have a <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code> method, e.g.
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.crawler</span></code>.</p>
+<a class="reference internal" href="default.html#darc.sites.default.DefaultSite.crawler" title="darc.sites.default.DefaultSite.crawler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.crawler</span></code></a>.</p>
 <p>The function takes the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Session" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> object with proxy settings and
 a <a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object representing the link to be
 crawled, then returns a <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Response" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a> object containing the final
 data of the crawling process.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.sites.crawler_hook">
+<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">crawler_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites.html#crawler_hook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.crawler_hook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Customisation as to <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> sessions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
+<li><p><strong>session</strong> (<a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Session" title="(in Requests v2.25.1)"><em>requests.Session</em></a>) – Session object with proxy settings.</p></li>
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be crawled.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The final response object with crawled data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Response" title="(in Requests v2.25.1)">requests.Response</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.sites.SITE_MAP</span></code></p></li>
+<li><p><a class="reference internal" href="#darc.sites._get_site" title="darc.sites._get_site"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites._get_site()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.crawler()</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
 <p>To customise behaviours over <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>, you sites customisation
 class should have a <code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code> method, e.g.
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.loader</span></code>.</p>
+<a class="reference internal" href="default.html#darc.sites.default.DefaultSite.loader" title="darc.sites.default.DefaultSite.loader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.loader</span></code></a>.</p>
 <p>The function takes the <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v3.141)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>
 object with proxy settings and a <a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object representing
 the link to be loaded, then returns the <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v3.141)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>
 object containing the final data of the loading process.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.sites.loader_hook">
+<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">loader_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites.html#loader_hook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.loader_hook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Customisation as to <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> drivers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
+<li><p><strong>driver</strong> (<em>selenium.webdriver.Chrome</em>) – Web driver object with proxy settings.</p></li>
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be loaded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The web driver object with loaded data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>selenium.webdriver.Chrome</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.sites.SITE_MAP</span></code></p></li>
+<li><p><a class="reference internal" href="#darc.sites._get_site" title="darc.sites._get_site"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites._get_site()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.loader()</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
 <p>To tell the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project which sites customisation
 module it should use for a certain hostname, you can register
 such module to the <a class="reference internal" href="#darc.sites.darc.sites.SITEMAP" title="darc.sites.darc.sites.SITEMAP"><code class="xref py py-data docutils literal notranslate"><span class="pre">SITEMAP</span></code></a> mapping dictionary
-through <code class="xref py py-func docutils literal notranslate"><span class="pre">register()</span></code>:</p>
+through <a class="reference internal" href="#darc.sites.register" title="darc.sites.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">register()</span></code></a>:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.sites.register">
+<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">hostname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites.html#register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register new site map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>site</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]) – Sites customisation class inherited from
+<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>.</p></li>
+<li><p><strong>*hostname</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – Optional list of hostnames the sites
+customisation should be registered with.
+By default, we use <code class="xref py py-attr docutils literal notranslate"><span class="pre">site.hostname</span></code>.</p></li>
+<li><p><strong>hostname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.sites.darc.sites.SITEMAP">
-<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">SITEMAP</span></span><em class="property"><span class="pre">:</span> <span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">darc.sites._abc.BaseSite</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.sites.darc.sites.SITEMAP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">SITEMAP</span></span><em class="property"><span class="pre">:</span> <span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><span class="pre">darc.sites._abc.BaseSite</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.sites.darc.sites.SITEMAP" title="Permalink to this definition">¶</a></dt>
 <dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.sites.default</span> <span class="kn">import</span> <span class="n">DefaultSite</span>
 
 <span class="n">SITEMAP</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DefaultSite</span><span class="p">,</span> <span class="p">{</span>
@@ -81,7 +173,32 @@ through <code class="xref py py-func docutils literal notranslate"><span class="
 </div>
 <p>The mapping dictionary for hostname to sites customisation
 classes.</p>
-<p>The fallback value is <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.default.DefaultSite</span></code>.</p>
+<p>The fallback value is <a class="reference internal" href="default.html#darc.sites.default.DefaultSite" title="darc.sites.default.DefaultSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.default.DefaultSite</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.sites._get_site">
+<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">_get_site</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites.html#_get_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites._get_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load sites customisation if any.</p>
+<p>If the sites customisation does not exist, it will
+fallback to the default hooks, <a class="reference internal" href="default.html#darc.sites.default.DefaultSite" title="darc.sites.default.DefaultSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultSite</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to fetch sites customisation class.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The sites customisation class.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#darc.sites.darc.sites.SITEMAP" title="darc.sites.darc.sites.SITEMAP"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.sites.SITEMAP</span></code></a></p></li>
+</ul>
+</div>
 </dd></dl>
 
 <div class="admonition seealso">
@@ -117,9 +234,15 @@ classes.</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../process.html">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crawl.html">Web Crawlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html">Source Saving</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html">Selenium Wrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../proxy/index.html">Proxy Utilities</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Sites Customisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
@@ -141,8 +264,8 @@ classes.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Technical Documentation</a><ul>
-      <li>Previous: <a href="../proxy/zeronet.html" title="previous chapter">&lt;no title&gt;</a></li>
-      <li>Next: <a href="_abc.html" title="next chapter">&lt;no title&gt;</a></li>
+      <li>Previous: <a href="../proxy/zeronet.html" title="previous chapter">ZeroNet Proxy</a></li>
+      <li>Next: <a href="_abc.html" title="next chapter">Base Sites Customisation</a></li>
   </ul></li>
   </ul></li>
 </ul>

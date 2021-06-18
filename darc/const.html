@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Custom Exceptions" href="error.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="sites/tel.html" />
+    <link rel="prev" title="Telephone Numbers" href="sites/tel.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -37,6 +37,29 @@
 <h1>Module Constants<a class="headerlink" href="#module-constants" title="Permalink to this headline">¶</a></h1>
 <section id="auxiliary-function">
 <h2>Auxiliary Function<a class="headerlink" href="#auxiliary-function" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.const.getpid">
+<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">getpid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/const.html#getpid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.const.getpid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get process ID.</p>
+<p>The process ID will be saved under the <a class="reference internal" href="#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_DB</span></code></a>
+folder, in a file named <code class="docutils literal notranslate"><span class="pre">darc.pid</span></code>. If no such file exists,
+<code class="docutils literal notranslate"><span class="pre">-1</span></code> will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The process ID.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#darc.const.PATH_ID" title="darc.const.PATH_ID"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.const.PATH_ID</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="darc.const.get_lock">
 <span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">get_lock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/const.html#get_lock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.const.get_lock" title="Permalink to this definition">¶</a></dt>
@@ -106,7 +129,7 @@ then the verbose mode will be always enabled.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.const.FORCE">
 <span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">FORCE</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.FORCE" title="Permalink to this definition">¶</a></dt>
-<dd><p>If ignore <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> rules when crawling (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code>).</p>
+<dd><p>If ignore <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> rules when crawling (c.f. <a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
@@ -121,8 +144,8 @@ then the verbose mode will be always enabled.</p>
 <dt class="sig sig-object py" id="darc.const.CHECK">
 <span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">CHECK</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.CHECK" title="Permalink to this definition">¶</a></dt>
 <dd><p>If check proxy and hostname before crawling (when calling
-<a class="reference internal" href="parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code>
-and <code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code>).</p>
+<a class="reference internal" href="parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a>, <a class="reference internal" href="proxy/null.html#darc.proxy.null.read_sitemap" title="darc.proxy.null.read_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code></a>
+and <a class="reference internal" href="proxy/i2p.html#darc.proxy.i2p.read_hosts" title="darc.proxy.i2p.read_hosts"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code></a>).</p>
 <p>If <a class="reference internal" href="#darc.const.CHECK_NG" title="darc.const.CHECK_NG"><code class="xref py py-data docutils literal notranslate"><span class="pre">CHECK_NG</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, then this environment
 variable will be always set as <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
 <dl class="field-list simple">
@@ -140,7 +163,7 @@ variable will be always set as <a class="reference external" href="https://docs.
 <span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">CHECK_NG</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.const.CHECK_NG" title="Permalink to this definition">¶</a></dt>
 <dd><p>If check content type through <code class="docutils literal notranslate"><span class="pre">HEAD</span></code> requests before crawling
 (when calling <a class="reference internal" href="parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a>,
-<code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code>).</p>
+<a class="reference internal" href="proxy/null.html#darc.proxy.null.read_sitemap" title="darc.proxy.null.read_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code></a> and <a class="reference internal" href="proxy/i2p.html#darc.proxy.i2p.read_hosts" title="darc.proxy.i2p.read_hosts"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></p>
@@ -296,7 +319,7 @@ If <span class="target" id="index-11"></span><a class="reference internal" href=
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.save</span></code> for more information about source saving.</p>
+<p>See <a class="reference internal" href="save.html#module-darc.save" title="darc.save"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.save</span></code></a> for more information about source saving.</p>
 </div>
 </dd></dl>
 
@@ -321,7 +344,7 @@ root of data storage.</p>
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.const.PATH_DB</span></code></a></p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.save.save_link</span></code></p></li>
+<li><p><a class="reference internal" href="save.html#darc.save.save_link" title="darc.save.save_link"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.save.save_link</span></code></a></p></li>
 </ul>
 </div>
 </dd></dl>
@@ -334,7 +357,7 @@ root of data storage.</p>
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.const.PATH_DB</span></code></a></p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.const.getpid()</span></code></p></li>
+<li><p><a class="reference internal" href="#darc.const.getpid" title="darc.const.getpid"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.const.getpid()</span></code></a></p></li>
 </ul>
 </div>
 </dd></dl>
@@ -407,7 +430,7 @@ running after the event.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.loader()</span></code></p></li>
+<li><p><a class="reference internal" href="crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.loader()</span></code></a></p></li>
 </ul>
 </div>
 </dd></dl>
@@ -595,9 +618,15 @@ running after the event.</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="process.html">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crawl.html">Web Crawlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="link.html">URL Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">Source Saving</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selenium.html">Selenium Wrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="proxy/index.html">Proxy Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sites/index.html">Sites Customisation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Module Constants</a></li>
@@ -619,7 +648,7 @@ running after the event.</p>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="index.html">Technical Documentation</a><ul>
-      <li>Previous: <a href="sites/tel.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Previous: <a href="sites/tel.html" title="previous chapter">Telephone Numbers</a></li>
       <li>Next: <a href="error.html" title="next chapter">Custom Exceptions</a></li>
   </ul></li>
   </ul></li>

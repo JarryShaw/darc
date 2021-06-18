@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Source Parsing" href="parse.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="crawl.html" />
+    <link rel="prev" title="Web Crawlers" href="crawl.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -196,7 +196,7 @@ set <code class="docutils literal notranslate"><span class="pre">proxy</span></c
 <li><p>If the host is an I2P (<code class="docutils literal notranslate"><span class="pre">.i2p</span></code>) address, or
 any of <code class="docutils literal notranslate"><span class="pre">localhost:7657</span></code> and <code class="docutils literal notranslate"><span class="pre">localhost:7658</span></code>,
 set <code class="docutils literal notranslate"><span class="pre">proxy</span></code> to <code class="docutils literal notranslate"><span class="pre">i2p</span></code>.</p></li>
-<li><p>If the host is <em>localhost</em> on <a class="reference internal" href="proxy/zeronet.html#darc.proxy.zeronet.ZERONET_PORT" title="darc.proxy.zeronet.ZERONET_PORT"><code class="xref py py-data docutils literal notranslate"><span class="pre">ZERONET_PORT</span></code></a>,
+<li><p>If the host is <em>localhost</em> on <code class="xref py py-data docutils literal notranslate"><span class="pre">ZERONET_PORT</span></code>,
 and the path is not <code class="docutils literal notranslate"><span class="pre">/</span></code>, i.e. <strong>NOT</strong> root path, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code>
 to <code class="docutils literal notranslate"><span class="pre">zeronet</span></code>; and set the first part of its path as <code class="docutils literal notranslate"><span class="pre">hostname</span></code>.</p>
 <p>Example:</p>
@@ -207,7 +207,7 @@ to <code class="docutils literal notranslate"><span class="pre">zeronet</span></
 <code class="docutils literal notranslate"><span class="pre">1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D</span></code>.</p>
 </div></blockquote>
 </li>
-<li><p>If the host is <em>localhost</em> on <a class="reference internal" href="proxy/freenet.html#darc.proxy.freenet.FREENET_PORT" title="darc.proxy.freenet.FREENET_PORT"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_PORT</span></code></a>,
+<li><p>If the host is <em>localhost</em> on <code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_PORT</span></code>,
 and the path is not <code class="docutils literal notranslate"><span class="pre">/</span></code>, i.e. <strong>NOT</strong> root path, set <code class="docutils literal notranslate"><span class="pre">proxy</span></code>
 to <code class="docutils literal notranslate"><span class="pre">freenet</span></code>; and set the first part of its path as <code class="docutils literal notranslate"><span class="pre">hostname</span></code>.</p>
 <p>Example:</p>
@@ -399,9 +399,15 @@ directly.</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="process.html">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crawl.html">Web Crawlers</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">URL Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">Source Saving</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selenium.html">Selenium Wrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="proxy/index.html">Proxy Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sites/index.html">Sites Customisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="const.html">Module Constants</a></li>
@@ -423,7 +429,7 @@ directly.</p>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="index.html">Technical Documentation</a><ul>
-      <li>Previous: <a href="crawl.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Previous: <a href="crawl.html" title="previous chapter">Web Crawlers</a></li>
       <li>Next: <a href="parse.html" title="next chapter">Source Parsing</a></li>
   </ul></li>
   </ul></li>
