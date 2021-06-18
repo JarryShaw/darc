@@ -53,7 +53,7 @@
 <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">nullcontext</span>
 <span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">DEBUG</span> <span class="k">as</span> <span class="n">LOG_DEBUG</span>
 <span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">VERBOSE</span> <span class="k">as</span> <span class="n">LOG_VERBOSE</span>
-<span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">logger</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
@@ -64,21 +64,18 @@
     <span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="n">Database</span>
     <span class="kn">from</span> <span class="nn">redis</span> <span class="kn">import</span> <span class="n">Redis</span>
 
-<span class="c1"># logger instance</span>
-<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
-
 <span class="c1"># reboot mode?</span>
 <span class="n">REBOOT</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_REBOOT&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span>
 
 <span class="c1"># debug mode?</span>
 <span class="n">DEBUG</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_DEBUG&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span>
 <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
-    <span class="n">LOGGER</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">)</span>
 
 <span class="c1"># verbose mode?</span>
 <span class="n">VERBOSE</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_VERBOSE&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">DEBUG</span>
 <span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
-    <span class="n">LOGGER</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">LOG_VERBOSE</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">LOG_VERBOSE</span><span class="p">)</span>
 
 <span class="c1"># force mode?</span>
 <span class="n">FORCE</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DARC_FORCE&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span>
@@ -123,13 +120,13 @@
 
 <span class="c1"># extract link pattern</span>
 <span class="n">_LINK_WHITE_LIST</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;LINK_WHITE_LIST&#39;</span><span class="p">,</span> <span class="s1">&#39;[]&#39;</span><span class="p">))</span>
-<span class="n">LOGGER</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- LINK WHITE LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_LINK_WHITE_LIST</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- LINK WHITE LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_LINK_WHITE_LIST</span><span class="p">)</span>
 <span class="n">LINK_WHITE_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">_LINK_WHITE_LIST</span><span class="p">]</span>
 <span class="k">del</span> <span class="n">_LINK_WHITE_LIST</span>
 
 <span class="c1"># link black list</span>
 <span class="n">_LINK_BLACK_LIST</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;LINK_BLACK_LIST&#39;</span><span class="p">,</span> <span class="s1">&#39;[]&#39;</span><span class="p">))</span>
-<span class="n">LOGGER</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- LINK BLACK LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_LINK_BLACK_LIST</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- LINK BLACK LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_LINK_BLACK_LIST</span><span class="p">)</span>
 <span class="n">LINK_BLACK_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">_LINK_BLACK_LIST</span><span class="p">]</span>
 <span class="k">del</span> <span class="n">_LINK_BLACK_LIST</span>
 
@@ -138,13 +135,13 @@
 
 <span class="c1"># content type white list</span>
 <span class="n">_MIME_WHITE_LIST</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;MIME_WHITE_LIST&#39;</span><span class="p">,</span> <span class="s1">&#39;[]&#39;</span><span class="p">))</span>
-<span class="n">LOGGER</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- MIME WHITE LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_MIME_WHITE_LIST</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- MIME WHITE LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_MIME_WHITE_LIST</span><span class="p">)</span>
 <span class="n">MIME_WHITE_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">mime</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span> <span class="k">for</span> <span class="n">mime</span> <span class="ow">in</span> <span class="n">_MIME_WHITE_LIST</span><span class="p">]</span>
 <span class="k">del</span> <span class="n">_MIME_WHITE_LIST</span>
 
 <span class="c1"># content type black list</span>
 <span class="n">_MIME_BLACK_LIST</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;MIME_BLACK_LIST&#39;</span><span class="p">,</span> <span class="s1">&#39;[]&#39;</span><span class="p">))</span>
-<span class="n">LOGGER</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- MIME BLACK LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_MIME_BLACK_LIST</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- MIME BLACK LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_MIME_BLACK_LIST</span><span class="p">)</span>
 <span class="n">MIME_BLACK_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">mime</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span> <span class="k">for</span> <span class="n">mime</span> <span class="ow">in</span> <span class="n">_MIME_BLACK_LIST</span><span class="p">]</span>
 <span class="k">del</span> <span class="n">_MIME_BLACK_LIST</span>
 
@@ -153,13 +150,13 @@
 
 <span class="c1"># proxy type white list</span>
 <span class="n">_PROXY_WHITE_LIST</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;PROXY_WHITE_LIST&#39;</span><span class="p">,</span> <span class="s1">&#39;[]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">casefold</span><span class="p">())</span>
-<span class="n">LOGGER</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- PROXY WHITE LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_PROXY_WHITE_LIST</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- PROXY WHITE LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_PROXY_WHITE_LIST</span><span class="p">)</span>
 <span class="n">PROXY_WHITE_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">proxy</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="k">for</span> <span class="n">proxy</span> <span class="ow">in</span> <span class="n">_PROXY_WHITE_LIST</span><span class="p">]</span>
 <span class="k">del</span> <span class="n">_PROXY_WHITE_LIST</span>
 
 <span class="c1"># proxy type black list</span>
 <span class="n">_PROXY_BLACK_LIST</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;PROXY_BLACK_LIST&#39;</span><span class="p">,</span> <span class="s1">&#39;[]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">casefold</span><span class="p">())</span>
-<span class="n">LOGGER</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- PROXY BLACK LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_PROXY_BLACK_LIST</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- PROXY BLACK LIST -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_PROXY_BLACK_LIST</span><span class="p">)</span>
 <span class="n">PROXY_BLACK_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">proxy</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="k">for</span> <span class="n">proxy</span> <span class="ow">in</span> <span class="n">_PROXY_BLACK_LIST</span><span class="p">]</span>
 <span class="k">del</span> <span class="n">_PROXY_BLACK_LIST</span>
 
@@ -214,7 +211,7 @@
 <span class="k">del</span> <span class="n">_DB_URL</span>
 
 
-<div class="viewcode-block" id="getpid"><a class="viewcode-back" href="../../darc/const.html#darc.const.getpid">[docs]</a><span class="k">def</span> <span class="nf">getpid</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">getpid</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get process ID.</span>
 
 <span class="sd">    The process ID will be saved under the :data:`~darc.const.PATH_DB`</span>
@@ -231,7 +228,7 @@
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PATH_ID</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">PATH_ID</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 
 
 <div class="viewcode-block" id="get_lock"><a class="viewcode-back" href="../../darc/const.html#darc.const.get_lock">[docs]</a><span class="k">def</span> <span class="nf">get_lock</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[ProcessLock, ThreadLock, nullcontext]&#39;</span><span class="p">:</span>  <span class="c1"># type: ignore[valid-type]</span>

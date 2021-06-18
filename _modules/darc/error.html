@@ -35,9 +35,6 @@
 <span class="sd">&quot;&quot;&quot;Custom Exceptions</span>
 <span class="sd">=======================</span>
 
-<span class="sd">The :func:`~darc.error.render_error` function can be used to render</span>
-<span class="sd">multi-line error messages with :mod:`stem.util.term` colours.</span>
-
 <span class="sd">The :mod:`darc` project provides following custom exceptions:</span>
 
 <span class="sd">* :exc:`~darc.error.LinkNoReturn`</span>
@@ -68,16 +65,6 @@
 <span class="sd">   All warnings are inherited from :exc:`~darc.error._BaseWarning`.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-
-<span class="kn">import</span> <span class="nn">stem.util.term</span> <span class="k">as</span> <span class="nn">stem_term</span>
-
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">AnyStr</span>
-
-    <span class="kn">from</span> <span class="nn">stem.util.term</span> <span class="kn">import</span> <span class="n">Color</span>
-
 
 <div class="viewcode-block" id="_BaseException"><a class="viewcode-back" href="../../darc/error.html#darc.error._BaseException">[docs]</a><span class="k">class</span> <span class="nc">_BaseException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base exception class for :mod:`darc` module.&quot;&quot;&quot;</span></div>
@@ -162,26 +149,6 @@
 
 <div class="viewcode-block" id="HookExecutionFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.HookExecutionFailed">[docs]</a><span class="k">class</span> <span class="nc">HookExecutionFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Failed to execute hook function.&quot;&quot;&quot;</span></div>
-
-
-<div class="viewcode-block" id="render_error"><a class="viewcode-back" href="../../darc/error.html#darc.error.render_error">[docs]</a><span class="k">def</span> <span class="nf">render_error</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="s1">&#39;AnyStr&#39;</span><span class="p">,</span> <span class="n">colour</span><span class="p">:</span> <span class="s1">&#39;Color&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Render error message.</span>
-
-<span class="sd">    The function wraps the :func:`stem.util.term.format` function to</span>
-<span class="sd">    provide multi-line formatting support.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        message: Multi-line message to be rendered with ``colour``.</span>
-<span class="sd">        colour (stem.util.term.Color): Front colour of text, c.f.</span>
-<span class="sd">            :class:`stem.util.term.Color`.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        The rendered error message.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-        <span class="n">stem_term</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">colour</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="p">)</span></div>
 </pre></div>
 
           </div>

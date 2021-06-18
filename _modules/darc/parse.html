@@ -53,14 +53,13 @@
 <span class="kn">import</span> <span class="nn">bs4</span>
 <span class="kn">import</span> <span class="nn">magic</span>
 <span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">stem.util.term</span> <span class="k">as</span> <span class="nn">stem_term</span>
 
 <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">RobotFileParser</span>
 <span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="p">(</span><span class="n">CHECK</span><span class="p">,</span> <span class="n">CHECK_NG</span><span class="p">,</span> <span class="n">LINK_BLACK_LIST</span><span class="p">,</span> <span class="n">LINK_FALLBACK</span><span class="p">,</span> <span class="n">LINK_WHITE_LIST</span><span class="p">,</span>
                         <span class="n">MIME_BLACK_LIST</span><span class="p">,</span> <span class="n">MIME_FALLBACK</span><span class="p">,</span> <span class="n">MIME_WHITE_LIST</span><span class="p">,</span> <span class="n">PROXY_BLACK_LIST</span><span class="p">,</span>
                         <span class="n">PROXY_FALLBACK</span><span class="p">,</span> <span class="n">PROXY_WHITE_LIST</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">render_error</span>
 <span class="kn">from</span> <span class="nn">darc.link</span> <span class="kn">import</span> <span class="n">parse_link</span><span class="p">,</span> <span class="n">urljoin</span><span class="p">,</span> <span class="n">urlsplit</span>
+<span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">logger</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
@@ -251,7 +250,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Checking content type from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[HEAD] Checking content type from </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
     <span class="n">link_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">result_list</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
@@ -259,16 +258,14 @@
             <span class="n">response</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>  <span class="c1"># type: Response</span>
         <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Checking failed &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
-                                   <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Checking failed &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">render_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Failed on </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> &lt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
-                               <span class="n">stem_term</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">))</span>  <span class="c1"># pylint: disable=no-member</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Failed on </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">link_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="n">ct_type</span> <span class="o">=</span> <span class="n">get_content_type</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[HEAD] Checked content type from </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">ct_type</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[HEAD] Checked content type from </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">ct_type</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">match_mime</span><span class="p">(</span><span class="n">ct_type</span><span class="p">):</span>
             <span class="k">continue</span>
