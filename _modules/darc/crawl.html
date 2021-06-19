@@ -44,7 +44,6 @@
 
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -183,8 +182,7 @@
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">fetch_sitemap</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_fetch</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[Error fetching sitemap of </span><span class="si">%s</span><span class="s1">]</span><span class="se">\n</span><span class="si">%s%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
-                                     <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(),</span> <span class="n">logger</span><span class="o">.</span><span class="n">horizon</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">ptb</span><span class="p">(</span><span class="s1">&#39;[Error fetching sitemap of </span><span class="si">%s</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
                         <span class="n">partial</span> <span class="o">=</span> <span class="kc">True</span>
 
                 <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">proxy</span> <span class="o">==</span> <span class="s1">&#39;i2p&#39;</span><span class="p">:</span>
@@ -192,8 +190,7 @@
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">fetch_hosts</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_fetch</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;[Error subscribing hosts from </span><span class="si">%s</span><span class="s1">]</span><span class="se">\n</span><span class="si">%s%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
-                                     <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(),</span> <span class="n">logger</span><span class="o">.</span><span class="n">horizon</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">ptb</span><span class="p">(</span><span class="s1">&#39;[Error subscribing hosts from </span><span class="si">%s</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
                         <span class="n">partial</span> <span class="o">=</span> <span class="kc">True</span>
 
                 <span class="c1"># submit data / drop hostname from db</span>
@@ -211,16 +208,16 @@
                 <span class="c1"># requests session hook</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="n">crawler_hook</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidSchema</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Fail to crawl </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Fail to crawl </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">save_invalid</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
                 <span class="n">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
                 <span class="k">return</span>
             <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Fail to crawl </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Fail to crawl </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">save_requests</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">return</span>
             <span class="k">except</span> <span class="n">LinkNoReturn</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Removing from database: </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">LOG_WARNING</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">LOG_WARNING</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;[REQUESTS] Removing from database: </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">drop</span><span class="p">:</span>
                     <span class="n">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
                 <span class="k">return</span>
@@ -281,7 +278,7 @@
                     <span class="n">url</span><span class="o">.</span><span class="n">alias</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="n">url</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;[Error from </span><span class="si">%s</span><span class="s1">]</span><span class="se">\n</span><span class="si">%s%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(),</span> <span class="n">logger</span><span class="o">.</span><span class="n">horizon</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">ptb</span><span class="p">(</span><span class="s1">&#39;[Error from </span><span class="si">%s</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
         <span class="n">save_requests</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[REQUESTS] Requested </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span></div>
@@ -344,15 +341,15 @@
                 <span class="c1"># selenium driver hook</span>
                 <span class="n">driver</span> <span class="o">=</span> <span class="n">loader_hook</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">urllib3_exceptions</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Fail to load </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Fail to load </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">save_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">return</span>
             <span class="k">except</span> <span class="n">selenium_exceptions</span><span class="o">.</span><span class="n">WebDriverException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Fail to load </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Fail to load </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">save_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">return</span>
             <span class="k">except</span> <span class="n">LinkNoReturn</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Removing from database: </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">LOG_WARNING</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">LOG_WARNING</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;[SELENIUM] Removing from database: </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">drop</span><span class="p">:</span>
                     <span class="n">drop_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
                 <span class="k">return</span>
@@ -376,7 +373,7 @@
                 <span class="c1"># take a full page screenshot</span>
                 <span class="n">screenshot</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_base64</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Fail to save screenshot from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;[SELENIUM] Fail to save screenshot from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="c1"># submit data</span>
             <span class="n">submit_selenium</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">link</span><span class="p">,</span> <span class="n">html</span><span class="p">,</span> <span class="n">screenshot</span><span class="p">)</span>
@@ -384,7 +381,7 @@
             <span class="c1"># add link to queue</span>
             <span class="n">save_requests</span><span class="p">(</span><span class="n">extract_links</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">html</span><span class="p">),</span> <span class="n">score</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;[Error from </span><span class="si">%s</span><span class="s1">]</span><span class="se">\n</span><span class="si">%s%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(),</span> <span class="n">logger</span><span class="o">.</span><span class="n">horizon</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">ptb</span><span class="p">(</span><span class="s1">&#39;[Error from </span><span class="si">%s</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
         <span class="n">save_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[SELENIUM] Loaded </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span></div>

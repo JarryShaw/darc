@@ -52,6 +52,7 @@
 <span class="kn">from</span> <span class="nn">darc.db</span> <span class="kn">import</span> <span class="n">load_requests</span><span class="p">,</span> <span class="n">load_selenium</span>
 <span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">HookExecutionFailed</span><span class="p">,</span> <span class="n">WorkerBreak</span>
 <span class="kn">from</span> <span class="nn">darc.link</span> <span class="kn">import</span> <span class="n">Link</span>
+<span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">WARNING</span> <span class="k">as</span> <span class="n">LOG_WARNING</span>
 <span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">darc.proxy.freenet</span> <span class="kn">import</span> <span class="n">_FREENET_BS_FLAG</span><span class="p">,</span> <span class="n">freenet_bootstrap</span>
 <span class="kn">from</span> <span class="nn">darc.proxy.i2p</span> <span class="kn">import</span> <span class="n">_I2P_BS_FLAG</span><span class="p">,</span> <span class="n">i2p_bootstrap</span>
@@ -136,7 +137,7 @@
             <span class="k">except</span> <span class="n">WorkerBreak</span><span class="p">:</span>
                 <span class="n">time2break</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">pwarning</span><span class="p">(</span><span class="s1">&#39;[CRAWLER] hook execution failed&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">LOG_WARNING</span><span class="p">,</span> <span class="s1">&#39;[CRAWLER] hook execution failed&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
 
         <span class="c1"># marked to break by hook function</span>
         <span class="k">if</span> <span class="n">time2break</span><span class="p">:</span>
@@ -182,7 +183,7 @@
             <span class="k">except</span> <span class="n">WorkerBreak</span><span class="p">:</span>
                 <span class="n">time2break</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">pwarning</span><span class="p">(</span><span class="s1">&#39;[LOADER] hook execution failed&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">LOG_WARNING</span><span class="p">,</span> <span class="s1">&#39;[LOADER] hook execution failed&#39;</span><span class="p">,</span> <span class="n">HookExecutionFailed</span><span class="p">)</span>
 
         <span class="c1"># marked to break by hook function</span>
         <span class="k">if</span> <span class="n">time2break</span><span class="p">:</span>

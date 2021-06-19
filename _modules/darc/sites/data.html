@@ -77,7 +77,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">save_data</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Failed to save data URI from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;[REQUESTS] Failed to save data URI from </span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">LinkNoReturn</span><span class="p">(</span><span class="n">link</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DataURI.loader"><a class="viewcode-back" href="../../../darc/sites/data.html#darc.sites.data.DataURI.loader">[docs]</a>    <span class="nd">@staticmethod</span>

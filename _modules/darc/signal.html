@@ -133,7 +133,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">sig</span> <span class="o">=</span> <span class="n">strsignal</span><span class="p">(</span><span class="n">signum</span><span class="p">)</span> <span class="k">if</span> <span class="n">signum</span> <span class="k">else</span> <span class="n">signum</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">sig</span> <span class="o">=</span> <span class="n">signum</span>
+        <span class="n">sig</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Signal: </span><span class="si">{</span><span class="n">signum</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[DARC] Handled signal: </span><span class="si">%s</span><span class="s1"> &lt;</span><span class="si">%s</span><span class="s1">&gt;&#39;</span><span class="p">,</span> <span class="n">sig</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span></div>
 
 

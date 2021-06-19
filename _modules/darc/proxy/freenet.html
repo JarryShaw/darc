@@ -46,11 +46,12 @@
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">shlex</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>  <span class="c1"># nosec: B404</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
 
-<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DARC_USER</span>
+<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DARC_USER</span><span class="p">,</span> <span class="n">DEBUG</span>
 <span class="kn">from</span> <span class="nn">darc.error</span> <span class="kn">import</span> <span class="n">FreenetBootstrapFailed</span><span class="p">,</span> <span class="n">UnsupportedPlatform</span>
 <span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">DEBUG</span> <span class="k">as</span> <span class="n">LOG_DEBUG</span>
+<span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">ERROR</span> <span class="k">as</span> <span class="n">LOG_ERROR</span>
+<span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">INFO</span> <span class="k">as</span> <span class="n">LOG_INFO</span>
 <span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">WARNING</span> <span class="k">as</span> <span class="n">LOG_WARNING</span>
 <span class="kn">from</span> <span class="nn">darc.logging</span> <span class="kn">import</span> <span class="n">logger</span>
 
@@ -89,9 +90,13 @@
     <span class="n">_FREENET_ARGS</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FREENET_PATH</span><span class="p">,</span> <span class="s1">&#39;run.sh&#39;</span><span class="p">),</span> <span class="s1">&#39;start&#39;</span><span class="p">]</span>
 <span class="n">_FREENET_ARGS</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">FREENET_ARGS</span><span class="p">)</span>
 
-<span class="n">logger</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- FREENET PROXY -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s1">&#39;unsupported system: </span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">_unsupported</span> <span class="k">else</span> <span class="n">_FREENET_ARGS</span>
-<span class="p">))</span>
+<span class="k">if</span> <span class="n">_unsupported</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;-*- FREENET PROXY -*-&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">pline</span><span class="p">(</span><span class="n">LOG_ERROR</span><span class="p">,</span> <span class="s1">&#39;unsupported system: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">())</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">pline</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="n">logger</span><span class="o">.</span><span class="n">horizon</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s1">&#39;-*- FREENET PROXY -*-&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_FREENET_ARGS</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="_freenet_bootstrap"><a class="viewcode-back" href="../../../darc/proxy/freenet.html#darc.proxy.freenet._freenet_bootstrap">[docs]</a><span class="k">def</span> <span class="nf">_freenet_bootstrap</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -161,15 +166,16 @@
     <span class="k">if</span> <span class="n">_FREENET_BS_FLAG</span><span class="p">:</span>
         <span class="k">return</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;-*- Freenet Bootstrap -*-&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-*- Freenet Bootstrap -*-&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">FREENET_RETRY</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">_freenet_bootstrap</span><span class="p">()</span>
             <span class="k">break</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[Error bootstraping Freenet proxy]</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">perror</span><span class="p">(</span><span class="s1">&#39;freenet_bootstrap()&#39;</span><span class="p">,</span> <span class="n">FreenetBootstrapFailed</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">LOG_WARNING</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">pline</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="n">logger</span><span class="o">.</span><span class="n">horizon</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">ptb</span><span class="p">(</span><span class="s1">&#39;[Error bootstraping Freenet proxy]&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="n">LOG_WARNING</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">FreenetBootstrapFailed</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s1">&#39;freenet_bootstrap()&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">pline</span><span class="p">(</span><span class="n">LOG_INFO</span><span class="p">,</span> <span class="n">logger</span><span class="o">.</span><span class="n">horizon</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
