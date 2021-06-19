@@ -183,7 +183,7 @@
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="n">redis_lib</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">,</span> <span class="n">pottery_exceptions</span><span class="o">.</span><span class="n">PotteryError</span><span class="p">):</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">redis_lib</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RedisError</span><span class="p">,</span> <span class="n">pottery_exceptions</span><span class="o">.</span><span class="n">PotteryError</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">_arg_msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">_arg_msg</span> <span class="o">=</span> <span class="n">_gen_arg_msg</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -217,7 +217,7 @@
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="n">peewee</span><span class="o">.</span><span class="n">OperationalError</span><span class="p">,</span> <span class="n">peewee</span><span class="o">.</span><span class="n">InterfaceError</span><span class="p">):</span>
+        <span class="k">except</span> <span class="n">peewee</span><span class="o">.</span><span class="n">PeeweeException</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">_arg_msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">_arg_msg</span> <span class="o">=</span> <span class="n">_gen_arg_msg</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
