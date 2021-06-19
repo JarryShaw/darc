@@ -11,10 +11,11 @@ around managing and processing the ZeroNet proxy.
 import os
 import shlex
 import subprocess  # nosec: B404
-import traceback
 
+from darc.const import DEBUG
 from darc.error import ZeroNetBootstrapFailed
 from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import INFO as LOG_INFO
 from darc.logging import WARNING as LOG_WARNING
 from darc.logging import logger
 from darc.proxy.tor import tor_bootstrap
@@ -114,12 +115,13 @@ def zeronet_bootstrap() -> None:
     if _ZERONET_BS_FLAG:
         return
 
-    logger.debug('-*- ZeroNet Bootstrap -*-')
+    logger.info('-*- ZeroNet Bootstrap -*-')
     for _ in range(ZERONET_RETRY+1):
         try:
             _zeronet_bootstrap()
             break
         except Exception:
-            logger.debug('[Error bootstraping ZeroNet proxy]\n%s', traceback.format_exc().rstrip())
-            logger.perror('zeronet_bootstrap()', ZeroNetBootstrapFailed, level=LOG_WARNING)
-    logger.pline(LOG_DEBUG, logger.horizon)
+            if DEBUG:
+                logger.ptb('[Error bootstraping ZeroNet proxy]')
+            logger.pexc(LOG_WARNING, category=ZeroNetBootstrapFailed, line='zeronet_bootstrap()')
+    logger.pline(LOG_INFO, logger.horizon)

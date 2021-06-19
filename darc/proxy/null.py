@@ -266,7 +266,7 @@ def fetch_sitemap(link: 'darc_link.Link', force: bool = False) -> None:
             try:
                 response = session.get(robots_link.url)
             except requests.RequestException:
-                logger.perror(f'[ROBOTS] Failed on {robots_link.url}')
+                logger.pexc(message=f'[ROBOTS] Failed on {robots_link.url}')
                 return
 
         if response.ok:
@@ -296,13 +296,13 @@ def fetch_sitemap(link: 'darc_link.Link', force: bool = False) -> None:
 
         else:
 
-            print(f'[SITEMAP] Fetching {sitemap_link.url}')
+            logger.info('[SITEMAP] Fetching %s', sitemap_link.url)
 
             with request_session(sitemap_link) as session:
                 try:
                     response = session.get(sitemap_link.url)
                 except requests.RequestException:
-                    logger.perror(f'[SITEMAP] Failed on {sitemap_link.url}')
+                    logger.pexc(message=f'[SITEMAP] Failed on {sitemap_link.url}')
                     continue
 
             if not response.ok:
@@ -323,7 +323,7 @@ def fetch_sitemap(link: 'darc_link.Link', force: bool = False) -> None:
                 logger.error('[SITEMAP] Unresolved content type on %s (%s)', sitemap_link.url, ct_type)
                 continue
 
-            logger.info(f'[SITEMAP] Fetched %s', sitemap_link.url)
+            logger.info('[SITEMAP] Fetched %s', sitemap_link.url)
 
         # get more sitemaps
         sitemaps.extend(get_sitemap(sitemap_link, sitemap_text, host=link.host))

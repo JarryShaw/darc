@@ -74,6 +74,7 @@
         "parso",
         "pdarc",
         "perror",
+        "pexc",
         "pexpect",
         "pformat",
         "pline",

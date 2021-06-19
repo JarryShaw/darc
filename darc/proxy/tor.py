@@ -11,7 +11,6 @@ around managing and processing the Tor proxy.
 import getpass
 import json
 import os
-import traceback
 from typing import TYPE_CHECKING
 
 import selenium.webdriver
@@ -19,6 +18,7 @@ import selenium.webdriver.common.proxy
 import stem.control
 import stem.process
 
+from darc.const import DEBUG
 from darc.error import TorBootstrapFailed, TorRenewFailed
 from darc.logging import DEBUG as LOG_DEBUG
 from darc.logging import INFO as LOG_INFO
@@ -89,8 +89,8 @@ def renew_tor_session() -> None:
             _TOR_CTRL.authenticate(TOR_PASS)
         _TOR_CTRL.signal(stem.Signal.NEWNYM)  # pylint: disable=no-member
     except Exception:
-        logger.perror('_TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))',
-                      TorRenewFailed, level=LOG_WARNING)
+        logger.pexc(LOG_WARNING, category=TorRenewFailed,
+                    line='_TOR_CTRL = stem.control.Controller.from_port(port=int(TOR_CTRL))')
 
 
 def print_bootstrap_lines(line: str) -> None:
@@ -161,12 +161,13 @@ def tor_bootstrap() -> None:
     if _TOR_BS_FLAG:
         return
 
-    logger.debug('-*- Tor Bootstrap -*-')
+    logger.info('-*- Tor Bootstrap -*-')
     for _ in range(TOR_RETRY+1):
         try:
             _tor_bootstrap()
             break
         except Exception:
-            logger.debug('[Error bootstraping Tor proxy]\n%s', traceback.format_exc().rstrip())
-            logger.perror('tor_bootstrap()', TorBootstrapFailed, level=LOG_WARNING)
-    logger.pline(LOG_DEBUG, logger.horizon)
+            if DEBUG:
+                logger.ptb('[Error bootstraping Tor proxy]')
+            logger.pexc(LOG_WARNING, category=TorBootstrapFailed, line='tor_bootstrap()')
+    logger.pline(LOG_INFO, logger.horizon)

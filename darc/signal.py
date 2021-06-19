@@ -100,7 +100,7 @@ def generic_handler(signum: 'Optional[Union[int, Signals]]' = None,
     try:
         sig = strsignal(signum) if signum else signum
     except Exception:
-        sig = signum
+        sig = f'Signal: {signum}'
     logger.info('[DARC] Handled signal: %s <%s>', sig, frame)
 
 

@@ -11,7 +11,6 @@ The :mod:`darc.crawl` module provides two types of crawlers.
 
 import contextlib
 import math
-import traceback
 from typing import TYPE_CHECKING
 
 import requests
@@ -150,8 +149,7 @@ def crawler(link: 'darc_link.Link') -> None:
                     try:
                         fetch_sitemap(link, force=force_fetch)
                     except Exception:
-                        logger.error('[Error fetching sitemap of %s]\n%s%s', link.url,
-                                     traceback.format_exc(), logger.horizon)
+                        logger.ptb('[Error fetching sitemap of %s]', link.url)
                         partial = True
 
                 if link.proxy == 'i2p':
@@ -159,8 +157,7 @@ def crawler(link: 'darc_link.Link') -> None:
                     try:
                         fetch_hosts(link, force=force_fetch)
                     except Exception:
-                        logger.critical('[Error subscribing hosts from %s]\n%s%s', link.url,
-                                     traceback.format_exc(), logger.horizon)
+                        logger.ptb('[Error subscribing hosts from %s]', link.url)
                         partial = True
 
                 # submit data / drop hostname from db
@@ -178,16 +175,16 @@ def crawler(link: 'darc_link.Link') -> None:
                 # requests session hook
                 response = crawler_hook(timestamp, session, link)
             except requests.exceptions.InvalidSchema:
-                logger.perror(f'[REQUESTS] Fail to crawl {link.url}')
+                logger.pexc(message=f'[REQUESTS] Fail to crawl {link.url}')
                 save_invalid(link)
                 drop_requests(link)
                 return
             except requests.RequestException as error:
-                logger.perror(f'[REQUESTS] Fail to crawl {link.url}')
+                logger.pexc(message=f'[REQUESTS] Fail to crawl {link.url}')
                 save_requests(link, single=True)
                 return
             except LinkNoReturn as error:
-                logger.perror(f'[REQUESTS] Removing from database: {link.url}', level=LOG_WARNING)
+                logger.pexc(LOG_WARNING, f'[REQUESTS] Removing from database: {link.url}')
                 if error.drop:
                     drop_requests(link)
                 return
@@ -248,7 +245,7 @@ def crawler(link: 'darc_link.Link') -> None:
                     url.alias = False
                     url.save()
 
-        logger.critical('[Error from %s]\n%s%s', link.url, traceback.format_exc(), logger.horizon)
+        logger.ptb('[Error from %s]', link.url)
         save_requests(link, single=True)
 
     logger.info('[REQUESTS] Requested %s', link.url)
@@ -311,15 +308,15 @@ def loader(link: 'darc_link.Link') -> None:
                 # selenium driver hook
                 driver = loader_hook(timestamp, driver, link)
             except urllib3_exceptions.HTTPError:
-                logger.perror(f'[SELENIUM] Fail to load {link.url}')
+                logger.pexc(message=f'[SELENIUM] Fail to load {link.url}')
                 save_selenium(link, single=True)
                 return
             except selenium_exceptions.WebDriverException as error:
-                logger.perror(f'[SELENIUM] Fail to load {link.url}')
+                logger.pexc(message=f'[SELENIUM] Fail to load {link.url}')
                 save_selenium(link, single=True)
                 return
             except LinkNoReturn as error:
-                logger.perror(f'[SELENIUM] Removing from database: {link.url}', level=LOG_WARNING)
+                logger.pexc(LOG_WARNING, f'[SELENIUM] Removing from database: {link.url}')
                 if error.drop:
                     drop_selenium(link)
                 return
@@ -343,7 +340,7 @@ def loader(link: 'darc_link.Link') -> None:
                 # take a full page screenshot
                 screenshot = driver.get_screenshot_as_base64()
             except Exception:
-                logger.perror(f'[SELENIUM] Fail to save screenshot from {link.url}')
+                logger.pexc(message=f'[SELENIUM] Fail to save screenshot from {link.url}')
 
             # submit data
             submit_selenium(timestamp, link, html, screenshot)
@@ -351,7 +348,7 @@ def loader(link: 'darc_link.Link') -> None:
             # add link to queue
             save_requests(extract_links(link, html), score=0, nx=True)
     except Exception:
-        logger.critical('[Error from %s]\n%s%s', link.url, traceback.format_exc(), logger.horizon)
+        logger.ptb('[Error from %s]', link.url)
         save_selenium(link, single=True)
 
     logger.info('[SELENIUM] Loaded %s', link.url)

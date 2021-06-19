@@ -44,7 +44,7 @@ class DataURI(BaseSite):
         try:
             save_data(link)
         except ValueError:
-            logger.perror(f'[REQUESTS] Failed to save data URI from {link.url}')
+            logger.pexc(message=f'[REQUESTS] Failed to save data URI from {link.url}')
         raise LinkNoReturn(link)
 
     @staticmethod

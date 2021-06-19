@@ -15,16 +15,17 @@ import platform
 import re
 import shlex
 import subprocess  # nosec: B404
-import traceback
 from typing import TYPE_CHECKING
 
 import requests
 import selenium.webdriver.common.proxy as selenium_proxy
 
-from darc.const import CHECK, DARC_USER, PATH_DB
+from darc.const import CHECK, DARC_USER, DEBUG, PATH_DB
 from darc.error import I2PBootstrapFailed, UnsupportedPlatform
 from darc.link import parse_link, urljoin
 from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import ERROR as LOG_ERROR
+from darc.logging import INFO as LOG_INFO
 from darc.logging import WARNING as LOG_WARNING
 from darc.logging import logger
 from darc.parse import _check, get_content_type
@@ -78,9 +79,14 @@ else:
     _I2P_ARGS = ['i2prouter', 'start']
 _I2P_ARGS.extend(I2P_ARGS)
 
-logger.plog(LOG_DEBUG, '-*- I2P PROXY -*-', object=(
-    f'unsupported system: {platform.system()}' if _unsupported else _I2P_ARGS
-))
+if _unsupported:
+    if DEBUG:
+        logger.debug('-*- FREENET PROXY -*-')
+        logger.pline(LOG_ERROR, 'unsupported system: %s', platform.system())
+        logger.pline(LOG_DEBUG, logger.horizon)
+else:
+    logger.plog(LOG_DEBUG, '-*- FREENET PROXY -*-', object=_I2P_ARGS)
+
 
 # I2P link regular expression
 I2P_REGEX = re.compile(r'.*\.i2p', re.IGNORECASE)
@@ -153,15 +159,16 @@ def i2p_bootstrap() -> None:
     if _I2P_BS_FLAG:
         return
 
-    logger.debug('-*- I2P Bootstrap -*-')
+    logger.info('-*- I2P Bootstrap -*-')
     for _ in range(I2P_RETRY+1):
         try:
             _i2p_bootstrap()
             break
         except Exception:
-            logger.debug('[Error bootstraping I2P proxy]\n%s', traceback.format_exc().rstrip())
-            logger.perror('i2p_bootstrap()', I2PBootstrapFailed, level=LOG_WARNING)
-    logger.pline(LOG_DEBUG, logger.horizon)
+            if DEBUG:
+                logger.ptb('[Error bootstraping I2P proxy]')
+            logger.pexc(LOG_WARNING, category=I2PBootstrapFailed, line='i2p_bootstrap()')
+    logger.pline(LOG_INFO, logger.horizon)
 
 
 def get_hosts(link: 'darc_link.Link') -> 'Optional[File]':
@@ -298,7 +305,7 @@ def fetch_hosts(link: 'darc_link.Link', force: bool = False) -> None:
             try:
                 response = session.get(hosts_link.url)
             except requests.RequestException:
-                logger.perror(f'[HOSTS] Failed on {hosts_link.url}')
+                logger.pexc(message=f'[HOSTS] Failed on {hosts_link.url}')
                 return
 
         if not response.ok:

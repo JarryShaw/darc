@@ -47,6 +47,7 @@ from darc.const import PATH_DB
 from darc.db import _db_operation
 from darc.error import APIRequestFailed, DatabaseOperaionFailed
 from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import WARNING as LOG_WARNING
 from darc.logging import logger
 from darc.model import (HostnameModel, HostsModel, RequestsHistoryModel, RequestsModel, RobotsModel,
                         SeleniumModel, SitemapModel, URLModel, URLThroughModel)
@@ -240,7 +241,8 @@ def submit(api: str, domain: 'Domain', data: 'Dict[str, Any]') -> None:
                 if response.ok:
                     return
             except requests.RequestException:
-                logger.perror(f'[{domain.upper()}] response = requests.post(api, json=data)', APIRequestFailed)
+                logger.pexc(LOG_WARNING, category=APIRequestFailed,
+                            line=f'[{domain.upper()}] response = requests.post(api, json=data)')
     save_submit(domain, data)
 
 
@@ -367,7 +369,7 @@ def submit_new_host(time: 'datetime', link: 'darc_link.Link', partial: bool = Fa
                               timestamp=time,
                               document=base64.b64decode(hosts['data']).decode())
         except Exception:
-            logger.perror('submit_new_host(...)', DatabaseOperaionFailed)
+            logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed, line='submit_new_host(...)')
 
     data = {
         '$PARTIAL$': partial,
@@ -554,7 +556,7 @@ def submit_requests(time: 'datetime', link: 'darc_link.Link',
                               request=dict(history.request.headers),
                               response=dict(history.headers))
         except Exception:
-            logger.perror('submit_requests(...)', DatabaseOperaionFailed)
+            logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed, line='submit_requests(...)')
 
     metadata = link.asdict()
     ts = time.isoformat()
@@ -719,7 +721,7 @@ def submit_selenium(time: 'datetime', link: 'darc_link.Link',
                           document=html,
                           screenshot=base64.b64decode(screenshot) if screenshot else None)
         except Exception:
-            logger.perror('submit_selenium(...)', DatabaseOperaionFailed)
+            logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed, line='submit_selenium(...)')
 
     metadata = link.asdict()
     ts = time.isoformat()

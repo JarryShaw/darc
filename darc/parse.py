@@ -225,9 +225,9 @@ def _check_ng(temp_list: 'List[darc_link.Link]') -> 'List[darc_link.Link]':
             response = result.result()  # type: Response
         except requests.RequestException as error:
             if error.response is None:
-                logger.perror(f'[HEAD] Checking failed <{error}>')
+                logger.pexc(message='[HEAD] Checking failed')
                 continue
-            logger.perror(f'[HEAD] Failed on {error.response.url}')
+            logger.pexc(message=f'[HEAD] Failed on {error.response.url}')
             link_list.append(error.response.url)
             continue
         ct_type = get_content_type(response)

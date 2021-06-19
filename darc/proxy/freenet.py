@@ -13,11 +13,12 @@ import os
 import platform
 import shlex
 import subprocess  # nosec: B404
-import traceback
 
-from darc.const import DARC_USER
+from darc.const import DARC_USER, DEBUG
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform
 from darc.logging import DEBUG as LOG_DEBUG
+from darc.logging import ERROR as LOG_ERROR
+from darc.logging import INFO as LOG_INFO
 from darc.logging import WARNING as LOG_WARNING
 from darc.logging import logger
 
@@ -56,9 +57,13 @@ else:
     _FREENET_ARGS = [os.path.join(FREENET_PATH, 'run.sh'), 'start']
 _FREENET_ARGS.extend(FREENET_ARGS)
 
-logger.plog(LOG_DEBUG, '-*- FREENET PROXY -*-', object=(
-    f'unsupported system: {platform.system()}' if _unsupported else _FREENET_ARGS
-))
+if _unsupported:
+    if DEBUG:
+        logger.debug('-*- FREENET PROXY -*-')
+        logger.pline(LOG_ERROR, 'unsupported system: %s', platform.system())
+        logger.pline(LOG_DEBUG, logger.horizon)
+else:
+    logger.plog(LOG_DEBUG, '-*- FREENET PROXY -*-', object=_FREENET_ARGS)
 
 
 def _freenet_bootstrap() -> None:
@@ -128,12 +133,13 @@ def freenet_bootstrap() -> None:
     if _FREENET_BS_FLAG:
         return
 
-    logger.debug('-*- Freenet Bootstrap -*-')
+    logger.info('-*- Freenet Bootstrap -*-')
     for _ in range(FREENET_RETRY+1):
         try:
             _freenet_bootstrap()
             break
         except Exception:
-            logger.debug('[Error bootstraping Freenet proxy]\n%s', traceback.format_exc().rstrip())
-            logger.perror('freenet_bootstrap()', FreenetBootstrapFailed, level=LOG_WARNING)
-    logger.pline(LOG_DEBUG, logger.horizon)
+            if DEBUG:
+                logger.ptb('[Error bootstraping Freenet proxy]')
+            logger.pexc(LOG_WARNING, category=FreenetBootstrapFailed, line='freenet_bootstrap()')
+    logger.pline(LOG_INFO, logger.horizon)

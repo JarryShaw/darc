@@ -19,6 +19,7 @@ from darc.crawl import crawler, loader
 from darc.db import load_requests, load_selenium
 from darc.error import HookExecutionFailed, WorkerBreak
 from darc.link import Link
+from darc.logging import WARNING as LOG_WARNING
 from darc.logging import logger
 from darc.proxy.freenet import _FREENET_BS_FLAG, freenet_bootstrap
 from darc.proxy.i2p import _I2P_BS_FLAG, i2p_bootstrap
@@ -103,7 +104,7 @@ def process_crawler() -> None:
             except WorkerBreak:
                 time2break = True
             except Exception:
-                logger.pwarning('[CRAWLER] hook execution failed', HookExecutionFailed)
+                logger.pexc(LOG_WARNING, '[CRAWLER] hook execution failed', HookExecutionFailed)
 
         # marked to break by hook function
         if time2break:
@@ -149,7 +150,7 @@ def process_loader() -> None:
             except WorkerBreak:
                 time2break = True
             except Exception:
-                logger.pwarning('[LOADER] hook execution failed', HookExecutionFailed)
+                logger.pexc(LOG_WARNING, '[LOADER] hook execution failed', HookExecutionFailed)
 
         # marked to break by hook function
         if time2break:

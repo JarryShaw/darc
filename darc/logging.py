@@ -14,6 +14,7 @@ import logging
 import pprint as pp
 import shutil
 import sys
+import traceback
 from typing import TYPE_CHECKING, cast
 
 import stem.util.term as stem_term
@@ -45,7 +46,7 @@ _LOG_ATTR = {
     INFO: (stem_term.Color.GREEN,),  # pylint: disable=no-member
     WARNING: (stem_term.Color.YELLOW,),  # pylint: disable=no-member
     ERROR: (stem_term.Color.RED,),  # pylint: disable=no-member
-    CRITICAL: (stem_term.Color.MAGENTA, stem_term.Attr.HIGHLIGHT),  # pylint: disable=no-member
+    CRITICAL: (stem_term.BgColor.BG_RED, stem_term.Attr.HIGHLIGHT),  # pylint: disable=no-member
 }
 
 
@@ -196,6 +197,87 @@ class DarcLogger(logging.Logger):
             msgargs = (*args, pformat, horizon)
             self._log(level, message, msgargs, **kwargs)
 
+    def pexc(self, level: 'int' = ERROR, message: 'Optional[str]' = None,
+             category: 'Optional[Type[Warning]]' = None,
+             line: 'Optional[str]' = None, **kwargs: 'Any') -> None:  # pylint: disable=redefined-builtin
+        """Log ``msg % args`` with severity ``level``.
+
+        Args:
+            level: Log severity level.
+            message: Optional log message in additional to the error message.
+            line: Optional source line of code (as comments).
+            category: Warning category.
+
+        Keyword Args:
+            **kwargs: Arbitrary keyword arguments for log information.
+
+        To pass exception information, use the keyword argument ``exc_info`` with
+        a true value, e.g.
+
+        .. code-block:: python
+
+           logger.pexc("Houston, we have a thorny problem", type, exc_info=1)
+
+        See Also:
+            The method mocks the output of :func:`warnings.warn` for the log message.
+
+        """
+        if self.isEnabledFor(level):
+            exc_info = cast('tuple[Type[BaseException], BaseException, TracebackType]',
+                            sys.exc_info())
+            exc_class = exc_info[0]
+            exception = exc_info[1]
+            traceback = exc_info[2]
+
+            if category is None:
+                exc_type = exc_class.__name__
+            else:
+                exc_type = f'{category} <{exc_class.__name__}>'
+
+            if message is None:
+                msg = str(exception)
+            else:
+                msg = f'{message} <{exception}>'
+
+            filename = inspect.getfile(traceback)
+            lineno = traceback.tb_lineno
+
+            source_lines, source_lineno = inspect.getsourcelines(traceback)
+            if source_lineno <= 0:
+                source_lineno = 1
+            source = source_lines[lineno-source_lineno].strip()
+
+            if line is not None:
+                source = f'# {line}\n  {source}'
+            self._log(level, '%s:%d: %s: %s\n  %s',
+                      (filename, lineno, exc_type, msg, source), **kwargs)
+
+    def ptb(self, msg: 'str', *args: 'Any', level: 'int' = CRITICAL, **kwargs: 'Any') -> None:
+        """Log ``msg % args`` with severity ``level``.
+
+        Args:
+            msg: Message to be logged.
+            *args: Arbitrary positional arguments for interploration.
+
+        Keyword Args:
+            level: Log severity level.
+            **kwargs: Arbitrary keyword arguments for log information.
+
+        To pass exception information, use the keyword argument ``exc_info`` with
+        a true value, e.g.
+
+        .. code-block:: python
+
+           logger.ptb(level, "Houston, we have a %s", "thorny problem", exc_info=1)
+
+        Note:
+            The method logs the full traceback stack from :func:`traceback.format_exc`.
+
+        """
+        if self.isEnabledFor(level):
+            msg = f'{msg}\n{traceback.format_exc()}{self.horizon}'
+            self._log(level, msg, args, **kwargs)
+
     def pline(self, level: int, msg: str, *args: 'Any', **kwargs: 'Any') -> None:
         """Log ``msg % args`` with severity ``level``.
 
@@ -212,7 +294,7 @@ class DarcLogger(logging.Logger):
 
         .. code-block:: python
 
-           logger.pline(level, exc_info=1)
+           logger.pline(level, "Houston, we have a %s", "thorny problem", exc_info=1)
 
         Note:
             The method replaces :data:`~darc.logging.formatter` with
@@ -229,101 +311,10 @@ class DarcLogger(logging.Logger):
                 handler.setFormatter(formatter)
                 logging._releaseLock()  # type: ignore[attr-defined] # pylint: disable=protected-access
 
-    def pwarning(self, line: str, type: 'Type[Warning]', *,  # pylint: disable=redefined-builtin
-                 level: 'int' = WARNING, **kwargs: 'Any') -> None:
-        """Log ``msg % args`` with severity :data:`~darc.logging.WARNING`.
-
-        Args:
-            line: Original warning message.
-            type: Warning category.
-
-        Keyword Args:
-            level: Log severity level.
-            **kwargs: Arbitrary keyword arguments for log information.
-
-        To pass exception information, use the keyword argument ``exc_info`` with
-        a true value, e.g.
-
-        .. code-block:: python
-
-           logger.pwarning("Houston, we have a thorny problem", type, exc_info=1)
-
-        See Also:
-            The method mocks the output of :func:`warnings.warn` for the log message.
-
-        """
-        if self.isEnabledFor(level):
-            exc_info = cast('tuple[Type[BaseException], BaseException, TracebackType]',
-                            sys.exc_info())
-            exc_class = exc_info[0]
-            message = exc_info[1]
-            traceback = exc_info[2]
-
-            category = f'{type}: {exc_class.__name__}'
-            filename = inspect.getfile(traceback)
-            lineno = traceback.tb_lineno
-
-            source_lines, source_lineno = inspect.getsourcelines(traceback)
-            if source_lineno <= 0:
-                source_lineno = 1
-            source = source_lines[lineno-source_lineno].strip()
-
-            self._log(level, '%s:%d: %s: %s: %s\n  %s',
-                      (filename, lineno, category, line, message, source), **kwargs)
-
-    def perror(self, line: 'Optional[str]' = None, type: 'Optional[Type[Warning]]' = None, *,  # pylint: disable=redefined-builtin
-               level: 'int' = ERROR, **kwargs: 'Any') -> None:
-        """Log ``msg % args`` with severity :data:`~darc.logging.ERROR`.
-
-        Args:
-            line: Optional source line of code (as comments).
-            type: Warning category.
-
-        Keyword Args:
-            level: Log severity level.
-            **kwargs: Arbitrary keyword arguments for log information.
-
-        To pass exception information, use the keyword argument ``exc_info`` with
-        a true value, e.g.
-
-        .. code-block:: python
-
-           logger.perror("Houston, we have a thorny problem", type, exc_info=1)
-
-        See Also:
-            The method mocks the output of :func:`warnings.warn` for the log message.
-
-        """
-        if self.isEnabledFor(level):
-            exc_info = cast('tuple[Type[BaseException], BaseException, TracebackType]',
-                            sys.exc_info())
-            exc_class = exc_info[0]
-            message = exc_info[1]
-            traceback = exc_info[2]
-
-            if type is None:
-                category = exc_class.__name__
-            else:
-                category = f'{type}: {exc_class.__name__}'
-
-            filename = inspect.getfile(traceback)
-            lineno = traceback.tb_lineno
-
-            source_lines, source_lineno = inspect.getsourcelines(traceback)
-            if source_lineno <= 0:
-                source_lineno = 1
-            source = source_lines[lineno-source_lineno].strip()
-
-            if line is None:
-                self._log(level, '%s:%d: %s: %s\n  %s',
-                          (filename, lineno, category, message, source), **kwargs)
-            else:
-                self._log(level, '%s:%d: %s: %s <%s>\n  %s',
-                          (filename, lineno, category, line.strip(), message, source), **kwargs)
-
 
 # change logger factory
 logging.setLoggerClass(DarcLogger)
+logging.addLevelName(VERBOSE, 'VERBOSE')
 
 #: Generic log formatter instance for :data:`~darc.logging.handler`.
 formatter = ColorFormatter(

@@ -39,7 +39,7 @@ import shutil
 import textwrap
 import time
 from datetime import timedelta
-from typing import TYPE_CHECKING, TypeVar, cast
+from typing import TYPE_CHECKING, TypeVar, cast, overload
 
 import peewee
 import pottery.exceptions as pottery_exceptions
@@ -153,7 +153,9 @@ def _redis_command(command: str, *args: 'Any', **kwargs: 'Any') -> 'Any':
         except (redis_lib.exceptions.ConnectionError, pottery_exceptions.PotteryError):
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
-            logger.perror(f'value = redis.{command}({_arg_msg})', RedisCommandFailed)
+
+            logger.pexc(LOG_WARNING, category=RedisCommandFailed,
+                        line=f'value = redis.{command}({_arg_msg})')
 
             if RETRY_INTERVAL is not None:
                 time.sleep(RETRY_INTERVAL)
@@ -162,7 +164,7 @@ def _redis_command(command: str, *args: 'Any', **kwargs: 'Any') -> 'Any':
     return value
 
 
-def _db_operation(operation: 'Callable[..., _T]', *args: 'Any', **kwargs: 'Any') -> _T:
+def _db_operation(operation: 'Callable[..., _T]', *args: 'Any', **kwargs: 'Any') -> '_T':
     """Retry operation on database.
 
     Args:
@@ -187,7 +189,8 @@ def _db_operation(operation: 'Callable[..., _T]', *args: 'Any', **kwargs: 'Any')
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
             model = cast('MethodType', operation).__self__.__class__.__name__
-            logger.perror(f'{model}.{operation.__name__}({_arg_msg})', DatabaseOperaionFailed)
+            logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed,
+                        line=f'{model}.{operation.__name__}({_arg_msg})')
 
             if RETRY_INTERVAL is not None:
                 time.sleep(RETRY_INTERVAL)
@@ -237,7 +240,7 @@ def have_hostname(link: 'Link') -> 'Tuple[bool, bool]':
             try:
                 return _have_hostname_db(link)
             except Exception:
-                logger.perror(link.url, DatabaseOperaionFailed)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed, line=f'_have_hostname_db({link.url})')
                 return False, False
     return _have_hostname_redis(link)
 
@@ -331,7 +334,7 @@ def drop_hostname(link: 'Link') -> None:
             try:
                 return _drop_hostname_db(link)
             except Exception:
-                logger.perror(link.url, DatabaseOperaionFailed)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed, line=f'_drop_hostname_db({link.url})')
                 return None
     return _drop_hostname_redis(link)
 
@@ -380,7 +383,7 @@ def drop_requests(link: 'Link') -> None:  # pylint: disable=inconsistent-return-
             try:
                 return _drop_requests_db(link)
             except Exception:
-                logger.perror(link.url, DatabaseOperaionFailed)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed, line=f'_drop_requests_db({link.url})')
                 return None
     return _drop_requests_redis(link)
 
@@ -430,7 +433,7 @@ def drop_selenium(link: 'Link') -> None:  # pylint: disable=inconsistent-return-
             try:
                 return _drop_selenium_db(link)
             except Exception:
-                logger.perror(link.url, DatabaseOperaionFailed)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed, line=f'_drop_selenium_db({link.url})')
                 return None
     return _drop_selenium_redis(link)
 
@@ -464,6 +467,12 @@ def _drop_selenium_redis(link: 'Link') -> None:
     _redis_command('delete', link.name)
 
 
+@overload
+def save_requests(entries: 'Link', single: 'Literal[True]',
+                  score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None: ...
+@overload
+def save_requests(entries: 'List[Link]', single: 'Literal[False]' = False,
+                  score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None: ...
 def save_requests(entries: 'Union[Link, List[Link]]', single: bool = False,
                   score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`requests` database.
@@ -498,17 +507,21 @@ def save_requests(entries: 'Union[Link, List[Link]]', single: bool = False,
     if FLAG_DB:
         with database.connection_context():
             try:
-                return _save_requests_db(entries, single, score, nx, xx)
+                return _save_requests_db(entries, single, score, nx, xx)  # type: ignore[call-overload]
             except Exception:
-                if single:
-                    line = cast('Link', entries).url
-                else:
-                    line = '%s, ...' % cast('list[Link]', entries)[0].url
-                logger.perror(line, DatabaseOperaionFailed, level=LOG_WARNING)
+                _arg_msg = _gen_arg_msg(entries, single, score, nx, xx)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed,
+                            line=f'_save_requests_db({_arg_msg})')
                 return None
     return _save_requests_redis(entries, single, score, nx, xx)
 
 
+@overload
+def _save_requests_db(entries: 'Link', single: 'Literal[True]',
+                      score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None: ...
+@overload
+def _save_requests_db(entries: 'List[Link]', single: 'Literal[False]' = False,
+                      score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None: ...
 def _save_requests_db(entries: 'Union[Link, List[Link]]', single: bool = False,
                       score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`requests` database.
@@ -649,6 +662,12 @@ def _save_requests_redis(entries: 'Union[Link, List[Link]]', single: bool = Fals
     return None
 
 
+@overload
+def save_selenium(entries: 'Link', single: 'Literal[True]',
+                  score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None: ...
+@overload
+def save_selenium(entries: 'List[Link]', single: 'Literal[False]' = False,
+                  score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None: ...
 def save_selenium(entries: 'Union[Link, List[Link]]', single: bool = False,  # pylint: disable=inconsistent-return-statements
                   score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`selenium` database.
@@ -681,17 +700,21 @@ def save_selenium(entries: 'Union[Link, List[Link]]', single: bool = False,  # p
     if FLAG_DB:
         with database.connection_context():
             try:
-                return _save_selenium_db(entries, single, score, nx, xx)
+                return _save_selenium_db(entries, single, score, nx, xx)  # type: ignore[call-overload]
             except Exception:
-                if single:
-                    line = cast('Link', entries).url
-                else:
-                    line = '%s, ...' % cast('list[Link]', entries)[0].url
-                logger.perror(line, DatabaseOperaionFailed, level=LOG_WARNING)
+                _arg_msg = _gen_arg_msg(entries, single, score, nx, xx)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed,
+                            line=f'_save_selenium_db({_arg_msg})')
                 return None
     return _save_selenium_redis(entries, single, score, nx, xx)
 
 
+@overload
+def _save_selenium_db(entries: 'Link', single: 'Literal[True]',
+                      score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None: ...
+@overload
+def _save_selenium_db(entries: 'List[Link]', single: 'Literal[False]' = False,
+                      score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None: ...
 def _save_selenium_db(entries: 'Union[Link, List[Link]]', single: bool = False,
                       score: 'Optional[float]' = None, nx: bool = False, xx: bool = False) -> None:
     """Save link to the :mod:`selenium` database.
@@ -866,7 +889,7 @@ def load_requests(check: bool = CHECK) -> 'List[Link]':
             try:
                 link_pool = _load_requests_db()
             except Exception:
-                logger.perror(type=DatabaseOperaionFailed)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed, line='_load_requests_db()')
                 link_pool = []
     else:
         link_pool = _load_requests_redis()
@@ -948,7 +971,8 @@ def _load_requests_redis() -> 'List[Link]':
                 new_score = now + sec_delta
                 _save_requests_redis(link_pool, score=new_score)  # force update records
     except pottery_exceptions.PotteryError:
-        logger.perror(f'[REQUESTS] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)', LockWarning)
+        logger.pexc(LOG_WARNING, f'[REQUESTS] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
+                    LockWarning, "_redis_get_lock('queue_requests')")
         link_pool = []
     return link_pool
 
@@ -977,7 +1001,7 @@ def load_selenium(check: bool = CHECK) -> 'List[Link]':
             try:
                 link_pool = _load_selenium_db()
             except Exception:
-                logger.perror(type=DatabaseOperaionFailed)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed, line='_load_selenium_db()')
                 link_pool = []
     else:
         link_pool = _load_selenium_redis()
@@ -1063,6 +1087,7 @@ def _load_selenium_redis() -> 'List[Link]':
                 new_score = now + sec_delta
                 _save_selenium_redis(link_pool, score=new_score)  # force update records
     except pottery_exceptions.PotteryError:
-        logger.perror(f'[SELENIUM] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)', LockWarning)
+        logger.pexc(LOG_WARNING, f'[SELENIUM] Failed to acquire Redis lock after {LOCK_TIMEOUT} second(s)',
+                    LockWarning, "_redis_get_lock('queue_selenium')")
         link_pool = []
     return link_pool

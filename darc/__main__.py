@@ -110,7 +110,8 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
                         HostnameQueueModel, RequestsQueueModel, SeleniumQueueModel,
                     ])
             except Exception:
-                logger.perror('DB.create_tables([HostnameQueueModel, ...]', DatabaseOperaionFailed, level=LOG_WARNING)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed,
+                            line='DB.create_tables([HostnameQueueModel, ...]')
                 continue
             break
 
@@ -124,7 +125,8 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
                         RequestsModel, RequestsHistoryModel, SeleniumModel,
                     ])
             except Exception:
-                logger.perror('DB.create_tables([HostnameModel, ...]', DatabaseOperaionFailed, level=LOG_WARNING)
+                logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed,
+                            line='DB.create_tables([HostnameModel, ...]')
                 continue
             break
 
@@ -137,7 +139,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
 
     link_list = []
     for link in filter(None, map(lambda s: s.strip(), args.link)):  # type: ignore[name-defined,var-annotated]
-        logger.debug(link)
+        logger.pline(LOG_DEBUG, link)
         link_list.append(link)
 
     if args.file is not None:
@@ -146,7 +148,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
                 for line in filter(None, map(lambda s: s.strip(), file)):
                     if line.startswith('#'):
                         continue
-                    logger.debug(line)
+                    logger.pline(LOG_DEBUG, line)
                     link_list.append(line)
 
     # write to database
