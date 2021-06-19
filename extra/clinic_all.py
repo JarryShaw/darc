@@ -165,8 +165,8 @@ def clinic(file: str, timeout: int, *services: str) -> None:
     print(f'[{datetime.datetime.now().isoformat()}] Stopped DARC services')
 
     print(f'[{datetime.datetime.now().isoformat()}] Cleaning out task queues')
-    number_requests = _redis_command('eval', SCPT.script, 1, 'queue_requests', 0, time.time())
-    number_selenium = _redis_command('eval', SCPT.script, 1, 'queue_selenium', 0, time.time())
+    #number_requests = _redis_command('eval', SCPT.script, 1, 'queue_requests', 0, time.time())
+    #number_selenium = _redis_command('eval', SCPT.script, 1, 'queue_selenium', 0, time.time())
 
     #number_requests = SCPT(keys=['queue_requests'], args=[0, time.time()])
     #number_requests = SCPT(keys=['queue_selenium'], args=[0, time.time()])
@@ -183,13 +183,13 @@ def clinic(file: str, timeout: int, *services: str) -> None:
     #    if not pool:
     #        break
     #    _redis_command('delete', *pool)
-    _redis_command('delete', 'queue_requests', 'queue_selenium')
+    _redis_command('delete', '*')
 
-    with open(POOL_PATH, 'w') as pool_file:
-        maxn = _redis_command('zcard',  'queue_hostname')
-        for hostname in _redis_command('zrange', 'queue_hostname', 0, maxn):
-            print(f'http://{hostname}', file=pool_file)
-    print(f'[{datetime.datetime.now().isoformat()}] Cleaned out task queues: {maxn} hostnames, {number_requests} crawler URLs, {number_selenium} loader URLs')
+    # with open(POOL_PATH, 'w') as pool_file:
+    #     maxn = _redis_command('zcard',  'queue_hostname')
+    #     for hostname in _redis_command('zrange', 'queue_hostname', 0, maxn):
+    #         print(f'http://{hostname}', file=pool_file)
+    print(f'[{datetime.datetime.now().isoformat()}] Cleaned out task queues')
 
     print(f'[{datetime.datetime.now().isoformat()}] Starting DARC services')
     check_call(['docker-compose', '--file', file, 'up', '--detach', *services])
@@ -223,7 +223,7 @@ def main() -> int:
         parser.error('invalid timeout')
 
     REDIS = redis.Redis.from_url(args.redis, decode_components=True)  # type: ignore[call-overload]
-    SCPT = REDIS.register_script(SCPT_TEXT)
+    #SCPT = REDIS.register_script(SCPT_TEXT)
     with open('logs/clinic.log', 'at', buffering=1) as file:
         date = datetime.datetime.now().ctime()
         print('-' * len(date), file=file)
