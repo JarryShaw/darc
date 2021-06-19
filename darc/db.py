@@ -150,7 +150,7 @@ def _redis_command(command: str, *args: 'Any', **kwargs: 'Any') -> 'Any':
     while True:
         try:
             value = method(*args, **kwargs)
-        except (redis_lib.exceptions.ConnectionError, pottery_exceptions.PotteryError):
+        except (redis_lib.exceptions.RedisError, pottery_exceptions.PotteryError):
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 
@@ -184,7 +184,7 @@ def _db_operation(operation: 'Callable[..., _T]', *args: 'Any', **kwargs: 'Any')
     while True:
         try:
             value = operation(*args, **kwargs)
-        except (peewee.OperationalError, peewee.InterfaceError):
+        except peewee.PeeweeException:
             if _arg_msg is None:
                 _arg_msg = _gen_arg_msg(*args, **kwargs)
 

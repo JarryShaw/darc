@@ -227,12 +227,12 @@ class DarcLogger(logging.Logger):
                             sys.exc_info())
             exc_class = exc_info[0]
             exception = exc_info[1]
-            traceback = exc_info[2]
+            traceback = exc_info[2]  # pylint: disable=redefined-outer-name
 
             if category is None:
                 exc_type = exc_class.__name__
             else:
-                exc_type = f'{category} <{exc_class.__name__}>'
+                exc_type = f'{category.__name__} <{exc_class.__name__}>'
 
             if message is None:
                 msg = str(exception)
