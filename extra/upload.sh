@@ -18,7 +18,7 @@ filename="darc-api-$(hostname -I | awk '{print $1}')-$(date +%Y%m%d-%H%M%S).tar.
 api_path="api/${DATE}"
 
 # compare API files
-if [ -z "$(ls -A misc)" ]; then
+if [ -z "$(ls -A misc/*.txt 2>/dev/null)" ]; then
    retry tar -czf ${filename} ${api_path}
 else
    retry tar -czf ${filename} ${api_path} misc/*.txt
