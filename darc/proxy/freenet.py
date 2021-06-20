@@ -113,7 +113,7 @@ def launch_freenet() -> 'Popen[bytes]':
             if not init_line:
                 if (code := zeronet_process.returncode) is not None and code == 0:
                     return zeronet_process
-                raise OSError('Process terminated: Timed out')
+                raise OSError(f'Process terminated: Timed out [{code}]')
 
             if os.path.exists(pidfile):
                 pid = getpid(pidfile)
