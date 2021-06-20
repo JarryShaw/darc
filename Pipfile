@@ -36,7 +36,6 @@ beautifulsoup4 = {extras = ["html5lib"],version = "*"}
 file-magic = "*"
 peewee = "*"
 pottery = "*"
-psutil = "*"
 PyMySQL = {version = "*",extras = ["rsa"]}
 python-datauri = "*"
 redis = {extras = ['hiredis'],version = "*"}
