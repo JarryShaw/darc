@@ -28,9 +28,7 @@ from darc.submit import SAVE_DB
 
 if TYPE_CHECKING:
     from argparse import ArgumentParser
-    from queue import Queue
-    from subprocess import Popen  # nosec: B404
-    from typing import List, Optional, Union
+    from typing import Any, List, Optional
 
 # wait for Redis connection?
 _WAIT_REDIS = bool(int(os.getenv('DARC_REDIS', '1')))
@@ -38,7 +36,7 @@ _WAIT_REDIS = bool(int(os.getenv('DARC_REDIS', '1')))
 
 def _exit() -> None:
     """Gracefully exit."""
-    def caller(target: 'Optional[Union[Queue, Popen]]', function: str) -> None:
+    def caller(target: 'Optional[Any]', function: str) -> None:
         """Wrapper caller."""
         if target is None:
             return

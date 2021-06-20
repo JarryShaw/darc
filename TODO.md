@@ -2,7 +2,7 @@
 
 - [x] prepare to bump version *1.x*
 - [x] revise documentations
-- [ ] revise command line arguments (perhaps supporting both CLI & envvar like `bpc-utils`)
+- [ ] ~revise command line arguments (perhaps supporting both CLI & envvar like `bpc-utils`)~
 - [ ] ~add some tests~
 
 # November 3, 2020

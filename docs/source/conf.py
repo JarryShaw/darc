@@ -33,11 +33,11 @@ logger.setLevel(logging.DEBUG)
 # -- Project information -----------------------------------------------------
 
 project = 'darc'
-copyright = '2019-2020, Jarry Shaw'  # pylint: disable=redefined-builtin
+copyright = '2019-2021, Jarry Shaw'  # pylint: disable=redefined-builtin
 author = 'Jarry Shaw'
 
 # The full version, including alpha/beta/rc tags
-release = '0.9.5'
+release = '1.0.0'
 
 
 # -- General configuration ---------------------------------------------------
