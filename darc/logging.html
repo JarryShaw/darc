@@ -1,0 +1,510 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Logging System &#8212; darc 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-darc.logging"></span><section id="logging-system">
+<h1>Logging System<a class="headerlink" href="#logging-system" title="Permalink to this headline">¶</a></h1>
+<p>The module extended the builtin <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module and provides
+a coloured version of <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></a> to better demonstrate
+the logging information of <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="darc.logging.ColorFormatter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">ColorFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datefmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/logging.html#ColorFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.logging.ColorFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Formatter" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Formatter</span></code></a></p>
+<p>Color formatter based on record levels.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="darc.logging.ColorFormatter.format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/logging.html#ColorFormatter.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.logging.ColorFormatter.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format the specific record as text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>record</strong> (<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.LogRecord" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogRecord</span></code></a>) – logging record</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Formatted logging message.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#darc.logging._LOG_ATTR" title="darc.logging._LOG_ATTR"><code class="xref py py-data docutils literal notranslate"><span class="pre">_LOG_ATTR</span></code></a> contains the color mapping
+for each logging level.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="darc.logging.DarcLogger">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">DarcLogger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/logging.html#DarcLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.logging.DarcLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></p>
+<p>The tailored logger for <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> module.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="darc.logging.DarcLogger.pexc">
+<span class="sig-name descname"><span class="pre">pexc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/logging.html#DarcLogger.pexc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.logging.DarcLogger.pexc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log <code class="docutils literal notranslate"><span class="pre">msg</span> <span class="pre">%</span> <span class="pre">args</span></code> with severity <code class="docutils literal notranslate"><span class="pre">level</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Log severity level.</p></li>
+<li><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Optional log message in additional to the error message.</p></li>
+<li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Optional source line of code (as comments).</p></li>
+<li><p><strong>category</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Warning" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Warning</span></code></a>]]) – Warning category.</p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>**kwargs</strong> – Arbitrary keyword arguments for log information.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+<p>To pass exception information, use the keyword argument <code class="docutils literal notranslate"><span class="pre">exc_info</span></code> with
+a true value, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">pexc</span><span class="p">(</span><span class="s2">&quot;Houston, we have a thorny problem&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The method mocks the output of <a class="reference external" href="https://docs.python.org/3/library/warnings.html#warnings.warn" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">warnings.warn()</span></code></a> for the log message.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – </p></li>
+<li><p><strong>message</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>category</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Warning" title="(in Python v3.9)"><em>Warning</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>line</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="darc.logging.DarcLogger.pline">
+<span class="sig-name descname"><span class="pre">pline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/logging.html#DarcLogger.pline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.logging.DarcLogger.pline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log <code class="docutils literal notranslate"><span class="pre">msg</span> <span class="pre">%</span> <span class="pre">args</span></code> with severity <code class="docutils literal notranslate"><span class="pre">level</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Log severity level.</p></li>
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Message to be logged.</p></li>
+<li><p><strong>*args</strong> – Arbitrary positional arguments for interploration.</p></li>
+<li><p><strong>args</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>**kwargs</strong> – Arbitrary keyword arguments for log information.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+<p>To pass exception information, use the keyword argument <code class="docutils literal notranslate"><span class="pre">exc_info</span></code> with
+a true value, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">pline</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="s2">&quot;Houston, we have a </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;thorny problem&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The method replaces <a class="reference internal" href="#darc.logging.formatter" title="darc.logging.formatter"><code class="xref py py-data docutils literal notranslate"><span class="pre">formatter</span></code></a> with
+<a class="reference internal" href="#darc.logging.line_formatter" title="darc.logging.line_formatter"><code class="xref py py-data docutils literal notranslate"><span class="pre">line_formatter</span></code></a>, which has not prefixing
+contents in the log line.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – </p></li>
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – </p></li>
+<li><p><strong>args</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="darc.logging.DarcLogger.plog">
+<span class="sig-name descname"><span class="pre">plog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pprint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/logging.html#DarcLogger.plog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.logging.DarcLogger.plog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log <code class="docutils literal notranslate"><span class="pre">msg</span> <span class="pre">%</span> <span class="pre">args</span></code> into a pretty-printed representation with severity <code class="docutils literal notranslate"><span class="pre">level</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Log severity level.</p></li>
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>) – Message to be logged.</p></li>
+<li><p><strong>*args</strong> – Arbitrary positional arguments for interploration.</p></li>
+<li><p><strong>args</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>object</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>pprint</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>]</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>object</strong> – Object to be pretty printed.</p></li>
+<li><p><strong>pprint</strong> – Arbitrary arguments for <a class="reference external" href="https://docs.python.org/3/library/pprint.html#pprint.pformat" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">pprint.pformat()</span></code></a>.</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments for log information.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+<p>To pass exception information, use the keyword argument <code class="docutils literal notranslate"><span class="pre">exc_info</span></code> with
+a true value, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">plog</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="s2">&quot;Houston, we have a </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;thorny problem&quot;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="nb">object</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The method uses <a class="reference external" href="https://docs.python.org/3/library/pprint.html#pprint.pformat" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">pprint.pformat()</span></code></a> to format the target <code class="docutils literal notranslate"><span class="pre">object</span></code>
+with <code class="docutils literal notranslate"><span class="pre">pprint</span></code> arguments.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – </p></li>
+<li><p><strong>msg</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>args</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>object</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>pprint</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>]</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="darc.logging.DarcLogger.ptb">
+<span class="sig-name descname"><span class="pre">ptb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/logging.html#DarcLogger.ptb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.logging.DarcLogger.ptb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log <code class="docutils literal notranslate"><span class="pre">msg</span> <span class="pre">%</span> <span class="pre">args</span></code> with severity <code class="docutils literal notranslate"><span class="pre">level</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Message to be logged.</p></li>
+<li><p><strong>*args</strong> – Arbitrary positional arguments for interploration.</p></li>
+<li><p><strong>args</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>level</strong> – Log severity level.</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments for log information.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+<p>To pass exception information, use the keyword argument <code class="docutils literal notranslate"><span class="pre">exc_info</span></code> with
+a true value, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">ptb</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="s2">&quot;Houston, we have a </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;thorny problem&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The method logs the full traceback stack from <a class="reference external" href="https://docs.python.org/3/library/traceback.html#traceback.format_exc" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">traceback.format_exc()</span></code></a>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – </p></li>
+<li><p><strong>args</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="darc.logging.DarcLogger.verbose">
+<span class="sig-name descname"><span class="pre">verbose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/logging.html#DarcLogger.verbose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.logging.DarcLogger.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log <code class="docutils literal notranslate"><span class="pre">msg</span> <span class="pre">%</span> <span class="pre">args</span></code> with severity <a class="reference internal" href="#darc.logging.VERBOSE" title="darc.logging.VERBOSE"><code class="xref py py-data docutils literal notranslate"><span class="pre">VERBOSE</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>) – Message to be logged.</p></li>
+<li><p><strong>*args</strong> – Arbitrary positional arguments for interploration.</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments for log information.</p></li>
+<li><p><strong>args</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+<p>To pass exception information, use the keyword argument <code class="docutils literal notranslate"><span class="pre">exc_info</span></code> with
+a true value, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Houston, we have a </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;thorny problem&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>msg</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>args</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="darc.logging.DarcLogger.horizon">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">horizon</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#darc.logging.DarcLogger.horizon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horizon line.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The property uses <a class="reference external" href="https://docs.python.org/3/library/shutil.html#shutil.get_terminal_size" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">shutil.get_terminal_size()</span></code></a> to calculate the desired
+length of the <code class="docutils literal notranslate"><span class="pre">-</span></code> horizon line.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.logging.render_message">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">render_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/logging.html#render_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.logging.render_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render message.</p>
+<p>The function wraps the <a class="reference external" href="https://stem.torproject.org/api/util/term.html#stem.util.term.format" title="(in Stem v1.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">stem.util.term.format()</span></code></a> function to
+provide multi-line formatting support.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AnyStr" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">AnyStr</span></code></a>) – Multi-line message to be rendered with <code class="docutils literal notranslate"><span class="pre">colour</span></code>.</p></li>
+<li><p><strong>*attr</strong> – Formatting attributes of text, c.f. <a class="reference external" href="https://stem.torproject.org/api/util/term.html#module-stem.util.term" title="(in Stem v1.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stem.util.term</span></code></a>.</p></li>
+<li><p><strong>attr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The rendered message.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The message formatting is done by <a class="reference external" href="https://stem.torproject.org/api/util/term.html#stem.util.term.format" title="(in Stem v1.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">stem.util.term.format()</span></code></a>
+with its various predefined formatting attributes.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.CRITICAL">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">CRITICAL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">50</span></em><a class="headerlink" href="#darc.logging.CRITICAL" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code> logging level, c.f., <code class="xref py py-data docutils literal notranslate"><span class="pre">logging.CRITICAL</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.DEBUG">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">DEBUG</span></span><em class="property"> <span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#darc.logging.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">DEBUG</span></code> logging level, c.f., <code class="xref py py-data docutils literal notranslate"><span class="pre">logging.DEBUG</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.ERROR">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">ERROR</span></span><em class="property"> <span class="pre">=</span> <span class="pre">40</span></em><a class="headerlink" href="#darc.logging.ERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">ERROR</span></code> logging level, c.f., <code class="xref py py-data docutils literal notranslate"><span class="pre">logging.ERROR</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.INFO">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">INFO</span></span><em class="property"> <span class="pre">=</span> <span class="pre">20</span></em><a class="headerlink" href="#darc.logging.INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">INFO</span></code> logging level, c.f., <code class="xref py py-data docutils literal notranslate"><span class="pre">logging.INFO</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.VERBOSE">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">VERBOSE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#darc.logging.VERBOSE" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">VERBOSE</span></code> logging level.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.WARNING">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">WARNING</span></span><em class="property"> <span class="pre">=</span> <span class="pre">30</span></em><a class="headerlink" href="#darc.logging.WARNING" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">WARNING</span></code> logging level, c.f., <code class="xref py py-data docutils literal notranslate"><span class="pre">logging.WARNING</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging._LOG_ATTR">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">_LOG_ATTR</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{5:</span> <span class="pre">('Blue',),</span> <span class="pre">10:</span> <span class="pre">('Cyan',),</span> <span class="pre">20:</span> <span class="pre">('Green',),</span> <span class="pre">30:</span> <span class="pre">('Yellow',),</span> <span class="pre">40:</span> <span class="pre">('Red',),</span> <span class="pre">50:</span> <span class="pre">('Bg</span> <span class="pre">Red',</span> <span class="pre">'Highlight')}</span></em><a class="headerlink" href="#darc.logging._LOG_ATTR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mapping of logging levels with corresponding color format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, Tuple[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.formatter">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">formatter</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;darc.logging.ColorFormatter</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#darc.logging.formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic log formatter instance for <a class="reference internal" href="#darc.logging.handler" title="darc.logging.handler"><code class="xref py py-data docutils literal notranslate"><span class="pre">handler</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.handler">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">handler</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;StreamHandler</span> <span class="pre">&lt;stderr&gt;</span> <span class="pre">(NOTSET)&gt;</span></em><a class="headerlink" href="#darc.logging.handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log handler instance for <a class="reference internal" href="#darc.logging.logger" title="darc.logging.logger"><code class="xref py py-data docutils literal notranslate"><span class="pre">logger</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.line_formatter">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">line_formatter</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;darc.logging.ColorFormatter</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#darc.logging.line_formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line-only log formmater instance for <a class="reference internal" href="#darc.logging.DarcLogger.pline" title="darc.logging.DarcLogger.pline"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pline()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.logging.logger">
+<span class="sig-prename descclassname"><span class="pre">darc.logging.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;DarcLogger</span> <span class="pre">darc</span> <span class="pre">(INFO)&gt;</span></em><a class="headerlink" href="#darc.logging.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logger instance for <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#darc.logging.DarcLogger" title="darc.logging.DarcLogger">darc.logging.DarcLogger</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">darc</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=JarryShaw&repo=darc&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom.html">Customisations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docker.html">Docker Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/api.html">Web Backend Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/model.html">Data Models Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo/schema.html">Submission Data Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aux.html">Auxiliary Scripts</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2021, Jarry Shaw.
+      
+      |
+      <a href="../_sources/darc/logging.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/JarryShaw/darc" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
