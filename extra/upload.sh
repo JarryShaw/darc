@@ -20,10 +20,11 @@ api_path="api/${DATE}"
 # compare API files
 if [ -z "$(ls -A misc/*.txt 2>/dev/null)" ]; then
    retry tar -czf ${filename} ${api_path}
+   rm -r ${api_path}
 else
    retry tar -czf ${filename} ${api_path} misc/*.txt
+   rm -r ${api_path} misc/*.txt
 fi
-rm -r ${api_path} misc/*.txt
 
 # upload archive
 if [ -z ${USER} ]; then
