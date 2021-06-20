@@ -11,6 +11,7 @@ the logging information of :mod:`darc`.
 
 import inspect
 import logging
+import os
 import pprint as pp
 import shutil
 import sys
@@ -68,8 +69,8 @@ def render_message(message: 'AnyStr', *attr: 'str') -> str:
         with its various predefined formatting attributes.
 
     """
-    return ''.join(
-        stem_term.format(line, *attr) for line in message.splitlines(True)
+    return os.linesep.join(
+        stem_term.format(line, *attr) for line in message.splitlines()
     )
 
 

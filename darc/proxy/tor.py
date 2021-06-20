@@ -22,6 +22,7 @@ from darc.const import DEBUG
 from darc.error import TorBootstrapFailed, TorRenewFailed
 from darc.logging import DEBUG as LOG_DEBUG
 from darc.logging import INFO as LOG_INFO
+from darc.logging import VERBOSE as LOG_VERBOSE
 from darc.logging import WARNING as LOG_WARNING
 from darc.logging import logger
 
@@ -101,9 +102,9 @@ def print_bootstrap_lines(line: str) -> None:
 
     """
     if 'Bootstrapped ' in line:
-        level = LOG_INFO
-    else:
         level = LOG_DEBUG
+    else:
+        level = LOG_VERBOSE
     logger.log(level, line)
 
 

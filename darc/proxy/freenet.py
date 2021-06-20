@@ -19,6 +19,7 @@ from darc.error import FreenetBootstrapFailed, UnsupportedPlatform
 from darc.logging import DEBUG as LOG_DEBUG
 from darc.logging import ERROR as LOG_ERROR
 from darc.logging import INFO as LOG_INFO
+from darc.logging import VERBOSE as LOG_VERBOSE
 from darc.logging import WARNING as LOG_WARNING
 from darc.logging import logger
 
@@ -85,7 +86,7 @@ def _freenet_bootstrap() -> None:
 
     # launch Freenet process
     _FREENET_PROC = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
-        _FREENET_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        _FREENET_ARGS, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 
     try:
@@ -93,9 +94,9 @@ def _freenet_bootstrap() -> None:
     except subprocess.TimeoutExpired as error:
         stdout, stderr = error.stdout, error.stderr
     if stdout is not None:
-        logger.verbose(stdout)
+        logger.pline(LOG_VERBOSE, stdout.decode())
     if stderr is not None:
-        logger.error(stderr)
+        logger.pline(LOG_ERROR, stderr.decode())
 
     returncode = _FREENET_PROC.returncode or -1
     if returncode != 0:

@@ -26,6 +26,7 @@ from darc.link import parse_link, urljoin
 from darc.logging import DEBUG as LOG_DEBUG
 from darc.logging import ERROR as LOG_ERROR
 from darc.logging import INFO as LOG_INFO
+from darc.logging import VERBOSE as LOG_VERBOSE
 from darc.logging import WARNING as LOG_WARNING
 from darc.logging import logger
 from darc.parse import _check, get_content_type
@@ -111,7 +112,7 @@ def _i2p_bootstrap() -> None:
 
     # launch I2P process
     _I2P_PROC = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
-        _I2P_ARGS, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        _I2P_ARGS, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
 
     try:
@@ -119,9 +120,9 @@ def _i2p_bootstrap() -> None:
     except subprocess.TimeoutExpired as error:
         stdout, stderr = error.stdout, error.stderr
     if stdout is not None:
-        logger.verbose(stdout)
+        logger.pline(LOG_VERBOSE, stdout.decode())
     if stderr is not None:
-        logger.error(stderr)
+        logger.pline(LOG_ERROR, stderr.decode())
 
     returncode = _I2P_PROC.returncode or -1
     if returncode != 0:
