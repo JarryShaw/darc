@@ -58,7 +58,7 @@ _ZERONET_ARGS.extend(ZERONET_ARGS)
 logger.plog(LOG_DEBUG, '-*- ZERONET PROXY -*-', object=_ZERONET_ARGS)
 
 
-def _launch_zeronet() -> 'Popen[bytes]':
+def launch_zeronet() -> 'Popen[bytes]':
     """Launch ZeroNet process.
 
     See Also:
@@ -95,7 +95,7 @@ def _launch_zeronet() -> 'Popen[bytes]':
             zeronet_process.wait()
         raise
     finally:
-        signal.alarm(0)  # stop  alarm
+        signal.alarm(0)  # stop alarm
 
 
 def _zeronet_bootstrap() -> None:
@@ -108,6 +108,7 @@ def _zeronet_bootstrap() -> None:
 
     See Also:
         * :func:`darc.proxy.zeronet.zeronet_bootstrap`
+        * :func:`darc.proxy.zeronet.launch_zeronet`
         * :data:`darc.proxy.zeronet.BS_WAIT`
         * :data:`darc.proxy.zeronet._ZERONET_BS_FLAG`
         * :data:`darc.proxy.zeronet._ZERONET_PROC`
@@ -119,7 +120,7 @@ def _zeronet_bootstrap() -> None:
     tor_bootstrap()
 
     # launch ZeroNet process
-    _ZERONET_PROC = _launch_zeronet()
+    _ZERONET_PROC = launch_zeronet()
 
     # update flag
     _ZERONET_BS_FLAG = True

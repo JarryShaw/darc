@@ -178,12 +178,15 @@ else:
 del _DB_URL
 
 
-def getpid() -> int:
+def getpid(path: str = PATH_ID) -> int:
     """Get process ID.
 
     The process ID will be saved under the :data:`~darc.const.PATH_DB`
     folder, in a file named ``darc.pid``. If no such file exists,
     ``-1`` will be returned.
+
+    Args:
+        path: Path to the process ID file.
 
     Returns:
         The process ID.
@@ -192,8 +195,8 @@ def getpid() -> int:
         * :data:`darc.const.PATH_ID`
 
     """
-    if os.path.isfile(PATH_ID):
-        with open(PATH_ID) as file:
+    if os.path.isfile(path):
+        with open(path) as file:
             return int(file.read().strip())
     return -1
 

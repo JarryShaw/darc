@@ -14,8 +14,9 @@ import os
 import platform
 import re
 import shlex
+import signal
 import subprocess  # nosec: B404
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import requests
 import selenium.webdriver.common.proxy as selenium_proxy
@@ -32,7 +33,11 @@ from darc.logging import logger
 from darc.parse import _check, get_content_type
 
 if TYPE_CHECKING:
-    from typing import List, Optional
+    from io import IO  # type: ignore[attr-defined] # pylint: disable=no-name-in-module
+    from signal import Signals  # pylint: disable=no-name-in-module
+    from subprocess import Popen  # nosec: B404
+    from types import FrameType
+    from typing import List, NoReturn, Optional, Union
 
     import darc.link as darc_link  # Link
     from darc._typing import File
@@ -93,6 +98,48 @@ else:
 I2P_REGEX = re.compile(r'.*\.i2p', re.IGNORECASE)
 
 
+def launch_i2p() -> 'Popen[bytes]':
+    """Launch I2P process.
+
+    See Also:
+        This function mocks the behaviour of :func:`stem.process.launch_tor`.
+
+    """
+    i2p_process = None
+    try:
+        i2p_process = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
+            _I2P_ARGS, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        )
+
+        def timeout_handlet(signum: 'Optional[Union[int, Signals]]' = None,
+                            frame: 'Optional[FrameType]' = None) -> 'NoReturn':
+            raise OSError('reached a %i second timeout without success' % BS_WAIT)
+
+        signal.signal(signal.SIGALRM, timeout_handlet)
+        signal.setitimer(signal.ITIMER_REAL, BS_WAIT)
+
+        while True:
+            init_line = cast(
+                'IO[bytes]', i2p_process.stdout
+            ).readline().decode('utf-8', 'replace').strip()
+            logger.pline(LOG_VERBOSE, init_line)
+
+            if not init_line:
+                raise OSError('Process terminated: Timed out')
+
+            if 'running: PID:' in init_line:
+                return i2p_process
+            if 'I2P Service is already running.' in init_line:
+                return i2p_process
+    except BaseException:
+        if i2p_process is not None:
+            i2p_process.kill()  # don't leave a lingering process
+            i2p_process.wait()
+        raise
+    finally:
+        signal.alarm(0)  # stop alarm
+
+
 def _i2p_bootstrap() -> None:
     """I2P bootstrap.
 
@@ -103,6 +150,7 @@ def _i2p_bootstrap() -> None:
 
     See Also:
         * :func:`darc.proxy.i2p.i2p_bootstrap`
+        * :func:`darc.proxy.i2p.launch_i2p`
         * :data:`darc.proxy.i2p.BS_WAIT`
         * :data:`darc.proxy.i2p._I2P_BS_FLAG`
         * :data:`darc.proxy.i2p._I2P_PROC`
@@ -111,22 +159,7 @@ def _i2p_bootstrap() -> None:
     global _I2P_BS_FLAG, _I2P_PROC  # pylint: disable=global-statement
 
     # launch I2P process
-    _I2P_PROC = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
-        _I2P_ARGS, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-    )
-
-    try:
-        stdout, stderr = _I2P_PROC.communicate(timeout=BS_WAIT)
-    except subprocess.TimeoutExpired as error:
-        stdout, stderr = error.stdout, error.stderr
-    if stdout is not None:
-        logger.pline(LOG_VERBOSE, stdout.decode())
-    if stderr is not None:
-        logger.pline(LOG_ERROR, stderr.decode())
-
-    returncode = _I2P_PROC.returncode or -1
-    if returncode != 0:
-        raise subprocess.CalledProcessError(returncode, _I2P_ARGS, stdout, stderr)
+    _I2P_PROC = launch_i2p()
 
     # update flag
     _I2P_BS_FLAG = True

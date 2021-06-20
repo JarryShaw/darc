@@ -8,13 +8,19 @@ around managing and processing the Freenet proxy.
 
 """
 
+import contextlib
 import getpass
 import os
 import platform
 import shlex
+import signal
 import subprocess  # nosec: B404
+import time
+from typing import TYPE_CHECKING, cast
 
-from darc.const import DARC_USER, DEBUG
+import psutil
+
+from darc.const import DARC_USER, DEBUG, getpid
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform
 from darc.logging import DEBUG as LOG_DEBUG
 from darc.logging import ERROR as LOG_ERROR
@@ -22,6 +28,13 @@ from darc.logging import INFO as LOG_INFO
 from darc.logging import VERBOSE as LOG_VERBOSE
 from darc.logging import WARNING as LOG_WARNING
 from darc.logging import logger
+
+if TYPE_CHECKING:
+    from io import IO  # type: ignore[attr-defined] # pylint: disable=no-name-in-module
+    from signal import Signals  # pylint: disable=no-name-in-module
+    from subprocess import Popen  # nosec: B404
+    from types import FrameType
+    from typing import NoReturn, Optional, Union
 
 # ZeroNet args
 FREENET_ARGS = shlex.split(os.getenv('FREENET_ARGS', ''))
@@ -67,6 +80,54 @@ else:
     logger.plog(LOG_DEBUG, '-*- FREENET PROXY -*-', object=_FREENET_ARGS)
 
 
+def launch_freenet() -> 'Popen[bytes]':
+    """Launch Freenet process.
+
+    See Also:
+        This function mocks the behaviour of :func:`stem.process.launch_tor`.
+
+    """
+    pidfile = os.path.join(FREENET_PATH, 'Freenet.pid')
+    with contextlib.suppress(OSError):
+        os.remove(pidfile)
+
+    zeronet_process = None
+    try:
+        zeronet_process = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
+            _FREENET_ARGS, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        )
+
+        def timeout_handlet(signum: 'Optional[Union[int, Signals]]' = None,
+                            frame: 'Optional[FrameType]' = None) -> 'NoReturn':
+            raise OSError('reached a %i second timeout without success' % BS_WAIT)
+
+        signal.signal(signal.SIGALRM, timeout_handlet)
+        signal.setitimer(signal.ITIMER_REAL, BS_WAIT)
+
+        while True:
+            init_line = cast(
+                'IO[bytes]', zeronet_process.stdout
+            ).readline().decode('utf-8', 'replace').strip()
+            logger.pline(LOG_VERBOSE, init_line)
+
+            if not init_line:
+                raise OSError('Process terminated: Timed out')
+
+            if os.path.exists(pidfile):
+                pid = getpid(pidfile)
+
+                time.sleep(1)  # wait a little bit
+                if psutil.pid_exists(pid):
+                    return zeronet_process
+    except BaseException:
+        if zeronet_process is not None:
+            zeronet_process.kill()  # don't leave a lingering process
+            zeronet_process.wait()
+        raise
+    finally:
+        signal.alarm(0)  # stop alarm
+
+
 def _freenet_bootstrap() -> None:
     """Freenet bootstrap.
 
@@ -77,6 +138,7 @@ def _freenet_bootstrap() -> None:
 
     See Also:
         * :func:`darc.proxy.freenet.freenet_bootstrap`
+        * :func:`darc.proxy.freenet.launch_freenet`
         * :data:`darc.proxy.freenet.BS_WAIT`
         * :data:`darc.proxy.freenet._FREENET_BS_FLAG`
         * :data:`darc.proxy.freenet._FREENET_PROC`
@@ -85,22 +147,7 @@ def _freenet_bootstrap() -> None:
     global _FREENET_BS_FLAG, _FREENET_PROC  # pylint: disable=global-statement
 
     # launch Freenet process
-    _FREENET_PROC = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
-        _FREENET_ARGS, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-    )
-
-    try:
-        stdout, stderr = _FREENET_PROC.communicate(timeout=BS_WAIT)
-    except subprocess.TimeoutExpired as error:
-        stdout, stderr = error.stdout, error.stderr
-    if stdout is not None:
-        logger.pline(LOG_VERBOSE, stdout.decode())
-    if stderr is not None:
-        logger.pline(LOG_ERROR, stderr.decode())
-
-    returncode = _FREENET_PROC.returncode or -1
-    if returncode != 0:
-        raise subprocess.CalledProcessError(returncode, _FREENET_ARGS, stdout, stderr)
+    _FREENET_PROC = launch_freenet()
 
     # update flag
     _FREENET_BS_FLAG = True
