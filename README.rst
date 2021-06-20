@@ -7,6 +7,10 @@
 .. |docs| replace:: **Official Documentation**
 .. _docs: https://darc.jarryshaw.me
 
+**NB**: Starting from version ``1.0.0``, new features of the project will not be
+developed into this public repository. Only bugfix and security patches will be
+applied to the update and new releases.
+
 ``darc`` is designed as a swiss army knife for darkweb crawling.
 It integrates ``requests`` to collect HTTP request and response
 information, such as cookies, header fields, etc. It also bundles
