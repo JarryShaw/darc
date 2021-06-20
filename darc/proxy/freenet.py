@@ -8,15 +8,19 @@ around managing and processing the Freenet proxy.
 
 """
 
+import contextlib
 import getpass
 import os
 import platform
 import shlex
 import signal
 import subprocess  # nosec: B404
+import time
 from typing import TYPE_CHECKING, cast
 
-from darc.const import DARC_USER, DEBUG
+import psutil
+
+from darc.const import DARC_USER, DEBUG, getpid
 from darc.error import FreenetBootstrapFailed, UnsupportedPlatform
 from darc.logging import DEBUG as LOG_DEBUG
 from darc.logging import ERROR as LOG_ERROR
@@ -83,6 +87,10 @@ def launch_freenet() -> 'Popen[bytes]':
         This function mocks the behaviour of :func:`stem.process.launch_tor`.
 
     """
+    pidfile = os.path.join(FREENET_PATH, 'Freenet.pid')
+    with contextlib.suppress(OSError):
+        os.remove(pidfile)
+
     zeronet_process = None
     try:
         zeronet_process = subprocess.Popen(  # pylint: disable=consider-using-with # nosec
@@ -103,10 +111,16 @@ def launch_freenet() -> 'Popen[bytes]':
             logger.pline(LOG_VERBOSE, init_line)
 
             if not init_line:
+                if (code := zeronet_process.returncode) is not None and code == 0:
+                    return zeronet_process
                 raise OSError('Process terminated: Timed out')
 
-            if (code := zeronet_process.returncode) is not None and code == 0:
-                return zeronet_process
+            if os.path.exists(pidfile):
+                pid = getpid(pidfile)
+
+                time.sleep(1)  # wait a little bit
+                if psutil.pid_exists(pid):
+                    return zeronet_process
     except BaseException:
         if zeronet_process is not None:
             zeronet_process.kill()  # don't leave a lingering process

@@ -107,6 +107,7 @@ attrs = dict(
         'file-magic',
         'peewee',
         'pottery',
+        'psutil',
         'python-datauri',
         'redis[hiredis]',
         'requests-futures',
