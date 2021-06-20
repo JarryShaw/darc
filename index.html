@@ -49,7 +49,6 @@ of such view.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="darc/index.html">Technical Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="darc/process.html">Main Processing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="darc/crawl.html">Web Crawlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="darc/link.html">URL Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="darc/parse.html">Source Parsing</a></li>
@@ -113,7 +112,7 @@ in-depth view of a link and provide more visual information</p></li>
 </ul>
 <p>The general process can be described as following for <em>workers</em> of <code class="docutils literal notranslate"><span class="pre">crawler</span></code> type:</p>
 <ol class="arabic">
-<li><p><a class="reference internal" href="darc/process.html#darc.process.process_crawler" title="darc.process.process_crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">process_crawler()</span></code></a>: obtain URLs from the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">process_crawler()</span></code>: obtain URLs from the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>
 link database (c.f. <a class="reference internal" href="darc/db.html#darc.db.load_requests" title="darc.db.load_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_requests()</span></code></a>), and feed such URLs to
 <a class="reference internal" href="darc/crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>.</p>
 <div class="admonition note">
@@ -170,7 +169,7 @@ be saved into <code class="xref py py-mod docutils literal notranslate"><span cl
 </ol>
 <p>The general process can be described as following for <em>workers</em> of <code class="docutils literal notranslate"><span class="pre">loader</span></code> type:</p>
 <ol class="arabic">
-<li><p><a class="reference internal" href="darc/process.html#darc.process.process_loader" title="darc.process.process_loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">process_loader()</span></code></a>: in the meanwhile, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">process_loader()</span></code>: in the meanwhile, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will
 obtain URLs from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> link database (c.f. <a class="reference internal" href="darc/db.html#darc.db.load_selenium" title="darc.db.load_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_selenium()</span></code></a>),
 and feed such URLs to <a class="reference internal" href="darc/crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code></a>.</p>
 <div class="admonition note">

@@ -38,29 +38,6 @@
 <section id="auxiliary-function">
 <h2>Auxiliary Function<a class="headerlink" href="#auxiliary-function" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="darc.const.getpid">
-<span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">getpid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/const.html#getpid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.const.getpid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get process ID.</p>
-<p>The process ID will be saved under the <a class="reference internal" href="#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_DB</span></code></a>
-folder, in a file named <code class="docutils literal notranslate"><span class="pre">darc.pid</span></code>. If no such file exists,
-<code class="docutils literal notranslate"><span class="pre">-1</span></code> will be returned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The process ID.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#darc.const.PATH_ID" title="darc.const.PATH_ID"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.const.PATH_ID</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="darc.const.get_lock">
 <span class="sig-prename descclassname"><span class="pre">darc.const.</span></span><span class="sig-name descname"><span class="pre">get_lock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/const.html#get_lock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.const.get_lock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a lock.</p>
@@ -357,7 +334,7 @@ root of data storage.</p>
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.const.PATH_DB</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.const.getpid" title="darc.const.getpid"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.const.getpid()</span></code></a></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.const.getpid()</span></code></p></li>
 </ul>
 </div>
 </dd></dl>
@@ -618,7 +595,6 @@ running after the event.</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Technical Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="process.html">Main Processing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crawl.html">Web Crawlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="link.html">URL Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parse.html">Source Parsing</a></li>
