@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Freenet Proxy &#8212; darc 0.9.5 documentation</title>
+    <title>&lt;no title&gt; &#8212; darc 0.9.5 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -15,8 +15,8 @@
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="I2P Proxy" href="i2p.html" />
-    <link rel="prev" title="Ethereum Addresses" href="ethereum.html" />
+    <link rel="next" title="&lt;no title&gt;" href="i2p.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="ethereum.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -33,106 +33,38 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-darc.proxy.freenet"></span><section id="freenet-proxy">
-<h1>Freenet Proxy<a class="headerlink" href="#freenet-proxy" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="#module-darc.proxy.freenet" title="darc.proxy.freenet"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy.freenet</span></code></a> module contains the auxiliary functions
-around managing and processing the Freenet proxy.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.proxy.freenet._freenet_bootstrap">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">_freenet_bootstrap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/freenet.html#_freenet_bootstrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.freenet._freenet_bootstrap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Freenet bootstrap.</p>
-<p>The bootstrap arguments are defined as <a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet._FREENET_ARGS" title="darc.proxy.freenet.darc.proxy.freenet._FREENET_ARGS"><code class="xref py py-data docutils literal notranslate"><span class="pre">_FREENET_ARGS</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.CalledProcessError" title="(in Python v3.9)"><strong>subprocess.CalledProcessError</strong></a> – If the return code of <a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet._FREENET_PROC" title="darc.proxy.freenet.darc.proxy.freenet._FREENET_PROC"><code class="xref py py-data docutils literal notranslate"><span class="pre">_FREENET_PROC</span></code></a> is non-zero.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#darc.proxy.freenet.freenet_bootstrap" title="darc.proxy.freenet.freenet_bootstrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.freenet.freenet_bootstrap()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet.BS_WAIT" title="darc.proxy.freenet.darc.proxy.freenet.BS_WAIT"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.proxy.freenet.BS_WAIT</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet._FREENET_BS_FLAG" title="darc.proxy.freenet.darc.proxy.freenet._FREENET_BS_FLAG"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.proxy.freenet._FREENET_BS_FLAG</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet._FREENET_PROC" title="darc.proxy.freenet.darc.proxy.freenet._FREENET_PROC"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.proxy.freenet._FREENET_PROC</span></code></a></p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.proxy.freenet.freenet_bootstrap">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">freenet_bootstrap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/freenet.html#freenet_bootstrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.freenet.freenet_bootstrap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bootstrap wrapper for Freenet.</p>
-<p>The function will bootstrap the Freenet proxy. It will retry for
-<a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_RETRY" title="darc.proxy.freenet.darc.proxy.freenet.FREENET_RETRY"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_RETRY</span></code></a> times in case of failure.</p>
-<p>Also, it will <strong>NOT</strong> re-bootstrap the proxy as is guaranteed by
-<a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet._FREENET_BS_FLAG" title="darc.proxy.freenet.darc.proxy.freenet._FREENET_BS_FLAG"><code class="xref py py-data docutils literal notranslate"><span class="pre">_FREENET_BS_FLAG</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Warns</dt>
-<dd class="field-odd"><p><strong>FreenetBootstrapFailed</strong> – If failed to bootstrap Freenet proxy.</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference internal" href="../error.html#darc.error.UnsupportedPlatform" title="darc.error.UnsupportedPlatform"><strong>UnsupportedPlatform</strong></a> – If the system is not supported, i.e. not macOS or Linux.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#darc.proxy.freenet._freenet_bootstrap" title="darc.proxy.freenet._freenet_bootstrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.freenet._freenet_bootstrap()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_RETRY" title="darc.proxy.freenet.darc.proxy.freenet.FREENET_RETRY"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.proxy.freenet.FREENET_RETRY</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet._FREENET_BS_FLAG" title="darc.proxy.freenet.darc.proxy.freenet._FREENET_BS_FLAG"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.proxy.freenet._FREENET_BS_FLAG</span></code></a></p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<p>The following constants are configuration through environment variables:</p>
+  <p>The following constants are configuration through environment variables:</p>
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.proxy.freenet.darc.proxy.freenet.FREENET_PORT">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">FREENET_PORT</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_PORT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.freenet.FREENET_PORT">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">FREENET_PORT</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.freenet.FREENET_PORT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Port for Freenet proxy connection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">8888</span></code></p>
 </dd>
 <dt class="field-even">Environ</dt>
-<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_PORT" title="darc.proxy.freenet.darc.proxy.freenet.FREENET_PORT"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_PORT</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.freenet.FREENET_PORT" title="darc.proxy.freenet.FREENET_PORT"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_PORT</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.proxy.freenet.darc.proxy.freenet.FREENET_RETRY">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">FREENET_RETRY</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_RETRY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.freenet.FREENET_RETRY">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">FREENET_RETRY</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.freenet.FREENET_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retry times for Freenet bootstrap when failure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">3</span></code></p>
 </dd>
 <dt class="field-even">Environ</dt>
-<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_RETRY" title="darc.proxy.freenet.darc.proxy.freenet.FREENET_RETRY"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_RETRY</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.freenet.FREENET_RETRY" title="darc.proxy.freenet.FREENET_RETRY"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_RETRY</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.proxy.freenet.darc.proxy.freenet.BS_WAIT">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">BS_WAIT</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a></em><a class="headerlink" href="#darc.proxy.freenet.darc.proxy.freenet.BS_WAIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.freenet.BS_WAIT">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">BS_WAIT</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a></em><a class="headerlink" href="#darc.proxy.freenet.BS_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time after which the attempt to start Freenet is aborted.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -149,22 +81,22 @@ around managing and processing the Freenet proxy.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.proxy.freenet.darc.proxy.freenet.FREENET_PATH">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">FREENET_PATH</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_PATH" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.freenet.FREENET_PATH">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">FREENET_PATH</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.proxy.freenet.FREENET_PATH" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the Freenet project.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">/usr/local/src/freenet</span></code></p>
 </dd>
 <dt class="field-even">Environ</dt>
-<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_PATH" title="darc.proxy.freenet.darc.proxy.freenet.FREENET_PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_PATH</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.freenet.FREENET_PATH" title="darc.proxy.freenet.FREENET_PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_PATH</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.proxy.freenet.darc.proxy.freenet.FREENET_ARGS">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">FREENET_ARGS</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_ARGS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.freenet.FREENET_ARGS">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">FREENET_ARGS</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.freenet.FREENET_ARGS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Freenet bootstrap arguments for <code class="docutils literal notranslate"><span class="pre">run.sh</span> <span class="pre">start</span></code>.</p>
 <p>If provided, it should be parsed as command
 line arguments (c.f. <a class="reference external" href="https://docs.python.org/3/library/shlex.html#shlex.split" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">shlex.split()</span></code></a>).</p>
@@ -173,7 +105,7 @@ line arguments (c.f. <a class="reference external" href="https://docs.python.org
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
 </dd>
 <dt class="field-even">Environ</dt>
-<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.freenet.darc.proxy.freenet.FREENET_ARGS" title="darc.proxy.freenet.darc.proxy.freenet.FREENET_ARGS"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_ARGS</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="#darc.proxy.freenet.FREENET_ARGS" title="darc.proxy.freenet.FREENET_ARGS"><code class="xref py py-data docutils literal notranslate"><span class="pre">FREENET_ARGS</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -185,8 +117,8 @@ if current user (c.f. <a class="reference external" href="https://docs.python.or
 
 <p>The following constants are defined for internal usage:</p>
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.proxy.freenet.darc.proxy.freenet._MNG_FREENET">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">_MNG_FREENET</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.proxy.freenet.darc.proxy.freenet._MNG_FREENET" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.freenet._MNG_FREENET">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">_MNG_FREENET</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.proxy.freenet._MNG_FREENET" title="Permalink to this definition">¶</a></dt>
 <dd><p>If manage Freenet proxy through <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -199,20 +131,20 @@ if current user (c.f. <a class="reference external" href="https://docs.python.or
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.proxy.freenet.darc.proxy.freenet._FREENET_BS_FLAG">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">_FREENET_BS_FLAG</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.proxy.freenet.darc.proxy.freenet._FREENET_BS_FLAG" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.freenet._FREENET_BS_FLAG">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">_FREENET_BS_FLAG</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.proxy.freenet._FREENET_BS_FLAG" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the Freenet proxy is bootstrapped.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.proxy.freenet.darc.proxy.freenet._FREENET_PROC">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">_FREENET_PROC</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen" title="(in Python v3.9)"><span class="pre">subprocess.Popen</span></a></em><a class="headerlink" href="#darc.proxy.freenet.darc.proxy.freenet._FREENET_PROC" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.freenet._FREENET_PROC">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">_FREENET_PROC</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen" title="(in Python v3.9)"><span class="pre">subprocess.Popen</span></a></em><a class="headerlink" href="#darc.proxy.freenet._FREENET_PROC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Freenet proxy process running in the background.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.proxy.freenet.darc.proxy.freenet._FREENET_ARGS">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">_FREENET_ARGS</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.freenet.darc.proxy.freenet._FREENET_ARGS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.proxy.freenet._FREENET_ARGS">
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.freenet.</span></span><span class="sig-name descname"><span class="pre">_FREENET_ARGS</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.freenet._FREENET_ARGS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Freenet proxy bootstrap arguments.</p>
 </dd></dl>
 
@@ -241,24 +173,9 @@ if current user (c.f. <a class="reference external" href="https://docs.python.or
 
 
 <h3>Navigation</h3>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../crawl.html">Web Crawlers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html">Source Parsing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../save.html">Source Saving</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html">Link Database</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html">Data Submission</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../requests.html">Requests Wrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../selenium.html">Selenium Wrapper</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">Proxy Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../sites/index.html">Sites Customisation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../error.html">Custom Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Data Models</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Technical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../custom.html">Customisations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docker.html">Docker Integration</a></li>
@@ -274,8 +191,8 @@ if current user (c.f. <a class="reference external" href="https://docs.python.or
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Technical Documentation</a><ul>
   <li><a href="index.html">Proxy Utilities</a><ul>
-      <li>Previous: <a href="ethereum.html" title="previous chapter">Ethereum Addresses</a></li>
-      <li>Next: <a href="i2p.html" title="next chapter">I2P Proxy</a></li>
+      <li>Previous: <a href="ethereum.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="i2p.html" title="next chapter">&lt;no title&gt;</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

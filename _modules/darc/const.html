@@ -211,12 +211,15 @@
 <span class="k">del</span> <span class="n">_DB_URL</span>
 
 
-<span class="k">def</span> <span class="nf">getpid</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">getpid</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">PATH_ID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get process ID.</span>
 
 <span class="sd">    The process ID will be saved under the :data:`~darc.const.PATH_DB`</span>
 <span class="sd">    folder, in a file named ``darc.pid``. If no such file exists,</span>
 <span class="sd">    ``-1`` will be returned.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: Path to the process ID file.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The process ID.</span>
@@ -225,8 +228,8 @@
 <span class="sd">        * :data:`darc.const.PATH_ID`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PATH_ID</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">PATH_ID</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 
