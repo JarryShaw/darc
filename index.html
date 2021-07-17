@@ -41,7 +41,7 @@ developed into this public repository. Only bugfix and security patches will be
 applied to the update and new releases.</p>
 </div>
 <p><a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> is designed as a swiss army knife for darkweb crawling.
-It integrates <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> to collect HTTP request and response
+It integrates <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.26.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> to collect HTTP request and response
 information, such as cookies, header fields, etc. It also bundles
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> to provide a fully rendered web page and screenshot
 of such view.</p>
@@ -113,7 +113,7 @@ in-depth view of a link and provide more visual information</p></li>
 </ul>
 <p>The general process can be described as following for <em>workers</em> of <code class="docutils literal notranslate"><span class="pre">crawler</span></code> type:</p>
 <ol class="arabic">
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">process_crawler()</span></code>: obtain URLs from the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">process_crawler()</span></code>: obtain URLs from the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.26.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>
 link database (c.f. <a class="reference internal" href="darc/db.html#darc.db.load_requests" title="darc.db.load_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_requests()</span></code></a>), and feed such URLs to
 <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code>.</p>
 <div class="admonition note">
@@ -128,7 +128,7 @@ support; if none, the function will be called in single-threading.</p>
 <a class="reference internal" href="darc/link.html#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_link()</span></code></a>, and check if need to crawl the
 URL (c.f. <a class="reference internal" href="darc/const.html#darc.const.PROXY_WHITE_LIST" title="darc.const.PROXY_WHITE_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">PROXY_WHITE_LIST</span></code></a>, <a class="reference internal" href="darc/const.html#darc.const.PROXY_BLACK_LIST" title="darc.const.PROXY_BLACK_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">PROXY_BLACK_LIST</span></code></a>,
 <a class="reference internal" href="darc/const.html#darc.const.LINK_WHITE_LIST" title="darc.const.LINK_WHITE_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">LINK_WHITE_LIST</span></code></a> and <a class="reference internal" href="darc/const.html#darc.const.LINK_BLACK_LIST" title="darc.const.LINK_BLACK_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">LINK_BLACK_LIST</span></code></a>);
-if true, then crawl the URL with <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>.</p>
+if true, then crawl the URL with <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.26.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>.</p>
 <p>If the URL is from a brand new host, <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will first try
 to fetch and save <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> and sitemaps of the host
 (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">save_robots()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">save_sitemap()</span></code>),
@@ -193,7 +193,7 @@ full-page screenshot will be taken and saved.</p>
 will be called and submit the document just loaded.</p>
 <p>Later, <a class="reference internal" href="darc/parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a> will be called then to
 extract all possible links from the HTML document and save such
-links into the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.25.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database (c.f. <a class="reference internal" href="darc/db.html#darc.db.save_requests" title="darc.db.save_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code></a>).</p>
+links into the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.26.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database (c.f. <a class="reference internal" href="darc/db.html#darc.db.save_requests" title="darc.db.save_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code></a>).</p>
 </li>
 </ol>
 <div class="admonition important">
