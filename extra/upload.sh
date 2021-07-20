@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -ex
-
 function retry() {
     while true; do
         >&2 echo "+ $@"
@@ -10,6 +8,8 @@ function retry() {
     done
     >&2 echo "exit: 0"
 }
+
+set -ex
 
 # archive filename
 filename="darc-api-$(hostname -I | awk '{print $1}')-$(date +%Y%m%d-%H%M%S).tar.gz"
