@@ -263,11 +263,11 @@
         },
         "pottery": {
             "hashes": [
-                "sha256:6e3a9e197c42a69ab78df69a4002b4286e3e984011d60913e7b02102f31d42aa",
-                "sha256:d01dd8d0ebf2d13792e835b507e66f0f871d32c8053eaab01dd1923d4942415b"
+                "sha256:06f05c208e5bbad756df737b0df5759c1228c17ee187211965d21dded59f96ce",
+                "sha256:36c7fcce3dd62e4fae826a6b06811a93873a9f6846abdb24e583a23acd9c5a2b"
             ],
             "index": "tuna",
-            "version": "==1.3.1"
+            "version": "==1.3.3"
         },
         "psutil": {
             "hashes": [
@@ -892,11 +892,11 @@
         },
         "prompt-toolkit": {
             "hashes": [
-                "sha256:08360ee3a3148bdb5163621709ee322ec34fc4375099afa4bbf751e9b7b7fa4f",
-                "sha256:7089d8d2938043508aa9420ec18ce0922885304cddae87fb96eebca942299f88"
+                "sha256:6076e46efae19b1e0ca1ec003ed37a933dc94b4d20f486235d436e64771dcd5c",
+                "sha256:eb71d5a6b72ce6db177af4a7d4d7085b99756bf656d98ffcc4fecd36850eea6c"
             ],
-            "markers": "python_full_version >= '3.6.1'",
-            "version": "==3.0.19"
+            "markers": "python_full_version >= '3.6.2'",
+            "version": "==3.0.20"
         },
         "ptyprocess": {
             "hashes": [
@@ -1133,11 +1133,11 @@
         },
         "stevedore": {
             "hashes": [
-                "sha256:3a5bbd0652bf552748871eaa73a4a8dc2899786bc497a2aa1fcb4dcdb0debeee",
-                "sha256:50d7b78fbaf0d04cd62411188fa7eedcb03eb7f4c4b37005615ceebe582aa82a"
+                "sha256:59b58edb7f57b11897f150475e7bc0c39c5381f0b8e3fa9f5c20ce6c89ec4aa1",
+                "sha256:920ce6259f0b2498aaa4545989536a27e4e4607b8318802d7ddc3a533d3d069e"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.3.0"
+            "version": "==3.4.0"
         },
         "toml": {
             "hashes": [
