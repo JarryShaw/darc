@@ -69,7 +69,7 @@ successfully requested a URL with such hostname.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="darc.model.web.hostname.HostnameModel.alive">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">alive</span></span><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.alive" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">alive</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.alive" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the hostname is still active.</p>
 <p>We consider the hostname as <em>inactive</em>, only if all
 subsidiary URLs are <em>inactive</em>.</p>
@@ -122,7 +122,7 @@ label and 255 characters per FQDN.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="darc.model.web.hostname.HostnameModel.since">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">since</span></span><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.since" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">since</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><span class="pre">datetime.datetime</span></a></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.since" title="Permalink to this definition">¶</a></dt>
 <dd><p>The hostname is active/inactive since such timestamp.</p>
 <p>We confider the timestamp by the earlies timestamp
 of related subsidiary <em>active/inactive</em> URLs.</p>
@@ -202,7 +202,7 @@ successfully requested such URL and the status code is
 
 <dl class="py property">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel.childrent">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">childrent</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[darc.model.web.url.URLModel]</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.childrent" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">childrent</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#darc.model.web.url.URLModel" title="darc.model.web.url.URLModel"><span class="pre">darc.model.web.url.URLModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.url.URLModel.childrent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Back reference to which URLs were identified from the URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
