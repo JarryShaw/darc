@@ -33,7 +33,7 @@ pymysql[rsa]==1.0.2
 pyopenssl==21.0.0
 pysocks==1.7.1
 python-datauri==1.0.0
-redis[hiredis]==3.5.3
+redis[hiredis]==4.0.0
 requests-futures==1.0.0
 requests[socks]==2.26.0
 selenium==4.0.0
