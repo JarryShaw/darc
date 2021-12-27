@@ -5,8 +5,8 @@
 
 # Python packages
 pip==21.3.1
-setuptools==60.0.0
-wheel==0.37.0
+setuptools==60.1.0
+wheel==0.37.1
 
 # Python dependencies
 #
@@ -31,14 +31,14 @@ idna==3.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3
 mmh3==3.0.0
 outcome==1.1.0; python_version >= '3.6'
 peewee==3.14.8
-pottery==2.2.0
+pottery==2.3.0
 psutil==5.8.0
 pycparser==2.21; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 pymysql[rsa]==1.0.2
 pyopenssl==21.0.0
 pysocks==1.7.1
 python-datauri==1.1.0
-redis[hiredis]==4.0.2
+redis[hiredis]==4.1.0
 requests-futures==1.0.0
 requests[socks]==2.26.0
 selenium==4.1.0
