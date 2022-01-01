@@ -41,638 +41,638 @@ from <a class="reference external" href="https://pydantic-docs.helpmanual.io/"><
 <section id="new-host-submission">
 <h2>New Host Submission<a class="headerlink" href="#new-host-submission" title="Permalink to this headline">¶</a></h2>
 <p>The data submission from <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code>.</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;new_host&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Data submission from :func:`darc.submit.submit_new_host`.&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;$PARTIAL$&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;$Partial$&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;partial flag - true / false&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;$RELOAD$&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;$Reload$&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;reload flag - true / false&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;[metadata]&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;[Metadata]&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;metadata of URL&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Metadata&quot;</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Timestamp&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;requested timestamp in ISO format as in name of saved file&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;date-time&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;URL&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Url&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;original URL&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;minLength&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="nt">&quot;maxLength&quot;</span><span class="p">:</span> <span class="mi">65536</span><span class="p">,</span>
-      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Robots&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Robots&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;robots.txt from the host (if not exists, then ``null``)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/RobotsDocument&quot;</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Sitemaps&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Sitemaps&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;sitemaps from the host (if none, then ``null``)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/SitemapDocument&quot;</span>
-      <span class="p">}</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Hosts&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Hosts&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;hosts.txt from the host (if proxy type is ``i2p``; if not exists, then ``null``)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/HostsDocument&quot;</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;$PARTIAL$&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;$RELOAD$&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;[metadata]&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;URL&quot;</span>
-  <span class="p">],</span>
-  <span class="nt">&quot;definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;Proxy&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Proxy&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Proxy type.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;null&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tor&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;i2p&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;zeronet&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;freenet&quot;</span>
-      <span class="p">],</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;metadata&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Metadata of URL.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Url&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;minLength&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-          <span class="nt">&quot;maxLength&quot;</span><span class="p">:</span> <span class="mi">65536</span><span class="p">,</span>
-          <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;proxy&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Proxy&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Host&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;hostname / netloc, c.f. ``urllib.parse.urlparse``&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;base&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Base&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;sha256 of URL as name for saved files (timestamp is in ISO format) - JSON log as this one: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json; - HTML from requests: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html; - HTML from selenium: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html; - generic data files: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;url&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;proxy&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;host&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;base&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;name&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;RobotsDocument&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;RobotsDocument&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;``robots.txt`` document data.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Path&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/robots.txt&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Data&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;path&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;data&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;SitemapDocument&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;SitemapDocument&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Sitemaps document data.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Path&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/sitemap_&lt;name&gt;.xml&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Data&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;path&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;data&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;HostsDocument&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;HostsDocument&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;``hosts.txt`` document data.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Path&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/hosts.txt&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Data&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;path&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;data&quot;</span>
-      <span class="p">]</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;new_host&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data submission from :func:`darc.submit.submit_new_host`.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;$PARTIAL$&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$Partial$&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;partial flag - true / false&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;$RELOAD$&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$Reload$&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;reload flag - true / false&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;[metadata]&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[Metadata]&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metadata of URL&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/Metadata&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;requested timestamp in ISO format as in name of saved file&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date-time&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;original URL&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;minLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;maxLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65536</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uri&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Robots&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Robots&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;robots.txt from the host (if not exists, then ``null``)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/RobotsDocument&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Sitemaps&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sitemaps&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sitemaps from the host (if none, then ``null``)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/SitemapDocument&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Hosts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hosts&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hosts.txt from the host (if proxy type is ``i2p``; if not exists, then ``null``)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/HostsDocument&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;$PARTIAL$&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;$RELOAD$&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;[metadata]&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;URL&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">],</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;definitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Proxy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Proxy&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Proxy type.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;null&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;tor&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;i2p&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;zeronet&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;freenet&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">],</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Metadata of URL.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;minLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;maxLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65536</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uri&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;proxy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/Proxy&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Host&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hostname / netloc, c.f. ``urllib.parse.urlparse``&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;base&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Base&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Name&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sha256 of URL as name for saved files (timestamp is in ISO format) - JSON log as this one: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json; - HTML from requests: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html; - HTML from selenium: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html; - generic data files: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;proxy&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;host&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;base&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;name&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;RobotsDocument&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RobotsDocument&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;``robots.txt`` document data.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/robots.txt&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;data&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;SitemapDocument&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SitemapDocument&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sitemaps document data.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/sitemap_&lt;name&gt;.xml&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;data&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;HostsDocument&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HostsDocument&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;``hosts.txt`` document data.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/hosts.txt&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;data&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="requests-submission">
 <h2>Requests Submission<a class="headerlink" href="#requests-submission" title="Permalink to this headline">¶</a></h2>
 <p>The data submission from <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_requests()</span></code>.</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;requests&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Data submission from :func:`darc.submit.submit_requests`.&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;$PARTIAL$&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;$Partial$&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;partial flag - true / false&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;[metadata]&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;[Metadata]&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;metadata of URL&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Metadata&quot;</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Timestamp&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;requested timestamp in ISO format as in name of saved file&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;date-time&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;URL&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Url&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;original URL&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;minLength&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="nt">&quot;maxLength&quot;</span><span class="p">:</span> <span class="mi">65536</span><span class="p">,</span>
-      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Method&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Method&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;request method&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Status-Code&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Status-Code&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;response status code&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Reason&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Reason&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;response reason&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Cookies&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Cookies&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;response cookies (if any)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-      <span class="p">}</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Session&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Session&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;session cookies (if any)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-      <span class="p">}</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Request&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Request&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;request headers (if any)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-      <span class="p">}</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Response&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Response&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;response headers (if any)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-      <span class="p">}</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;content type&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;[a-zA-Z0-9.-]+/[a-zA-Z0-9.-]+&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Document&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Document&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;requested file (if not exists, then ``null``)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/RequestsDocument&quot;</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;History&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;History&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;redirection history (if any)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/HistoryModel&quot;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;$PARTIAL$&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;[metadata]&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;URL&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Method&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Status-Code&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Reason&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Cookies&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Session&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Request&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Response&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;History&quot;</span>
-  <span class="p">],</span>
-  <span class="nt">&quot;definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;Proxy&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Proxy&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Proxy type.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;null&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tor&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;i2p&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;zeronet&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;freenet&quot;</span>
-      <span class="p">],</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;metadata&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Metadata of URL.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Url&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;minLength&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-          <span class="nt">&quot;maxLength&quot;</span><span class="p">:</span> <span class="mi">65536</span><span class="p">,</span>
-          <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;proxy&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Proxy&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Host&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;hostname / netloc, c.f. ``urllib.parse.urlparse``&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;base&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Base&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;sha256 of URL as name for saved files (timestamp is in ISO format) - JSON log as this one: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json; - HTML from requests: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html; - HTML from selenium: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html; - generic data files: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;url&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;proxy&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;host&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;base&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;name&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;RequestsDocument&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;RequestsDocument&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;:mod:`requests` document data.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Path&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html; or if the document is of generic content type, i.e. not HTML - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Data&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;path&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;data&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;HistoryModel&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;HistoryModel&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;:mod:`requests` history data.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;URL&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Url&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;original URL&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;minLength&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-          <span class="nt">&quot;maxLength&quot;</span><span class="p">:</span> <span class="mi">65536</span><span class="p">,</span>
-          <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;Method&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Method&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;request method&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;Status-Code&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Status-Code&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;response status code&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;Reason&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Reason&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;response reason&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;Cookies&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Cookies&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;response cookies (if any)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-          <span class="p">}</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;Session&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Session&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;session cookies (if any)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-          <span class="p">}</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;Request&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Request&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;request headers (if any)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-          <span class="p">}</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;Response&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Response&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;response headers (if any)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-          <span class="p">}</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;Document&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Document&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;URL&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Method&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Status-Code&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Reason&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Cookies&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Session&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Request&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Response&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Document&quot;</span>
-      <span class="p">]</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;requests&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data submission from :func:`darc.submit.submit_requests`.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;$PARTIAL$&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$Partial$&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;partial flag - true / false&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;[metadata]&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[Metadata]&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metadata of URL&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/Metadata&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;requested timestamp in ISO format as in name of saved file&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date-time&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;original URL&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;minLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;maxLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65536</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uri&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Method&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Method&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;request method&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Status-Code&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Status-Code&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;response status code&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reason&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;response reason&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Cookies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cookies&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;response cookies (if any)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Session&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Session&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;session cookies (if any)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Request&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Request&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;request headers (if any)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Response&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Response&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;response headers (if any)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Content-Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content type&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[a-zA-Z0-9.-]+/[a-zA-Z0-9.-]+&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Document&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Document&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;requested file (if not exists, then ``null``)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/RequestsDocument&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;History&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;History&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;redirection history (if any)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/HistoryModel&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;$PARTIAL$&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;[metadata]&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;URL&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Method&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Status-Code&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Reason&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Cookies&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Session&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Request&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Response&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;History&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">],</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;definitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Proxy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Proxy&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Proxy type.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;null&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;tor&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;i2p&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;zeronet&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;freenet&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">],</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Metadata of URL.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;minLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;maxLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65536</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uri&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;proxy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/Proxy&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Host&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hostname / netloc, c.f. ``urllib.parse.urlparse``&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;base&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Base&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Name&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sha256 of URL as name for saved files (timestamp is in ISO format) - JSON log as this one: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json; - HTML from requests: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html; - HTML from selenium: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html; - generic data files: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;proxy&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;host&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;base&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;name&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;RequestsDocument&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RequestsDocument&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;:mod:`requests` document data.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html; or if the document is of generic content type, i.e. not HTML - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;data&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;HistoryModel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HistoryModel&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;:mod:`requests` history data.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;original URL&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;minLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;maxLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65536</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uri&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;Method&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Method&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;request method&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;Status-Code&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Status-Code&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;response status code&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;Reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reason&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;response reason&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;Cookies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cookies&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;response cookies (if any)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;Session&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Session&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;session cookies (if any)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;Request&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Request&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;request headers (if any)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;Response&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Response&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;response headers (if any)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;Document&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Document&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;URL&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;Method&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;Status-Code&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;Reason&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;Cookies&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;Session&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;Request&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;Response&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;Document&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="selenium-submission">
 <h2>Selenium Submission<a class="headerlink" href="#selenium-submission" title="Permalink to this headline">¶</a></h2>
 <p>The data submission from <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_selenium()</span></code>.</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;selenium&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Data submission from :func:`darc.submit.submit_requests`.&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;$PARTIAL$&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;$Partial$&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;partial flag - true / false&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;[metadata]&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;[Metadata]&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;metadata of URL&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Metadata&quot;</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Timestamp&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;requested timestamp in ISO format as in name of saved file&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;date-time&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;URL&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Url&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;original URL&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;minLength&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="nt">&quot;maxLength&quot;</span><span class="p">:</span> <span class="mi">65536</span><span class="p">,</span>
-      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Document&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Document&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;rendered HTML document (if not exists, then ``null``)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/SeleniumDocument&quot;</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Screenshot&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Screenshot&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;web page screenshot (if not exists, then ``null``)&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/ScreenshotDocument&quot;</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;$PARTIAL$&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;[metadata]&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;URL&quot;</span>
-  <span class="p">],</span>
-  <span class="nt">&quot;definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;Proxy&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Proxy&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Proxy type.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;null&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tor&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;i2p&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;zeronet&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;freenet&quot;</span>
-      <span class="p">],</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;Metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;metadata&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Metadata of URL.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Url&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;minLength&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-          <span class="nt">&quot;maxLength&quot;</span><span class="p">:</span> <span class="mi">65536</span><span class="p">,</span>
-          <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;proxy&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Proxy&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Host&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;hostname / netloc, c.f. ``urllib.parse.urlparse``&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;base&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Base&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;sha256 of URL as name for saved files (timestamp is in ISO format) - JSON log as this one: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json; - HTML from requests: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html; - HTML from selenium: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html; - generic data files: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;url&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;proxy&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;host&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;base&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;name&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;SeleniumDocument&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;SeleniumDocument&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;:mod:`selenium` document data.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Path&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.html&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Data&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;path&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;data&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;ScreenshotDocument&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;ScreenshotDocument&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Screenshot document data.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Path&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.png&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">},</span>
-        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Data&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-        <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;path&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;data&quot;</span>
-      <span class="p">]</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;selenium&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data submission from :func:`darc.submit.submit_requests`.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;$PARTIAL$&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$Partial$&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;partial flag - true / false&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;[metadata]&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[Metadata]&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metadata of URL&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/Metadata&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;requested timestamp in ISO format as in name of saved file&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date-time&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;original URL&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;minLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;maxLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65536</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uri&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Document&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Document&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rendered HTML document (if not exists, then ``null``)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/SeleniumDocument&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Screenshot&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Screenshot&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;web page screenshot (if not exists, then ``null``)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/ScreenshotDocument&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;$PARTIAL$&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;[metadata]&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;URL&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">],</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;definitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Proxy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Proxy&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Proxy type.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;null&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;tor&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;i2p&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;zeronet&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;freenet&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">],</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;Metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Metadata of URL.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;minLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;maxLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65536</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uri&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;proxy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/Proxy&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Host&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hostname / netloc, c.f. ``urllib.parse.urlparse``&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;base&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Base&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Name&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sha256 of URL as name for saved files (timestamp is in ISO format) - JSON log as this one: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json; - HTML from requests: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html; - HTML from selenium: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html; - generic data files: &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;proxy&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;host&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;base&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;name&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;SeleniumDocument&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SeleniumDocument&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;:mod:`selenium` document data.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.html&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;data&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;ScreenshotDocument&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ScreenshotDocument&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Screenshot document data.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;path of the file, relative path (to data root path ``PATH_DATA``) in container - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.png&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content of the file (**base64** encoded)&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;path&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;data&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
