@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>&lt;no title&gt; &#8212; darc 1.0.0 documentation</title>
+    <title>Main Processing &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -15,7 +15,7 @@
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="crawl.html" />
+    <link rel="next" title="Web Crawlers" href="crawl.html" />
     <link rel="prev" title="Technical Documentation" href="index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -33,7 +33,252 @@
 
           <div class="body" role="main">
             
-  
+  <span class="target" id="module-darc.process"></span><section id="main-processing">
+<h1>Main Processing<a class="headerlink" href="#main-processing" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-darc.process" title="darc.process"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.process</span></code></a> module contains the main processing
+logic of the <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> module.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.process._process">
+<span class="sig-prename descclassname"><span class="pre">darc.process.</span></span><span class="sig-name descname"><span class="pre">_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">worker</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/process.html#_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.process._process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to start the worker process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>worker</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><em>Union</em></a><em>[</em><em>darc.process.process_crawler</em><em>, </em><em>darc.process.process_loader</em><em>]</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.process.process">
+<span class="sig-prename descclassname"><span class="pre">darc.process.</span></span><span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">worker</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/process.html#process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.process.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main process.</p>
+<p>The function will register <code class="xref py py-func docutils literal notranslate"><span class="pre">_signal_handler()</span></code> for <code class="docutils literal notranslate"><span class="pre">SIGTERM</span></code>,
+and start the main process of the <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> darkweb crawlers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>worker</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[‘crawler’, ‘loader’]) – Worker process type.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">worker</span></code> is not a valid value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p>Before starting the workers, the function will start proxies through</p>
+<ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.tor.tor_proxy()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.i2p.i2p_proxy()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.zeronet.zeronet_proxy()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.freenet.freenet_proxy()</span></code></p></li>
+</ul>
+<p>The general process can be described as following for <em>workers</em> of <code class="docutils literal notranslate"><span class="pre">crawler</span></code> type:</p>
+<ol class="arabic">
+<li><p><a class="reference internal" href="#darc.process.process_crawler" title="darc.process.process_crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">process_crawler()</span></code></a>: obtain URLs from the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.27.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>
+link database (c.f. <a class="reference internal" href="db.html#darc.db.load_requests" title="darc.db.load_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_requests()</span></code></a>), and feed such URLs to
+<a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <a class="reference internal" href="const.html#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be
+called with <em>multiprocessing</em> support; if <a class="reference internal" href="const.html#darc.const.FLAG_TH" title="darc.const.FLAG_TH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_TH</span></code></a>
+if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be called with <em>multithreading</em>
+support; if none, the function will be called in single-threading.</p>
+</div>
+</li>
+<li><p><a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>: parse the URL using
+<a class="reference internal" href="link.html#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_link()</span></code></a>, and check if need to crawl the
+URL (c.f. <a class="reference internal" href="const.html#darc.const.PROXY_WHITE_LIST" title="darc.const.PROXY_WHITE_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">PROXY_WHITE_LIST</span></code></a>, <a class="reference internal" href="const.html#darc.const.PROXY_BLACK_LIST" title="darc.const.PROXY_BLACK_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">PROXY_BLACK_LIST</span></code></a>
+, <a class="reference internal" href="const.html#darc.const.LINK_WHITE_LIST" title="darc.const.LINK_WHITE_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">LINK_WHITE_LIST</span></code></a> and <a class="reference internal" href="const.html#darc.const.LINK_BLACK_LIST" title="darc.const.LINK_BLACK_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">LINK_BLACK_LIST</span></code></a>);
+if true, then crawl the URL with <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.27.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>.</p>
+<p>If the URL is from a brand new host, <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will first try
+to fetch and save <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> and sitemaps of the host
+(c.f. <a class="reference internal" href="proxy/null.html#darc.proxy.null.save_robots" title="darc.proxy.null.save_robots"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_robots()</span></code></a> and <a class="reference internal" href="proxy/null.html#darc.proxy.null.save_sitemap" title="darc.proxy.null.save_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_sitemap()</span></code></a>),
+and extract then save the links from sitemaps (c.f. <a class="reference internal" href="proxy/null.html#darc.proxy.null.read_sitemap" title="darc.proxy.null.read_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code></a>)
+into link database for future crawling (c.f. <a class="reference internal" href="db.html#darc.db.save_requests" title="darc.db.save_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code></a>).
+Also, if the submission API is provided, <a class="reference internal" href="submit.html#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a>
+will be called and submit the documents just fetched.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> presented, and <a class="reference internal" href="const.html#darc.const.FORCE" title="darc.const.FORCE"><code class="xref py py-data docutils literal notranslate"><span class="pre">FORCE</span></code></a> is
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will check if allowed to crawl the URL.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The root path (e.g. <code class="docutils literal notranslate"><span class="pre">/</span></code> in <a class="reference external" href="https://www.example.com/">https://www.example.com/</a>) will always
+be crawled ignoring <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
+</div>
+<p>At this point, <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will call the customised hook function
+from <a class="reference internal" href="sites/index.html#module-darc.sites" title="darc.sites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites</span></code></a> to crawl and get the final response object.
+<a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will save the session cookies and header information,
+using <a class="reference internal" href="save.html#darc.save.save_headers" title="darc.save.save_headers"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_headers()</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <code class="xref py py-exc docutils literal notranslate"><span class="pre">requests.exceptions.InvalidSchema</span></code> is raised, the link
+will be saved by <a class="reference internal" href="proxy/null.html#darc.proxy.null.save_invalid" title="darc.proxy.null.save_invalid"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_invalid()</span></code></a>. Further
+processing is dropped.</p>
+</div>
+<p>If the content type of response document is not ignored (c.f.
+<a class="reference internal" href="const.html#darc.const.MIME_WHITE_LIST" title="darc.const.MIME_WHITE_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">MIME_WHITE_LIST</span></code></a> and <a class="reference internal" href="const.html#darc.const.MIME_BLACK_LIST" title="darc.const.MIME_BLACK_LIST"><code class="xref py py-data docutils literal notranslate"><span class="pre">MIME_BLACK_LIST</span></code></a>),
+<a class="reference internal" href="submit.html#darc.submit.submit_requests" title="darc.submit.submit_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_requests()</span></code></a> will be called and submit the document
+just fetched.</p>
+<p>If the response document is HTML (<code class="docutils literal notranslate"><span class="pre">text/html</span></code> and <code class="docutils literal notranslate"><span class="pre">application/xhtml+xml</span></code>),
+<a class="reference internal" href="parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a> will be called then to extract all possible
+links from the HTML document and save such links into the database
+(c.f. <a class="reference internal" href="db.html#darc.db.save_requests" title="darc.db.save_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code></a>).</p>
+<p>And if the response status code is between <code class="docutils literal notranslate"><span class="pre">400</span></code> and <code class="docutils literal notranslate"><span class="pre">600</span></code>,
+the URL will be saved back to the link database
+(c.f. <a class="reference internal" href="db.html#darc.db.save_requests" title="darc.db.save_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code></a>). If <strong>NOT</strong>, the URL will
+be saved into <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> link database to proceed next steps
+(c.f. <a class="reference internal" href="db.html#darc.db.save_selenium" title="darc.db.save_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_selenium()</span></code></a>).</p>
+</li>
+</ol>
+<p>The general process can be described as following for <em>workers</em> of <code class="docutils literal notranslate"><span class="pre">loader</span></code> type:</p>
+<ol class="arabic">
+<li><p><a class="reference internal" href="#darc.process.process_loader" title="darc.process.process_loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">process_loader()</span></code></a>: in the meanwhile, <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will
+obtain URLs from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> link database (c.f. <a class="reference internal" href="db.html#darc.db.load_selenium" title="darc.db.load_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_selenium()</span></code></a>),
+and feed such URLs to <a class="reference internal" href="crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <a class="reference internal" href="const.html#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be
+called with <em>multiprocessing</em> support; if <a class="reference internal" href="const.html#darc.const.FLAG_TH" title="darc.const.FLAG_TH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_TH</span></code></a>
+if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be called with <em>multithreading</em>
+support; if none, the function will be called in single-threading.</p>
+</div>
+</li>
+<li><p><a class="reference internal" href="crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code></a>: parse the URL using
+<a class="reference internal" href="link.html#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_link()</span></code></a> and start loading the URL using
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> with Google Chrome.</p>
+<p>At this point, <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will call the customised hook function
+from <a class="reference internal" href="sites/index.html#module-darc.sites" title="darc.sites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites</span></code></a> to load and return the original
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Chrome</span></code> object.</p>
+<p>If successful, the rendered source HTML document will be saved, and a
+full-page screenshot will be taken and saved.</p>
+<p>If the submission API is provided, <a class="reference internal" href="submit.html#darc.submit.submit_selenium" title="darc.submit.submit_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_selenium()</span></code></a>
+will be called and submit the document just loaded.</p>
+<p>Later, <a class="reference internal" href="parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a> will be called then to
+extract all possible links from the HTML document and save such
+links into the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.27.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database (c.f. <a class="reference internal" href="db.html#darc.db.save_requests" title="darc.db.save_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code></a>).</p>
+</li>
+</ol>
+<p>After each <em>round</em>, <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will call registered hook functions in
+sequential order, with the type of worker (<code class="docutils literal notranslate"><span class="pre">'crawler'</span></code> or <code class="docutils literal notranslate"><span class="pre">'loader'</span></code>)
+and the current link pool as its parameters, see <a class="reference internal" href="#darc.process.register" title="darc.process.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">register()</span></code></a>
+for more information.</p>
+<p>If in reboot mode, i.e. <a class="reference internal" href="const.html#darc.const.REBOOT" title="darc.const.REBOOT"><code class="xref py py-data docutils literal notranslate"><span class="pre">REBOOT</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function
+will exit after first round. If not, it will renew the Tor connections (if
+bootstrapped), c.f. <a class="reference internal" href="proxy/tor.html#darc.proxy.tor.renew_tor_session" title="darc.proxy.tor.renew_tor_session"><code class="xref py py-func docutils literal notranslate"><span class="pre">renew_tor_session()</span></code></a>, and start
+another round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>worker</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)"><em>Literal</em></a><em>[</em><em>'crawler'</em><em>, </em><em>'loader'</em><em>]</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.process.process_crawler">
+<span class="sig-prename descclassname"><span class="pre">darc.process.</span></span><span class="sig-name descname"><span class="pre">process_crawler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/process.html#process_crawler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.process.process_crawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>A worker to run the <a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a> process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Warns</dt>
+<dd class="field-odd"><p><strong>HookExecutionFailed</strong> – When hook function raises an error.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.process.process_loader">
+<span class="sig-prename descclassname"><span class="pre">darc.process.</span></span><span class="sig-name descname"><span class="pre">process_loader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/process.html#process_loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.process.process_loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>A worker to run the <a class="reference internal" href="crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code></a> process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Warns</dt>
+<dd class="field-odd"><p><strong>HookExecutionFailed</strong> – When hook function raises an error.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="darc.process.register">
+<span class="sig-prename descclassname"><span class="pre">darc.process.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/process.html#register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.process.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register hook function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hook</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[‘crawler’, ‘loader’], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – Hook function to be registered.</p></li>
+<li><p><strong>_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>_index</strong> – Position index for the hook function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p>The hook function takes two parameters:</p>
+<ol class="arabic simple">
+<li><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> object indicating the type of worker,
+i.e. <code class="docutils literal notranslate"><span class="pre">'crawler'</span></code> or <code class="docutils literal notranslate"><span class="pre">'loader'</span></code>;</p></li>
+<li><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> object containing <a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>
+objects, as the current processed link pool.</p></li>
+</ol>
+<p>The hook function may raises <a class="reference internal" href="error.html#darc.error.WorkerBreak" title="darc.error.WorkerBreak"><code class="xref py py-exc docutils literal notranslate"><span class="pre">WorkerBreak</span></code></a>
+so that the worker shall break from its indefinite loop upon
+finishing of current <em>round</em>. Any value returned from the
+hook function will be ignored by the workers.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The hook functions will be saved into
+<a class="reference internal" href="#darc.process._HOOK_REGISTRY" title="darc.process._HOOK_REGISTRY"><code class="xref py py-data docutils literal notranslate"><span class="pre">_HOOK_REGISTRY</span></code></a>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>hook</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)"><em>Literal</em></a><em>[</em><em>'crawler'</em><em>, </em><em>'loader'</em><em>]</em><em>, </em><em>typing.List</em><em>[</em><em>darc.link.Link</em><em>]</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+<li><p><strong>_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.process._HOOK_REGISTRY">
+<span class="sig-prename descclassname"><span class="pre">darc.process.</span></span><span class="sig-name descname"><span class="pre">_HOOK_REGISTRY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'crawler'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'loader'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><span class="pre">darc.link.Link</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#darc.process._HOOK_REGISTRY" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of hook functions to
+be called between each <em>round</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>List[Callable[[Literal[‘crawler’, ‘loader’], List[Link]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="darc.process._WORKER_POOL">
+<span class="sig-prename descclassname"><span class="pre">darc.process.</span></span><span class="sig-name descname"><span class="pre">_WORKER_POOL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">multiprocessing.context.Process</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.10)"><span class="pre">threading.Thread</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#darc.process._WORKER_POOL" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of
+active child processes and/or threads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>List[Union[Process, Thread]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
 
           </div>
           
@@ -58,9 +303,25 @@
 
 
 <h3>Navigation</h3>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Technical Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crawl.html">Web Crawlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">Source Saving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selenium.html">Selenium Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy/index.html">Proxy Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sites/index.html">Sites Customisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="const.html">Module Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html">Data Models</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../custom.html">Customisations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../docker.html">Docker Integration</a></li>
@@ -76,7 +337,7 @@
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="index.html">Technical Documentation</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Technical Documentation</a></li>
-      <li>Next: <a href="crawl.html" title="next chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="crawl.html" title="next chapter">Web Crawlers</a></li>
   </ul></li>
   </ul></li>
 </ul>

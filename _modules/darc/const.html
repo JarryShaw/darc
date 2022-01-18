@@ -211,7 +211,7 @@
 <span class="k">del</span> <span class="n">_DB_URL</span>
 
 
-<span class="k">def</span> <span class="nf">getpid</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">PATH_ID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="getpid"><a class="viewcode-back" href="../../darc/const.html#darc.const.getpid">[docs]</a><span class="k">def</span> <span class="nf">getpid</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">PATH_ID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get process ID.</span>
 
 <span class="sd">    The process ID will be saved under the :data:`~darc.const.PATH_DB`</span>
@@ -231,7 +231,7 @@
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
 
 
 <div class="viewcode-block" id="get_lock"><a class="viewcode-back" href="../../darc/const.html#darc.const.get_lock">[docs]</a><span class="k">def</span> <span class="nf">get_lock</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[ProcessLock, ThreadLock, nullcontext]&#39;</span><span class="p">:</span>  <span class="c1"># type: ignore[valid-type]</span>

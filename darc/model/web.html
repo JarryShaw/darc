@@ -39,7 +39,7 @@
 to store the data crawled from the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Please refer to <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.submit</span></code> module for more information
+<p>Please refer to <a class="reference internal" href="../submit.html#module-darc.submit" title="darc.submit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.submit</span></code></a> module for more information
 about data submission.</p>
 </div>
 <span class="target" id="module-darc.model.web.hostname"></span><section id="hostname-records">
@@ -48,7 +48,7 @@ about data submission.</p>
 representing hostnames, specifically from <code class="docutils literal notranslate"><span class="pre">new_host</span></code> submission.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Please refer to <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code> for more
+<p>Please refer to <a class="reference internal" href="../submit.html#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code></a> for more
 information.</p>
 </div>
 <dl class="py class">
@@ -58,7 +58,7 @@ information.</p>
 <p>Data model for a hostname record.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The <em>alive</em> of a hostname is toggled if <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code>
+<p>The <em>alive</em> of a hostname is toggled if <a class="reference internal" href="../crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>
 successfully requested a URL with such hostname.</p>
 </div>
 <dl class="py attribute">
@@ -91,7 +91,7 @@ label and 255 characters per FQDN.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.hostname.HostnameModel.hosts">
-<span class="sig-name descname"><span class="pre">hosts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">HostsModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.hosts" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">hosts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#darc.model.web.hosts.HostsModel" title="darc.model.web.hosts.HostsModel"><span class="pre">HostsModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.hosts" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> for the hostname, back reference from
 <a class="reference internal" href="#darc.model.web.hosts.HostsModel.host" title="darc.model.web.hosts.HostsModel.host"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HostsModel.host</span></code></a>.</p>
 </dd></dl>
@@ -115,14 +115,14 @@ label and 255 characters per FQDN.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.hostname.HostnameModel.robots">
-<span class="sig-name descname"><span class="pre">robots</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">RobotsModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.robots" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">robots</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#darc.model.web.robots.RobotsModel" title="darc.model.web.robots.RobotsModel"><span class="pre">RobotsModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.robots" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> for the hostname, back reference from
 <a class="reference internal" href="#darc.model.web.robots.RobotsModel.host" title="darc.model.web.robots.RobotsModel.host"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RobotsModel.host</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="darc.model.web.hostname.HostnameModel.since">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">since</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.since" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">since</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.since" title="Permalink to this definition">¶</a></dt>
 <dd><p>The hostname is active/inactive since such timestamp.</p>
 <p>We confider the timestamp by the earlies timestamp
 of related subsidiary <em>active/inactive</em> URLs.</p>
@@ -130,14 +130,14 @@ of related subsidiary <em>active/inactive</em> URLs.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.hostname.HostnameModel.sitemaps">
-<span class="sig-name descname"><span class="pre">sitemaps</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SitemapModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.sitemaps" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sitemaps</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#darc.model.web.sitemap.SitemapModel" title="darc.model.web.sitemap.SitemapModel"><span class="pre">SitemapModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.sitemaps" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">sitemap.xml</span></code> for the hostname, back reference from
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">SitemapModel.sitemaps</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.hostname.HostnameModel.urls">
-<span class="sig-name descname"><span class="pre">urls</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">URLModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.urls" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">urls</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#darc.model.web.url.URLModel" title="darc.model.web.url.URLModel"><span class="pre">URLModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.urls" title="Permalink to this definition">¶</a></dt>
 <dd><p>URLs with the same hostname, back reference from
 <a class="reference internal" href="#darc.model.web.url.URLModel.hostname" title="darc.model.web.url.URLModel.hostname"><code class="xref py py-attr docutils literal notranslate"><span class="pre">URLModel.hostname</span></code></a>.</p>
 </dd></dl>
@@ -152,8 +152,8 @@ representing URLs, specifically from <code class="docutils literal notranslate">
 <code class="docutils literal notranslate"><span class="pre">selenium</span></code> submission.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Please refer to <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_requests()</span></code> and
-<code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_selenium()</span></code> for more information.</p>
+<p>Please refer to <a class="reference internal" href="../submit.html#darc.submit.submit_requests" title="darc.submit.submit_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_requests()</span></code></a> and
+<a class="reference internal" href="../submit.html#darc.submit.submit_selenium" title="darc.submit.submit_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_selenium()</span></code></a> for more information.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel">
@@ -162,7 +162,7 @@ representing URLs, specifically from <code class="docutils literal notranslate">
 <p>Data model for a requested URL.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The <em>alive</em> of a URL is toggled if <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code>
+<p>The <em>alive</em> of a URL is toggled if <a class="reference internal" href="../crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>
 successfully requested such URL and the status code is
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">ok</span></code>.</p>
 </div>
@@ -225,7 +225,7 @@ successfully requested such URL and the status code is
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel.hostname">
-<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HostnameModel</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">URLModel.hostname&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.hostname" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#darc.model.web.hostname.HostnameModel" title="darc.model.web.hostname.HostnameModel"><span class="pre">HostnameModel</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">URLModel.hostname&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.hostname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hostname (c.f. <a class="reference internal" href="../link.html#darc.link.Link.host" title="darc.link.Link.host"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.host</span></code></a>).</p>
 </dd></dl>
 
@@ -252,20 +252,20 @@ successfully requested such URL and the status code is
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel.proxy">
-<span class="sig-name descname"><span class="pre">proxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Proxy</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;IntEnumField:</span> <span class="pre">URLModel.proxy&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.proxy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">proxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="index.html#darc.model.utils.Proxy" title="darc.model.utils.Proxy"><span class="pre">Proxy</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;IntEnumField:</span> <span class="pre">URLModel.proxy&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.proxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Proxy type (c.f. <a class="reference internal" href="../link.html#darc.link.Link.proxy" title="darc.link.Link.proxy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.proxy</span></code></a>).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel.requests">
-<span class="sig-name descname"><span class="pre">requests</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">RequestsModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.url.URLModel.requests" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">requests</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#darc.model.web.requests.RequestsModel" title="darc.model.web.requests.RequestsModel"><span class="pre">RequestsModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.url.URLModel.requests" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">requests</span></code> submission record, back reference from
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">RequestsModel.url</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel.selenium">
-<span class="sig-name descname"><span class="pre">selenium</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SeleniumModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.url.URLModel.selenium" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">selenium</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#darc.model.web.selenium.SeleniumModel" title="darc.model.web.selenium.SeleniumModel"><span class="pre">SeleniumModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.url.URLModel.selenium" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">selenium</span></code> submission record, back reference from
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">SeleniumModel.url</span></code>.</p>
 </dd></dl>
@@ -332,7 +332,7 @@ representing <code class="docutils literal notranslate"><span class="pre">robots
 submission.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Please refer to <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code> for more
+<p>Please refer to <a class="reference internal" href="../submit.html#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code></a> for more
 information.</p>
 </div>
 <dl class="py class">
@@ -354,7 +354,7 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.robots.RobotsModel.host">
-<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HostnameModel</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">RobotsModel.host&gt;</span></em><a class="headerlink" href="#darc.model.web.robots.RobotsModel.host" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#darc.model.web.hostname.HostnameModel" title="darc.model.web.hostname.HostnameModel"><span class="pre">HostnameModel</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">RobotsModel.host&gt;</span></em><a class="headerlink" href="#darc.model.web.robots.RobotsModel.host" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hostname (c.f. <a class="reference internal" href="../link.html#darc.link.Link.host" title="darc.link.Link.host"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.host</span></code></a>).</p>
 </dd></dl>
 
@@ -384,7 +384,7 @@ representing <code class="docutils literal notranslate"><span class="pre">sitema
 submission.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Please refer to <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code> for more
+<p>Please refer to <a class="reference internal" href="../submit.html#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code></a> for more
 information.</p>
 </div>
 <dl class="py class">
@@ -406,7 +406,7 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.sitemap.SitemapModel.host">
-<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HostnameModel</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">SitemapModel.host&gt;</span></em><a class="headerlink" href="#darc.model.web.sitemap.SitemapModel.host" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#darc.model.web.hostname.HostnameModel" title="darc.model.web.hostname.HostnameModel"><span class="pre">HostnameModel</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">SitemapModel.host&gt;</span></em><a class="headerlink" href="#darc.model.web.sitemap.SitemapModel.host" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hostname (c.f. <a class="reference internal" href="../link.html#darc.link.Link.host" title="darc.link.Link.host"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.host</span></code></a>).</p>
 </dd></dl>
 
@@ -436,7 +436,7 @@ representing <code class="docutils literal notranslate"><span class="pre">hosts.
 submission.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Please refer to <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code> for more
+<p>Please refer to <a class="reference internal" href="../submit.html#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code></a> for more
 information.</p>
 </div>
 <dl class="py class">
@@ -458,7 +458,7 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.hosts.HostsModel.host">
-<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HostnameModel</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">HostsModel.host&gt;</span></em><a class="headerlink" href="#darc.model.web.hosts.HostsModel.host" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#darc.model.web.hostname.HostnameModel" title="darc.model.web.hostname.HostnameModel"><span class="pre">HostnameModel</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">HostsModel.host&gt;</span></em><a class="headerlink" href="#darc.model.web.hosts.HostsModel.host" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hostname (c.f. <a class="reference internal" href="../link.html#darc.link.Link.host" title="darc.link.Link.host"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.host</span></code></a>).</p>
 </dd></dl>
 
@@ -484,11 +484,11 @@ information.</p>
 <span class="target" id="module-darc.model.web.requests"></span><section id="crawler-records">
 <h2>Crawler Records<a class="headerlink" href="#crawler-records" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#module-darc.model.web.requests" title="darc.model.web.requests"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.web.requests</span></code></a> module defines the data model
-representing <code class="xref py py-obj docutils literal notranslate"><span class="pre">crawler</span></code>, specifically
+representing <a class="reference internal" href="../crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crawler</span></code></a>, specifically
 from <code class="docutils literal notranslate"><span class="pre">requests</span></code> submission.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Please refer to <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_requests()</span></code> for more
+<p>Please refer to <a class="reference internal" href="../submit.html#darc.submit.submit_requests" title="darc.submit.submit_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_requests()</span></code></a> for more
 information.</p>
 </div>
 <dl class="py class">
@@ -671,7 +671,7 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsModel.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">URLModel</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">RequestsModel.url&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.url" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#darc.model.web.url.URLModel" title="darc.model.web.url.URLModel"><span class="pre">URLModel</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">RequestsModel.url&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Original URL (c.f. <a class="reference internal" href="../link.html#darc.link.Link.url" title="darc.link.Link.url"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.url</span></code></a>).</p>
 </dd></dl>
 
@@ -686,11 +686,11 @@ information.</p>
 <span class="target" id="module-darc.model.web.selenium"></span><section id="loader-records">
 <h2>Loader Records<a class="headerlink" href="#loader-records" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#module-darc.model.web.selenium" title="darc.model.web.selenium"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.web.selenium</span></code></a> module defines the data model
-representing <code class="xref py py-obj docutils literal notranslate"><span class="pre">loader</span></code>, specifically
+representing <a class="reference internal" href="../crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loader</span></code></a>, specifically
 from <code class="docutils literal notranslate"><span class="pre">selenium</span></code> submission.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Please refer to <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_selenium()</span></code> for more
+<p>Please refer to <a class="reference internal" href="../submit.html#darc.submit.submit_selenium" title="darc.submit.submit_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_selenium()</span></code></a> for more
 information.</p>
 </div>
 <dl class="py class">
@@ -729,7 +729,7 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.selenium.SeleniumModel.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">URLModel</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">SeleniumModel.url&gt;</span></em><a class="headerlink" href="#darc.model.web.selenium.SeleniumModel.url" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#darc.model.web.url.URLModel" title="darc.model.web.url.URLModel"><span class="pre">URLModel</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ForeignKeyField:</span> <span class="pre">SeleniumModel.url&gt;</span></em><a class="headerlink" href="#darc.model.web.selenium.SeleniumModel.url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Original URL (c.f. <a class="reference internal" href="../link.html#darc.link.Link.url" title="darc.link.Link.url"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.url</span></code></a>).</p>
 </dd></dl>
 
@@ -770,9 +770,15 @@ information.</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../process.html">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crawl.html">Web Crawlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html">Source Saving</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html">Selenium Wrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../proxy/index.html">Proxy Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sites/index.html">Sites Customisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
