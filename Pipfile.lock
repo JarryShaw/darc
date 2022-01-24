@@ -485,7 +485,7 @@
         },
         "urllib3": {
             "extras": [
-
+                "secure"
             ],
             "hashes": [
                 "sha256:000ca7f471a233c2251c6c7023ee85305721bfdf18621ebff4fd17a8653427ed",
@@ -574,6 +574,14 @@
                 "sha256:a661d72d58e6ea8a57f7a86e37d86716863ee5e92788398526d58b26a4e4dc02"
             ],
             "version": "==0.7.12"
+        },
+        "appnope": {
+            "hashes": [
+                "sha256:93aa393e9d6c54c5cd570ccadd8edad61ea0c4b9ea7a01409020c9aa019eb442",
+                "sha256:dd83cd4b5b460958838f6eb3000c660b1f9caf2a5b1de4264e941512f603258a"
+            ],
+            "markers": "sys_platform == 'darwin'",
+            "version": "==0.1.2"
         },
         "astroid": {
             "hashes": [
@@ -842,7 +850,7 @@
                 "sha256:081649da27ced5e75709a1ee542136eaba9842a0fe4c03da4fb0a3d3ed1f3c44",
                 "sha256:e79351e032d0b606b98d38a4b0e6e2275b31a5b85c873e587cc11b73aca026d6"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==2.2.0"
         },
         "docutils": {
@@ -1346,10 +1354,10 @@
         },
         "pure-eval": {
             "hashes": [
-                "sha256:0f04483b16c9429532d2c0ddc96e2b3bb6b2dc37a2bfb0e986248dbfd0b78873",
-                "sha256:94eeb505a88721bec7bb21a4ac49758b8b1a01530da1a70d4ffc1d9937689d71"
+                "sha256:01eaab343580944bc56080ebe0a674b39ec44a945e6d09ba7db3cb8cec289350",
+                "sha256:2b45320af6dfaa1750f543d714b6d1c520a1688dec6fd24d339063ce0aaa9ac3"
             ],
-            "version": "==0.2.1"
+            "version": "==0.2.2"
         },
         "pycodestyle": {
             "hashes": [
@@ -1568,13 +1576,6 @@
             "index": "tuna",
             "version": "==3.3.1"
         },
-        "sanitized-package": {
-            "editable": true,
-            "extras": [
-                "mysql"
-            ],
-            "path": "."
-        },
         "selenium": {
             "hashes": [
                 "sha256:27e7b64df961d609f3d57237caa0df123abbbe22d038f2ec9e332fb90ec1a939"
@@ -1646,11 +1647,11 @@
         },
         "sphinx-autodoc-typehints": {
             "hashes": [
-                "sha256:1480d4af8ac465aa87b793e22bb0feb4578b9c93b36e01b35c983bd6f596326f",
-                "sha256:bd6b70b93fc53d63a167738ba4fb40643ef7eb9b8d915a886c372949981b8eac"
+                "sha256:5bf7ae28f98dd2cae8b93c4f723fb5f4761ae340194d02d2742a81c7694d2e0a",
+                "sha256:91eb3c227ff0824bee39fabf92d92e21835546903d2ddde5467fd9b6fa10ad7f"
             ],
             "index": "tuna",
-            "version": "==1.15.2"
+            "version": "==1.15.3"
         },
         "sphinxcontrib-applehelp": {
             "hashes": [
@@ -1772,7 +1773,7 @@
         },
         "urllib3": {
             "extras": [
-
+                "secure"
             ],
             "hashes": [
                 "sha256:000ca7f471a233c2251c6c7023ee85305721bfdf18621ebff4fd17a8653427ed",
