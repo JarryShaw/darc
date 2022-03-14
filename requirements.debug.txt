@@ -30,7 +30,7 @@ html5lib==1.1
 idna==3.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 mmh3==3.0.0
 outcome==1.1.0; python_version >= '3.6'
-peewee==3.14.9
+peewee==3.14.10
 pottery==3.0.0
 psutil==5.9.0
 pycparser==2.21; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
