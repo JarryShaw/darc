@@ -37,7 +37,7 @@
 <h1>How to implement a custom proxy middleware?<a class="headerlink" href="#how-to-implement-a-custom-proxy-middleware" title="Permalink to this headline">¶</a></h1>
 <p>As had been discussed already in the <a class="reference external" href="https://darc.jarryshaw.me/en/latest/custom.html#custom-proxy">documentation</a>, the implementation
 of a custom proxy is merely two <em>factory</em> functions: one yields a
-<a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Session" title="(in Requests v2.27.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> and/or
+<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> and/or
 <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.sessions.FuturesSession</span></code> instance, one yields a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.Chrome</span></code> instance; both with proxy presets.</p>
 <p>See below an example from the documentation.</p>
@@ -46,7 +46,7 @@ of a custom proxy is merely two <em>factory</em> functions: one yields a
 </div>
 <section id="session-factory">
 <h2>Session Factory<a class="headerlink" href="#session-factory" title="Permalink to this headline">¶</a></h2>
-<p>The session factory returns a <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Session" title="(in Requests v2.27.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> and/or
+<p>The session factory returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> and/or
 <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.sessions.FuturesSession</span></code> instance with presets,
 e.g. proxies, user agent, etc.</p>
 <p>Type annocation of the function can be described as</p>
