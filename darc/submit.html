@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Data Submission &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-darc.submit"></span><section id="data-submission">
-<h1>Data Submission<a class="headerlink" href="#data-submission" title="Permalink to this headline">¶</a></h1>
+<h1>Data Submission<a class="headerlink" href="#data-submission" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project integrates the capability of submitting
 fetched data and information to a web server, to support real-time
 cross-analysis and status display.</p>
@@ -63,13 +64,13 @@ information about the submission data.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">get_hosts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#get_hosts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.get_hosts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to read <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">File</span></code>]</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p>If <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> exists, return the data from <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p>
 <ul>
@@ -97,13 +98,13 @@ information about the submission data.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">get_robots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#get_robots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.get_robots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to read <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">File</span></code>]</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p>If <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> exists, return the data from <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
 <ul>
@@ -131,13 +132,13 @@ information about the submission data.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">get_sitemaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#get_sitemaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.get_sitemaps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read sitemaps.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to read sitemaps.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">File</span></code>]]</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p>If sitemaps exist, return list of the data from sitemaps.</p>
 <ul>
@@ -165,13 +166,13 @@ information about the submission data.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">save_submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#save_submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.save_submit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save failed submit data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>domain</strong> (<code class="docutils literal notranslate"><span class="pre">'new_host'</span></code>, <code class="docutils literal notranslate"><span class="pre">'requests'</span></code> or <code class="docutils literal notranslate"><span class="pre">'selenium'</span></code>) – Domain of the submit data.</p></li>
 <li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – Submit data.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -191,10 +192,10 @@ for better maintenance.</p>
 </ul>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Parameters</dt>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)"><em>Literal</em></a><em>[</em><em>'new_host'</em><em>, </em><em>'requests'</em><em>, </em><em>'selenium'</em><em>]</em>) – </p></li>
 <li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><em>Any</em></a><em>]</em>) – </p></li>
@@ -208,14 +209,14 @@ for better maintenance.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.submit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>api</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – API URL.</p></li>
 <li><p><strong>domain</strong> (<code class="docutils literal notranslate"><span class="pre">'new_host'</span></code>, <code class="docutils literal notranslate"><span class="pre">'requests'</span></code> or <code class="docutils literal notranslate"><span class="pre">'selenium'</span></code>) – Domain of the submit data.</p></li>
 <li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – Submit data.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -230,10 +231,10 @@ for better maintenance.</p>
 </ul>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Parameters</dt>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>api</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – </p></li>
 <li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)"><em>Literal</em></a><em>[</em><em>'new_host'</em><em>, </em><em>'requests'</em><em>, </em><em>'selenium'</em><em>]</em>) – </p></li>
@@ -251,7 +252,7 @@ for better maintenance.</p>
 host information. Such includes <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> (if exists) and
 <code class="docutils literal notranslate"><span class="pre">sitemap.xml</span></code> (if any).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime.datetime</em></a>) – Timestamp of submission.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of submission.</p></li>
@@ -261,7 +262,7 @@ host information. Such includes <code class="docutils literal notranslate"><span
 checking with <a class="reference internal" href="db.html#darc.db.have_hostname" title="darc.db.have_hostname"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.have_hostname()</span></code></a>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -338,13 +339,13 @@ will directly be save through <a class="reference internal" href="#darc.submit.s
 </ul>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Parameters</dt>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime.datetime</em></a>) – </p></li>
-<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>darc.link.Link</em></a>) – </p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime</em></a>) – </p></li>
+<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>Link</em></a>) – </p></li>
 <li><p><strong>partial</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – </p></li>
 <li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – </p></li>
 </ul>
@@ -360,7 +361,7 @@ will directly be save through <a class="reference internal" href="#darc.submit.s
 its availability and to save its HTTP headers information. Such information
 will be submitted to the web UI.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime.datetime</em></a>) – Timestamp of submission.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of submission.</p></li>
@@ -371,7 +372,7 @@ will be submitted to the web UI.</p>
 <li><p><strong>html</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If current document is HTML or other files.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -455,15 +456,15 @@ will directly be save through <a class="reference internal" href="#darc.submit.s
 </ul>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Parameters</dt>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime.datetime</em></a>) – </p></li>
-<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>darc.link.Link</em></a>) – </p></li>
-<li><p><strong>response</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.27.1)"><em>requests.models.Response</em></a>) – </p></li>
-<li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)"><em>requests.sessions.Session</em></a>) – </p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime</em></a>) – </p></li>
+<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>Link</em></a>) – </p></li>
+<li><p><strong>response</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.27.1)"><em>Response</em></a>) – </p></li>
+<li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)"><em>Session</em></a>) – </p></li>
 <li><p><strong>content</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)"><em>bytes</em></a>) – </p></li>
 <li><p><strong>mime_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – </p></li>
 <li><p><strong>html</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – </p></li>
@@ -480,7 +481,7 @@ will directly be save through <a class="reference internal" href="#darc.submit.s
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> with Google Chrome and its web driver, to provide a fully
 rendered web page. Such information will be submitted to the web UI.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime.datetime</em></a>) – Timestamp of submission.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of submission.</p></li>
@@ -488,7 +489,7 @@ rendered web page. Such information will be submitted to the web UI.</p>
 <li><p><strong>screenshot</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – <em>base64</em> encoded screenshot.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -556,13 +557,13 @@ HTML data not empty.</p>
 </ul>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Parameters</dt>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime.datetime</em></a>) – </p></li>
-<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>darc.link.Link</em></a>) – </p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime</em></a>) – </p></li>
+<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>Link</em></a>) – </p></li>
 <li><p><strong>html</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – </p></li>
 <li><p><strong>screenshot</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>]</em>) – </p></li>
 </ul>
@@ -589,10 +590,10 @@ root of data storage.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">SAVE_DB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.SAVE_DB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save submitted data to database.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="target" id="index-0"></span><a class="reference internal" href="../config.html#envvar-SAVE_DB"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">SAVE_DB</span></code></a></p>
 </dd>
 </dl>
@@ -603,10 +604,10 @@ root of data storage.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_RETRY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.API_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retry times for API submission when failure.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">3</span></code></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="target" id="index-1"></span><a class="reference internal" href="../config.html#envvar-API_RETRY"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">API_RETRY</span></code></a></p>
 </dd>
 </dl>
@@ -617,10 +618,10 @@ root of data storage.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_NEW_HOST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.API_NEW_HOST" title="Permalink to this definition">¶</a></dt>
 <dd><p>API URL for <a class="reference internal" href="#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="target" id="index-2"></span><a class="reference internal" href="../config.html#envvar-API_NEW_HOST"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">API_NEW_HOST</span></code></a></p>
 </dd>
 </dl>
@@ -631,10 +632,10 @@ root of data storage.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_REQUESTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.API_REQUESTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>API URL for <a class="reference internal" href="#darc.submit.submit_requests" title="darc.submit.submit_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_requests()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="target" id="index-3"></span><a class="reference internal" href="../config.html#envvar-API_REQUESTS"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">API_REQUESTS</span></code></a></p>
 </dd>
 </dl>
@@ -645,10 +646,10 @@ root of data storage.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_SELENIUM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.API_SELENIUM" title="Permalink to this definition">¶</a></dt>
 <dd><p>API URL for <a class="reference internal" href="#darc.submit.submit_selenium" title="darc.submit.submit_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_selenium()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="target" id="index-4"></span><a class="reference internal" href="../config.html#envvar-API_SELENIUM"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">API_SELENIUM</span></code></a></p>
 </dd>
 </dl>
@@ -740,7 +741,7 @@ page for more information.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 

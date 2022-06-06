@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Task Queues &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="module-darc.model.tasks">
-<span id="task-queues"></span><h1>Task Queues<a class="headerlink" href="#module-darc.model.tasks" title="Permalink to this headline">¶</a></h1>
+<span id="task-queues"></span><h1>Task Queues<a class="headerlink" href="#module-darc.model.tasks" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#module-darc.model.tasks" title="darc.model.tasks"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.tasks</span></code></a> module defines the data models
 required for the task queue of <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>.</p>
 <div class="admonition seealso">
@@ -43,7 +44,7 @@ required for the task queue of <a class="reference internal" href="../index.html
 about the task queues.</p>
 </div>
 <span class="target" id="module-darc.model.tasks.hostname"></span><section id="hostname-queue">
-<h2>Hostname Queue<a class="headerlink" href="#hostname-queue" title="Permalink to this headline">¶</a></h2>
+<h2>Hostname Queue<a class="headerlink" href="#hostname-queue" title="Permalink to this heading">¶</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The hostname queue is a <strong>set</strong> named <code class="docutils literal notranslate"><span class="pre">queue_hostname</span></code> in
@@ -54,12 +55,12 @@ defined for the hostname queue.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="darc.model.tasks.hostname.HostnameQueueModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.model.tasks.hostname.</span></span><span class="sig-name descname"><span class="pre">HostnameQueueModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/tasks/hostname.html#HostnameQueueModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.model.tasks.hostname.HostnameQueueModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="index.html#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.abc.BaseModel</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="index.html#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
 <p>Hostname task queue.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.tasks.hostname.HostnameQueueModel.DoesNotExist">
 <span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#darc.model.tasks.hostname.HostnameQueueModel.DoesNotExist" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.tasks.hostname.HostnameQueueModelDoesNotExist</span></code></p>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">HostnameQueueModelDoesNotExist</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -83,7 +84,7 @@ defined for the hostname queue.</p>
 
 </section>
 <span class="target" id="module-darc.model.tasks.requests"></span><section id="crawler-queue">
-<h2>Crawler Queue<a class="headerlink" href="#crawler-queue" title="Permalink to this headline">¶</a></h2>
+<h2>Crawler Queue<a class="headerlink" href="#crawler-queue" title="Permalink to this heading">¶</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The <a class="reference internal" href="../crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crawler</span></code></a> queue is a <strong>sorted set</strong>
@@ -94,12 +95,12 @@ defined for the <a class="reference internal" href="../crawl.html#darc.crawl.cra
 <dl class="py class">
 <dt class="sig sig-object py" id="darc.model.tasks.requests.RequestsQueueModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.model.tasks.requests.</span></span><span class="sig-name descname"><span class="pre">RequestsQueueModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/tasks/requests.html#RequestsQueueModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.model.tasks.requests.RequestsQueueModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="index.html#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.abc.BaseModel</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="index.html#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
 <p>Task queue for <a class="reference internal" href="../crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.tasks.requests.RequestsQueueModel.DoesNotExist">
 <span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#darc.model.tasks.requests.RequestsQueueModel.DoesNotExist" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.tasks.requests.RequestsQueueModelDoesNotExist</span></code></p>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">RequestsQueueModelDoesNotExist</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -135,7 +136,7 @@ defined for the <a class="reference internal" href="../crawl.html#darc.crawl.cra
 
 </section>
 <span class="target" id="module-darc.model.tasks.selenium"></span><section id="loader-queue">
-<h2>Loader Queue<a class="headerlink" href="#loader-queue" title="Permalink to this headline">¶</a></h2>
+<h2>Loader Queue<a class="headerlink" href="#loader-queue" title="Permalink to this heading">¶</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The <a class="reference internal" href="../crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loader</span></code></a> queue is a <strong>sorted set</strong>
@@ -146,12 +147,12 @@ defined for the <a class="reference internal" href="../crawl.html#darc.crawl.loa
 <dl class="py class">
 <dt class="sig sig-object py" id="darc.model.tasks.selenium.SeleniumQueueModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.model.tasks.selenium.</span></span><span class="sig-name descname"><span class="pre">SeleniumQueueModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/tasks/selenium.html#SeleniumQueueModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.model.tasks.selenium.SeleniumQueueModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="index.html#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.abc.BaseModel</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="index.html#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
 <p>Task queue for <a class="reference internal" href="../crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code></a>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.tasks.selenium.SeleniumQueueModel.DoesNotExist">
 <span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#darc.model.tasks.selenium.SeleniumQueueModel.DoesNotExist" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.model.tasks.selenium.SeleniumQueueModelDoesNotExist</span></code></p>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">SeleniumQueueModelDoesNotExist</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -262,7 +263,7 @@ defined for the <a class="reference internal" href="../crawl.html#darc.crawl.loa
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 

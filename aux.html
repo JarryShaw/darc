@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Auxiliary Scripts &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,13 +34,13 @@
           <div class="body" role="main">
             
   <section id="auxiliary-scripts">
-<h1>Auxiliary Scripts<a class="headerlink" href="#auxiliary-scripts" title="Permalink to this headline">¶</a></h1>
+<h1>Auxiliary Scripts<a class="headerlink" href="#auxiliary-scripts" title="Permalink to this heading">¶</a></h1>
 <p>Since the <a class="reference internal" href="darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project can be deployed through <a class="reference internal" href="docker.html"><span class="doc">Docker Integration</span></a>,
 we provided some auxiliary scripts to help with the deployment.</p>
 <section id="health-check">
-<h2>Health Check<a class="headerlink" href="#health-check" title="Permalink to this headline">¶</a></h2>
+<h2>Health Check<a class="headerlink" href="#health-check" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list simple">
-<dt class="field-odd">File location</dt>
+<dt class="field-odd">File location<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p>Entry point: <code class="docutils literal notranslate"><span class="pre">extra/healthcheck.py</span></code></p></li>
 <li><p>System V service: <code class="docutils literal notranslate"><span class="pre">extra/healthcheck.service</span></code></p></li>
@@ -69,9 +70,9 @@ through its output messages. If inactive, the script will restart the
 containers.</p>
 </section>
 <section id="upload-api-submission-files">
-<h2>Upload API Submission Files<a class="headerlink" href="#upload-api-submission-files" title="Permalink to this headline">¶</a></h2>
+<h2>Upload API Submission Files<a class="headerlink" href="#upload-api-submission-files" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list simple">
-<dt class="field-odd">File location</dt>
+<dt class="field-odd">File location<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p>Entry point: <code class="docutils literal notranslate"><span class="pre">extra/upload.py</span></code></p></li>
 <li><p>Helper script: <code class="docutils literal notranslate"><span class="pre">extra/upload.sh</span></code></p></li>
@@ -103,9 +104,9 @@ after</em> <strong>12:00 AM</strong> (<em>0:00</em> in 24-hour format).</p>
 </div>
 </section>
 <section id="remove-repeated-lines">
-<h2>Remove Repeated Lines<a class="headerlink" href="#remove-repeated-lines" title="Permalink to this headline">¶</a></h2>
+<h2>Remove Repeated Lines<a class="headerlink" href="#remove-repeated-lines" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list simple">
-<dt class="field-odd">File location</dt>
+<dt class="field-odd">File location<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">extra/uniq.py</span></code></p>
 </dd>
 </dl>
@@ -113,9 +114,9 @@ after</em> <strong>12:00 AM</strong> (<em>0:00</em> in 24-hour format).</p>
 line at a time without putting pressure onto memory utilisation.</p>
 </section>
 <section id="redis-clinic">
-<h2>Redis Clinic<a class="headerlink" href="#redis-clinic" title="Permalink to this headline">¶</a></h2>
+<h2>Redis Clinic<a class="headerlink" href="#redis-clinic" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list simple">
-<dt class="field-odd">File location</dt>
+<dt class="field-odd">File location<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p>Entry point: <code class="docutils literal notranslate"><span class="pre">extra/clinic.py</span></code></p></li>
 <li><p>Helper script: <code class="docutils literal notranslate"><span class="pre">extra/clinic.lua</span></code></p></li>
@@ -218,7 +219,7 @@ before we find out an alternative solution.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 

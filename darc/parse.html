@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Source Parsing &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-darc.parse"></span><section id="source-parsing">
-<h1>Source Parsing<a class="headerlink" href="#source-parsing" title="Permalink to this headline">¶</a></h1>
+<h1>Source Parsing<a class="headerlink" href="#source-parsing" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#module-darc.parse" title="darc.parse"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.parse</span></code></a> module provides auxiliary functions
 to read <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>, sitemaps and HTML documents. It
 also contains utility functions to check if the proxy type,
@@ -45,13 +46,13 @@ lists.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse._check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check hostname and proxy type of links.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>temp_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]) – List of links to be checked.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of links matches the requirements.</p>
 </dd>
 </dl>
@@ -75,13 +76,13 @@ instead.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">_check_ng</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#_check_ng"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse._check_ng" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check content type of links through <code class="docutils literal notranslate"><span class="pre">HEAD</span></code> requests.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>temp_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]) – List of links to be checked.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of links matches the requirements.</p>
 </dd>
 </dl>
@@ -100,13 +101,13 @@ instead.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">check_robots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#check_robots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.check_robots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if <code class="docutils literal notranslate"><span class="pre">link</span></code> is allowed in <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – The link object to be checked.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">link</span></code> is allowed in <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
 </dd>
 </dl>
@@ -121,7 +122,7 @@ instead.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">extract_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#extract_links"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.extract_links" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract links from HTML document.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Original link of the HTML document.</p></li>
 <li><p><strong>html</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>]) – Content of the HTML document.</p></li>
@@ -129,10 +130,10 @@ instead.</p>
 default to <a class="reference internal" href="const.html#darc.const.CHECK" title="darc.const.CHECK"><code class="xref py py-data docutils literal notranslate"><span class="pre">CHECK</span></code></a>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of extracted links.</p>
 </dd>
 </dl>
@@ -150,16 +151,16 @@ default to <a class="reference internal" href="const.html#darc.const.CHECK" titl
 <span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">extract_links_from_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#extract_links_from_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.extract_links_from_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract links from raw text source.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Original link of the source document.</p></li>
 <li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of source text document.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of extracted links.</p>
 </dd>
 </dl>
@@ -179,13 +180,13 @@ own expressions by <span class="target" id="index-0"></span><a class="reference 
 <span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">get_content_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#get_content_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.get_content_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get content type from <code class="docutils literal notranslate"><span class="pre">response</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>response</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.27.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a>) – Response object.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The content type from <code class="docutils literal notranslate"><span class="pre">response</span></code>.</p>
 </dd>
 </dl>
@@ -201,13 +202,13 @@ the function will utilise <a class="reference external" href="https://pypi.org/p
 <span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">match_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#match_host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.match_host" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if hostname in black list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Hostname to be checked.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">host</span></code> in  black list.</p>
 </dd>
 </dl>
@@ -231,13 +232,13 @@ will always return <a class="reference external" href="https://docs.python.org/3
 <span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">match_mime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#match_mime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.match_mime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if content type in black list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>mime</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content type to be checked.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">mime</span></code> in  black list.</p>
 </dd>
 </dl>
@@ -256,13 +257,13 @@ will always return <a class="reference external" href="https://docs.python.org/3
 <span class="sig-prename descclassname"><span class="pre">darc.parse.</span></span><span class="sig-name descname"><span class="pre">match_proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/parse.html#match_proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.parse.match_proxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if proxy type in black list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>proxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Proxy type to be checked.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">proxy</span></code> in  black list.</p>
 </dd>
 </dl>
@@ -301,7 +302,7 @@ telephone numbers, JavaScript functions, etc.</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Environ</dt>
+<dt class="field-odd">Environ<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="target" id="index-1"></span><a class="reference internal" href="../config.html#envvar-DARC_URL_PAT"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">DARC_URL_PAT</span></code></a></p>
 </dd>
 </dl>
@@ -384,7 +385,7 @@ telephone numbers, JavaScript functions, etc.</p></li>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 

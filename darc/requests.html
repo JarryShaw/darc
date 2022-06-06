@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Requests Wrapper &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-darc.requests"></span><section id="requests-wrapper">
-<h1>Requests Wrapper<a class="headerlink" href="#requests-wrapper" title="Permalink to this headline">¶</a></h1>
+<h1>Requests Wrapper<a class="headerlink" href="#requests-wrapper" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#module-darc.requests" title="darc.requests"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.requests</span></code></a> module wraps around the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.27.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>
 module, and provides some simple interface for the <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
 project.</p>
@@ -43,16 +44,16 @@ project.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.requests.</span></span><span class="sig-name descname"><span class="pre">default_user_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'python-darc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/requests.html#default_user_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.requests.default_user_agent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the default user agent.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Base name.</p></li>
 <li><p><strong>proxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Proxy type.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>User agent in format of <code class="docutils literal notranslate"><span class="pre">{name}/{darc.__version__}</span> <span class="pre">({proxy}</span> <span class="pre">Proxy)</span></code>.</p>
 </dd>
 </dl>
@@ -63,13 +64,13 @@ project.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.requests.</span></span><span class="sig-name descname"><span class="pre">i2p_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">futures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/requests.html#i2p_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.requests.i2p_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>I2P (.i2p) session.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>futures</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.FuturesSession</span></code>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The session object with I2P proxy settings.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Union[<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)">requests.Session</a>, requests_futures.FuturesSession]</p>
 </dd>
 </dl>
@@ -86,13 +87,13 @@ project.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.requests.</span></span><span class="sig-name descname"><span class="pre">null_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">futures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/requests.html#null_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.requests.null_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>No proxy session.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>futures</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.FuturesSession</span></code>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The session object with no proxy settings.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Union[<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)">requests.Session</a>, requests_futures.FuturesSession]</p>
 </dd>
 </dl>
@@ -103,19 +104,19 @@ project.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.requests.</span></span><span class="sig-name descname"><span class="pre">request_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">futures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/requests.html#request_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.requests.request_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get requests session.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link requesting for requests.Session.</p></li>
 <li><p><strong>futures</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.FuturesSession</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The session object with corresponding proxy settings.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Union[<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)">requests.Session</a>, requests_futures.FuturesSession]</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="error.html#darc.error.UnsupportedLink" title="darc.error.UnsupportedLink"><strong>UnsupportedLink</strong></a> – If the proxy type of <code class="docutils literal notranslate"><span class="pre">link</span></code>
     if not specified in the <code class="xref py py-data docutils literal notranslate"><span class="pre">LINK_MAP</span></code>.</p>
 </dd>
@@ -133,13 +134,13 @@ project.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.requests.</span></span><span class="sig-name descname"><span class="pre">tor_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">futures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/requests.html#tor_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.requests.tor_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tor (.onion) session.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>futures</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.FuturesSession</span></code>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The session object with Tor proxy settings.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Union[<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)">requests.Session</a>, requests_futures.FuturesSession]</p>
 </dd>
 </dl>
@@ -225,7 +226,7 @@ project.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 

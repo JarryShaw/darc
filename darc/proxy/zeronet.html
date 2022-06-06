@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>ZeroNet Proxy &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-darc.proxy.zeronet"></span><section id="zeronet-proxy">
-<h1>ZeroNet Proxy<a class="headerlink" href="#zeronet-proxy" title="Permalink to this headline">¶</a></h1>
+<h1>ZeroNet Proxy<a class="headerlink" href="#zeronet-proxy" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#module-darc.proxy.zeronet" title="darc.proxy.zeronet"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy.zeronet</span></code></a> module contains the auxiliary functions
 around managing and processing the ZeroNet proxy.</p>
 <dl class="py function">
@@ -43,10 +44,10 @@ around managing and processing the ZeroNet proxy.</p>
 <dd><p>ZeroNet bootstrap.</p>
 <p>The bootstrap arguments are defined as <a class="reference internal" href="#darc.proxy.zeronet.darc.proxy.zeronet._ZERONET_ARGS" title="darc.proxy.zeronet.darc.proxy.zeronet._ZERONET_ARGS"><code class="xref py py-data docutils literal notranslate"><span class="pre">_ZERONET_ARGS</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.CalledProcessError" title="(in Python v3.10)"><strong>subprocess.CalledProcessError</strong></a> – If the return code of <a class="reference internal" href="#darc.proxy.zeronet.darc.proxy.zeronet._ZERONET_PROC" title="darc.proxy.zeronet.darc.proxy.zeronet._ZERONET_PROC"><code class="xref py py-data docutils literal notranslate"><span class="pre">_ZERONET_PROC</span></code></a> is non-zero.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -61,7 +62,7 @@ around managing and processing the ZeroNet proxy.</p>
 </ul>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
@@ -76,7 +77,7 @@ around managing and processing the ZeroNet proxy.</p>
 <p>This function mocks the behaviour of <a class="reference external" href="https://stem.torproject.org/api/process.html#stem.process.launch_tor" title="(in Stem v1.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">stem.process.launch_tor()</span></code></a>.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Popen[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)">bytes</a>]</p>
 </dd>
 </dl>
@@ -91,13 +92,13 @@ around managing and processing the ZeroNet proxy.</p>
 <p>Also, it will <strong>NOT</strong> re-bootstrap the proxy as is guaranteed by
 <a class="reference internal" href="#darc.proxy.zeronet.darc.proxy.zeronet._ZERONET_BS_FLAG" title="darc.proxy.zeronet.darc.proxy.zeronet._ZERONET_BS_FLAG"><code class="xref py py-data docutils literal notranslate"><span class="pre">_ZERONET_BS_FLAG</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Warns</dt>
+<dt class="field-odd">Warns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ZeroNetBootstrapFailed</strong> – If failed to bootstrap ZeroNet proxy.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="../error.html#darc.error.UnsupportedPlatform" title="darc.error.UnsupportedPlatform"><strong>UnsupportedPlatform</strong></a> – If the system is not supported, i.e. not macOS or Linux.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
 </dd>
 </dl>
@@ -110,7 +111,7 @@ around managing and processing the ZeroNet proxy.</p>
 </ul>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
@@ -123,10 +124,10 @@ around managing and processing the ZeroNet proxy.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.proxy.zeronet.</span></span><span class="sig-name descname"><span class="pre">ZERONET_PORT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_PORT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Port for ZeroNet proxy connection.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">43110</span></code></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_PORT" title="darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_PORT"><code class="xref py py-data docutils literal notranslate"><span class="pre">ZERONET_PORT</span></code></a></p>
 </dd>
 </dl>
@@ -137,10 +138,10 @@ around managing and processing the ZeroNet proxy.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.proxy.zeronet.</span></span><span class="sig-name descname"><span class="pre">ZERONET_RETRY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retry times for ZeroNet bootstrap when failure.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">3</span></code></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_RETRY" title="darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_RETRY"><code class="xref py py-data docutils literal notranslate"><span class="pre">ZERONET_RETRY</span></code></a></p>
 </dd>
 </dl>
@@ -151,10 +152,10 @@ around managing and processing the ZeroNet proxy.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.proxy.zeronet.</span></span><span class="sig-name descname"><span class="pre">BS_WAIT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#darc.proxy.zeronet.darc.proxy.zeronet.BS_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time after which the attempt to start ZeroNet is aborted.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">90</span></code></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ZERONET_WAIT</span></code></p>
 </dd>
 </dl>
@@ -169,10 +170,10 @@ around managing and processing the ZeroNet proxy.</p>
 <span class="sig-prename descclassname"><span class="pre">darc.proxy.zeronet.</span></span><span class="sig-name descname"><span class="pre">ZERONET_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_PATH" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the ZeroNet project.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">/usr/local/src/zeronet</span></code></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_PATH" title="darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">ZERONET_PATH</span></code></a></p>
 </dd>
 </dl>
@@ -185,10 +186,10 @@ around managing and processing the ZeroNet proxy.</p>
 <p>If provided, it should be parsed as command
 line arguments (c.f. <a class="reference external" href="https://docs.python.org/3/library/shlex.html#shlex.split" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">shlex.split()</span></code></a>).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_ARGS" title="darc.proxy.zeronet.darc.proxy.zeronet.ZERONET_ARGS"><code class="xref py py-data docutils literal notranslate"><span class="pre">ZERONET_ARGS</span></code></a></p>
 </dd>
 </dl>
@@ -205,10 +206,10 @@ if current user (c.f. <a class="reference external" href="https://docs.python.or
 <span class="sig-prename descclassname"><span class="pre">darc.proxy.zeronet.</span></span><span class="sig-name descname"><span class="pre">_MNG_ZERONET</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.proxy.zeronet.darc.proxy.zeronet._MNG_ZERONET" title="Permalink to this definition">¶</a></dt>
 <dd><p>If manage ZeroNet proxy through <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a></p>
 </dd>
-<dt class="field-even">Environ</dt>
+<dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">DARC_ZERONET</span></code></p>
 </dd>
 </dl>
@@ -307,7 +308,7 @@ if current user (c.f. <a class="reference external" href="https://docs.python.or
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 

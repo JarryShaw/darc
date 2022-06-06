@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Telephone Numbers &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -34,30 +35,30 @@
           <div class="body" role="main">
             
   <span class="target" id="module-darc.sites.tel"></span><section id="telephone-numbers">
-<h1>Telephone Numbers<a class="headerlink" href="#telephone-numbers" title="Permalink to this headline">¶</a></h1>
+<h1>Telephone Numbers<a class="headerlink" href="#telephone-numbers" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#module-darc.sites.tel" title="darc.sites.tel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites.tel</span></code></a> module is customised to
 handle telephone numbers.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="darc.sites.tel.Tel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.sites.tel.</span></span><span class="sig-name descname"><span class="pre">Tel</span></span><a class="reference internal" href="../../_modules/darc/sites/tel.html#Tel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.tel.Tel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites._abc.BaseSite</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a></p>
 <p>Telephone numbers.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="darc.sites.tel.Tel.crawler">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crawler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites/tel.html#Tel.crawler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.tel.Tel.crawler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Crawler hook for telephone numbers.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
 <li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a>) – Session object with proxy settings.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be crawled.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="../error.html#darc.error.LinkNoReturn" title="darc.error.LinkNoReturn"><strong>LinkNoReturn</strong></a> – This link has no return response.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NoReturn" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></a></p>
 </dd>
 </dl>
@@ -68,17 +69,17 @@ handle telephone numbers.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites/tel.html#Tel.loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.tel.Tel.loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Not implemented.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../error.html#darc.error.LinkNoReturn" title="darc.error.LinkNoReturn"><strong>LinkNoReturn</strong></a> – This hook is not implemented.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NoReturn" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></a></p>
 </dd>
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime.datetime</em></a>) – </p></li>
-<li><p><strong>driver</strong> (<a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.2)"><em>selenium.webdriver.chrome.webdriver.WebDriver</em></a>) – </p></li>
-<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><em>darc.link.Link</em></a>) – </p></li>
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime</em></a>) – </p></li>
+<li><p><strong>driver</strong> (<a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.2)"><em>WebDriver</em></a>) – </p></li>
+<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><em>Link</em></a>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -162,7 +163,7 @@ handle telephone numbers.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 

@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Submission Data Schema &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -34,12 +35,12 @@
           <div class="body" role="main">
             
   <section id="submission-data-schema">
-<h1>Submission Data Schema<a class="headerlink" href="#submission-data-schema" title="Permalink to this headline">¶</a></h1>
+<h1>Submission Data Schema<a class="headerlink" href="#submission-data-schema" title="Permalink to this heading">¶</a></h1>
 <p>To better describe the submitted data, <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> provides
 several <a class="reference external" href="http://json-schema.org/">JSON schema</a> generated
 from <a class="reference external" href="https://pydantic-docs.helpmanual.io/"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydantic</span></code></a> models.</p>
 <section id="new-host-submission">
-<h2>New Host Submission<a class="headerlink" href="#new-host-submission" title="Permalink to this headline">¶</a></h2>
+<h2>New Host Submission<a class="headerlink" href="#new-host-submission" title="Permalink to this heading">¶</a></h2>
 <p>The data submission from <a class="reference internal" href="../darc/submit.html#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code></a>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;new_host&quot;</span><span class="p">,</span><span class="w"></span>
@@ -235,7 +236,7 @@ from <a class="reference external" href="https://pydantic-docs.helpmanual.io/"><
 </div>
 </section>
 <section id="requests-submission">
-<h2>Requests Submission<a class="headerlink" href="#requests-submission" title="Permalink to this headline">¶</a></h2>
+<h2>Requests Submission<a class="headerlink" href="#requests-submission" title="Permalink to this heading">¶</a></h2>
 <p>The data submission from <a class="reference internal" href="../darc/submit.html#darc.submit.submit_requests" title="darc.submit.submit_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_requests()</span></code></a>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;requests&quot;</span><span class="p">,</span><span class="w"></span>
@@ -516,7 +517,7 @@ from <a class="reference external" href="https://pydantic-docs.helpmanual.io/"><
 </div>
 </section>
 <section id="selenium-submission">
-<h2>Selenium Submission<a class="headerlink" href="#selenium-submission" title="Permalink to this headline">¶</a></h2>
+<h2>Selenium Submission<a class="headerlink" href="#selenium-submission" title="Permalink to this heading">¶</a></h2>
 <p>The data submission from <a class="reference internal" href="../darc/submit.html#darc.submit.submit_selenium" title="darc.submit.submit_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_selenium()</span></code></a>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;selenium&quot;</span><span class="p">,</span><span class="w"></span>
@@ -677,7 +678,7 @@ from <a class="reference external" href="https://pydantic-docs.helpmanual.io/"><
 </div>
 </section>
 <section id="model-definitions">
-<h2>Model Definitions<a class="headerlink" href="#model-definitions" title="Permalink to this headline">¶</a></h2>
+<h2>Model Definitions<a class="headerlink" href="#model-definitions" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1"># pylint: disable=ungrouped-imports,no-name-in-module</span>
 <span class="sd">&quot;&quot;&quot;JSON schema generator.&quot;&quot;&quot;</span>
@@ -1015,7 +1016,7 @@ from <a class="reference external" href="https://pydantic-docs.helpmanual.io/"><
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 

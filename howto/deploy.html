@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>How to gracefully deploy darc? &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="how-to-gracefully-deploy-darc">
-<h1>How to gracefully deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code>?<a class="headerlink" href="#how-to-gracefully-deploy-darc" title="Permalink to this headline">¶</a></h1>
+<h1>How to gracefully deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code>?<a class="headerlink" href="#how-to-gracefully-deploy-darc" title="Permalink to this heading">¶</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>It is <strong>NOT</strong> necessary to work at the <code class="docutils literal notranslate"><span class="pre">darc</span></code> repository
@@ -51,7 +52,7 @@ repository.</p>
 <li><p>install the <code class="docutils literal notranslate"><span class="pre">upload</span></code> cron job (optional)</p></li>
 </ol>
 <section id="to-start-with">
-<h2>To Start With<a class="headerlink" href="#to-start-with" title="Permalink to this headline">¶</a></h2>
+<h2>To Start With<a class="headerlink" href="#to-start-with" title="Permalink to this heading">¶</a></h2>
 <p>Per best practice, the system must have as least <strong>2 GB RAM</strong>
 and <strong>2 CPU cores</strong> to handle the <code class="docutils literal notranslate"><span class="pre">loader</span></code> worker properly.
 And the capacity of the RAM will heavily impact the performance
@@ -87,7 +88,7 @@ not crash your system by exhausting the storage,</p>
 <p>therefore, you’re gonna save your data in <code class="docutils literal notranslate"><span class="pre">/data/darc</span></code> folder.</p>
 </section>
 <section id="software-dependency">
-<h2>Software Dependency<a class="headerlink" href="#software-dependency" title="Permalink to this headline">¶</a></h2>
+<h2>Software Dependency<a class="headerlink" href="#software-dependency" title="Permalink to this heading">¶</a></h2>
 <p>After setting local systems, there’re some software dependencies
 you shall install:</p>
 <ol class="arabic simple">
@@ -116,7 +117,7 @@ cloud provider hosted Redis database instead of running it on
 the same server as <code class="docutils literal notranslate"><span class="pre">darc</span></code>.</p>
 </section>
 <section id="deploy-darc-docker-image">
-<h2>Deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code> Docker Image<a class="headerlink" href="#deploy-darc-docker-image" title="Permalink to this headline">¶</a></h2>
+<h2>Deploy <code class="docutils literal notranslate"><span class="pre">darc</span></code> Docker Image<a class="headerlink" href="#deploy-darc-docker-image" title="Permalink to this heading">¶</a></h2>
 <p>As discussed in <a class="reference internal" href="../docker.html"><span class="doc">Docker Integration</span></a>, <code class="docutils literal notranslate"><span class="pre">darc</span></code> is exclusively
 integrated with Docker workflow. So basically, just pull
 the image from Docker Hub or GitHub Container Registry:</p>
@@ -143,7 +144,7 @@ messages can be found in the file.</p>
 command to manage the deployed containers, thus I shall
 not discuss further.</p>
 <section id="deploy-with-customisations">
-<h3>Deploy with Customisations<a class="headerlink" href="#deploy-with-customisations" title="Permalink to this headline">¶</a></h3>
+<h3>Deploy with Customisations<a class="headerlink" href="#deploy-with-customisations" title="Permalink to this heading">¶</a></h3>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>I’ve made a sample customisation at <a class="reference external" href="https://github.com/jarryshaw/darc/tree/master/demo/deploy"><code class="docutils literal notranslate"><span class="pre">demo/deploy/</span></code></a> folder,
@@ -157,7 +158,7 @@ CLI bundled.</p>
 </section>
 </section>
 <section id="setup-healthcheck-daemon-service">
-<h2>Setup <code class="docutils literal notranslate"><span class="pre">healthcheck</span></code> Daemon Service<a class="headerlink" href="#setup-healthcheck-daemon-service" title="Permalink to this headline">¶</a></h2>
+<h2>Setup <code class="docutils literal notranslate"><span class="pre">healthcheck</span></code> Daemon Service<a class="headerlink" href="#setup-healthcheck-daemon-service" title="Permalink to this heading">¶</a></h2>
 <p>Since <code class="docutils literal notranslate"><span class="pre">darc</span></code> can be quite a burden to its host system,
 I introduced this healthcheck service as discussed in
 <a class="reference internal" href="../aux.html"><span class="doc">Auxiliary Scripts</span></a>.</p>
@@ -176,7 +177,7 @@ service through <code class="docutils literal notranslate"><span class="pre">sys
 as you prefer.</p>
 </section>
 <section id="install-upload-cron-job">
-<h2>Install <code class="docutils literal notranslate"><span class="pre">upload</span></code> Cron Job<a class="headerlink" href="#install-upload-cron-job" title="Permalink to this headline">¶</a></h2>
+<h2>Install <code class="docutils literal notranslate"><span class="pre">upload</span></code> Cron Job<a class="headerlink" href="#install-upload-cron-job" title="Permalink to this heading">¶</a></h2>
 <p>In certain cases, you might wish to upload the API submission
 JSON files to your FTP server which has much more space than
 the deploy server, then you can utilise the <code class="docutils literal notranslate"><span class="pre">upload</span></code> cron
@@ -198,7 +199,7 @@ respectively; and at last, to activate the new cron job:</p>
 to the target FTP server everyday at <em>0:10 am</em>.</p>
 </section>
 <section id="bonus-tip">
-<h2>Bonus Tip<a class="headerlink" href="#bonus-tip" title="Permalink to this headline">¶</a></h2>
+<h2>Bonus Tip<a class="headerlink" href="#bonus-tip" title="Permalink to this heading">¶</a></h2>
 <p>There is a <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> at the project root. You can play
 and try to exploit it. A very useful command is that</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>make reload
@@ -270,7 +271,7 @@ and try to exploit it. A very useful command is that</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 

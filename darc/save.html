@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Source Saving &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-darc.save"></span><section id="source-saving">
-<h1>Source Saving<a class="headerlink" href="#source-saving" title="Permalink to this headline">¶</a></h1>
+<h1>Source Saving<a class="headerlink" href="#source-saving" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#module-darc.save" title="darc.save"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.save</span></code></a> module contains the core utilities
 for managing fetched files and documents.</p>
 <p>The data storage under the root path (<a class="reference internal" href="const.html#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_DB</span></code></a>)
@@ -74,7 +75,7 @@ is typically as following:</p>
 <span class="sig-prename descclassname"><span class="pre">darc.save.</span></span><span class="sig-name descname"><span class="pre">sanitise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screenshot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/save.html#sanitise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.save.sanitise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sanitise link to path.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to sanitise the path</p></li>
 <li><p><strong>time</strong> (<em>datetime</em>) – Timestamp for the path.</p></li>
@@ -84,10 +85,10 @@ is typically as following:</p>
 <li><p><strong>screenshot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If this is the screenshot from <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p>If <code class="docutils literal notranslate"><span class="pre">raw</span></code> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>,
 <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/&lt;hash&gt;_&lt;timestamp&gt;_raw.html</span></code>.</p></li>
@@ -117,7 +118,7 @@ is typically as following:</p>
 <span class="sig-prename descclassname"><span class="pre">darc.save.</span></span><span class="sig-name descname"><span class="pre">save_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/save.html#save_headers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.save.save_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save HTTP response headers.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time</strong> (<em>datetime</em>) – Timestamp of response.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of response.</p></li>
@@ -125,10 +126,10 @@ is typically as following:</p>
 <li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.27.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a>) – Session object of response.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Saved path to response headers, i.e.
 <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/&lt;hash&gt;_&lt;timestamp&gt;.json</span></code>.</p>
 </dd>
@@ -187,10 +188,10 @@ is typically as following:</p>
 <li><p>original URL: <a class="reference internal" href="link.html#darc.link.Link.url" title="darc.link.Link.url"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.url</span></code></a></p></li>
 </ul>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be saved.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -202,11 +203,11 @@ is typically as following:</p>
 </ul>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Parameters</dt>
-<dd class="field-even"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>darc.link.Link</em></a>) – </p>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>Link</em></a>) – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -298,7 +299,7 @@ is typically as following:</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
