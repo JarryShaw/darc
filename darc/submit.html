@@ -47,7 +47,7 @@ crawling URL is marked as a new host.</p>
 </li>
 <li><p>Requests Submission – <a class="reference internal" href="#darc.submit.darc.submit.API_REQUESTS" title="darc.submit.darc.submit.API_REQUESTS"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_REQUESTS</span></code></a></p>
 <p>Submitted in <a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a> function call, after the
-crawling process of the URL using <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>.</p>
+crawling process of the URL using <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>.</p>
 </li>
 <li><p>Selenium Submission – <a class="reference internal" href="#darc.submit.darc.submit.API_SELENIUM" title="darc.submit.darc.submit.API_SELENIUM"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_SELENIUM</span></code></a></p>
 <p>Submitted in <a class="reference internal" href="crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code></a> function call, after the
@@ -357,7 +357,7 @@ will directly be save through <a class="reference internal" href="#darc.submit.s
 <dt class="sig sig-object py" id="darc.submit.submit_requests">
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">submit_requests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mime_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#submit_requests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.submit_requests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit requests data.</p>
-<p>When crawling, we’ll first fetch the URl using <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, to check
+<p>When crawling, we’ll first fetch the URl using <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, to check
 its availability and to save its HTTP headers information. Such information
 will be submitted to the web UI.</p>
 <dl class="field-list simple">
@@ -365,8 +365,8 @@ will be submitted to the web UI.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime.datetime</em></a>) – Timestamp of submission.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of submission.</p></li>
-<li><p><strong>response</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.0)"><em>requests.Response</em></a>) – Response object of submission.</p></li>
-<li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.0)"><em>requests.Session</em></a>) – Session object of submission.</p></li>
+<li><p><strong>response</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.1)"><em>requests.Response</em></a>) – Response object of submission.</p></li>
+<li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.1)"><em>requests.Session</em></a>) – Session object of submission.</p></li>
 <li><p><strong>content</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>) – Raw content of from the response.</p></li>
 <li><p><strong>mime_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content type.</p></li>
 <li><p><strong>html</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If current document is HTML or other files.</p></li>
@@ -463,8 +463,8 @@ will directly be save through <a class="reference internal" href="#darc.submit.s
 <dd class="field-even"><ul class="simple">
 <li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><em>datetime</em></a>) – </p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>Link</em></a>) – </p></li>
-<li><p><strong>response</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.0)"><em>Response</em></a>) – </p></li>
-<li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.0)"><em>Session</em></a>) – </p></li>
+<li><p><strong>response</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.1)"><em>Response</em></a>) – </p></li>
+<li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.1)"><em>Session</em></a>) – </p></li>
 <li><p><strong>content</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)"><em>bytes</em></a>) – </p></li>
 <li><p><strong>mime_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – </p></li>
 <li><p><strong>html</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – </p></li>
@@ -477,7 +477,7 @@ will directly be save through <a class="reference internal" href="#darc.submit.s
 <dt class="sig sig-object py" id="darc.submit.submit_selenium">
 <span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">submit_selenium</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screenshot</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#submit_selenium"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.submit_selenium" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit selenium data.</p>
-<p>After crawling with <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, we’ll then render the URl using
+<p>After crawling with <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, we’ll then render the URl using
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> with Google Chrome and its web driver, to provide a fully
 rendered web page. Such information will be submitted to the web UI.</p>
 <dl class="field-list simple">
@@ -498,7 +498,7 @@ will directly be save through <a class="reference internal" href="#darc.submit.s
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This information is optional, only provided if the content type from
-<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> is HTML, status code not between <code class="docutils literal notranslate"><span class="pre">400</span></code> and <code class="docutils literal notranslate"><span class="pre">600</span></code>, and
+<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> is HTML, status code not between <code class="docutils literal notranslate"><span class="pre">400</span></code> and <code class="docutils literal notranslate"><span class="pre">600</span></code>, and
 HTML data not empty.</p>
 </div>
 <p>The data submitted should have following format:</p>
