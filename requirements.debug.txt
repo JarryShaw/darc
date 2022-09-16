@@ -5,7 +5,7 @@
 
 # Python packages
 pip==22.2.2
-setuptools==65.2.0
+setuptools==65.3.0
 wheel==0.37.1
 
 # Python dependencies
@@ -19,20 +19,20 @@ wheel==0.37.1
 async-generator==1.10; python_version >= '3.5'
 attrs==22.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 beautifulsoup4[html5lib]==4.11.1
-certifi==2022.6.15
+certifi==2022.6.15.1
 cffi==1.15.1
 chardet==5.0.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-cryptography==37.0.4
-file-magic==0.4.0
+cryptography==38.0.1
+file-magic==0.4.1
 h11==0.13.0; python_version >= '3.6'
 hiredis==2.0.0
 html5lib==1.1
 idna==3.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 mmh3==3.0.0
 outcome==1.2.0; python_version >= '3.6'
-peewee==3.15.1
+peewee==3.15.2
 pottery==3.0.0
-psutil==5.9.1
+psutil==5.9.2
 pycparser==2.21; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 pymysql[rsa]==1.0.2
 pyopenssl==22.0.0
@@ -43,7 +43,7 @@ requests-futures==1.0.0
 requests[socks]==2.28.1
 selenium==4.4.3
 six==1.16.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
-sniffio==1.2.0; python_version >= '3.5'
+sniffio==1.3.0; python_version >= '3.5'
 sortedcontainers==2.4.0
 soupsieve==2.3.2.post1; python_version >= '3.0'
 stem==1.8.0
@@ -52,4 +52,4 @@ trio==0.21.0; python_version >= '3.6'
 typing-extensions==4.3.0
 urllib3[secure]==1.26.12; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
 webencodings==0.5.1
-wsproto==1.1.0; python_full_version >= '3.6.1'
+wsproto==1.2.0; python_full_version >= '3.6.1'
