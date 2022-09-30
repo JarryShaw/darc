@@ -14,6 +14,7 @@
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Task Queues" href="tasks.html" />
@@ -42,27 +43,170 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tasks.html">Task Queues</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tasks.html#hostname-queue">Hostname Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#darc.model.tasks.hostname.HostnameQueueModel"><code class="docutils literal notranslate"><span class="pre">HostnameQueueModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.hostname.HostnameQueueModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">HostnameQueueModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.hostname.HostnameQueueModel.hostname"><code class="docutils literal notranslate"><span class="pre">HostnameQueueModel.hostname</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.hostname.HostnameQueueModel.id"><code class="docutils literal notranslate"><span class="pre">HostnameQueueModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.hostname.HostnameQueueModel.timestamp"><code class="docutils literal notranslate"><span class="pre">HostnameQueueModel.timestamp</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="tasks.html#crawler-queue">Crawler Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#darc.model.tasks.requests.RequestsQueueModel"><code class="docutils literal notranslate"><span class="pre">RequestsQueueModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.requests.RequestsQueueModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">RequestsQueueModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.requests.RequestsQueueModel.hash"><code class="docutils literal notranslate"><span class="pre">RequestsQueueModel.hash</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.requests.RequestsQueueModel.id"><code class="docutils literal notranslate"><span class="pre">RequestsQueueModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.requests.RequestsQueueModel.link"><code class="docutils literal notranslate"><span class="pre">RequestsQueueModel.link</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.requests.RequestsQueueModel.text"><code class="docutils literal notranslate"><span class="pre">RequestsQueueModel.text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.requests.RequestsQueueModel.timestamp"><code class="docutils literal notranslate"><span class="pre">RequestsQueueModel.timestamp</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="tasks.html#loader-queue">Loader Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#darc.model.tasks.selenium.SeleniumQueueModel"><code class="docutils literal notranslate"><span class="pre">SeleniumQueueModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.selenium.SeleniumQueueModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">SeleniumQueueModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.selenium.SeleniumQueueModel.hash"><code class="docutils literal notranslate"><span class="pre">SeleniumQueueModel.hash</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.selenium.SeleniumQueueModel.id"><code class="docutils literal notranslate"><span class="pre">SeleniumQueueModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.selenium.SeleniumQueueModel.link"><code class="docutils literal notranslate"><span class="pre">SeleniumQueueModel.link</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.selenium.SeleniumQueueModel.text"><code class="docutils literal notranslate"><span class="pre">SeleniumQueueModel.text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tasks.html#darc.model.tasks.selenium.SeleniumQueueModel.timestamp"><code class="docutils literal notranslate"><span class="pre">SeleniumQueueModel.timestamp</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="web.html">Submission Data Models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="web.html#hostname-records">Hostname Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel"><code class="docutils literal notranslate"><span class="pre">HostnameModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">HostnameModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.alive"><code class="docutils literal notranslate"><span class="pre">HostnameModel.alive</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.discovery"><code class="docutils literal notranslate"><span class="pre">HostnameModel.discovery</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.hostname"><code class="docutils literal notranslate"><span class="pre">HostnameModel.hostname</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.hosts"><code class="docutils literal notranslate"><span class="pre">HostnameModel.hosts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.id"><code class="docutils literal notranslate"><span class="pre">HostnameModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.last_seen"><code class="docutils literal notranslate"><span class="pre">HostnameModel.last_seen</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.proxy"><code class="docutils literal notranslate"><span class="pre">HostnameModel.proxy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.robots"><code class="docutils literal notranslate"><span class="pre">HostnameModel.robots</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.since"><code class="docutils literal notranslate"><span class="pre">HostnameModel.since</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.sitemaps"><code class="docutils literal notranslate"><span class="pre">HostnameModel.sitemaps</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hostname.HostnameModel.urls"><code class="docutils literal notranslate"><span class="pre">HostnameModel.urls</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="web.html#url-records">URL Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#darc.model.web.url.URLModel"><code class="docutils literal notranslate"><span class="pre">URLModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">URLModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.get_by_url"><code class="docutils literal notranslate"><span class="pre">URLModel.get_by_url()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.alive"><code class="docutils literal notranslate"><span class="pre">URLModel.alive</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.children"><code class="docutils literal notranslate"><span class="pre">URLModel.children</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.childrent"><code class="docutils literal notranslate"><span class="pre">URLModel.childrent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.discovery"><code class="docutils literal notranslate"><span class="pre">URLModel.discovery</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.hash"><code class="docutils literal notranslate"><span class="pre">URLModel.hash</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.hostname"><code class="docutils literal notranslate"><span class="pre">URLModel.hostname</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.hostname_id"><code class="docutils literal notranslate"><span class="pre">URLModel.hostname_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.id"><code class="docutils literal notranslate"><span class="pre">URLModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.last_seen"><code class="docutils literal notranslate"><span class="pre">URLModel.last_seen</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.parents"><code class="docutils literal notranslate"><span class="pre">URLModel.parents</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.proxy"><code class="docutils literal notranslate"><span class="pre">URLModel.proxy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.requests"><code class="docutils literal notranslate"><span class="pre">URLModel.requests</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.selenium"><code class="docutils literal notranslate"><span class="pre">URLModel.selenium</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.since"><code class="docutils literal notranslate"><span class="pre">URLModel.since</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLModel.url"><code class="docutils literal notranslate"><span class="pre">URLModel.url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#darc.model.web.url.URLThroughModel"><code class="docutils literal notranslate"><span class="pre">URLThroughModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLThroughModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">URLThroughModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLThroughModel.child"><code class="docutils literal notranslate"><span class="pre">URLThroughModel.child</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLThroughModel.child_id"><code class="docutils literal notranslate"><span class="pre">URLThroughModel.child_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLThroughModel.id"><code class="docutils literal notranslate"><span class="pre">URLThroughModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLThroughModel.parent"><code class="docutils literal notranslate"><span class="pre">URLThroughModel.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.url.URLThroughModel.parent_id"><code class="docutils literal notranslate"><span class="pre">URLThroughModel.parent_id</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="web.html#robots-txt-records"><code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#darc.model.web.robots.RobotsModel"><code class="docutils literal notranslate"><span class="pre">RobotsModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.robots.RobotsModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">RobotsModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.robots.RobotsModel.document"><code class="docutils literal notranslate"><span class="pre">RobotsModel.document</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.robots.RobotsModel.host"><code class="docutils literal notranslate"><span class="pre">RobotsModel.host</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.robots.RobotsModel.host_id"><code class="docutils literal notranslate"><span class="pre">RobotsModel.host_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.robots.RobotsModel.id"><code class="docutils literal notranslate"><span class="pre">RobotsModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.robots.RobotsModel.timestamp"><code class="docutils literal notranslate"><span class="pre">RobotsModel.timestamp</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="web.html#sitemap-xml-records"><code class="docutils literal notranslate"><span class="pre">sitemap.xml</span></code> Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#darc.model.web.sitemap.SitemapModel"><code class="docutils literal notranslate"><span class="pre">SitemapModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.sitemap.SitemapModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">SitemapModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.sitemap.SitemapModel.document"><code class="docutils literal notranslate"><span class="pre">SitemapModel.document</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.sitemap.SitemapModel.host"><code class="docutils literal notranslate"><span class="pre">SitemapModel.host</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.sitemap.SitemapModel.host_id"><code class="docutils literal notranslate"><span class="pre">SitemapModel.host_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.sitemap.SitemapModel.id"><code class="docutils literal notranslate"><span class="pre">SitemapModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.sitemap.SitemapModel.timestamp"><code class="docutils literal notranslate"><span class="pre">SitemapModel.timestamp</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="web.html#hosts-txt-records"><code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#darc.model.web.hosts.HostsModel"><code class="docutils literal notranslate"><span class="pre">HostsModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hosts.HostsModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">HostsModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hosts.HostsModel.document"><code class="docutils literal notranslate"><span class="pre">HostsModel.document</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hosts.HostsModel.host"><code class="docutils literal notranslate"><span class="pre">HostsModel.host</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hosts.HostsModel.host_id"><code class="docutils literal notranslate"><span class="pre">HostsModel.host_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hosts.HostsModel.id"><code class="docutils literal notranslate"><span class="pre">HostsModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.hosts.HostsModel.timestamp"><code class="docutils literal notranslate"><span class="pre">HostsModel.timestamp</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="web.html#crawler-records">Crawler Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.cookies"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.cookies</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.document"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.document</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.id"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.index"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.index</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.method"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.model"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.model_id"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.model_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.reason"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.reason</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.request"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.request</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.response"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.response</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.status_code"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.status_code</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.timestamp"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.timestamp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsHistoryModel.url"><code class="docutils literal notranslate"><span class="pre">RequestsHistoryModel.url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel"><code class="docutils literal notranslate"><span class="pre">RequestsModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">RequestsModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.cookies"><code class="docutils literal notranslate"><span class="pre">RequestsModel.cookies</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.document"><code class="docutils literal notranslate"><span class="pre">RequestsModel.document</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.history"><code class="docutils literal notranslate"><span class="pre">RequestsModel.history</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.id"><code class="docutils literal notranslate"><span class="pre">RequestsModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.is_html"><code class="docutils literal notranslate"><span class="pre">RequestsModel.is_html</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.method"><code class="docutils literal notranslate"><span class="pre">RequestsModel.method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.mime_type"><code class="docutils literal notranslate"><span class="pre">RequestsModel.mime_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.reason"><code class="docutils literal notranslate"><span class="pre">RequestsModel.reason</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.request"><code class="docutils literal notranslate"><span class="pre">RequestsModel.request</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.response"><code class="docutils literal notranslate"><span class="pre">RequestsModel.response</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.session"><code class="docutils literal notranslate"><span class="pre">RequestsModel.session</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.status_code"><code class="docutils literal notranslate"><span class="pre">RequestsModel.status_code</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.timestamp"><code class="docutils literal notranslate"><span class="pre">RequestsModel.timestamp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.url"><code class="docutils literal notranslate"><span class="pre">RequestsModel.url</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.requests.RequestsModel.url_id"><code class="docutils literal notranslate"><span class="pre">RequestsModel.url_id</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="web.html#loader-records">Loader Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#darc.model.web.selenium.SeleniumModel"><code class="docutils literal notranslate"><span class="pre">SeleniumModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.selenium.SeleniumModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">SeleniumModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.selenium.SeleniumModel.document"><code class="docutils literal notranslate"><span class="pre">SeleniumModel.document</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.selenium.SeleniumModel.id"><code class="docutils literal notranslate"><span class="pre">SeleniumModel.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.selenium.SeleniumModel.screenshot"><code class="docutils literal notranslate"><span class="pre">SeleniumModel.screenshot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.selenium.SeleniumModel.timestamp"><code class="docutils literal notranslate"><span class="pre">SeleniumModel.timestamp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.selenium.SeleniumModel.url"><code class="docutils literal notranslate"><span class="pre">SeleniumModel.url</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="web.html#darc.model.web.selenium.SeleniumModel.url_id"><code class="docutils literal notranslate"><span class="pre">SeleniumModel.url_id</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
-<span class="target" id="module-darc.model.abc"></span><section id="base-model">
+<section id="base-model">
 <h2>Base Model<a class="headerlink" href="#base-model" title="Permalink to this heading">¶</a></h2>
 <p>The <a class="reference internal" href="#module-darc.model.abc" title="darc.model.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.abc</span></code></a> module contains abstract base class
 of all data models for the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project.</p>
-<dl class="py class">
+</section>
+<span class="target" id="module-darc.model.abc"></span><dl class="py class">
 <dt class="sig sig-object py" id="darc.model.abc.BaseMeta">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.model.abc.</span></span><span class="sig-name descname"><span class="pre">BaseMeta</span></span><a class="reference internal" href="../../_modules/darc/model/abc.html#BaseMeta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.model.abc.BaseMeta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
@@ -191,12 +335,12 @@ attribute named as <a class="reference internal" href="#darc.model.abc.BaseModel
 
 </dd></dl>
 
-</section>
-<span class="target" id="module-darc.model.utils"></span><section id="miscellaneous-utilities">
+<section id="miscellaneous-utilities">
 <h2>Miscellaneous Utilities<a class="headerlink" href="#miscellaneous-utilities" title="Permalink to this heading">¶</a></h2>
 <p>The <a class="reference internal" href="#module-darc.model.utils" title="darc.model.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.utils</span></code></a> module contains several miscellaneous
 utility functions and data fields.</p>
-<dl class="py class">
+</section>
+<span class="target" id="module-darc.model.utils"></span><dl class="py class">
 <dt class="sig sig-object py" id="darc.model.utils.IPField">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.model.utils.</span></span><span class="sig-name descname"><span class="pre">IPField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">null</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unindexed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/utils.html#IPField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.model.utils.IPField" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IPField</span></code></p>
@@ -424,7 +568,6 @@ proper table name.</p>
 </dd></dl>
 
 </section>
-</section>
 
 
           </div>
@@ -454,19 +597,130 @@ proper table name.</p>
 <li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../process.html">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process._process"><code class="docutils literal notranslate"><span class="pre">_process()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.process"><code class="docutils literal notranslate"><span class="pre">process()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.process_crawler"><code class="docutils literal notranslate"><span class="pre">process_crawler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.process_loader"><code class="docutils literal notranslate"><span class="pre">process_loader()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.register"><code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process._HOOK_REGISTRY"><code class="docutils literal notranslate"><span class="pre">_HOOK_REGISTRY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process._WORKER_POOL"><code class="docutils literal notranslate"><span class="pre">_WORKER_POOL</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../crawl.html">Web Crawlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crawl.html#darc.crawl.crawler"><code class="docutils literal notranslate"><span class="pre">crawler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crawl.html#darc.crawl.loader"><code class="docutils literal notranslate"><span class="pre">loader()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.Link"><code class="docutils literal notranslate"><span class="pre">Link</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.parse_link"><code class="docutils literal notranslate"><span class="pre">parse_link()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.quote"><code class="docutils literal notranslate"><span class="pre">quote()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.unquote"><code class="docutils literal notranslate"><span class="pre">unquote()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.urljoin"><code class="docutils literal notranslate"><span class="pre">urljoin()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.urlparse"><code class="docutils literal notranslate"><span class="pre">urlparse()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.urlsplit"><code class="docutils literal notranslate"><span class="pre">urlsplit()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse._check"><code class="docutils literal notranslate"><span class="pre">_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse._check_ng"><code class="docutils literal notranslate"><span class="pre">_check_ng()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.check_robots"><code class="docutils literal notranslate"><span class="pre">check_robots()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.extract_links"><code class="docutils literal notranslate"><span class="pre">extract_links()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.extract_links_from_text"><code class="docutils literal notranslate"><span class="pre">extract_links_from_text()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.get_content_type"><code class="docutils literal notranslate"><span class="pre">get_content_type()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.match_host"><code class="docutils literal notranslate"><span class="pre">match_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.match_mime"><code class="docutils literal notranslate"><span class="pre">match_mime()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.match_proxy"><code class="docutils literal notranslate"><span class="pre">match_proxy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.darc.parse.URL_PAT"><code class="docutils literal notranslate"><span class="pre">darc.parse.URL_PAT</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../save.html">Source Saving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.sanitise"><code class="docutils literal notranslate"><span class="pre">sanitise()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.save_headers"><code class="docutils literal notranslate"><span class="pre">save_headers()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.save_link"><code class="docutils literal notranslate"><span class="pre">save_link()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.darc.save._SAVE_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.save._SAVE_LOCK</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._db_operation"><code class="docutils literal notranslate"><span class="pre">_db_operation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_hostname_db"><code class="docutils literal notranslate"><span class="pre">_drop_hostname_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_hostname_redis"><code class="docutils literal notranslate"><span class="pre">_drop_hostname_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_requests_db"><code class="docutils literal notranslate"><span class="pre">_drop_requests_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_requests_redis"><code class="docutils literal notranslate"><span class="pre">_drop_requests_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_selenium_db"><code class="docutils literal notranslate"><span class="pre">_drop_selenium_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_drop_selenium_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._gen_arg_msg"><code class="docutils literal notranslate"><span class="pre">_gen_arg_msg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._have_hostname_db"><code class="docutils literal notranslate"><span class="pre">_have_hostname_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._have_hostname_redis"><code class="docutils literal notranslate"><span class="pre">_have_hostname_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_requests_db"><code class="docutils literal notranslate"><span class="pre">_load_requests_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_requests_redis"><code class="docutils literal notranslate"><span class="pre">_load_requests_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_selenium_db"><code class="docutils literal notranslate"><span class="pre">_load_selenium_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_load_selenium_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._redis_command"><code class="docutils literal notranslate"><span class="pre">_redis_command()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._redis_get_lock"><code class="docutils literal notranslate"><span class="pre">_redis_get_lock()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_requests_db"><code class="docutils literal notranslate"><span class="pre">_save_requests_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_requests_redis"><code class="docutils literal notranslate"><span class="pre">_save_requests_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_selenium_db"><code class="docutils literal notranslate"><span class="pre">_save_selenium_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_save_selenium_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.drop_hostname"><code class="docutils literal notranslate"><span class="pre">drop_hostname()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.drop_requests"><code class="docutils literal notranslate"><span class="pre">drop_requests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.drop_selenium"><code class="docutils literal notranslate"><span class="pre">drop_selenium()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.have_hostname"><code class="docutils literal notranslate"><span class="pre">have_hostname()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.load_requests"><code class="docutils literal notranslate"><span class="pre">load_requests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.load_selenium"><code class="docutils literal notranslate"><span class="pre">load_selenium()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.save_requests"><code class="docutils literal notranslate"><span class="pre">save_requests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.save_selenium"><code class="docutils literal notranslate"><span class="pre">save_selenium()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.BULK_SIZE"><code class="docutils literal notranslate"><span class="pre">darc.db.BULK_SIZE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.LOCK_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">darc.db.LOCK_TIMEOUT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.MAX_POOL"><code class="docutils literal notranslate"><span class="pre">darc.db.MAX_POOL</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.REDIS_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.db.REDIS_LOCK</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.RETRY_INTERVAL"><code class="docutils literal notranslate"><span class="pre">darc.db.RETRY_INTERVAL</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.get_hosts"><code class="docutils literal notranslate"><span class="pre">get_hosts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.get_robots"><code class="docutils literal notranslate"><span class="pre">get_robots()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.get_sitemaps"><code class="docutils literal notranslate"><span class="pre">get_sitemaps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.save_submit"><code class="docutils literal notranslate"><span class="pre">save_submit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit"><code class="docutils literal notranslate"><span class="pre">submit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit_new_host"><code class="docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit_requests"><code class="docutils literal notranslate"><span class="pre">submit_requests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit_selenium"><code class="docutils literal notranslate"><span class="pre">submit_selenium()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.PATH_API"><code class="docutils literal notranslate"><span class="pre">darc.submit.PATH_API</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.SAVE_DB"><code class="docutils literal notranslate"><span class="pre">darc.submit.SAVE_DB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_RETRY"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_RETRY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_NEW_HOST"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_NEW_HOST</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_REQUESTS"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_REQUESTS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_SELENIUM"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_SELENIUM</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.default_user_agent"><code class="docutils literal notranslate"><span class="pre">default_user_agent()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.i2p_session"><code class="docutils literal notranslate"><span class="pre">i2p_session()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.null_session"><code class="docutils literal notranslate"><span class="pre">null_session()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.request_session"><code class="docutils literal notranslate"><span class="pre">request_session()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.tor_session"><code class="docutils literal notranslate"><span class="pre">tor_session()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../selenium.html">Selenium Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.get_capabilities"><code class="docutils literal notranslate"><span class="pre">get_capabilities()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.get_options"><code class="docutils literal notranslate"><span class="pre">get_options()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.i2p_driver"><code class="docutils literal notranslate"><span class="pre">i2p_driver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.null_driver"><code class="docutils literal notranslate"><span class="pre">null_driver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.request_driver"><code class="docutils literal notranslate"><span class="pre">request_driver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.tor_driver"><code class="docutils literal notranslate"><span class="pre">tor_driver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.darc.selenium.BINARY_LOCATION"><code class="docutils literal notranslate"><span class="pre">darc.selenium.BINARY_LOCATION</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../proxy/index.html">Proxy Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sites/index.html">Sites Customisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.APIRequestFailed"><code class="docutils literal notranslate"><span class="pre">APIRequestFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.DatabaseOperaionFailed"><code class="docutils literal notranslate"><span class="pre">DatabaseOperaionFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.FreenetBootstrapFailed"><code class="docutils literal notranslate"><span class="pre">FreenetBootstrapFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.HookExecutionFailed"><code class="docutils literal notranslate"><span class="pre">HookExecutionFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.I2PBootstrapFailed"><code class="docutils literal notranslate"><span class="pre">I2PBootstrapFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.LinkNoReturn"><code class="docutils literal notranslate"><span class="pre">LinkNoReturn</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.LockWarning"><code class="docutils literal notranslate"><span class="pre">LockWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.RedisCommandFailed"><code class="docutils literal notranslate"><span class="pre">RedisCommandFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.SiteNotFoundWarning"><code class="docutils literal notranslate"><span class="pre">SiteNotFoundWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.TorBootstrapFailed"><code class="docutils literal notranslate"><span class="pre">TorBootstrapFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.TorRenewFailed"><code class="docutils literal notranslate"><span class="pre">TorRenewFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.UnsupportedLink"><code class="docutils literal notranslate"><span class="pre">UnsupportedLink</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.UnsupportedPlatform"><code class="docutils literal notranslate"><span class="pre">UnsupportedPlatform</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.UnsupportedProxy"><code class="docutils literal notranslate"><span class="pre">UnsupportedProxy</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.WorkerBreak"><code class="docutils literal notranslate"><span class="pre">WorkerBreak</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.ZeroNetBootstrapFailed"><code class="docutils literal notranslate"><span class="pre">ZeroNetBootstrapFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error._BaseException"><code class="docutils literal notranslate"><span class="pre">_BaseException</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error._BaseWarning"><code class="docutils literal notranslate"><span class="pre">_BaseWarning</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Data Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.darc"><code class="docutils literal notranslate"><span class="pre">darc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.register_hooks"><code class="docutils literal notranslate"><span class="pre">register_hooks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.register_proxy"><code class="docutils literal notranslate"><span class="pre">register_proxy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.register_sites"><code class="docutils literal notranslate"><span class="pre">register_sites()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>

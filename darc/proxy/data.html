@@ -14,6 +14,7 @@
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="ED2K Magnet Links" href="ed2k.html" />
@@ -34,14 +35,15 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-darc.proxy.data"></span><section id="data-uri-schemes">
+  <section id="data-uri-schemes">
 <h1>Data URI Schemes<a class="headerlink" href="#data-uri-schemes" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#module-darc.proxy.data" title="darc.proxy.data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy.data</span></code></a> module contains the auxiliary functions
 around managing and processing the data URI schemes.</p>
 <p>Currently, the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project directly save the data URI
 schemes extracted to the data storage path
 <a class="reference internal" href="#darc.proxy.data.darc.proxy.data.PATH" title="darc.proxy.data.darc.proxy.data.PATH"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH</span></code></a> without further processing.</p>
-<dl class="py function">
+</section>
+<span class="target" id="module-darc.proxy.data"></span><dl class="py function">
 <dt class="sig sig-object py" id="darc.proxy.data.save_data">
 <span class="sig-prename descclassname"><span class="pre">darc.proxy.data.</span></span><span class="sig-name descname"><span class="pre">save_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/proxy/data.html#save_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.proxy.data.save_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save data URI.</p>
@@ -57,7 +59,6 @@ as defined in <a class="reference internal" href="#darc.proxy.data.darc.proxy.da
 </dl>
 </dd></dl>
 
-</section>
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.data.darc.proxy.data.PATH">
 <span class="sig-prename descclassname"><span class="pre">darc.proxy.data.</span></span><span class="sig-name descname"><span class="pre">PATH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{PATH_MISC}/data/'</span></em><a class="headerlink" href="#darc.proxy.data.darc.proxy.data.PATH" title="Permalink to this definition">¶</a></dt>
@@ -99,19 +100,130 @@ as defined in <a class="reference internal" href="#darc.proxy.data.darc.proxy.da
 <li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../process.html">Main Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process._process"><code class="docutils literal notranslate"><span class="pre">_process()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.process"><code class="docutils literal notranslate"><span class="pre">process()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.process_crawler"><code class="docutils literal notranslate"><span class="pre">process_crawler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.process_loader"><code class="docutils literal notranslate"><span class="pre">process_loader()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.register"><code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process._HOOK_REGISTRY"><code class="docutils literal notranslate"><span class="pre">_HOOK_REGISTRY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process._WORKER_POOL"><code class="docutils literal notranslate"><span class="pre">_WORKER_POOL</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../crawl.html">Web Crawlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crawl.html#darc.crawl.crawler"><code class="docutils literal notranslate"><span class="pre">crawler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crawl.html#darc.crawl.loader"><code class="docutils literal notranslate"><span class="pre">loader()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.Link"><code class="docutils literal notranslate"><span class="pre">Link</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.parse_link"><code class="docutils literal notranslate"><span class="pre">parse_link()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.quote"><code class="docutils literal notranslate"><span class="pre">quote()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.unquote"><code class="docutils literal notranslate"><span class="pre">unquote()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.urljoin"><code class="docutils literal notranslate"><span class="pre">urljoin()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.urlparse"><code class="docutils literal notranslate"><span class="pre">urlparse()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.urlsplit"><code class="docutils literal notranslate"><span class="pre">urlsplit()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../parse.html">Source Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse._check"><code class="docutils literal notranslate"><span class="pre">_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse._check_ng"><code class="docutils literal notranslate"><span class="pre">_check_ng()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.check_robots"><code class="docutils literal notranslate"><span class="pre">check_robots()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.extract_links"><code class="docutils literal notranslate"><span class="pre">extract_links()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.extract_links_from_text"><code class="docutils literal notranslate"><span class="pre">extract_links_from_text()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.get_content_type"><code class="docutils literal notranslate"><span class="pre">get_content_type()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.match_host"><code class="docutils literal notranslate"><span class="pre">match_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.match_mime"><code class="docutils literal notranslate"><span class="pre">match_mime()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.match_proxy"><code class="docutils literal notranslate"><span class="pre">match_proxy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.darc.parse.URL_PAT"><code class="docutils literal notranslate"><span class="pre">darc.parse.URL_PAT</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../save.html">Source Saving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.sanitise"><code class="docutils literal notranslate"><span class="pre">sanitise()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.save_headers"><code class="docutils literal notranslate"><span class="pre">save_headers()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.save_link"><code class="docutils literal notranslate"><span class="pre">save_link()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.darc.save._SAVE_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.save._SAVE_LOCK</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../db.html">Link Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._db_operation"><code class="docutils literal notranslate"><span class="pre">_db_operation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_hostname_db"><code class="docutils literal notranslate"><span class="pre">_drop_hostname_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_hostname_redis"><code class="docutils literal notranslate"><span class="pre">_drop_hostname_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_requests_db"><code class="docutils literal notranslate"><span class="pre">_drop_requests_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_requests_redis"><code class="docutils literal notranslate"><span class="pre">_drop_requests_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_selenium_db"><code class="docutils literal notranslate"><span class="pre">_drop_selenium_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_drop_selenium_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._gen_arg_msg"><code class="docutils literal notranslate"><span class="pre">_gen_arg_msg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._have_hostname_db"><code class="docutils literal notranslate"><span class="pre">_have_hostname_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._have_hostname_redis"><code class="docutils literal notranslate"><span class="pre">_have_hostname_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_requests_db"><code class="docutils literal notranslate"><span class="pre">_load_requests_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_requests_redis"><code class="docutils literal notranslate"><span class="pre">_load_requests_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_selenium_db"><code class="docutils literal notranslate"><span class="pre">_load_selenium_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_load_selenium_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._redis_command"><code class="docutils literal notranslate"><span class="pre">_redis_command()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._redis_get_lock"><code class="docutils literal notranslate"><span class="pre">_redis_get_lock()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_requests_db"><code class="docutils literal notranslate"><span class="pre">_save_requests_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_requests_redis"><code class="docutils literal notranslate"><span class="pre">_save_requests_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_selenium_db"><code class="docutils literal notranslate"><span class="pre">_save_selenium_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_save_selenium_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.drop_hostname"><code class="docutils literal notranslate"><span class="pre">drop_hostname()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.drop_requests"><code class="docutils literal notranslate"><span class="pre">drop_requests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.drop_selenium"><code class="docutils literal notranslate"><span class="pre">drop_selenium()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.have_hostname"><code class="docutils literal notranslate"><span class="pre">have_hostname()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.load_requests"><code class="docutils literal notranslate"><span class="pre">load_requests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.load_selenium"><code class="docutils literal notranslate"><span class="pre">load_selenium()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.save_requests"><code class="docutils literal notranslate"><span class="pre">save_requests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.save_selenium"><code class="docutils literal notranslate"><span class="pre">save_selenium()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.BULK_SIZE"><code class="docutils literal notranslate"><span class="pre">darc.db.BULK_SIZE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.LOCK_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">darc.db.LOCK_TIMEOUT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.MAX_POOL"><code class="docutils literal notranslate"><span class="pre">darc.db.MAX_POOL</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.REDIS_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.db.REDIS_LOCK</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.RETRY_INTERVAL"><code class="docutils literal notranslate"><span class="pre">darc.db.RETRY_INTERVAL</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../submit.html">Data Submission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.get_hosts"><code class="docutils literal notranslate"><span class="pre">get_hosts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.get_robots"><code class="docutils literal notranslate"><span class="pre">get_robots()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.get_sitemaps"><code class="docutils literal notranslate"><span class="pre">get_sitemaps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.save_submit"><code class="docutils literal notranslate"><span class="pre">save_submit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit"><code class="docutils literal notranslate"><span class="pre">submit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit_new_host"><code class="docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit_requests"><code class="docutils literal notranslate"><span class="pre">submit_requests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit_selenium"><code class="docutils literal notranslate"><span class="pre">submit_selenium()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.PATH_API"><code class="docutils literal notranslate"><span class="pre">darc.submit.PATH_API</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.SAVE_DB"><code class="docutils literal notranslate"><span class="pre">darc.submit.SAVE_DB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_RETRY"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_RETRY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_NEW_HOST"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_NEW_HOST</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_REQUESTS"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_REQUESTS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_SELENIUM"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_SELENIUM</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../requests.html">Requests Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.default_user_agent"><code class="docutils literal notranslate"><span class="pre">default_user_agent()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.i2p_session"><code class="docutils literal notranslate"><span class="pre">i2p_session()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.null_session"><code class="docutils literal notranslate"><span class="pre">null_session()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.request_session"><code class="docutils literal notranslate"><span class="pre">request_session()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.tor_session"><code class="docutils literal notranslate"><span class="pre">tor_session()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../selenium.html">Selenium Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.get_capabilities"><code class="docutils literal notranslate"><span class="pre">get_capabilities()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.get_options"><code class="docutils literal notranslate"><span class="pre">get_options()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.i2p_driver"><code class="docutils literal notranslate"><span class="pre">i2p_driver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.null_driver"><code class="docutils literal notranslate"><span class="pre">null_driver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.request_driver"><code class="docutils literal notranslate"><span class="pre">request_driver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.tor_driver"><code class="docutils literal notranslate"><span class="pre">tor_driver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.darc.selenium.BINARY_LOCATION"><code class="docutils literal notranslate"><span class="pre">darc.selenium.BINARY_LOCATION</span></code></a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Proxy Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sites/index.html">Sites Customisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../error.html">Custom Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.APIRequestFailed"><code class="docutils literal notranslate"><span class="pre">APIRequestFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.DatabaseOperaionFailed"><code class="docutils literal notranslate"><span class="pre">DatabaseOperaionFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.FreenetBootstrapFailed"><code class="docutils literal notranslate"><span class="pre">FreenetBootstrapFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.HookExecutionFailed"><code class="docutils literal notranslate"><span class="pre">HookExecutionFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.I2PBootstrapFailed"><code class="docutils literal notranslate"><span class="pre">I2PBootstrapFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.LinkNoReturn"><code class="docutils literal notranslate"><span class="pre">LinkNoReturn</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.LockWarning"><code class="docutils literal notranslate"><span class="pre">LockWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.RedisCommandFailed"><code class="docutils literal notranslate"><span class="pre">RedisCommandFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.SiteNotFoundWarning"><code class="docutils literal notranslate"><span class="pre">SiteNotFoundWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.TorBootstrapFailed"><code class="docutils literal notranslate"><span class="pre">TorBootstrapFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.TorRenewFailed"><code class="docutils literal notranslate"><span class="pre">TorRenewFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.UnsupportedLink"><code class="docutils literal notranslate"><span class="pre">UnsupportedLink</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.UnsupportedPlatform"><code class="docutils literal notranslate"><span class="pre">UnsupportedPlatform</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.UnsupportedProxy"><code class="docutils literal notranslate"><span class="pre">UnsupportedProxy</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.WorkerBreak"><code class="docutils literal notranslate"><span class="pre">WorkerBreak</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error.ZeroNetBootstrapFailed"><code class="docutils literal notranslate"><span class="pre">ZeroNetBootstrapFailed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error._BaseException"><code class="docutils literal notranslate"><span class="pre">_BaseException</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error._BaseWarning"><code class="docutils literal notranslate"><span class="pre">_BaseWarning</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../model/index.html">Data Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.darc"><code class="docutils literal notranslate"><span class="pre">darc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.register_hooks"><code class="docutils literal notranslate"><span class="pre">register_hooks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.register_proxy"><code class="docutils literal notranslate"><span class="pre">register_proxy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.register_sites"><code class="docutils literal notranslate"><span class="pre">register_sites()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
