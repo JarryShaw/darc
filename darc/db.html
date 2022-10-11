@@ -35,7 +35,7 @@
 
           <div class="body" role="main">
             
-  <section id="link-database">
+  <span class="target" id="module-darc.db"></span><section id="link-database">
 <h1>Link Database<a class="headerlink" href="#link-database" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project utilises <a class="reference external" href="https://redis.io/">Redis</a> based database
 to provide tele-process communication.</p>
@@ -59,7 +59,7 @@ they are all <a class="reference external" href="https://redis.io/">Redis</a> <s
 module uses the RDS storage described by the <code class="xref py py-mod docutils literal notranslate"><span class="pre">peewee</span></code>
 models as backend.</p>
 </section>
-<span class="target" id="module-darc.db"></span><dl class="py function">
+<dl class="py function">
 <dt class="sig sig-object py" id="darc.db._db_operation">
 <span class="sig-prename descclassname"><span class="pre">darc.db.</span></span><span class="sig-name descname"><span class="pre">_db_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/db.html#_db_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.db._db_operation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retry operation on database.</p>
@@ -67,7 +67,7 @@ models as backend.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>operation</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">_T</span></code>)]) – Callable / method to perform.</p></li>
-<li><p><strong>*args</strong> – Arbitrary positional arguments.</p></li>
+<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>) – Arbitrary positional arguments.</p></li>
 <li><p><strong>kwargs</strong> (<em>Any</em>) – </p></li>
 </ul>
 </dd>
@@ -181,7 +181,7 @@ models as backend.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><em>Any</em></a>) – Arbitrary arguments.</p></li>
+<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>) – Arbitrary arguments.</p></li>
 <li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><em>Any</em></a>) – </p></li>
 </ul>
 </dd>
@@ -329,7 +329,7 @@ at <a class="reference internal" href="#darc.db.darc.db.MAX_POOL" title="darc.db
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>command</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Command name.</p></li>
-<li><p><strong>*args</strong> – Arbitrary arguments for the Redis command.</p></li>
+<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>) – Arbitrary arguments for the Redis command.</p></li>
 <li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><em>Any</em></a>) – </p></li>
 </ul>
 </dd>

@@ -44,7 +44,7 @@ required for the task queue of <a class="reference internal" href="../index.html
 <p>Please refer to <a class="reference internal" href="../db.html#module-darc.db" title="darc.db"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code></a> module for more information
 about the task queues.</p>
 </div>
-<section id="hostname-queue">
+<span class="target" id="module-darc.model.tasks.hostname"></span><section id="hostname-queue">
 <h2>Hostname Queue<a class="headerlink" href="#hostname-queue" title="Permalink to this heading">¶</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -54,7 +54,7 @@ a <a class="reference external" href="https://redis.io">Redis</a> based task que
 <p>The <a class="reference internal" href="#module-darc.model.tasks.hostname" title="darc.model.tasks.hostname"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.tasks.hostname</span></code></a> model contains the data model
 defined for the hostname queue.</p>
 </section>
-<span class="target" id="module-darc.model.tasks.hostname"></span><dl class="py class">
+<dl class="py class">
 <dt class="sig sig-object py" id="darc.model.tasks.hostname.HostnameQueueModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.model.tasks.hostname.</span></span><span class="sig-name descname"><span class="pre">HostnameQueueModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/tasks/hostname.html#HostnameQueueModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.model.tasks.hostname.HostnameQueueModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="index.html#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
@@ -84,7 +84,7 @@ defined for the hostname queue.</p>
 
 </dd></dl>
 
-<section id="crawler-queue">
+<span class="target" id="module-darc.model.tasks.requests"></span><section id="crawler-queue">
 <h2>Crawler Queue<a class="headerlink" href="#crawler-queue" title="Permalink to this heading">¶</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -94,7 +94,7 @@ named <code class="docutils literal notranslate"><span class="pre">queue_request
 <p>The <a class="reference internal" href="#module-darc.model.tasks.requests" title="darc.model.tasks.requests"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.tasks.requests</span></code></a> model contains the data model
 defined for the <a class="reference internal" href="../crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crawler</span></code></a> queue.</p>
 </section>
-<span class="target" id="module-darc.model.tasks.requests"></span><dl class="py class">
+<dl class="py class">
 <dt class="sig sig-object py" id="darc.model.tasks.requests.RequestsQueueModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.model.tasks.requests.</span></span><span class="sig-name descname"><span class="pre">RequestsQueueModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/tasks/requests.html#RequestsQueueModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.model.tasks.requests.RequestsQueueModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="index.html#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
@@ -136,7 +136,7 @@ defined for the <a class="reference internal" href="../crawl.html#darc.crawl.cra
 
 </dd></dl>
 
-<section id="loader-queue">
+<span class="target" id="module-darc.model.tasks.selenium"></span><section id="loader-queue">
 <h2>Loader Queue<a class="headerlink" href="#loader-queue" title="Permalink to this heading">¶</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -146,7 +146,7 @@ named <code class="docutils literal notranslate"><span class="pre">queue_seleniu
 <p>The <a class="reference internal" href="#module-darc.model.tasks.selenium" title="darc.model.tasks.selenium"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.model.tasks.selenium</span></code></a> model contains the data model
 defined for the <a class="reference internal" href="../crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loader</span></code></a> queue.</p>
 </section>
-<span class="target" id="module-darc.model.tasks.selenium"></span><dl class="py class">
+<dl class="py class">
 <dt class="sig sig-object py" id="darc.model.tasks.selenium.SeleniumQueueModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.model.tasks.selenium.</span></span><span class="sig-name descname"><span class="pre">SeleniumQueueModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/model/tasks/selenium.html#SeleniumQueueModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.model.tasks.selenium.SeleniumQueueModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="index.html#darc.model.abc.BaseModel" title="darc.model.abc.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
