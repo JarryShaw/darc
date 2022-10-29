@@ -47,7 +47,7 @@ around managing and processing the I2P proxy.</p>
 <p>The bootstrap arguments are defined as <a class="reference internal" href="#darc.proxy.i2p.darc.proxy.i2p._I2P_ARGS" title="darc.proxy.i2p.darc.proxy.i2p._I2P_ARGS"><code class="xref py py-data docutils literal notranslate"><span class="pre">_I2P_ARGS</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.CalledProcessError" title="(in Python v3.10)"><strong>subprocess.CalledProcessError</strong></a> – If the return code of <a class="reference internal" href="#darc.proxy.i2p.darc.proxy.i2p._I2P_PROC" title="darc.proxy.i2p.darc.proxy.i2p._I2P_PROC"><code class="xref py py-data docutils literal notranslate"><span class="pre">_I2P_PROC</span></code></a> is non-zero.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.CalledProcessError" title="(in Python v3.11)"><strong>subprocess.CalledProcessError</strong></a> – If the return code of <a class="reference internal" href="#darc.proxy.i2p.darc.proxy.i2p._I2P_PROC" title="darc.proxy.i2p.darc.proxy.i2p._I2P_PROC"><code class="xref py py-data docutils literal notranslate"><span class="pre">_I2P_PROC</span></code></a> is non-zero.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
@@ -65,7 +65,7 @@ around managing and processing the I2P proxy.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -78,11 +78,11 @@ around managing and processing the I2P proxy.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>link</strong> (<em>darc_link.Link</em>) – Link object to fetch for its <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p></li>
-<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Force refetch <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p></li>
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Force refetch <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Content of the <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> file.</p>
@@ -110,7 +110,7 @@ around managing and processing the I2P proxy.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> – <em>base64</em> encoded content of <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code></p></li>
 </ul>
 </li>
-<li><p>If not, return <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p>If not, return <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
 </ul>
 </p>
 </dd>
@@ -133,13 +133,13 @@ around managing and processing the I2P proxy.</p>
 <dd class="field-odd"><p><strong>link</strong> (<em>darc_link.Link</em>) – Link object to check if <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> already exists.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a>]</p>
+<dd class="field-even"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p>If <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> exists, return the path to <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>,
 i.e. <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/hosts.txt</span></code>.</p></li>
-<li><p>If not, return <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p>If not, return <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
 </ul>
 </p>
 </dd>
@@ -175,7 +175,7 @@ i.e. <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -190,7 +190,7 @@ i.e. <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Popen[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)">bytes</a>]</p>
+<dd class="field-odd"><p>Popen[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)">bytes</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -203,8 +203,8 @@ i.e. <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>link</strong> (<em>darc_link.Link</em>) – Link object to fetch for its <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p></li>
-<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p></li>
-<li><p><strong>check</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If perform checks on extracted links,
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p></li>
+<li><p><strong>check</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If perform checks on extracted links,
 default to <a class="reference internal" href="../const.html#darc.const.CHECK" title="darc.const.CHECK"><code class="xref py py-data docutils literal notranslate"><span class="pre">CHECK</span></code></a>.</p></li>
 </ul>
 </dd>
@@ -225,11 +225,11 @@ default to <a class="reference internal" href="../const.html#darc.const.CHECK" t
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>link</strong> (<em>darc_link.Link</em>) – Link object of <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p></li>
-<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content of <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Saved path to <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>, i.e.
@@ -246,7 +246,7 @@ default to <a class="reference internal" href="../const.html#darc.const.CHECK" t
 
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.i2p.darc.proxy.i2p.I2P_REQUESTS_PROXY">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">I2P_REQUESTS_PROXY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.I2P_REQUESTS_PROXY" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">I2P_REQUESTS_PROXY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.I2P_REQUESTS_PROXY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Proxy for I2P sessions.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -271,7 +271,7 @@ default to <a class="reference internal" href="../const.html#darc.const.CHECK" t
 <p>The following constants are configuration through environment variables:</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.i2p.darc.proxy.i2p.I2P_PORT">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">I2P_PORT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.I2P_PORT" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">I2P_PORT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.I2P_PORT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Port for I2P proxy connection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
@@ -285,7 +285,7 @@ default to <a class="reference internal" href="../const.html#darc.const.CHECK" t
 
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.i2p.darc.proxy.i2p.I2P_RETRY">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">I2P_RETRY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.I2P_RETRY" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">I2P_RETRY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.I2P_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retry times for I2P bootstrap when failure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
@@ -299,7 +299,7 @@ default to <a class="reference internal" href="../const.html#darc.const.CHECK" t
 
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.i2p.darc.proxy.i2p.BS_WAIT">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">BS_WAIT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.BS_WAIT" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">BS_WAIT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.BS_WAIT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time after which the attempt to start I2P is aborted.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
@@ -317,10 +317,10 @@ default to <a class="reference internal" href="../const.html#darc.const.CHECK" t
 
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.i2p.darc.proxy.i2p.I2P_ARGS">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">I2P_ARGS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.I2P_ARGS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">I2P_ARGS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p.I2P_ARGS" title="Permalink to this definition">¶</a></dt>
 <dd><p>I2P bootstrap arguments for <code class="docutils literal notranslate"><span class="pre">i2prouter</span> <span class="pre">start</span></code>.</p>
 <p>If provided, it should be parsed as command
-line arguments (c.f. <a class="reference external" href="https://docs.python.org/3/library/shlex.html#shlex.split" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">shlex.split()</span></code></a>).</p>
+line arguments (c.f. <a class="reference external" href="https://docs.python.org/3/library/shlex.html#shlex.split" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">shlex.split()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
@@ -332,18 +332,18 @@ line arguments (c.f. <a class="reference external" href="https://docs.python.org
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The command will be run as <a class="reference internal" href="../const.html#darc.const.DARC_USER" title="darc.const.DARC_USER"><code class="xref py py-data docutils literal notranslate"><span class="pre">DARC_USER</span></code></a>,
-if current user (c.f. <a class="reference external" href="https://docs.python.org/3/library/getpass.html#getpass.getuser" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">getpass.getuser()</span></code></a>) is <em>root</em>.</p>
+if current user (c.f. <a class="reference external" href="https://docs.python.org/3/library/getpass.html#getpass.getuser" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">getpass.getuser()</span></code></a>) is <em>root</em>.</p>
 </div>
 </dd></dl>
 
 <p>The following constants are defined for internal usage:</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.i2p.darc.proxy.i2p._MNG_I2P">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">_MNG_I2P</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p._MNG_I2P" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">_MNG_I2P</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p._MNG_I2P" title="Permalink to this definition">¶</a></dt>
 <dd><p>If manage I2P proxy through <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a></p>
 </dd>
 <dt class="field-even">Environ<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">DARC_I2P</span></code></p>
@@ -353,19 +353,19 @@ if current user (c.f. <a class="reference external" href="https://docs.python.or
 
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.i2p.darc.proxy.i2p._I2P_BS_FLAG">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">_I2P_BS_FLAG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p._I2P_BS_FLAG" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">_I2P_BS_FLAG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p._I2P_BS_FLAG" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the I2P proxy is bootstrapped.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.i2p.darc.proxy.i2p._I2P_PROC">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">_I2P_PROC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen" title="(in Python v3.10)"><span class="pre">subprocess.Popen</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p._I2P_PROC" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">_I2P_PROC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen" title="(in Python v3.11)"><span class="pre">subprocess.Popen</span></a></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p._I2P_PROC" title="Permalink to this definition">¶</a></dt>
 <dd><p>I2P proxy process running in the background.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.i2p.darc.proxy.i2p._I2P_ARGS">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">_I2P_ARGS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p._I2P_ARGS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.i2p.</span></span><span class="sig-name descname"><span class="pre">_I2P_ARGS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.i2p.darc.proxy.i2p._I2P_ARGS" title="Permalink to this definition">¶</a></dt>
 <dd><p>I2P proxy bootstrap arguments.</p>
 </dd></dl>
 

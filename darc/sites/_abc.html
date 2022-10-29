@@ -50,7 +50,7 @@ you are recommended to import it from <a class="reference internal" href="index.
 <dl class="py class">
 <dt class="sig sig-object py" id="darc.sites._abc.BaseSite">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.sites._abc.</span></span><span class="sig-name descname"><span class="pre">BaseSite</span></span><a class="reference internal" href="../../_modules/darc/sites/_abc.html#BaseSite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites._abc.BaseSite" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Abstract base class for sites customisation.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="darc.sites._abc.BaseSite.crawler">
@@ -59,7 +59,7 @@ you are recommended to import it from <a class="reference internal" href="index.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
 <li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>) – Session object with proxy settings.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be crawled.</p></li>
 </ul>
@@ -68,7 +68,7 @@ you are recommended to import it from <a class="reference internal" href="index.
 <dd class="field-even"><p><a class="reference internal" href="../error.html#darc.error.LinkNoReturn" title="darc.error.LinkNoReturn"><strong>LinkNoReturn</strong></a> – This link has no return response.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NoReturn" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></a>, <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NoReturn" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></a>, <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -80,7 +80,7 @@ you are recommended to import it from <a class="reference internal" href="index.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
 <li><p><strong>driver</strong> (<em>selenium.webdriver.Chrome</em>) – Web driver object with proxy settings.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be loaded.</p></li>
 </ul>
@@ -89,14 +89,14 @@ you are recommended to import it from <a class="reference internal" href="index.
 <dd class="field-even"><p><a class="reference internal" href="../error.html#darc.error.LinkNoReturn" title="darc.error.LinkNoReturn"><strong>LinkNoReturn</strong></a> – This link has no return response.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NoReturn" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></a>, <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NoReturn" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></a>, <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.sites._abc.BaseSite.hostname">
-<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#darc.sites._abc.BaseSite.hostname" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#darc.sites._abc.BaseSite.hostname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hostnames (<strong>case insensitive</strong>) the sites customisation is designed for.</p>
 </dd></dl>
 

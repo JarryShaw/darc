@@ -67,7 +67,7 @@ and extract then save the links from sitemaps (c.f. <a class="reference internal
 into link database for future crawling (c.f. <a class="reference internal" href="db.html#darc.db.save_requests" title="darc.db.save_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_requests()</span></code></a>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A host is new if <a class="reference internal" href="db.html#darc.db.have_hostname" title="darc.db.have_hostname"><code class="xref py py-func docutils literal notranslate"><span class="pre">have_hostname()</span></code></a> returns <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+<p>A host is new if <a class="reference internal" href="db.html#darc.db.have_hostname" title="darc.db.have_hostname"><code class="xref py py-func docutils literal notranslate"><span class="pre">have_hostname()</span></code></a> returns <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
 <p>If <a class="reference internal" href="proxy/null.html#darc.proxy.null.fetch_sitemap" title="darc.proxy.null.fetch_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.null.fetch_sitemap()</span></code></a> and/or <a class="reference internal" href="proxy/i2p.html#darc.proxy.i2p.fetch_hosts" title="darc.proxy.i2p.fetch_hosts"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.i2p.fetch_hosts()</span></code></a>
 failed when fetching such documents, the host will be removed from the
 hostname database through <a class="reference internal" href="db.html#darc.db.drop_hostname" title="darc.db.drop_hostname"><code class="xref py py-func docutils literal notranslate"><span class="pre">drop_hostname()</span></code></a>, and considered
@@ -76,7 +76,7 @@ as new when next encounter.</p>
 <p>Also, if the submission API is provided, <a class="reference internal" href="submit.html#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a>
 will be called and submit the documents just fetched.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> presented, and <a class="reference internal" href="const.html#darc.const.FORCE" title="darc.const.FORCE"><code class="xref py py-data docutils literal notranslate"><span class="pre">FORCE</span></code></a> is
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will check if allowed to crawl the URL.</p>
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will check if allowed to crawl the URL.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The root path (e.g. <code class="docutils literal notranslate"><span class="pre">/</span></code> in <a class="reference external" href="https://www.example.com/">https://www.example.com/</a>) will always
@@ -111,7 +111,7 @@ be saved into <code class="xref py py-mod docutils literal notranslate"><span cl
 (c.f. <a class="reference internal" href="db.html#darc.db.save_selenium" title="darc.db.save_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_selenium()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>link</strong> (<em>darc_link.Link</em>) – </p>
@@ -171,7 +171,7 @@ links into the <a class="reference external" href="https://requests.readthedocs.
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><em>Link</em></a>) – </p>

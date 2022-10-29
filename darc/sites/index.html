@@ -136,7 +136,7 @@ data of the crawling process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
 <li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.1)"><em>requests.Session</em></a>) – Session object with proxy settings.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be crawled.</p></li>
 </ul>
@@ -172,7 +172,7 @@ object containing the final data of the loading process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
+<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
 <li><p><strong>driver</strong> (<em>selenium.webdriver.Chrome</em>) – Web driver object with proxy settings.</p></li>
 <li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be loaded.</p></li>
 </ul>
@@ -205,22 +205,22 @@ through <a class="reference internal" href="#darc.sites.register" title="darc.si
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>site</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]) – Sites customisation class inherited from
+<li><p><strong>site</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]) – Sites customisation class inherited from
 <a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>.</p></li>
-<li><p><strong>*hostname</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>]</em>) – Optional list of hostnames the sites
+<li><p><strong>*hostname</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>]</em>) – Optional list of hostnames the sites
 customisation should be registered with.
 By default, we use <code class="xref py py-attr docutils literal notranslate"><span class="pre">site.hostname</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.sites.darc.sites.SITEMAP">
-<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">SITEMAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><span class="pre">darc.sites._abc.BaseSite</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.sites.darc.sites.SITEMAP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">SITEMAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><span class="pre">darc.sites._abc.BaseSite</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.sites.darc.sites.SITEMAP" title="Permalink to this definition">¶</a></dt>
 <dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.sites.default</span> <span class="kn">import</span> <span class="n">DefaultSite</span>
 
 <span class="n">SITEMAP</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DefaultSite</span><span class="p">,</span> <span class="p">{</span>
@@ -244,7 +244,7 @@ fallback to the default hooks, <a class="reference internal" href="default.html#
 <dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to fetch sites customisation class.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The sites customisation class.</p>

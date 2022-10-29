@@ -669,10 +669,10 @@ in global namespace (and renamed to <a class="reference internal" href="#darc.da
 and start the main process of the <a class="reference internal" href="#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> darkweb crawlers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>worker</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[‘crawler’, ‘loader’]) – Worker process type.</p>
+<dd class="field-odd"><p><strong>worker</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[‘crawler’, ‘loader’]) – Worker process type.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">worker</span></code> is not a valid value.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">worker</span></code> is not a valid value.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
@@ -692,9 +692,9 @@ link database (c.f. <a class="reference internal" href="db.html#darc.db.load_req
 <a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If <a class="reference internal" href="const.html#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be
+<p>If <a class="reference internal" href="const.html#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be
 called with <em>multiprocessing</em> support; if <a class="reference internal" href="const.html#darc.const.FLAG_TH" title="darc.const.FLAG_TH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_TH</span></code></a>
-if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be called with <em>multithreading</em>
+if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be called with <em>multithreading</em>
 support; if none, the function will be called in single-threading.</p>
 </div>
 </li>
@@ -711,7 +711,7 @@ into link database for future crawling (c.f. <a class="reference internal" href=
 Also, if the submission API is provided, <a class="reference internal" href="submit.html#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a>
 will be called and submit the documents just fetched.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> presented, and <a class="reference internal" href="const.html#darc.const.FORCE" title="darc.const.FORCE"><code class="xref py py-data docutils literal notranslate"><span class="pre">FORCE</span></code></a> is
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference internal" href="#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will check if allowed to crawl the URL.</p>
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference internal" href="#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> will check if allowed to crawl the URL.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The root path (e.g. <code class="docutils literal notranslate"><span class="pre">/</span></code> in <a class="reference external" href="https://www.example.com/">https://www.example.com/</a>) will always
@@ -749,9 +749,9 @@ obtain URLs from the <code class="xref py py-mod docutils literal notranslate"><
 and feed such URLs to <a class="reference internal" href="crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If <a class="reference internal" href="const.html#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be
+<p>If <a class="reference internal" href="const.html#darc.const.FLAG_MP" title="darc.const.FLAG_MP"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_MP</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be
 called with <em>multiprocessing</em> support; if <a class="reference internal" href="const.html#darc.const.FLAG_TH" title="darc.const.FLAG_TH"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLAG_TH</span></code></a>
-if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be called with <em>multithreading</em>
+if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function will be called with <em>multithreading</em>
 support; if none, the function will be called in single-threading.</p>
 </div>
 </li>
@@ -774,13 +774,13 @@ links into the <a class="reference external" href="https://requests.readthedocs.
 sequential order, with the type of worker (<code class="docutils literal notranslate"><span class="pre">'crawler'</span></code> or <code class="docutils literal notranslate"><span class="pre">'loader'</span></code>)
 and the current link pool as its parameters, see <a class="reference internal" href="process.html#darc.process.register" title="darc.process.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">register()</span></code></a>
 for more information.</p>
-<p>If in reboot mode, i.e. <a class="reference internal" href="const.html#darc.const.REBOOT" title="darc.const.REBOOT"><code class="xref py py-data docutils literal notranslate"><span class="pre">REBOOT</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function
+<p>If in reboot mode, i.e. <a class="reference internal" href="const.html#darc.const.REBOOT" title="darc.const.REBOOT"><code class="xref py py-data docutils literal notranslate"><span class="pre">REBOOT</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, the function
 will exit after first round. If not, it will renew the Tor connections (if
 bootstrapped), c.f. <a class="reference internal" href="proxy/tor.html#darc.proxy.tor.renew_tor_session" title="darc.proxy.tor.renew_tor_session"><code class="xref py py-func docutils literal notranslate"><span class="pre">renew_tor_session()</span></code></a>, and start
 another round.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>worker</strong> (<em>Literal</em><em>[</em><em>&quot;crawler&quot;</em><em>, </em><em>&quot;loader&quot;</em><em>]</em>) – </p>
@@ -801,8 +801,8 @@ global namespace, see below:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>hook</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[‘crawler’, ‘loader’], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – Hook function to be registered.</p></li>
-<li><p><strong>_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>hook</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[‘crawler’, ‘loader’], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>]], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – Hook function to be registered.</p></li>
+<li><p><strong>_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
@@ -814,9 +814,9 @@ global namespace, see below:</p>
 </dl>
 <p>The hook function takes two parameters:</p>
 <ol class="arabic simple">
-<li><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> object indicating the type of worker,
+<li><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> object indicating the type of worker,
 i.e. <code class="docutils literal notranslate"><span class="pre">'crawler'</span></code> or <code class="docutils literal notranslate"><span class="pre">'loader'</span></code>;</p></li>
-<li><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> object containing <a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>
+<li><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> object containing <a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>
 objects, as the current processed link pool.</p></li>
 </ol>
 <p>The hook function may raises <a class="reference internal" href="error.html#darc.error.WorkerBreak" title="darc.error.WorkerBreak"><code class="xref py py-exc docutils literal notranslate"><span class="pre">WorkerBreak</span></code></a>
@@ -830,12 +830,12 @@ hook function will be ignored by the workers.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>hook</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)"><em>Literal</em></a><em>[</em><em>'crawler'</em><em>, </em><em>'loader'</em><em>]</em><em>, </em><em>~typing.List</em><em>[</em><em>~darc.link.Link</em><em>]</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p></li>
-<li><p><strong>_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>hook</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)"><em>Literal</em></a><em>[</em><em>'crawler'</em><em>, </em><em>'loader'</em><em>]</em><em>, </em><em>~typing.List</em><em>[</em><em>~darc.link.Link</em><em>]</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+<li><p><strong>_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -852,15 +852,15 @@ hook function will be ignored by the workers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>proxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Proxy type.</p></li>
-<li><p><strong>session</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">FuturesSession</span></code>]]) – Session factory function, c.f.
+<li><p><strong>proxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Proxy type.</p></li>
+<li><p><strong>session</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">FuturesSession</span></code>]]) – Session factory function, c.f.
 <a class="reference internal" href="requests.html#darc.requests.null_session" title="darc.requests.null_session"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.requests.null_session()</span></code></a>.</p></li>
-<li><p><strong>driver</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[], <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>]) – Driver factory function, c.f.
+<li><p><strong>driver</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[], <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>]) – Driver factory function, c.f.
 <a class="reference internal" href="selenium.html#darc.selenium.null_driver" title="darc.selenium.null_driver"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.selenium.null_driver()</span></code></a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -876,15 +876,15 @@ hook function will be ignored by the workers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>site</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="sites/_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]) – Sites customisation class inherited from
+<li><p><strong>site</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="sites/_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]) – Sites customisation class inherited from
 <a class="reference internal" href="sites/_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>.</p></li>
-<li><p><strong>*hostname</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>]</em>) – Optional list of hostnames the sites
+<li><p><strong>*hostname</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>]</em>) – Optional list of hostnames the sites
 customisation should be registered with.
 By default, we use <code class="xref py py-attr docutils literal notranslate"><span class="pre">site.hostname</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
