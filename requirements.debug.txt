@@ -4,7 +4,7 @@
 # To regenerate from the project's Pipfile, run:
 
 # Python packages
-pip==22.3
+pip==22.3.1
 setuptools==65.5.0
 wheel==0.38.0
 
