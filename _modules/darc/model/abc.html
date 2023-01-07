@@ -60,7 +60,7 @@
 
 
 <div class="viewcode-block" id="BaseMeta"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.BaseMeta">[docs]</a><span class="k">class</span> <span class="nc">BaseMeta</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Basic metadata for data models.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic metadata for data models.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Reference database storage (c.f. :class:`~darc.const.DB`).</span>
     <span class="n">database</span> <span class="o">=</span> <span class="n">database</span>
@@ -70,7 +70,7 @@
 
 
 <div class="viewcode-block" id="BaseMetaWeb"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.BaseMetaWeb">[docs]</a><span class="k">class</span> <span class="nc">BaseMetaWeb</span><span class="p">(</span><span class="n">BaseMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Basic metadata for data models of data submission.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic metadata for data models of data submission.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Reference database storage (c.f. :class:`~darc.const.DB`).</span>
     <span class="n">database</span> <span class="o">=</span> <span class="n">database_web</span>
@@ -80,7 +80,7 @@
 
 
 <div class="viewcode-block" id="BaseModel"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.BaseModel">[docs]</a><span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">peewee</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base model with standard patterns.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base model with standard patterns.</span>
 
 <span class="sd">    Notes:</span>
 <span class="sd">        The model will implicitly have a :class:`~peewee.AutoField`</span>
@@ -93,7 +93,7 @@
     <span class="n">_meta</span><span class="p">:</span> <span class="s1">&#39;Metadata&#39;</span>
 
 <div class="viewcode-block" id="BaseModel.to_dict"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.BaseModel.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert record to :obj:`dict`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert record to :obj:`dict`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            keep_id: If keep the ID auto field.</span>
@@ -112,7 +112,7 @@
 
 
 <div class="viewcode-block" id="BaseModelWeb"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.BaseModelWeb">[docs]</a><span class="k">class</span> <span class="nc">BaseModelWeb</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base model with standard patterns for data submission.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base model with standard patterns for data submission.</span>
 
 <span class="sd">    Notes:</span>
 <span class="sd">        The model will implicitly have a :class:`~peewee.AutoField`</span>

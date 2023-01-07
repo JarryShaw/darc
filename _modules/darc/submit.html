@@ -122,7 +122,7 @@
 
 
 <div class="viewcode-block" id="get_robots"><a class="viewcode-back" href="../../darc/submit.html#darc.submit.get_robots">[docs]</a><span class="k">def</span> <span class="nf">get_robots</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[File]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Read ``robots.txt``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read ``robots.txt``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link object to read ``robots.txt``.</span>
@@ -153,7 +153,7 @@
 
 
 <div class="viewcode-block" id="get_sitemaps"><a class="viewcode-back" href="../../darc/submit.html#darc.submit.get_sitemaps">[docs]</a><span class="k">def</span> <span class="nf">get_sitemaps</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[List[File]]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Read sitemaps.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read sitemaps.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link object to read sitemaps.</span>
@@ -188,7 +188,7 @@
 
 
 <div class="viewcode-block" id="get_hosts"><a class="viewcode-back" href="../../darc/submit.html#darc.submit.get_hosts">[docs]</a><span class="k">def</span> <span class="nf">get_hosts</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[File]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Read ``hosts.txt``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read ``hosts.txt``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link object to read ``hosts.txt``.</span>
@@ -222,7 +222,7 @@
 
 
 <div class="viewcode-block" id="save_submit"><a class="viewcode-back" href="../../darc/submit.html#darc.submit.save_submit">[docs]</a><span class="k">def</span> <span class="nf">save_submit</span><span class="p">(</span><span class="n">domain</span><span class="p">:</span> <span class="s1">&#39;Domain&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;Dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save failed submit data.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save failed submit data.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        domain (``&#39;new_host&#39;``, ``&#39;requests&#39;`` or ``&#39;selenium&#39;``): Domain of the submit data.</span>
@@ -254,7 +254,7 @@
 
 
 <div class="viewcode-block" id="submit"><a class="viewcode-back" href="../../darc/submit.html#darc.submit.submit">[docs]</a><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="n">api</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="s1">&#39;Domain&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;Dict[str, Any]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Submit data.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Submit data.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        api: API URL.</span>
@@ -282,7 +282,7 @@
 
 
 <div class="viewcode-block" id="submit_new_host"><a class="viewcode-back" href="../../darc/submit.html#darc.submit.submit_new_host">[docs]</a><span class="k">def</span> <span class="nf">submit_new_host</span><span class="p">(</span><span class="n">time</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span> <span class="n">partial</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Submit new host.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Submit new host.</span>
 
 <span class="sd">    When a new host is discovered, the :mod:`darc` crawler will submit the</span>
 <span class="sd">    host information. Such includes ``robots.txt`` (if exists) and</span>
@@ -429,7 +429,7 @@
 <div class="viewcode-block" id="submit_requests"><a class="viewcode-back" href="../../darc/submit.html#darc.submit.submit_requests">[docs]</a><span class="k">def</span> <span class="nf">submit_requests</span><span class="p">(</span><span class="n">time</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span>
                     <span class="n">response</span><span class="p">:</span> <span class="s1">&#39;Response&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="s1">&#39;Session&#39;</span><span class="p">,</span>
                     <span class="n">content</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">mime_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">html</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Submit requests data.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Submit requests data.</span>
 
 <span class="sd">    When crawling, we&#39;ll first fetch the URl using :mod:`requests`, to check</span>
 <span class="sd">    its availability and to save its HTTP headers information. Such information</span>
@@ -640,7 +640,7 @@
 
 <div class="viewcode-block" id="submit_selenium"><a class="viewcode-back" href="../../darc/submit.html#darc.submit.submit_selenium">[docs]</a><span class="k">def</span> <span class="nf">submit_selenium</span><span class="p">(</span><span class="n">time</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span>
                     <span class="n">html</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">screenshot</span><span class="p">:</span> <span class="s1">&#39;Optional[str]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Submit selenium data.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Submit selenium data.</span>
 
 <span class="sd">    After crawling with :mod:`requests`, we&#39;ll then render the URl using</span>
 <span class="sd">    :mod:`selenium` with Google Chrome and its web driver, to provide a fully</span>

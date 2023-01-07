@@ -67,7 +67,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">IntEnumField</span><span class="p">(</span><span class="n">peewee</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;:class:`enum.IntEnum` data field.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;:class:`enum.IntEnum` data field.&quot;&quot;&quot;</span>
 
     <span class="c1">#: The original :class:`enum.IntEnum` class.</span>
     <span class="n">choices</span><span class="p">:</span> <span class="s1">&#39;IntEnum&#39;</span>
@@ -86,7 +86,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
     <span class="c1">#         return value</span>
 
     <span class="k">def</span> <span class="nf">python_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Optional[int]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[IntEnum]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-        <span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: Integral representation of the enumeration.</span>
@@ -101,7 +101,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">Proxy</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Proxy types supported by :mod:`darc`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Proxy types supported by :mod:`darc`.</span>
 
 <span class="sd">    .. _tor2web: https://onion.sh/</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -121,7 +121,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">def</span> <span class="nf">table_function</span><span class="p">(</span><span class="n">model_class</span><span class="p">:</span> <span class="n">peewee</span><span class="o">.</span><span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Generate table name dynamically.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate table name dynamically.</span>
 
 <span class="sd">    The function strips ``Model`` from the class name and</span>
 <span class="sd">    calls :func:`peewee.make_snake_case` to generate a</span>
@@ -141,7 +141,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">BaseMeta</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Basic metadata for data models.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic metadata for data models.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Reference database storage (c.f. :class:`~darc.const.DB`).</span>
     <span class="n">database</span> <span class="o">=</span> <span class="n">DB</span>
@@ -151,7 +151,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">peewee</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base model with standard patterns.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base model with standard patterns.</span>
 
 <span class="sd">    Notes:</span>
 <span class="sd">        The model will implicitly have a :class:`~peewee.AutoField`</span>
@@ -163,7 +163,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
     <span class="n">Meta</span> <span class="o">=</span> <span class="n">BaseMeta</span>
 
     <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Dict[str, Any]&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert record to :obj:`dict`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert record to :obj:`dict`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            keep_id: If keep the ID auto field.</span>
@@ -182,7 +182,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">HostnameModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for a hostname record.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for a hostname record.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`).</span>
     <span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># a valid FQDN is at most 255 characters</span>
@@ -196,7 +196,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">RobotsModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for ``robots.txt`` data.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for ``robots.txt`` data.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`).</span>
     <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;HostnameModel&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">HostnameModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;robots&#39;</span><span class="p">)</span>
@@ -210,7 +210,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">SitemapModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for ``sitemap.xml`` data.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for ``sitemap.xml`` data.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`).</span>
     <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;HostnameModel&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">HostnameModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;sitemaps&#39;</span><span class="p">)</span>
@@ -224,7 +224,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">HostsModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for ``hosts.txt`` data.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for ``hosts.txt`` data.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`).</span>
     <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;HostnameModel&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">HostnameModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;hosts&#39;</span><span class="p">)</span>
@@ -238,7 +238,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">URLModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for a requested URL.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for a requested URL.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Timestamp of last related submission.</span>
     <span class="n">last_seen</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
@@ -257,7 +257,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_by_url</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;URLModel&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Select by URL.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select by URL.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: URL to select.</span>
@@ -270,7 +270,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">parents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[URLModel]&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Back reference to where the URL was identified.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Back reference to where the URL was identified.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">URLModel</span>
                 <span class="o">.</span><span class="n">select</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">URLThroughModel</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">URLThroughModel</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
@@ -279,7 +279,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">childrent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[URLModel]&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Back reference to which URLs were identified from the URL.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Back reference to which URLs were identified from the URL.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">URLModel</span>
                 <span class="o">.</span><span class="n">select</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">URLThroughModel</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">URLThroughModel</span><span class="o">.</span><span class="n">child</span><span class="p">)</span>
@@ -288,7 +288,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">URLThroughModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for the map of URL extration chain.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for the map of URL extration chain.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Back reference to where the URL was identified.</span>
     <span class="n">parent</span><span class="p">:</span> <span class="s1">&#39;List[URLModel]&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">URLModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;parents&#39;</span><span class="p">)</span>
@@ -303,7 +303,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">RequestsDocumentModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for documents from ``requests`` submission.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for documents from ``requests`` submission.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Original URL (c.f. :attr:`link.url &lt;darc.link.Link.url&gt;`).</span>
     <span class="n">url</span><span class="p">:</span> <span class="s1">&#39;URLModel&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">URLModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;requests&#39;</span><span class="p">)</span>
@@ -315,7 +315,7 @@ data models, please refer to <a class="reference internal" href="../darc/model/w
 
 
 <span class="k">class</span> <span class="nc">SeleniumDocumentModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for documents from ``selenium`` submission.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for documents from ``selenium`` submission.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Original URL (c.f. :attr:`link.url &lt;darc.link.Link.url&gt;`).</span>
     <span class="n">url</span><span class="p">:</span> <span class="s1">&#39;URLModel&#39;</span> <span class="o">=</span> <span class="n">peewee</span><span class="o">.</span><span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">URLModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;selenium&#39;</span><span class="p">)</span>

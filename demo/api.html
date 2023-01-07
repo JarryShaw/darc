@@ -62,7 +62,7 @@ microframework.</p>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/new_host&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">new_host</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;Response&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;When a new host is discovered, the :mod:`darc` crawler will submit the</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;When a new host is discovered, the :mod:`darc` crawler will submit the</span>
 <span class="sd">    host information. Such includes ``robots.txt`` (if exists) and</span>
 <span class="sd">    ``sitemap.xml`` (if any).</span>
 
@@ -138,7 +138,7 @@ microframework.</p>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/requests&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">from_requests</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;Response&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;When crawling, we&#39;ll first fetch the URl using ``requests``, to check</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;When crawling, we&#39;ll first fetch the URl using ``requests``, to check</span>
 <span class="sd">    its availability and to save its HTTP headers information. Such information</span>
 <span class="sd">    will be submitted to the web UI.</span>
 
@@ -221,7 +221,7 @@ microframework.</p>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/selenium&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">from_selenium</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;Response&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;After crawling with ``requests``, we&#39;ll then render the URl using</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;After crawling with ``requests``, we&#39;ll then render the URl using</span>
 <span class="sd">    ``selenium`` with Google Chrome and its driver, to provide a fully rendered</span>
 <span class="sd">    web page. Such information will be submitted to the web UI.</span>
 

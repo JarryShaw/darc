@@ -79,7 +79,7 @@
 
 <div class="viewcode-block" id="register"><a class="viewcode-back" href="../../darc/process.html#darc.process.register">[docs]</a><span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">hook</span><span class="p">:</span> <span class="s1">&#39;Callable[[Literal[&quot;crawler&quot;, &quot;loader&quot;], List[Link]], None]&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
              <span class="n">_index</span><span class="p">:</span> <span class="s1">&#39;Optional[int]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Register hook function.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register hook function.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        hook: Hook function to be registered.</span>
@@ -111,7 +111,7 @@
 
 
 <div class="viewcode-block" id="process_crawler"><a class="viewcode-back" href="../../darc/process.html#darc.process.process_crawler">[docs]</a><span class="k">def</span> <span class="nf">process_crawler</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A worker to run the :func:`~darc.crawl.crawler` process.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A worker to run the :func:`~darc.crawl.crawler` process.</span>
 
 <span class="sd">    Warns:</span>
 <span class="sd">        HookExecutionFailed: When hook function raises an error.</span>
@@ -157,7 +157,7 @@
 
 
 <div class="viewcode-block" id="process_loader"><a class="viewcode-back" href="../../darc/process.html#darc.process.process_loader">[docs]</a><span class="k">def</span> <span class="nf">process_loader</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A worker to run the :func:`~darc.crawl.loader` process.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A worker to run the :func:`~darc.crawl.loader` process.</span>
 
 <span class="sd">    Warns:</span>
 <span class="sd">        HookExecutionFailed: When hook function raises an error.</span>
@@ -203,7 +203,7 @@
 
 
 <div class="viewcode-block" id="_process"><a class="viewcode-back" href="../../darc/process.html#darc.process._process">[docs]</a><span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="n">worker</span><span class="p">:</span> <span class="s1">&#39;Union[process_crawler, process_loader]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[valid-type]</span>
-    <span class="sd">&quot;&quot;&quot;Wrapper function to start the worker process.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper function to start the worker process.&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_WORKER_POOL</span>  <span class="c1"># pylint: disable=global-statement</span>
 
     <span class="k">if</span> <span class="n">FLAG_MP</span><span class="p">:</span>
@@ -225,7 +225,7 @@
 
 
 <div class="viewcode-block" id="process"><a class="viewcode-back" href="../../darc/process.html#darc.process.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">worker</span><span class="p">:</span> <span class="s1">&#39;Literal[&quot;crawler&quot;, &quot;loader&quot;]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Main process.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main process.</span>
 
 <span class="sd">    The function will register :func:`~darc.process._signal_handler` for ``SIGTERM``,</span>
 <span class="sd">    and start the main process of the :mod:`darc` darkweb crawlers.</span>

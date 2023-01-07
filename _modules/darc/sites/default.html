@@ -58,11 +58,11 @@
 
 
 <div class="viewcode-block" id="DefaultSite"><a class="viewcode-back" href="../../../darc/sites/default.html#darc.sites.default.DefaultSite">[docs]</a><span class="k">class</span> <span class="nc">DefaultSite</span><span class="p">(</span><span class="n">BaseSite</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Default hooks.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Default hooks.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="DefaultSite.crawler"><a class="viewcode-back" href="../../../darc/sites/default.html#darc.sites.default.DefaultSite.crawler">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="s1">&#39;Session&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Response&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="sd">&quot;&quot;&quot;Default crawler hook.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Default crawler hook.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            timestamp: Timestamp of the worker node reference.</span>
@@ -81,7 +81,7 @@
 
 <div class="viewcode-block" id="DefaultSite.loader"><a class="viewcode-back" href="../../../darc/sites/default.html#darc.sites.default.DefaultSite.loader">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">timestamp</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">driver</span><span class="p">:</span> <span class="s1">&#39;Driver&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Driver&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="sd">&quot;&quot;&quot;Default loader hook.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Default loader hook.</span>
 
 <span class="sd">        When loading, if :data:`~darc.const.SE_WAIT` is a valid time lapse,</span>
 <span class="sd">        the function will sleep for such time to wait for the page to finish</span>

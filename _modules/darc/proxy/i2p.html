@@ -134,7 +134,7 @@
 
 
 <div class="viewcode-block" id="launch_i2p"><a class="viewcode-back" href="../../../darc/proxy/i2p.html#darc.proxy.i2p.launch_i2p">[docs]</a><span class="k">def</span> <span class="nf">launch_i2p</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;Popen[bytes]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Launch I2P process.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Launch I2P process.</span>
 
 <span class="sd">    See Also:</span>
 <span class="sd">        This function mocks the behaviour of :func:`stem.process.launch_tor`.</span>
@@ -176,7 +176,7 @@
 
 
 <div class="viewcode-block" id="_i2p_bootstrap"><a class="viewcode-back" href="../../../darc/proxy/i2p.html#darc.proxy.i2p._i2p_bootstrap">[docs]</a><span class="k">def</span> <span class="nf">_i2p_bootstrap</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;I2P bootstrap.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;I2P bootstrap.</span>
 
 <span class="sd">    The bootstrap arguments are defined as :data:`~darc.proxy.i2p._I2P_ARGS`.</span>
 
@@ -201,7 +201,7 @@
 
 
 <div class="viewcode-block" id="i2p_bootstrap"><a class="viewcode-back" href="../../../darc/proxy/i2p.html#darc.proxy.i2p.i2p_bootstrap">[docs]</a><span class="k">def</span> <span class="nf">i2p_bootstrap</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Bootstrap wrapper for I2P.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bootstrap wrapper for I2P.</span>
 
 <span class="sd">    The function will bootstrap the I2P proxy. It will retry for</span>
 <span class="sd">    :data:`~darc.proxy.i2p.I2P_RETRY` times in case of failure.</span>
@@ -241,7 +241,7 @@
 
 
 <div class="viewcode-block" id="get_hosts"><a class="viewcode-back" href="../../../darc/proxy/i2p.html#darc.proxy.i2p.get_hosts">[docs]</a><span class="k">def</span> <span class="nf">get_hosts</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[File]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Read ``hosts.txt``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read ``hosts.txt``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link object to read ``hosts.txt``.</span>
@@ -272,7 +272,7 @@
 
 
 <div class="viewcode-block" id="have_hosts"><a class="viewcode-back" href="../../../darc/proxy/i2p.html#darc.proxy.i2p.have_hosts">[docs]</a><span class="k">def</span> <span class="nf">have_hosts</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[str]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if ``hosts.txt`` already exists.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if ``hosts.txt`` already exists.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link object to check if ``hosts.txt`` already exists.</span>
@@ -289,7 +289,7 @@
 
 
 <div class="viewcode-block" id="save_hosts"><a class="viewcode-back" href="../../../darc/proxy/i2p.html#darc.proxy.i2p.save_hosts">[docs]</a><span class="k">def</span> <span class="nf">save_hosts</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save ``hosts.txt``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save ``hosts.txt``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link object of ``hosts.txt``.</span>
@@ -315,7 +315,7 @@
 
 
 <div class="viewcode-block" id="read_hosts"><a class="viewcode-back" href="../../../darc/proxy/i2p.html#darc.proxy.i2p.read_hosts">[docs]</a><span class="k">def</span> <span class="nf">read_hosts</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CHECK</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Read ``hosts.txt``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read ``hosts.txt``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link object to fetch for its ``hosts.txt``.</span>
@@ -343,7 +343,7 @@
 
 
 <div class="viewcode-block" id="fetch_hosts"><a class="viewcode-back" href="../../../darc/proxy/i2p.html#darc.proxy.i2p.fetch_hosts">[docs]</a><span class="k">def</span> <span class="nf">fetch_hosts</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Fetch ``hosts.txt``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fetch ``hosts.txt``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link object to fetch for its ``hosts.txt``.</span>

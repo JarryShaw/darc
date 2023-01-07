@@ -87,7 +87,7 @@
 
 
 <div class="viewcode-block" id="render_message"><a class="viewcode-back" href="../../darc/logging.html#darc.logging.render_message">[docs]</a><span class="k">def</span> <span class="nf">render_message</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="s1">&#39;AnyStr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">attr</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Render message.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render message.</span>
 
 <span class="sd">    The function wraps the :func:`stem.util.term.format` function to</span>
 <span class="sd">    provide multi-line formatting support.</span>
@@ -110,10 +110,10 @@
 
 
 <div class="viewcode-block" id="ColorFormatter"><a class="viewcode-back" href="../../darc/logging.html#darc.logging.ColorFormatter">[docs]</a><span class="k">class</span> <span class="nc">ColorFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Color formatter based on record levels.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Color formatter based on record levels.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ColorFormatter.format"><a class="viewcode-back" href="../../darc/logging.html#darc.logging.ColorFormatter.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="s1">&#39;LogRecord&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Format the specific record as text.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format the specific record as text.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            record: logging record</span>
@@ -167,11 +167,11 @@
 
 
 <div class="viewcode-block" id="DarcLogger"><a class="viewcode-back" href="../../darc/logging.html#darc.logging.DarcLogger">[docs]</a><span class="k">class</span> <span class="nc">DarcLogger</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The tailored logger for :mod:`darc` module.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The tailored logger for :mod:`darc` module.&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">horizon</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Horizon line.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Horizon line.</span>
 
 <span class="sd">        See Also:</span>
 <span class="sd">            The property uses :func:`shutil.get_terminal_size` to calculate the desired</span>
@@ -181,7 +181,7 @@
         <span class="k">return</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span>
 
 <div class="viewcode-block" id="DarcLogger.verbose"><a class="viewcode-back" href="../../darc/logging.html#darc.logging.DarcLogger.verbose">[docs]</a>    <span class="k">def</span> <span class="nf">verbose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Log ``msg % args`` with severity :data:`~darc.logging.VERBOSE`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log ``msg % args`` with severity :data:`~darc.logging.VERBOSE`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            msg: Message to be logged.</span>
@@ -201,7 +201,7 @@
 
 <div class="viewcode-block" id="DarcLogger.plog"><a class="viewcode-back" href="../../darc/logging.html#darc.logging.DarcLogger.plog">[docs]</a>    <span class="k">def</span> <span class="nf">plog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
              <span class="n">pprint</span><span class="p">:</span> <span class="s1">&#39;Optional[dict[str, Any]]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Log ``msg % args`` into a pretty-printed representation with severity ``level``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log ``msg % args`` into a pretty-printed representation with severity ``level``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            level: Log severity level.</span>
@@ -236,7 +236,7 @@
 <div class="viewcode-block" id="DarcLogger.pexc"><a class="viewcode-back" href="../../darc/logging.html#darc.logging.DarcLogger.pexc">[docs]</a>    <span class="k">def</span> <span class="nf">pexc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span> <span class="o">=</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="s1">&#39;Optional[str]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">category</span><span class="p">:</span> <span class="s1">&#39;Optional[Type[Warning]]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">line</span><span class="p">:</span> <span class="s1">&#39;Optional[str]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
-        <span class="sd">&quot;&quot;&quot;Log ``msg % args`` with severity ``level``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log ``msg % args`` with severity ``level``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            level: Log severity level.</span>
@@ -289,7 +289,7 @@
                       <span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">source</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DarcLogger.ptb"><a class="viewcode-back" href="../../darc/logging.html#darc.logging.DarcLogger.ptb">[docs]</a>    <span class="k">def</span> <span class="nf">ptb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span> <span class="o">=</span> <span class="n">CRITICAL</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Log ``msg % args`` with severity ``level``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log ``msg % args`` with severity ``level``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            msg: Message to be logged.</span>
@@ -315,7 +315,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DarcLogger.pline"><a class="viewcode-back" href="../../darc/logging.html#darc.logging.DarcLogger.pline">[docs]</a>    <span class="k">def</span> <span class="nf">pline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Log ``msg % args`` with severity ``level``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log ``msg % args`` with severity ``level``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            level: Log severity level.</span>

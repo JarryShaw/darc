@@ -54,7 +54,7 @@ associated with.</p>
 <p><strong>NB</strong>: Implementation details of the <code class="docutils literal notranslate"><span class="pre">crawler</span></code> and <code class="docutils literal notranslate"><span class="pre">loader</span></code>
 methods will be discussed in following sections.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MySite</span><span class="p">(</span><span class="n">BaseSite</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This is a site customisation class for demonstration purpose.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a site customisation class for demonstration purpose.</span>
 <span class="sd">    You may implement a module as well should you prefer.&quot;&quot;&quot;</span>
 
     <span class="c1">#: List[str]: Hostnames the sites customisation is designed for.</span>
@@ -101,7 +101,7 @@ and an <code class="docutils literal notranslate"><span class="pre">Authenticati
 the <code class="docutils literal notranslate"><span class="pre">crawler</span></code> method as below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Crawler hook for my site.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Crawler hook for my site.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timestamp (datetime.datetime): Timestamp of the worker node reference.</span>
@@ -144,7 +144,7 @@ target page after successful attempt, then you may write the <code class="docuti
 method as below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Loader hook for my site.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Loader hook for my site.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timestamp: Timestamp of the worker node reference.</span>

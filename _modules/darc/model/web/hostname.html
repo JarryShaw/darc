@@ -76,7 +76,7 @@
 
 
 <div class="viewcode-block" id="HostnameModel"><a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.hostname.HostnameModel">[docs]</a><span class="k">class</span> <span class="nc">HostnameModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for a hostname record.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for a hostname record.</span>
 
 <span class="sd">    Important:</span>
 <span class="sd">        The *alive* of a hostname is toggled if :func:`~darc.crawl.crawler`</span>
@@ -114,7 +114,7 @@
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">alive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;If the hostname is still active.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the hostname is still active.</span>
 
 <span class="sd">        We consider the hostname as *inactive*, only if all</span>
 <span class="sd">        subsidiary URLs are *inactive*.</span>
@@ -124,7 +124,7 @@
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">since</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;datetime&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The hostname is active/inactive since such timestamp.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The hostname is active/inactive since such timestamp.</span>
 
 <span class="sd">        We confider the timestamp by the earlies timestamp</span>
 <span class="sd">        of related subsidiary *active/inactive* URLs.</span>

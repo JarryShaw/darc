@@ -74,7 +74,7 @@
 
 
 <div class="viewcode-block" id="URLModel"><a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.url.URLModel">[docs]</a><span class="k">class</span> <span class="nc">URLModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for a requested URL.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for a requested URL.</span>
 
 <span class="sd">    Important:</span>
 <span class="sd">        The *alive* of a URL is toggled if :func:`~darc.crawl.crawler`</span>
@@ -113,7 +113,7 @@
 
 <div class="viewcode-block" id="URLModel.get_by_url"><a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.url.URLModel.get_by_url">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_by_url</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;URLModel&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Select by URL.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select by URL.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url: URL to select.</span>
@@ -126,7 +126,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">parents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[URLModel]&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Back reference to where the URL was identified.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Back reference to where the URL was identified.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">URLModel</span>
                 <span class="o">.</span><span class="n">select</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">URLThroughModel</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">URLThroughModel</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
@@ -135,7 +135,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">childrent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[URLModel]&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Back reference to which URLs were identified from the URL.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Back reference to which URLs were identified from the URL.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">URLModel</span>
                 <span class="o">.</span><span class="n">select</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">URLThroughModel</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">URLThroughModel</span><span class="o">.</span><span class="n">child</span><span class="p">)</span>
@@ -144,7 +144,7 @@
 
 
 <div class="viewcode-block" id="URLThroughModel"><a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.url.URLThroughModel">[docs]</a><span class="k">class</span> <span class="nc">URLThroughModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for the map of URL extration chain.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for the map of URL extration chain.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Back reference to where the URL was identified.</span>
     <span class="n">parent</span><span class="p">:</span> <span class="s1">&#39;List[URLModel]&#39;</span> <span class="o">=</span> <span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">URLModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;parents&#39;</span><span class="p">)</span>

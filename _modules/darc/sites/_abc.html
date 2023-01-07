@@ -64,14 +64,14 @@
 
 
 <div class="viewcode-block" id="BaseSite"><a class="viewcode-back" href="../../../darc/sites/_abc.html#darc.sites._abc.BaseSite">[docs]</a><span class="k">class</span> <span class="nc">BaseSite</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Abstract base class for sites customisation.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract base class for sites customisation.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Hostnames (**case insensitive**) the sites customisation is designed for.</span>
     <span class="n">hostname</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: Optional[List[str]]</span>
 
 <div class="viewcode-block" id="BaseSite.crawler"><a class="viewcode-back" href="../../../darc/sites/_abc.html#darc.sites._abc.BaseSite.crawler">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="s1">&#39;Session&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[NoReturn, Response]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="sd">&quot;&quot;&quot;Crawler hook for my site.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crawler hook for my site.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            timestamp: Timestamp of the worker node reference.</span>
@@ -86,7 +86,7 @@
 
 <div class="viewcode-block" id="BaseSite.loader"><a class="viewcode-back" href="../../../darc/sites/_abc.html#darc.sites._abc.BaseSite.loader">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">timestamp</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">driver</span><span class="p">:</span> <span class="s1">&#39;Driver&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[NoReturn, Driver]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="sd">&quot;&quot;&quot;Loader hook for my site.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Loader hook for my site.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            timestamp: Timestamp of the worker node reference.</span>

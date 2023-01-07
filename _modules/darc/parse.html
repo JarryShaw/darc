@@ -95,7 +95,7 @@
 
 
 <div class="viewcode-block" id="match_proxy"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.match_proxy">[docs]</a><span class="k">def</span> <span class="nf">match_proxy</span><span class="p">(</span><span class="n">proxy</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if proxy type in black list.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if proxy type in black list.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        proxy: Proxy type to be checked.</span>
@@ -129,7 +129,7 @@
 
 
 <div class="viewcode-block" id="match_host"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.match_host">[docs]</a><span class="k">def</span> <span class="nf">match_host</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="s1">&#39;Optional[str]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if hostname in black list.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if hostname in black list.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        host: Hostname to be checked.</span>
@@ -164,7 +164,7 @@
 
 
 <div class="viewcode-block" id="match_mime"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.match_mime">[docs]</a><span class="k">def</span> <span class="nf">match_mime</span><span class="p">(</span><span class="n">mime</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if content type in black list.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if content type in black list.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        mime: Content type to be checked.</span>
@@ -191,7 +191,7 @@
 
 
 <div class="viewcode-block" id="check_robots"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.check_robots">[docs]</a><span class="k">def</span> <span class="nf">check_robots</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if ``link`` is allowed in ``robots.txt``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if ``link`` is allowed in ``robots.txt``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: The link object to be checked.</span>
@@ -219,7 +219,7 @@
 
 
 <div class="viewcode-block" id="_check_ng"><a class="viewcode-back" href="../../darc/parse.html#darc.parse._check_ng">[docs]</a><span class="k">def</span> <span class="nf">_check_ng</span><span class="p">(</span><span class="n">temp_list</span><span class="p">:</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check content type of links through ``HEAD`` requests.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check content type of links through ``HEAD`` requests.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        temp_list: List of links to be checked.</span>
@@ -277,7 +277,7 @@
 
 
 <div class="viewcode-block" id="_check"><a class="viewcode-back" href="../../darc/parse.html#darc.parse._check">[docs]</a><span class="k">def</span> <span class="nf">_check</span><span class="p">(</span><span class="n">temp_list</span><span class="p">:</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check hostname and proxy type of links.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check hostname and proxy type of links.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        temp_list: List of links to be checked.</span>
@@ -309,7 +309,7 @@
 
 
 <div class="viewcode-block" id="get_content_type"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.get_content_type">[docs]</a><span class="k">def</span> <span class="nf">get_content_type</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="s1">&#39;Response&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get content type from ``response``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get content type from ``response``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        response (:class:`requests.Response`): Response object.</span>
@@ -338,7 +338,7 @@
 
 
 <div class="viewcode-block" id="extract_links"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.extract_links">[docs]</a><span class="k">def</span> <span class="nf">extract_links</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span> <span class="n">html</span><span class="p">:</span> <span class="s1">&#39;Union[str, bytes]&#39;</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CHECK</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Extract links from HTML document.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract links from HTML document.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Original link of the HTML document.</span>
@@ -373,7 +373,7 @@
 
 
 <div class="viewcode-block" id="extract_links_from_text"><a class="viewcode-back" href="../../darc/parse.html#darc.parse.extract_links_from_text">[docs]</a><span class="k">def</span> <span class="nf">extract_links_from_text</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;darc_link.Link&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[darc_link.Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Extract links from raw text source.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract links from raw text source.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Original link of the source document.</span>

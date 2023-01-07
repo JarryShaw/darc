@@ -56,7 +56,7 @@ that we can stop the workers in an elegant way.</p>
 
 
 <span class="k">def</span> <span class="nf">dummy_hook</span><span class="p">(</span><span class="n">node_type</span><span class="p">,</span> <span class="n">link_pool</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A sample hook function that prints the processed links</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A sample hook function that prints the processed links</span>
 <span class="sd">    in the past round and informs the work to quit.</span>
 
 <span class="sd">    Args:</span>
@@ -117,7 +117,7 @@ defined as following:</p>
 
 
 <span class="k">def</span> <span class="nf">socks5_session</span><span class="p">(</span><span class="n">futures</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Socks5 proxy session.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Socks5 proxy session.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        futures: If returns a :class:`requests_futures.FuturesSession`.</span>
@@ -141,7 +141,7 @@ defined as following:</p>
 
 
 <span class="k">def</span> <span class="nf">socks5_driver</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Socks5 proxy driver.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Socks5 proxy driver.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        selenium.webdriver.Chrome: The web driver object with Socks5 proxy settings.</span>
@@ -197,7 +197,7 @@ defined as following:</p>
 
 
 <span class="k">class</span> <span class="nc">MySite</span><span class="p">(</span><span class="n">BaseSite</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This is a site customisation class for demonstration purpose.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a site customisation class for demonstration purpose.</span>
 <span class="sd">    You may implement a module as well should you prefer.&quot;&quot;&quot;</span>
 
     <span class="c1">#: List[str]: Hostnames the sites customisation is designed for.</span>
@@ -205,7 +205,7 @@ defined as following:</p>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Crawler hook for my site.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crawler hook for my site.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            session (requests.Session): Session object with proxy settings.</span>
@@ -223,7 +223,7 @@ defined as following:</p>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Loader hook for my site.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Loader hook for my site.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            driver (selenium.webdriver.Chrome): Web driver object with proxy settings.</span>

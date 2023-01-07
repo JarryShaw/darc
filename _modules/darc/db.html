@@ -137,7 +137,7 @@
 
 
 <div class="viewcode-block" id="_gen_arg_msg"><a class="viewcode-back" href="../../darc/db.html#darc.db._gen_arg_msg">[docs]</a><span class="k">def</span> <span class="nf">_gen_arg_msg</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Sanitise arguments representation string.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sanitise arguments representation string.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        *args: Arbitrary arguments.</span>
@@ -159,7 +159,7 @@
 
 
 <div class="viewcode-block" id="_redis_command"><a class="viewcode-back" href="../../darc/db.html#darc.db._redis_command">[docs]</a><span class="k">def</span> <span class="nf">_redis_command</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Any&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Wrapper function for Redis command.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper function for Redis command.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        command: Command name.</span>
@@ -200,7 +200,7 @@
 
 
 <div class="viewcode-block" id="_db_operation"><a class="viewcode-back" href="../../darc/db.html#darc.db._db_operation">[docs]</a><span class="k">def</span> <span class="nf">_db_operation</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="s1">&#39;Callable[..., _T]&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;_T&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Retry operation on database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retry operation on database.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        operation: Callable / method to perform.</span>
@@ -235,7 +235,7 @@
 
 
 <div class="viewcode-block" id="_redis_get_lock"><a class="viewcode-back" href="../../darc/db.html#darc.db._redis_get_lock">[docs]</a><span class="k">def</span> <span class="nf">_redis_get_lock</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="s1">&#39;Literal[&quot;queue_hostname&quot;, &quot;queue_requests&quot;, &quot;queue_selenium&quot;]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[Redlock, ContextManager]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=line-too-long</span>
-    <span class="sd">&quot;&quot;&quot;Get a lock for Redis operations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a lock for Redis operations.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        key: Lock target key.</span>
@@ -255,7 +255,7 @@
 
 
 <div class="viewcode-block" id="have_hostname"><a class="viewcode-back" href="../../darc/db.html#darc.db.have_hostname">[docs]</a><span class="k">def</span> <span class="nf">have_hostname</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Tuple[bool, bool]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if current link is a new host.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if current link is a new host.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link to check against.</span>
@@ -281,7 +281,7 @@
 
 
 <div class="viewcode-block" id="_have_hostname_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._have_hostname_db">[docs]</a><span class="k">def</span> <span class="nf">_have_hostname_db</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Tuple[bool, bool]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if current link is a new host.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if current link is a new host.</span>
 
 <span class="sd">    The function checks the :class:`~darc.models.tasks.hostname.HostnameQueueModel` table.</span>
 
@@ -312,7 +312,7 @@
 
 
 <div class="viewcode-block" id="_have_hostname_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._have_hostname_redis">[docs]</a><span class="k">def</span> <span class="nf">_have_hostname_redis</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Tuple[bool, bool]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if current link is a new host.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if current link is a new host.</span>
 
 <span class="sd">    The function checks the ``queue_hostname`` database.</span>
 
@@ -354,7 +354,7 @@
 
 
 <div class="viewcode-block" id="drop_hostname"><a class="viewcode-back" href="../../darc/db.html#darc.db.drop_hostname">[docs]</a><span class="k">def</span> <span class="nf">drop_hostname</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Remove link from the hostname database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove link from the hostname database.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link to be removed.</span>
@@ -375,7 +375,7 @@
 
 
 <div class="viewcode-block" id="_drop_hostname_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_hostname_db">[docs]</a><span class="k">def</span> <span class="nf">_drop_hostname_db</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Remove link from the hostname database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove link from the hostname database.</span>
 
 <span class="sd">    The function updates the :class:`~darc.models.tasks.hostname.HostnameQueueModel` table.</span>
 
@@ -390,7 +390,7 @@
 
 
 <div class="viewcode-block" id="_drop_hostname_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_hostname_redis">[docs]</a><span class="k">def</span> <span class="nf">_drop_hostname_redis</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Remove link from the hostname database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove link from the hostname database.</span>
 
 <span class="sd">    The function updates the ``queue_hostname`` database.</span>
 
@@ -403,7 +403,7 @@
 
 
 <div class="viewcode-block" id="drop_requests"><a class="viewcode-back" href="../../darc/db.html#darc.db.drop_requests">[docs]</a><span class="k">def</span> <span class="nf">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`requests` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove link from the :mod:`requests` database.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link to be removed.</span>
@@ -424,7 +424,7 @@
 
 
 <div class="viewcode-block" id="_drop_requests_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_requests_db">[docs]</a><span class="k">def</span> <span class="nf">_drop_requests_db</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`requests` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove link from the :mod:`requests` database.</span>
 
 <span class="sd">    The function updates the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.</span>
 
@@ -439,7 +439,7 @@
 
 
 <div class="viewcode-block" id="_drop_requests_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_requests_redis">[docs]</a><span class="k">def</span> <span class="nf">_drop_requests_redis</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`requests` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove link from the :mod:`requests` database.</span>
 
 <span class="sd">    The function updates the ``queue_requests`` database.</span>
 
@@ -453,7 +453,7 @@
 
 
 <div class="viewcode-block" id="drop_selenium"><a class="viewcode-back" href="../../darc/db.html#darc.db.drop_selenium">[docs]</a><span class="k">def</span> <span class="nf">drop_selenium</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`selenium` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove link from the :mod:`selenium` database.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        link: Link to be removed.</span>
@@ -474,7 +474,7 @@
 
 
 <div class="viewcode-block" id="_drop_selenium_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_selenium_db">[docs]</a><span class="k">def</span> <span class="nf">_drop_selenium_db</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`selenium` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove link from the :mod:`selenium` database.</span>
 
 <span class="sd">    The function updates the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.</span>
 
@@ -489,7 +489,7 @@
 
 
 <div class="viewcode-block" id="_drop_selenium_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._drop_selenium_redis">[docs]</a><span class="k">def</span> <span class="nf">_drop_selenium_redis</span><span class="p">(</span><span class="n">link</span><span class="p">:</span> <span class="s1">&#39;Link&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Remove link from the :mod:`selenium` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove link from the :mod:`selenium` database.</span>
 
 <span class="sd">    The function updates the ``queue_selenium`` database.</span>
 
@@ -510,7 +510,7 @@
                   <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
 <div class="viewcode-block" id="save_requests"><a class="viewcode-back" href="../../darc/db.html#darc.db.save_requests">[docs]</a><span class="k">def</span> <span class="nf">save_requests</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                   <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`requests` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save link to the :mod:`requests` database.</span>
 
 <span class="sd">    The function updates the ``queue_requests`` database.</span>
 
@@ -559,7 +559,7 @@
                       <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
 <div class="viewcode-block" id="_save_requests_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._save_requests_db">[docs]</a><span class="k">def</span> <span class="nf">_save_requests_db</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                       <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`requests` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save link to the :mod:`requests` database.</span>
 
 <span class="sd">    The function updates the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.</span>
 
@@ -652,7 +652,7 @@
 
 <div class="viewcode-block" id="_save_requests_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._save_requests_redis">[docs]</a><span class="k">def</span> <span class="nf">_save_requests_redis</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                          <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`requests` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save link to the :mod:`requests` database.</span>
 
 <span class="sd">    The function updates the ``queue_requests`` database.</span>
 
@@ -705,7 +705,7 @@
                   <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
 <div class="viewcode-block" id="save_selenium"><a class="viewcode-back" href="../../darc/db.html#darc.db.save_selenium">[docs]</a><span class="k">def</span> <span class="nf">save_selenium</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
                   <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`selenium` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save link to the :mod:`selenium` database.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        entries: Links to be added to the :mod:`selenium` database.</span>
@@ -752,7 +752,7 @@
                       <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
 <div class="viewcode-block" id="_save_selenium_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._save_selenium_db">[docs]</a><span class="k">def</span> <span class="nf">_save_selenium_db</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                       <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`selenium` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save link to the :mod:`selenium` database.</span>
 
 <span class="sd">    The function updates the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.</span>
 
@@ -845,7 +845,7 @@
 
 <div class="viewcode-block" id="_save_selenium_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._save_selenium_redis">[docs]</a><span class="k">def</span> <span class="nf">_save_selenium_redis</span><span class="p">(</span><span class="n">entries</span><span class="p">:</span> <span class="s1">&#39;Union[Link, List[Link]]&#39;</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                          <span class="n">score</span><span class="p">:</span> <span class="s1">&#39;Optional[float]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">xx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save link to the :mod:`selenium` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save link to the :mod:`selenium` database.</span>
 
 <span class="sd">    The function updates the ``queue_selenium`` database.</span>
 
@@ -901,7 +901,7 @@
 
 
 <div class="viewcode-block" id="load_requests"><a class="viewcode-back" href="../../darc/db.html#darc.db.load_requests">[docs]</a><span class="k">def</span> <span class="nf">load_requests</span><span class="p">(</span><span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CHECK</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`requests` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load link from the :mod:`requests` database.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        check: If perform checks on loaded links,</span>
@@ -938,7 +938,7 @@
 
 
 <div class="viewcode-block" id="_load_requests_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._load_requests_db">[docs]</a><span class="k">def</span> <span class="nf">_load_requests_db</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`requests` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load link from the :mod:`requests` database.</span>
 
 <span class="sd">    The function reads the :class:`~darc.model.tasks.requests.RequestsQueueModel` table.</span>
 
@@ -977,7 +977,7 @@
 
 
 <div class="viewcode-block" id="_load_requests_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._load_requests_redis">[docs]</a><span class="k">def</span> <span class="nf">_load_requests_redis</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`requests` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load link from the :mod:`requests` database.</span>
 
 <span class="sd">    The function reads the ``queue_requests`` database.</span>
 
@@ -1013,7 +1013,7 @@
 
 
 <div class="viewcode-block" id="load_selenium"><a class="viewcode-back" href="../../darc/db.html#darc.db.load_selenium">[docs]</a><span class="k">def</span> <span class="nf">load_selenium</span><span class="p">(</span><span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CHECK</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`selenium` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load link from the :mod:`selenium` database.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        check: If perform checks on loaded links,</span>
@@ -1050,7 +1050,7 @@
 
 
 <div class="viewcode-block" id="_load_selenium_db"><a class="viewcode-back" href="../../darc/db.html#darc.db._load_selenium_db">[docs]</a><span class="k">def</span> <span class="nf">_load_selenium_db</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`selenium` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load link from the :mod:`selenium` database.</span>
 
 <span class="sd">    The function reads the :class:`~darc.model.tasks.selenium.SeleniumQueueModel` table.</span>
 
@@ -1089,7 +1089,7 @@
 
 
 <div class="viewcode-block" id="_load_selenium_redis"><a class="viewcode-back" href="../../darc/db.html#darc.db._load_selenium_redis">[docs]</a><span class="k">def</span> <span class="nf">_load_selenium_redis</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[Link]&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load link from the :mod:`selenium` database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load link from the :mod:`selenium` database.</span>
 
 <span class="sd">    The function reads the ``queue_selenium`` database.</span>
 

@@ -62,7 +62,7 @@
 
 
 <div class="viewcode-block" id="RobotsModel"><a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.robots.RobotsModel">[docs]</a><span class="k">class</span> <span class="nc">RobotsModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data model for ``robots.txt`` data.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for ``robots.txt`` data.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`).</span>
     <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;HostnameModel&#39;</span> <span class="o">=</span> <span class="n">ForeignKeyField</span><span class="p">(</span><span class="n">HostnameModel</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;robots&#39;</span><span class="p">)</span>

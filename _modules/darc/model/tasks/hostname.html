@@ -62,7 +62,7 @@
 
 
 <div class="viewcode-block" id="HostnameQueueModel"><a class="viewcode-back" href="../../../../darc/model/tasks.html#darc.model.tasks.hostname.HostnameQueueModel">[docs]</a><span class="k">class</span> <span class="nc">HostnameQueueModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Hostname task queue.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hostname task queue.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`).</span>
     <span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># a valid FQDN is at most 255 characters</span>

@@ -68,7 +68,7 @@
 
 
 <div class="viewcode-block" id="table_function"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.table_function">[docs]</a><span class="k">def</span> <span class="nf">table_function</span><span class="p">(</span><span class="n">model_class</span><span class="p">:</span> <span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Generate table name dynamically.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate table name dynamically.</span>
 
 <span class="sd">    The function strips ``Model`` from the class name and</span>
 <span class="sd">    calls :func:`peewee.make_snake_case` to generate a</span>
@@ -88,10 +88,10 @@
 
 
 <div class="viewcode-block" id="JSONField"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.JSONField">[docs]</a><span class="k">class</span> <span class="nc">JSONField</span><span class="p">(</span><span class="n">_JSONField</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;JSON data field.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;JSON data field.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="JSONField.db_value"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.JSONField.db_value">[docs]</a>    <span class="k">def</span> <span class="nf">db_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[str]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-        <span class="sd">&quot;&quot;&quot;Dump the value for database storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump the value for database storage.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: Source JSON value.</span>
@@ -105,7 +105,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="JSONField.python_value"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.JSONField.python_value">[docs]</a>    <span class="k">def</span> <span class="nf">python_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Optional[str]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Any&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-        <span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: Serialised JSON string.</span>
@@ -120,10 +120,10 @@
 
 
 <div class="viewcode-block" id="IPField"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.IPField">[docs]</a><span class="k">class</span> <span class="nc">IPField</span><span class="p">(</span><span class="n">_IPField</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;IP data field.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;IP data field.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="IPField.db_value"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.IPField.db_value">[docs]</a>    <span class="k">def</span> <span class="nf">db_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="s1">&#39;Optional[Union[str, IPAddress]]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[int]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-        <span class="sd">&quot;&quot;&quot;Dump the value for database storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump the value for database storage.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: Source IP address instance.</span>
@@ -139,7 +139,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="IPField.python_value"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.IPField.python_value">[docs]</a>    <span class="k">def</span> <span class="nf">python_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="s1">&#39;Optional[int]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[IPAddress]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-        <span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: Integral representation of the IP address.</span>
@@ -154,7 +154,7 @@
 
 
 <div class="viewcode-block" id="IntEnumField"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.IntEnumField">[docs]</a><span class="k">class</span> <span class="nc">IntEnumField</span><span class="p">(</span><span class="n">IntegerField</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;:class:`enum.IntEnum` data field.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;:class:`enum.IntEnum` data field.&quot;&quot;&quot;</span>
 
     <span class="c1">#: The original :class:`enum.IntEnum` class.</span>
     <span class="n">choices</span><span class="p">:</span> <span class="s1">&#39;IntEnum&#39;</span>
@@ -173,7 +173,7 @@
     <span class="c1">#         return value</span>
 
 <div class="viewcode-block" id="IntEnumField.python_value"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.IntEnumField.python_value">[docs]</a>    <span class="k">def</span> <span class="nf">python_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Optional[int]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[IntEnum]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-        <span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: Integral representation of the enumeration.</span>
@@ -188,10 +188,10 @@
 
 
 <div class="viewcode-block" id="PickleField"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.PickleField">[docs]</a><span class="k">class</span> <span class="nc">PickleField</span><span class="p">(</span><span class="n">BlobField</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Pickled data field.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pickled data field.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="PickleField.db_value"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.PickleField.db_value">[docs]</a>    <span class="k">def</span> <span class="nf">db_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[bytes]&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-        <span class="sd">&quot;&quot;&quot;Dump the value for database storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump the value for database storage.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: Source value.</span>
@@ -205,7 +205,7 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">db_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PickleField.python_value"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.PickleField.python_value">[docs]</a>    <span class="k">def</span> <span class="nf">python_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Optional[bytes]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Any&#39;</span><span class="p">:</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
-        <span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the value from database storage.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: SPicked bytestring data.</span>
@@ -221,7 +221,7 @@
 
 
 <div class="viewcode-block" id="Proxy"><a class="viewcode-back" href="../../../darc/model/index.html#darc.model.abc.Proxy">[docs]</a><span class="k">class</span> <span class="nc">Proxy</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Proxy types supported by :mod:`darc`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Proxy types supported by :mod:`darc`.</span>
 
 <span class="sd">    .. _tor2web: https://onion.sh/</span>
 <span class="sd">    &quot;&quot;&quot;</span>

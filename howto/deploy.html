@@ -123,9 +123,9 @@ the same server as <code class="docutils literal notranslate"><span class="pre">
 integrated with Docker workflow. So basically, just pull
 the image from Docker Hub or GitHub Container Registry:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Docker Hub</span>
-docker pull jsnbzh/darc:latest
+docker<span class="w"> </span>pull<span class="w"> </span>jsnbzh/darc:latest
 <span class="c1"># GitHub Container Registry</span>
-docker pull ghcr.io/jarryshaw/darc:latest
+docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/jarryshaw/darc:latest
 </pre></div>
 </div>
 <p>In cases where you would like to use a <em>debug</em> image, which
@@ -133,9 +133,9 @@ changes the <code class="docutils literal notranslate"><span class="pre">apt</sp
 other auxiliaries installed, you call also pull such image
 instead:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Docker Hub</span>
-docker pull jsnbzh/darc:debug
+docker<span class="w"> </span>pull<span class="w"> </span>jsnbzh/darc:debug
 <span class="c1"># GitHub Container Registry</span>
-docker pull ghcr.io/jarryshaw/darc-debug:latest
+docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/jarryshaw/darc-debug:latest
 </pre></div>
 </div>
 <p>Then you will need to customise the <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code>
@@ -166,11 +166,11 @@ I introduced this healthcheck service as discussed in
 <p>For a normal <strong>System V</strong> based service system, you can
 simply install the <code class="docutils literal notranslate"><span class="pre">darc-healthcheck</span></code> service to
 <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/</span></code>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ln -s extra/healthcheck.service /etc/systemd/system/darc-healthcheck.service
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ln<span class="w"> </span>-s<span class="w"> </span>extra/healthcheck.service<span class="w"> </span>/etc/systemd/system/darc-healthcheck.service
 </pre></div>
 </div>
 <p>then enable it to run at startup:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo systemctl <span class="nb">enable</span> darc-healthcheck.service
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>darc-healthcheck.service
 </pre></div>
 </div>
 <p>And from now on, you can simply manage the <code class="docutils literal notranslate"><span class="pre">darc-healthcheck</span></code>
@@ -184,7 +184,7 @@ JSON files to your FTP server which has much more space than
 the deploy server, then you can utilise the <code class="docutils literal notranslate"><span class="pre">upload</span></code> cron
 job as mentioned in <a class="reference internal" href="../aux.html"><span class="doc">Auxiliary Scripts</span></a>.</p>
 <p>Simply type the following command:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crontab -e
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crontab<span class="w"> </span>-e
 </pre></div>
 </div>
 <p>and add the cron job into the file opened:</p>
@@ -193,7 +193,7 @@ job as mentioned in <a class="reference internal" href="../aux.html"><span class
 </div>
 <p>just remember to change the paths, hostname and credential
 respectively; and at last, to activate the new cron job:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo systemctl restart cron.service
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>cron.service
 </pre></div>
 </div>
 <p>Now, <code class="docutils literal notranslate"><span class="pre">darc</span></code> API submission JSON files will be uploaded
@@ -203,7 +203,7 @@ to the target FTP server everyday at <em>0:10 am</em>.</p>
 <h2>Bonus Tip<a class="headerlink" href="#bonus-tip" title="Permalink to this heading">¶</a></h2>
 <p>There is a <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> at the project root. You can play
 and try to exploit it. A very useful command is that</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>make reload
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>reload
 </pre></div>
 </div>
 <p>when you wish to pull the remote repository and restart
