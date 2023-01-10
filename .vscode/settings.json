@@ -147,5 +147,6 @@
         "KEYS"
     ],
     "Lua.runtime.version": "Lua 5.1",
-    "python.pythonPath": ".venv/bin/python"
+    "python.pythonPath": ".venv/bin/python",
+    "esbonio.sphinx.confDir": "${workspaceFolder}/docs/conf.py"
 }
