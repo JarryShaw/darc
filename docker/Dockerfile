@@ -49,7 +49,8 @@ RUN apt-get update \
  && ln -sf /usr/bin/python3.9 /usr/local/bin/python3
 # workaround for Git LFS as Docker Hub not supporting yet
 RUN mkdir -p /var/cache/oracle-jdk11-installer-local/ \
- && wget -O /var/cache/oracle-jdk11-installer-local/jdk-11.0.19_linux-x64_bin.tar.gz \
+ && version=$(apt-cache show oracle-java11-installer-local | grep Version | cut -d' ' -f2 | cut -d'-' -f1) \
+ && wget -O /var/cache/oracle-jdk11-installer-local/jdk-${version}_linux-x64_bin.tar.gz \
         https://github.com/JarryShaw/darc/raw/master/vendor/jdk-11.0.19_linux-x64_bin.tar.gz
 RUN pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
