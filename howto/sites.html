@@ -36,16 +36,16 @@
 <h1>How to implement a sites customisation?<a class="headerlink" href="#how-to-implement-a-sites-customisation" title="Permalink to this heading">¶</a></h1>
 <p>As had been discussed already in the <a class="reference external" href="https://darc.jarryshaw.me/en/latest/custom.html#sites-customisation">documentation</a>, the implementation
 of a sites customisation is dead simple: just inherits the
-<a class="reference internal" href="../darc/sites/_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.BaseSite</span></code></a> class and overwrites
-the corresponding <a class="reference internal" href="../darc/sites/_abc.html#darc.sites._abc.BaseSite.crawler" title="darc.sites._abc.BaseSite.crawler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">crawler()</span></code></a> and
-<a class="reference internal" href="../darc/sites/_abc.html#darc.sites._abc.BaseSite.loader" title="darc.sites._abc.BaseSite.loader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">loader()</span></code></a> <em>abstract</em> <strong>static methods</strong>.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.BaseSite</span></code> class and overwrites
+the corresponding <code class="xref py py-meth docutils literal notranslate"><span class="pre">crawler()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">loader()</span></code> <em>abstract</em> <strong>static methods</strong>.</p>
 <p>See below an example from the documentation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.sites</span> <span class="kn">import</span> <span class="n">BaseSite</span><span class="p">,</span> <span class="n">register</span>
 </pre></div>
 </div>
 <p>As the class below suggests, you may implement and register your sites
 customisation for <em>mysite.com</em> and <em>www.mysite.com</em> using the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">MySite</span></code> class, where <a class="reference internal" href="../darc/sites/_abc.html#darc.sites._abc.BaseSite.hostname" title="darc.sites._abc.BaseSite.hostname"><code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code></a>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">MySite</span></code> class, where <code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code>
 attribute contains the list of hostnames to which the class should be
 associated with.</p>
 <p><strong>NB</strong>: Implementation details of the <code class="docutils literal notranslate"><span class="pre">crawler</span></code> and <code class="docutils literal notranslate"><span class="pre">loader</span></code>
@@ -66,7 +66,7 @@ methods will be discussed in following sections.</p>
 </div>
 <p>Should your sites customisation be associated with multiple sites, you can
 just add them all to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code> attribute; when you call
-<a class="reference internal" href="../darc/sites/index.html#darc.sites.register" title="darc.sites.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code></a> to register your sites customisation, the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code> to register your sites customisation, the
 function will automatically handle the registry association information.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># register sites implicitly</span>
 <span class="n">register</span><span class="p">(</span><span class="n">MySite</span><span class="p">)</span>
@@ -75,7 +75,7 @@ function will automatically handle the registry association information.</p>
 <p>Nonetheless, in case where you would rather specify the hostnames at
 runtime (instead of adding them to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code> attribute), you may
 just leave out the <code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code> attribute as <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> and specify
-your list of hostnames at <a class="reference internal" href="../darc/sites/index.html#darc.sites.register" title="darc.sites.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code></a> function call.</p>
+your list of hostnames at <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code> function call.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># register sites explicitly</span>
 <span class="n">register</span><span class="p">(</span><span class="n">MySite</span><span class="p">,</span> <span class="s1">&#39;mysite.com&#39;</span><span class="p">,</span> <span class="s1">&#39;www.mysite.com&#39;</span><span class="p">)</span>
 </pre></div>
@@ -194,9 +194,9 @@ hostnames (hostname database), you will need to call corresponding functions
 to remove the target link from the database desired.</p>
 <p>Possible functions are as below:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../darc/db.html#darc.db.drop_hostname" title="darc.db.drop_hostname"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.drop_hostname()</span></code></a></p></li>
-<li><p><a class="reference internal" href="../darc/db.html#darc.db.drop_requests" title="darc.db.drop_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.drop_requests()</span></code></a></p></li>
-<li><p><a class="reference internal" href="../darc/db.html#darc.db.drop_selenium" title="darc.db.drop_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.drop_selenium()</span></code></a></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.drop_hostname()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.drop_requests()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.drop_selenium()</span></code></p></li>
 </ul>
 <p>all take one positional argument <code class="docutils literal notranslate"><span class="pre">link</span></code>, i.e. the <a class="reference internal" href="../darc/link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.link.Link</span></code></a>
 object to be removed.</p>

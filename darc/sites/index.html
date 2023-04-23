@@ -14,8 +14,8 @@
     <script src="../../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Base Sites Customisation" href="_abc.html" />
-    <link rel="prev" title="ZeroNet Proxy" href="../proxy/zeronet.html" />
+    <link rel="next" title="&lt;no title&gt;" href="_abc.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="../proxy/zeronet.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -42,182 +42,35 @@ crawling processes.</p>
 <p class="admonition-title">Important</p>
 <p>To create a sites customisation, define your class by inheriting
 <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.BaseSite</span></code> and register it to the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>
-module through <a class="reference internal" href="#darc.sites.register" title="darc.sites.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code></a>.</p>
+module through <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code>.</p>
 </div>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="_abc.html">Base Sites Customisation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite"><code class="docutils literal notranslate"><span class="pre">BaseSite</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite.crawler"><code class="docutils literal notranslate"><span class="pre">BaseSite.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite.loader"><code class="docutils literal notranslate"><span class="pre">BaseSite.loader()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite.hostname"><code class="docutils literal notranslate"><span class="pre">BaseSite.hostname</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="default.html">Default Hooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="default.html#darc.sites.default.DefaultSite"><code class="docutils literal notranslate"><span class="pre">DefaultSite</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="default.html#darc.sites.default.DefaultSite.crawler"><code class="docutils literal notranslate"><span class="pre">DefaultSite.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="default.html#darc.sites.default.DefaultSite.loader"><code class="docutils literal notranslate"><span class="pre">DefaultSite.loader()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="bitcoin.html">Bitcoin Addresses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bitcoin.html#darc.sites.bitcoin.Bitcoin"><code class="docutils literal notranslate"><span class="pre">Bitcoin</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bitcoin.html#darc.sites.bitcoin.Bitcoin.crawler"><code class="docutils literal notranslate"><span class="pre">Bitcoin.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitcoin.html#darc.sites.bitcoin.Bitcoin.loader"><code class="docutils literal notranslate"><span class="pre">Bitcoin.loader()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="data.html">Data URI Schemes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data.html#darc.sites.data.DataURI"><code class="docutils literal notranslate"><span class="pre">DataURI</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="data.html#darc.sites.data.DataURI.crawler"><code class="docutils literal notranslate"><span class="pre">DataURI.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html#darc.sites.data.DataURI.loader"><code class="docutils literal notranslate"><span class="pre">DataURI.loader()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ed2k.html">ED2K Magnet Links</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ed2k.html#darc.sites.ed2k.ED2K"><code class="docutils literal notranslate"><span class="pre">ED2K</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ed2k.html#darc.sites.ed2k.ED2K.crawler"><code class="docutils literal notranslate"><span class="pre">ED2K.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ed2k.html#darc.sites.ed2k.ED2K.loader"><code class="docutils literal notranslate"><span class="pre">ED2K.loader()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ethereum.html">Ethereum Addresses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ethereum.html#darc.sites.ethereum.Ethereum"><code class="docutils literal notranslate"><span class="pre">Ethereum</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ethereum.html#darc.sites.ethereum.Ethereum.crawler"><code class="docutils literal notranslate"><span class="pre">Ethereum.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ethereum.html#darc.sites.ethereum.Ethereum.loader"><code class="docutils literal notranslate"><span class="pre">Ethereum.loader()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="irc.html">IRC Addresses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="irc.html#darc.sites.irc.IRC"><code class="docutils literal notranslate"><span class="pre">IRC</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="irc.html#darc.sites.irc.IRC.crawler"><code class="docutils literal notranslate"><span class="pre">IRC.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="irc.html#darc.sites.irc.IRC.loader"><code class="docutils literal notranslate"><span class="pre">IRC.loader()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="magnet.html">Magnet Links</a></li>
-<li class="toctree-l1"><a class="reference internal" href="magnet.html#darc.sites.magnet.Magnet"><code class="docutils literal notranslate"><span class="pre">Magnet</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="magnet.html#darc.sites.magnet.Magnet.crawler"><code class="docutils literal notranslate"><span class="pre">Magnet.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="magnet.html#darc.sites.magnet.Magnet.loader"><code class="docutils literal notranslate"><span class="pre">Magnet.loader()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mail.html">Email Addresses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mail.html#darc.sites.mail.Email"><code class="docutils literal notranslate"><span class="pre">Email</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mail.html#darc.sites.mail.Email.crawler"><code class="docutils literal notranslate"><span class="pre">Email.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="mail.html#darc.sites.mail.Email.loader"><code class="docutils literal notranslate"><span class="pre">Email.loader()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="script.html">JavaScript Links</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script.html#darc.sites.script.Script"><code class="docutils literal notranslate"><span class="pre">Script</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="script.html#darc.sites.script.Script.crawler"><code class="docutils literal notranslate"><span class="pre">Script.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="script.html#darc.sites.script.Script.loader"><code class="docutils literal notranslate"><span class="pre">Script.loader()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tel.html">Telephone Numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tel.html#darc.sites.tel.Tel"><code class="docutils literal notranslate"><span class="pre">Tel</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tel.html#darc.sites.tel.Tel.crawler"><code class="docutils literal notranslate"><span class="pre">Tel.crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="tel.html#darc.sites.tel.Tel.loader"><code class="docutils literal notranslate"><span class="pre">Tel.loader()</span></code></a></li>
-</ul>
-</li>
-</ul>
 </div>
 <p>To start with, you just need to define your sites customisation by
-inheriting <a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a> and overload corresponding
-<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite.crawler" title="darc.sites._abc.BaseSite.crawler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">crawler()</span></code></a> and/or
-<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite.loader" title="darc.sites._abc.BaseSite.loader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">loader()</span></code></a> methods.</p>
+inheriting <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code> and overload corresponding
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">crawler()</span></code> and/or
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">loader()</span></code> methods.</p>
 <p>To customise behaviours over <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, you sites customisation
 class should have a <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code> method, e.g.
-<a class="reference internal" href="default.html#darc.sites.default.DefaultSite.crawler" title="darc.sites.default.DefaultSite.crawler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.crawler</span></code></a>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.crawler</span></code>.</p>
 <p>The function takes the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> object with proxy settings and
 a <a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object representing the link to be
 crawled, then returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a> object containing the final
 data of the crawling process.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.sites.crawler_hook">
-<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">crawler_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites.html#crawler_hook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.crawler_hook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Customisation as to <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> sessions.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
-<li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.2)"><em>requests.Session</em></a>) – Session object with proxy settings.</p></li>
-<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be crawled.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The final response object with crawled data.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.2)">requests.Response</a></p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.sites.SITE_MAP</span></code></p></li>
-<li><p><a class="reference internal" href="#darc.sites._get_site" title="darc.sites._get_site"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites._get_site()</span></code></a></p></li>
-<li><p><a class="reference internal" href="../crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.crawler()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
 <p>To customise behaviours over <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>, you sites customisation
 class should have a <code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code> method, e.g.
-<a class="reference internal" href="default.html#darc.sites.default.DefaultSite.loader" title="darc.sites.default.DefaultSite.loader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.loader</span></code></a>.</p>
-<p>The function takes the <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.loader</span></code>.</p>
+<p>The function takes the <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>
 object with proxy settings and a <a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object representing
-the link to be loaded, then returns the <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>
+the link to be loaded, then returns the <a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="(in Selenium v4.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code></a>
 object containing the final data of the loading process.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.sites.loader_hook">
-<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">loader_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites.html#loader_hook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.loader_hook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Customisation as to <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> drivers.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>timestamp</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Timestamp of the worker node reference.</p></li>
-<li><p><strong>driver</strong> (<em>selenium.webdriver.Chrome</em>) – Web driver object with proxy settings.</p></li>
-<li><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to be loaded.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The web driver object with loaded data.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>selenium.webdriver.Chrome</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.sites.SITE_MAP</span></code></p></li>
-<li><p><a class="reference internal" href="#darc.sites._get_site" title="darc.sites._get_site"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites._get_site()</span></code></a></p></li>
-<li><p><a class="reference internal" href="../crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.loader()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
 <p>To tell the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project which sites customisation
 module it should use for a certain hostname, you can register
 such module to the <a class="reference internal" href="#darc.sites.darc.sites.SITEMAP" title="darc.sites.darc.sites.SITEMAP"><code class="xref py py-data docutils literal notranslate"><span class="pre">SITEMAP</span></code></a> mapping dictionary
-through <a class="reference internal" href="#darc.sites.register" title="darc.sites.register"><code class="xref py py-func docutils literal notranslate"><span class="pre">register()</span></code></a>:</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.sites.register">
-<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">hostname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites.html#register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites.register" title="Permalink to this definition">¶</a></dt>
-<dd><p>Register new site map.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>site</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]) – Sites customisation class inherited from
-<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>.</p></li>
-<li><p><strong>*hostname</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>]</em>) – Optional list of hostnames the sites
-customisation should be registered with.
-By default, we use <code class="xref py py-attr docutils literal notranslate"><span class="pre">site.hostname</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
+through <code class="xref py py-func docutils literal notranslate"><span class="pre">register()</span></code>:</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.sites.darc.sites.SITEMAP">
-<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">SITEMAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><span class="pre">darc.sites._abc.BaseSite</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.sites.darc.sites.SITEMAP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">SITEMAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">darc.sites._abc.BaseSite</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.sites.darc.sites.SITEMAP" title="Permalink to this definition">¶</a></dt>
 <dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.sites.default</span> <span class="kn">import</span> <span class="n">DefaultSite</span>
 
 <span class="n">SITEMAP</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DefaultSite</span><span class="p">,</span> <span class="p">{</span>
@@ -227,32 +80,7 @@ By default, we use <code class="xref py py-attr docutils literal notranslate"><s
 </div>
 <p>The mapping dictionary for hostname to sites customisation
 classes.</p>
-<p>The fallback value is <a class="reference internal" href="default.html#darc.sites.default.DefaultSite" title="darc.sites.default.DefaultSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.default.DefaultSite</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.sites._get_site">
-<span class="sig-prename descclassname"><span class="pre">darc.sites.</span></span><span class="sig-name descname"><span class="pre">_get_site</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/darc/sites.html#_get_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.sites._get_site" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load sites customisation if any.</p>
-<p>If the sites customisation does not exist, it will
-fallback to the default hooks, <a class="reference internal" href="default.html#darc.sites.default.DefaultSite" title="darc.sites.default.DefaultSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultSite</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to fetch sites customisation class.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="_abc.html#darc.sites._abc.BaseSite" title="darc.sites._abc.BaseSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code></a>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The sites customisation class.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#darc.sites.darc.sites.SITEMAP" title="darc.sites.darc.sites.SITEMAP"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.sites.SITEMAP</span></code></a></p></li>
-</ul>
-</div>
+<p>The fallback value is <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.default.DefaultSite</span></code>.</p>
 </dd></dl>
 
 <div class="admonition seealso">
@@ -288,17 +116,6 @@ fallback to the default hooks, <a class="reference internal" href="default.html#
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">How to …</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Technical Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../process.html">Main Processing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process._process"><code class="docutils literal notranslate"><span class="pre">_process()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.process"><code class="docutils literal notranslate"><span class="pre">process()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.process_crawler"><code class="docutils literal notranslate"><span class="pre">process_crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.process_loader"><code class="docutils literal notranslate"><span class="pre">process_loader()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process.register"><code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process._HOOK_REGISTRY"><code class="docutils literal notranslate"><span class="pre">_HOOK_REGISTRY</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../process.html#darc.process._WORKER_POOL"><code class="docutils literal notranslate"><span class="pre">_WORKER_POOL</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../crawl.html">Web Crawlers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../crawl.html#darc.crawl.crawler"><code class="docutils literal notranslate"><span class="pre">crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../crawl.html#darc.crawl.loader"><code class="docutils literal notranslate"><span class="pre">loader()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../link.html">URL Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.Link"><code class="docutils literal notranslate"><span class="pre">Link</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.parse_link"><code class="docutils literal notranslate"><span class="pre">parse_link()</span></code></a></li>
@@ -307,85 +124,20 @@ fallback to the default hooks, <a class="reference internal" href="default.html#
 <li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.urljoin"><code class="docutils literal notranslate"><span class="pre">urljoin()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.urlparse"><code class="docutils literal notranslate"><span class="pre">urlparse()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../link.html#darc.link.urlsplit"><code class="docutils literal notranslate"><span class="pre">urlsplit()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html">Source Parsing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse._check"><code class="docutils literal notranslate"><span class="pre">_check()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse._check_ng"><code class="docutils literal notranslate"><span class="pre">_check_ng()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.check_robots"><code class="docutils literal notranslate"><span class="pre">check_robots()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.extract_links"><code class="docutils literal notranslate"><span class="pre">extract_links()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.extract_links_from_text"><code class="docutils literal notranslate"><span class="pre">extract_links_from_text()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.get_content_type"><code class="docutils literal notranslate"><span class="pre">get_content_type()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.match_host"><code class="docutils literal notranslate"><span class="pre">match_host()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.match_mime"><code class="docutils literal notranslate"><span class="pre">match_mime()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.match_proxy"><code class="docutils literal notranslate"><span class="pre">match_proxy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parse.html#darc.parse.darc.parse.URL_PAT"><code class="docutils literal notranslate"><span class="pre">darc.parse.URL_PAT</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../save.html">Source Saving</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.sanitise"><code class="docutils literal notranslate"><span class="pre">sanitise()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.save_headers"><code class="docutils literal notranslate"><span class="pre">save_headers()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.save_link"><code class="docutils literal notranslate"><span class="pre">save_link()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../save.html#darc.save.darc.save._SAVE_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.save._SAVE_LOCK</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html">Link Database</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._db_operation"><code class="docutils literal notranslate"><span class="pre">_db_operation()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_hostname_db"><code class="docutils literal notranslate"><span class="pre">_drop_hostname_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_hostname_redis"><code class="docutils literal notranslate"><span class="pre">_drop_hostname_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_requests_db"><code class="docutils literal notranslate"><span class="pre">_drop_requests_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_requests_redis"><code class="docutils literal notranslate"><span class="pre">_drop_requests_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_selenium_db"><code class="docutils literal notranslate"><span class="pre">_drop_selenium_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._drop_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_drop_selenium_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._gen_arg_msg"><code class="docutils literal notranslate"><span class="pre">_gen_arg_msg()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._have_hostname_db"><code class="docutils literal notranslate"><span class="pre">_have_hostname_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._have_hostname_redis"><code class="docutils literal notranslate"><span class="pre">_have_hostname_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_requests_db"><code class="docutils literal notranslate"><span class="pre">_load_requests_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_requests_redis"><code class="docutils literal notranslate"><span class="pre">_load_requests_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_selenium_db"><code class="docutils literal notranslate"><span class="pre">_load_selenium_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._load_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_load_selenium_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._redis_command"><code class="docutils literal notranslate"><span class="pre">_redis_command()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._redis_get_lock"><code class="docutils literal notranslate"><span class="pre">_redis_get_lock()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_requests_db"><code class="docutils literal notranslate"><span class="pre">_save_requests_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_requests_redis"><code class="docutils literal notranslate"><span class="pre">_save_requests_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_selenium_db"><code class="docutils literal notranslate"><span class="pre">_save_selenium_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db._save_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_save_selenium_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.drop_hostname"><code class="docutils literal notranslate"><span class="pre">drop_hostname()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.drop_requests"><code class="docutils literal notranslate"><span class="pre">drop_requests()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.drop_selenium"><code class="docutils literal notranslate"><span class="pre">drop_selenium()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.have_hostname"><code class="docutils literal notranslate"><span class="pre">have_hostname()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.load_requests"><code class="docutils literal notranslate"><span class="pre">load_requests()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.load_selenium"><code class="docutils literal notranslate"><span class="pre">load_selenium()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.save_requests"><code class="docutils literal notranslate"><span class="pre">save_requests()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.save_selenium"><code class="docutils literal notranslate"><span class="pre">save_selenium()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.BULK_SIZE"><code class="docutils literal notranslate"><span class="pre">darc.db.BULK_SIZE</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.LOCK_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">darc.db.LOCK_TIMEOUT</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.MAX_POOL"><code class="docutils literal notranslate"><span class="pre">darc.db.MAX_POOL</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.REDIS_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.db.REDIS_LOCK</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.darc.db.RETRY_INTERVAL"><code class="docutils literal notranslate"><span class="pre">darc.db.RETRY_INTERVAL</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html">Data Submission</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.get_hosts"><code class="docutils literal notranslate"><span class="pre">get_hosts()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.get_robots"><code class="docutils literal notranslate"><span class="pre">get_robots()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.get_sitemaps"><code class="docutils literal notranslate"><span class="pre">get_sitemaps()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.save_submit"><code class="docutils literal notranslate"><span class="pre">save_submit()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit"><code class="docutils literal notranslate"><span class="pre">submit()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit_new_host"><code class="docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit_requests"><code class="docutils literal notranslate"><span class="pre">submit_requests()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.submit_selenium"><code class="docutils literal notranslate"><span class="pre">submit_selenium()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.PATH_API"><code class="docutils literal notranslate"><span class="pre">darc.submit.PATH_API</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.SAVE_DB"><code class="docutils literal notranslate"><span class="pre">darc.submit.SAVE_DB</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_RETRY"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_RETRY</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_NEW_HOST"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_NEW_HOST</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_REQUESTS"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_REQUESTS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.darc.submit.API_SELENIUM"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_SELENIUM</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../requests.html">Requests Wrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.default_user_agent"><code class="docutils literal notranslate"><span class="pre">default_user_agent()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.i2p_session"><code class="docutils literal notranslate"><span class="pre">i2p_session()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.null_session"><code class="docutils literal notranslate"><span class="pre">null_session()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.request_session"><code class="docutils literal notranslate"><span class="pre">request_session()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../requests.html#darc.requests.tor_session"><code class="docutils literal notranslate"><span class="pre">tor_session()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../selenium.html">Selenium Wrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.get_capabilities"><code class="docutils literal notranslate"><span class="pre">get_capabilities()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.get_options"><code class="docutils literal notranslate"><span class="pre">get_options()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.i2p_driver"><code class="docutils literal notranslate"><span class="pre">i2p_driver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.null_driver"><code class="docutils literal notranslate"><span class="pre">null_driver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.request_driver"><code class="docutils literal notranslate"><span class="pre">request_driver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.tor_driver"><code class="docutils literal notranslate"><span class="pre">tor_driver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../selenium.html#darc.selenium.darc.selenium.BINARY_LOCATION"><code class="docutils literal notranslate"><span class="pre">darc.selenium.BINARY_LOCATION</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parse.html"><code class="docutils literal notranslate"><span class="pre">darc.parse.URL_PAT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save.html"><code class="docutils literal notranslate"><span class="pre">darc.save._SAVE_LOCK</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html"><code class="docutils literal notranslate"><span class="pre">darc.db.BULK_SIZE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.LOCK_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">darc.db.LOCK_TIMEOUT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.MAX_POOL"><code class="docutils literal notranslate"><span class="pre">darc.db.MAX_POOL</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.REDIS_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.db.REDIS_LOCK</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../db.html#darc.db.RETRY_INTERVAL"><code class="docutils literal notranslate"><span class="pre">darc.db.RETRY_INTERVAL</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html"><code class="docutils literal notranslate"><span class="pre">darc.submit.PATH_API</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.SAVE_DB"><code class="docutils literal notranslate"><span class="pre">darc.submit.SAVE_DB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.API_RETRY"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_RETRY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.API_NEW_HOST"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_NEW_HOST</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.API_REQUESTS"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_REQUESTS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../submit.html#darc.submit.API_SELENIUM"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_SELENIUM</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selenium.html"><code class="docutils literal notranslate"><span class="pre">darc.selenium.BINARY_LOCATION</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../proxy/index.html">Proxy Utilities</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Sites Customisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../const.html">Module Constants</a></li>
@@ -409,10 +161,6 @@ fallback to the default hooks, <a class="reference internal" href="default.html#
 <li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error._BaseException"><code class="docutils literal notranslate"><span class="pre">_BaseException</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../error.html#darc.error._BaseWarning"><code class="docutils literal notranslate"><span class="pre">_BaseWarning</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../model/index.html">Data Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.darc"><code class="docutils literal notranslate"><span class="pre">darc()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.register_hooks"><code class="docutils literal notranslate"><span class="pre">register_hooks()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.register_proxy"><code class="docutils literal notranslate"><span class="pre">register_proxy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#darc.register_sites"><code class="docutils literal notranslate"><span class="pre">register_sites()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a></li>
@@ -429,8 +177,8 @@ fallback to the default hooks, <a class="reference internal" href="default.html#
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Technical Documentation</a><ul>
-      <li>Previous: <a href="../proxy/zeronet.html" title="previous chapter">ZeroNet Proxy</a></li>
-      <li>Next: <a href="_abc.html" title="next chapter">Base Sites Customisation</a></li>
+      <li>Previous: <a href="../proxy/zeronet.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="_abc.html" title="next chapter">&lt;no title&gt;</a></li>
   </ul></li>
   </ul></li>
 </ul>

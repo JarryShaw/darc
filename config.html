@@ -98,7 +98,7 @@ then the verbose mode will be always enabled.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 </dd>
 </dl>
-<p>If ignore <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> rules when crawling (c.f. <a class="reference internal" href="darc/crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a>).</p>
+<p>If ignore <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> rules when crawling (c.f. <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code>).</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -113,8 +113,8 @@ then the verbose mode will be always enabled.</p>
 </dd>
 </dl>
 <p>If check proxy and hostname before crawling (when calling
-<a class="reference internal" href="darc/parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a>, <a class="reference internal" href="darc/proxy/null.html#darc.proxy.null.read_sitemap" title="darc.proxy.null.read_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code></a>
-and <a class="reference internal" href="darc/proxy/i2p.html#darc.proxy.i2p.read_hosts" title="darc.proxy.i2p.read_hosts"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code></a>).</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code>
+and <code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code>).</p>
 <p>If <code class="xref py py-data docutils literal notranslate"><span class="pre">DARC_CHECK_CONTENT_TYPE</span></code> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, then this environment
 variable will be always set as <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
 </dd></dl>
@@ -131,8 +131,8 @@ variable will be always set as <a class="reference external" href="https://docs.
 </dd>
 </dl>
 <p>If check content type through <code class="docutils literal notranslate"><span class="pre">HEAD</span></code> requests before crawling
-(when calling <a class="reference internal" href="darc/parse.html#darc.parse.extract_links" title="darc.parse.extract_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code></a>,
-<a class="reference internal" href="darc/proxy/null.html#darc.proxy.null.read_sitemap" title="darc.proxy.null.read_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code></a> and <a class="reference internal" href="darc/proxy/i2p.html#darc.proxy.i2p.read_hosts" title="darc.proxy.i2p.read_hosts"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code></a>).</p>
+(when calling <code class="xref py py-func docutils literal notranslate"><span class="pre">extract_links()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">read_sitemap()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">read_hosts()</span></code>).</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -230,8 +230,8 @@ system CPUs will be used.</p>
 <h2>Data Storage<a class="headerlink" href="#data-storage" title="Permalink to this heading">¶</a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>See <a class="reference internal" href="darc/save.html#module-darc.save" title="darc.save"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.save</span></code></a> for more information about source saving.</p>
-<p>See <a class="reference internal" href="darc/db.html#module-darc.db" title="darc.db"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code></a> for more information about database integration.</p>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.save</span></code> for more information about source saving.</p>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code> for more information about database integration.</p>
 </div>
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-PATH_DATA">
@@ -294,8 +294,8 @@ the data submittsion will be saved to <code class="docutils literal notranslate"
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="darc/db.html#darc.db.save_requests" title="darc.db.save_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.save_requests()</span></code></a></p></li>
-<li><p><a class="reference internal" href="darc/db.html#darc.db.save_selenium" title="darc.db.save_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.save_selenium()</span></code></a></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.save_requests()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.save_selenium()</span></code></p></li>
 </ul>
 </div>
 </dd></dl>
@@ -341,8 +341,8 @@ the data submittsion will be saved to <code class="docutils literal notranslate"
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="darc/db.html#darc.db.load_requests" title="darc.db.load_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.load_requests()</span></code></a></p></li>
-<li><p><a class="reference internal" href="darc/db.html#darc.db.load_selenium" title="darc.db.load_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.load_selenium()</span></code></a></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.load_requests()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.load_selenium()</span></code></p></li>
 </ul>
 </div>
 </dd></dl>
@@ -424,7 +424,7 @@ and <span class="target" id="index-2"></span><a class="reference internal" href=
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>See <a class="reference internal" href="darc/db.html#module-darc.db" title="darc.db"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code></a> for more information about link database.</p>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code> for more information about link database.</p>
 </div>
 </dd></dl>
 
@@ -439,10 +439,10 @@ and <span class="target" id="index-2"></span><a class="reference internal" href=
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 </dd>
 </dl>
-<p>If save <a class="reference internal" href="darc/crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a> crawled link back to <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database.</p>
+<p>If save <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code> crawled link back to <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>See <a class="reference internal" href="darc/db.html#module-darc.db" title="darc.db"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code></a> for more information about link database.</p>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code> for more information about link database.</p>
 </div>
 </dd></dl>
 
@@ -457,10 +457,10 @@ and <span class="target" id="index-2"></span><a class="reference internal" href=
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 </dd>
 </dl>
-<p>If save <a class="reference internal" href="darc/crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code></a> crawled link back to <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> database.</p>
+<p>If save <code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code> crawled link back to <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> database.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>See <a class="reference internal" href="darc/db.html#module-darc.db" title="darc.db"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code></a> for more information about link database.</p>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.db</span></code> for more information about link database.</p>
 </div>
 </dd></dl>
 
@@ -525,7 +525,7 @@ running after the event.</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>See <a class="reference internal" href="darc/selenium.html#module-darc.selenium" title="darc.selenium"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.selenium</span></code></a> for more information.</p>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.selenium</span></code> for more information.</p>
 </div>
 </dd></dl>
 
@@ -579,7 +579,7 @@ running after the event.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 </dd>
 </dl>
-<p>Fallback value for <a class="reference internal" href="darc/parse.html#darc.parse.match_host" title="darc.parse.match_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">match_host()</span></code></a>.</p>
+<p>Fallback value for <code class="xref py py-func docutils literal notranslate"><span class="pre">match_host()</span></code>.</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -629,7 +629,7 @@ running after the event.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 </dd>
 </dl>
-<p>Fallback value for <a class="reference internal" href="darc/parse.html#darc.parse.match_mime" title="darc.parse.match_mime"><code class="xref py py-func docutils literal notranslate"><span class="pre">match_mime()</span></code></a>.</p>
+<p>Fallback value for <code class="xref py py-func docutils literal notranslate"><span class="pre">match_mime()</span></code>.</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -679,7 +679,7 @@ running after the event.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 </dd>
 </dl>
-<p>Fallback value for <a class="reference internal" href="darc/parse.html#darc.parse.match_proxy" title="darc.parse.match_proxy"><code class="xref py py-func docutils literal notranslate"><span class="pre">match_proxy()</span></code></a>.</p>
+<p>Fallback value for <code class="xref py py-func docutils literal notranslate"><span class="pre">match_proxy()</span></code>.</p>
 </dd></dl>
 
 <div class="admonition note">
@@ -732,7 +732,7 @@ should all be JSON encoded strings.</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
-<p>API URL for <a class="reference internal" href="darc/submit.html#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a>.</p>
+<p>API URL for <code class="xref py py-func docutils literal notranslate"><span class="pre">submit_new_host()</span></code>.</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -746,7 +746,7 @@ should all be JSON encoded strings.</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
-<p>API URL for <a class="reference internal" href="darc/submit.html#darc.submit.submit_requests" title="darc.submit.submit_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_requests()</span></code></a>.</p>
+<p>API URL for <code class="xref py py-func docutils literal notranslate"><span class="pre">submit_requests()</span></code>.</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -760,7 +760,7 @@ should all be JSON encoded strings.</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
-<p>API URL for <a class="reference internal" href="darc/submit.html#darc.submit.submit_selenium" title="darc.submit.submit_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_selenium()</span></code></a>.</p>
+<p>API URL for <code class="xref py py-func docutils literal notranslate"><span class="pre">submit_selenium()</span></code>.</p>
 </dd></dl>
 
 <div class="admonition note">

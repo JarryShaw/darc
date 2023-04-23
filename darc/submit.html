@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Data Submission &#8212; darc 1.0.0 documentation</title>
+    <title>&lt;no title&gt; &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -14,8 +14,8 @@
     <script src="../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Requests Wrapper" href="requests.html" />
-    <link rel="prev" title="Link Database" href="db.html" />
+    <link rel="next" title="&lt;no title&gt;" href="requests.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="db.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -32,482 +32,9 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-darc.submit"></span><section id="data-submission">
-<h1>Data Submission<a class="headerlink" href="#data-submission" title="Permalink to this heading">¶</a></h1>
-<p>The <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project integrates the capability of submitting
-fetched data and information to a web server, to support real-time
-cross-analysis and status display.</p>
-<p>There are three submission events:</p>
-<ol class="arabic">
-<li><p>New Host Submission – <a class="reference internal" href="#darc.submit.darc.submit.API_NEW_HOST" title="darc.submit.darc.submit.API_NEW_HOST"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_NEW_HOST</span></code></a></p>
-<p>Submitted in <a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a> function call, when the
-crawling URL is marked as a new host.</p>
-</li>
-<li><p>Requests Submission – <a class="reference internal" href="#darc.submit.darc.submit.API_REQUESTS" title="darc.submit.darc.submit.API_REQUESTS"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_REQUESTS</span></code></a></p>
-<p>Submitted in <a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code></a> function call, after the
-crawling process of the URL using <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>.</p>
-</li>
-<li><p>Selenium Submission – <a class="reference internal" href="#darc.submit.darc.submit.API_SELENIUM" title="darc.submit.darc.submit.API_SELENIUM"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_SELENIUM</span></code></a></p>
-<p>Submitted in <a class="reference internal" href="crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code></a> function call, after the
-loading process of the URL using <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>.</p>
-</li>
-</ol>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Please refer to <a class="reference internal" href="../demo/schema.html"><span class="doc">data schema</span></a> for more
-information about the submission data.</p>
-</div>
-</section>
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.submit.get_hosts">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">get_hosts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#get_hosts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.get_hosts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to read <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">File</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> exists, return the data from <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code>.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code> – relative path from <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> to root of data storage
-<a class="reference internal" href="const.html#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_DB</span></code></a>, <code class="docutils literal notranslate"><span class="pre">&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/hosts.txt</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> – <em>base64</em> encoded content of <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code></p></li>
-</ul>
-</li>
-<li><p>If not, return <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.crawler()</span></code></a></p></li>
-<li><p><a class="reference internal" href="proxy/i2p.html#darc.proxy.i2p.save_hosts" title="darc.proxy.i2p.save_hosts"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.i2p.save_hosts()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.submit.get_robots">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">get_robots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#get_robots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.get_robots" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to read <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">File</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> exists, return the data from <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code> – relative path from <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> to root of data storage
-<a class="reference internal" href="const.html#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_DB</span></code></a>, <code class="docutils literal notranslate"><span class="pre">&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/robots.txt</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> – <em>base64</em> encoded content of <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code></p></li>
-</ul>
-</li>
-<li><p>If not, return <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.crawler()</span></code></a></p></li>
-<li><p><a class="reference internal" href="proxy/null.html#darc.proxy.null.save_robots" title="darc.proxy.null.save_robots"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.null.save_robots()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.submit.get_sitemaps">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">get_sitemaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#get_sitemaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.get_sitemaps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read sitemaps.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object to read sitemaps.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">File</span></code>]]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p>If sitemaps exist, return list of the data from sitemaps.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code> – relative path from sitemap to root of data storage
-<a class="reference internal" href="const.html#darc.const.PATH_DB" title="darc.const.PATH_DB"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_DB</span></code></a>, <code class="docutils literal notranslate"><span class="pre">&lt;proxy&gt;/&lt;scheme&gt;/&lt;hostname&gt;/sitemap_&lt;hash&gt;.xml</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> – <em>base64</em> encoded content of sitemap</p></li>
-</ul>
-</li>
-<li><p>If not, return <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.crawler()</span></code></a></p></li>
-<li><p><a class="reference internal" href="proxy/null.html#darc.proxy.null.save_sitemap" title="darc.proxy.null.save_sitemap"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.null.save_sitemap()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.submit.save_submit">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">save_submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#save_submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.save_submit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save failed submit data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> (<code class="docutils literal notranslate"><span class="pre">'new_host'</span></code>, <code class="docutils literal notranslate"><span class="pre">'requests'</span></code> or <code class="docutils literal notranslate"><span class="pre">'selenium'</span></code>) – Domain of the submit data.</p></li>
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – Submit data.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
-</dd>
-</dl>
-<div class="admonition-notes admonition">
-<p class="admonition-title">Notes</p>
-<p>The saved files will be categorised by the actual runtime day
-for better maintenance.</p>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#darc.submit.darc.submit.PATH_API" title="darc.submit.darc.submit.PATH_API"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.submit.PATH_API</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit" title="darc.submit.submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit_requests" title="darc.submit.submit_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_requests()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit_selenium" title="darc.submit.submit_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_selenium()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.submit.submit">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.submit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Submit data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>api</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – API URL.</p></li>
-<li><p><strong>domain</strong> (<code class="docutils literal notranslate"><span class="pre">'new_host'</span></code>, <code class="docutils literal notranslate"><span class="pre">'requests'</span></code> or <code class="docutils literal notranslate"><span class="pre">'selenium'</span></code>) – Domain of the submit data.</p></li>
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – Submit data.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#darc.submit.darc.submit.API_RETRY" title="darc.submit.darc.submit.API_RETRY"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.submit.API_RETRY</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.save_submit" title="darc.submit.save_submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.save_submit()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_new_host()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit_requests" title="darc.submit.submit_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_requests()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit_selenium" title="darc.submit.submit_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit_selenium()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.submit.submit_new_host">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">submit_new_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#submit_new_host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.submit_new_host" title="Permalink to this definition">¶</a></dt>
-<dd><p>Submit new host.</p>
-<p>When a new host is discovered, the <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> crawler will submit the
-host information. Such includes <code class="docutils literal notranslate"><span class="pre">robots.txt</span></code> (if exists) and
-<code class="docutils literal notranslate"><span class="pre">sitemap.xml</span></code> (if any).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime.datetime</em></a>) – Timestamp of submission.</p></li>
-<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of submission.</p></li>
-<li><p><strong>partial</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If the data is not complete, i.e. failed when fetching
-<code class="docutils literal notranslate"><span class="pre">robots.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">hosts.txt</span></code> and/or sitemaps.</p></li>
-<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If the data is force re-fetched, i.e. cache expired when
-checking with <a class="reference internal" href="db.html#darc.db.have_hostname" title="darc.db.have_hostname"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.db.have_hostname()</span></code></a>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
-</dd>
-</dl>
-<p>If <a class="reference internal" href="#darc.submit.darc.submit.API_NEW_HOST" title="darc.submit.darc.submit.API_NEW_HOST"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_NEW_HOST</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the data for submission
-will directly be save through <a class="reference internal" href="#darc.submit.save_submit" title="darc.submit.save_submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_submit()</span></code></a>.</p>
-<p>The data submitted should have following format:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
-    // partial flag - true / false
-    &quot;$PARTIAL$&quot;: ...,
-    // force flag - true / false
-    &quot;$FORCE$&quot;: ...,
-    // metadata of URL
-    &quot;[metadata]&quot;: {
-        // original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;
-        &quot;url&quot;: ...,
-        // proxy type - null / tor / i2p / zeronet / freenet
-        &quot;proxy&quot;: ...,
-        // hostname / netloc, c.f. ``urllib.parse.urlparse``
-        &quot;host&quot;: ...,
-        // base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;
-        &quot;base&quot;: ...,
-        // sha256 of URL as name for saved files (timestamp is in ISO format)
-        //   JSON log as this one - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json
-        //   HTML from requests - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html
-        //   HTML from selenium - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html
-        //   generic data files - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat
-        &quot;name&quot;: ...,
-        // originate URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;
-        &quot;backref&quot;: ...
-    },
-    // requested timestamp in ISO format as in name of saved file
-    &quot;Timestamp&quot;: ...,
-    // original URL
-    &quot;URL&quot;: ...,
-    // robots.txt from the host (if not exists, then ``null``)
-    &quot;Robots&quot;: {
-        // path of the file, relative path (to data root path ``PATH_DATA``) in container
-        //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/robots.txt
-        &quot;path&quot;: ...,
-        // content of the file (**base64** encoded)
-        &quot;data&quot;: ...,
-    },
-    // sitemaps from the host (if none, then ``null``)
-    &quot;Sitemaps&quot;: [
-        {
-            // path of the file, relative path (to data root path ``PATH_DATA``) in container
-            //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/sitemap_&lt;name&gt;.xml
-            &quot;path&quot;: ...,
-            // content of the file (**base64** encoded)
-            &quot;data&quot;: ...,
-        },
-        ...
-    ],
-    // hosts.txt from the host (if proxy type is ``i2p``; if not exists, then ``null``)
-    &quot;Hosts&quot;: {
-        // path of the file, relative path (to data root path ``PATH_DATA``) in container
-        //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/hosts.txt
-        &quot;path&quot;: ...,
-        // content of the file (**base64** encoded)
-        &quot;data&quot;: ...,
-    }
-}
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#darc.submit.darc.submit.API_NEW_HOST" title="darc.submit.darc.submit.API_NEW_HOST"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.submit.API_NEW_HOST</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit" title="darc.submit.submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.save_submit" title="darc.submit.save_submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.save_submit()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.get_robots" title="darc.submit.get_robots"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.get_robots()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.get_sitemaps" title="darc.submit.get_sitemaps"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.get_sitemaps()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.get_hosts" title="darc.submit.get_hosts"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.get_hosts()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.submit.submit_requests">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">submit_requests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mime_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#submit_requests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.submit_requests" title="Permalink to this definition">¶</a></dt>
-<dd><p>Submit requests data.</p>
-<p>When crawling, we’ll first fetch the URl using <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, to check
-its availability and to save its HTTP headers information. Such information
-will be submitted to the web UI.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime.datetime</em></a>) – Timestamp of submission.</p></li>
-<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of submission.</p></li>
-<li><p><strong>response</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.2)"><em>requests.Response</em></a>) – Response object of submission.</p></li>
-<li><p><strong>session</strong> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.28.2)"><em>requests.Session</em></a>) – Session object of submission.</p></li>
-<li><p><strong>content</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>) – Raw content of from the response.</p></li>
-<li><p><strong>mime_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Content type.</p></li>
-<li><p><strong>html</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If current document is HTML or other files.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
-</dd>
-</dl>
-<p>If <a class="reference internal" href="#darc.submit.darc.submit.API_REQUESTS" title="darc.submit.darc.submit.API_REQUESTS"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_REQUESTS</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the data for submission
-will directly be save through <a class="reference internal" href="#darc.submit.save_submit" title="darc.submit.save_submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_submit()</span></code></a>.</p>
-<p>The data submitted should have following format:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
-    // metadata of URL
-    &quot;[metadata]&quot;: {
-        // original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;
-        &quot;url&quot;: ...,
-        // proxy type - null / tor / i2p / zeronet / freenet
-        &quot;proxy&quot;: ...,
-        // hostname / netloc, c.f. ``urllib.parse.urlparse``
-        &quot;host&quot;: ...,
-        // base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;
-        &quot;base&quot;: ...,
-        // sha256 of URL as name for saved files (timestamp is in ISO format)
-        //   JSON log as this one - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json
-        //   HTML from requests - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html
-        //   HTML from selenium - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html
-        //   generic data files - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat
-        &quot;name&quot;: ...,
-        // originate URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;
-        &quot;backref&quot;: ...
-    },
-    // requested timestamp in ISO format as in name of saved file
-    &quot;Timestamp&quot;: ...,
-    // original URL
-    &quot;URL&quot;: ...,
-    // request method
-    &quot;Method&quot;: &quot;GET&quot;,
-    // response status code
-    &quot;Status-Code&quot;: ...,
-    // response reason
-    &quot;Reason&quot;: ...,
-    // response cookies (if any)
-    &quot;Cookies&quot;: {
-        ...
-    },
-    // session cookies (if any)
-    &quot;Session&quot;: {
-        ...
-    },
-    // request headers (if any)
-    &quot;Request&quot;: {
-        ...
-    },
-    // response headers (if any)
-    &quot;Response&quot;: {
-        ...
-    },
-    // content type
-    &quot;Content-Type&quot;: ...,
-    // requested file (if not exists, then ``null``)
-    &quot;Document&quot;: {
-        // path of the file, relative path (to data root path ``PATH_DATA``) in container
-        //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html
-        // or if the document is of generic content type, i.e. not HTML
-        //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat
-        &quot;path&quot;: ...,
-        // content of the file (**base64** encoded)
-        &quot;data&quot;: ...,
-    },
-    // redirection history (if any)
-    &quot;History&quot;: [
-        // same record data as the original response
-        {&quot;...&quot;: &quot;...&quot;}
-    ]
-}
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#darc.submit.darc.submit.API_REQUESTS" title="darc.submit.darc.submit.API_REQUESTS"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.submit.API_REQUESTS</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit" title="darc.submit.submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.save_submit" title="darc.submit.save_submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.save_submit()</span></code></a></p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.get_raw()</span></code></p></li>
-<li><p><a class="reference internal" href="crawl.html#darc.crawl.crawler" title="darc.crawl.crawler"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.crawler()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="darc.submit.submit_selenium">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">submit_selenium</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screenshot</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/submit.html#submit_selenium"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.submit.submit_selenium" title="Permalink to this definition">¶</a></dt>
-<dd><p>Submit selenium data.</p>
-<p>After crawling with <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, we’ll then render the URl using
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> with Google Chrome and its web driver, to provide a fully
-rendered web page. Such information will be submitted to the web UI.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime.datetime</em></a>) – Timestamp of submission.</p></li>
-<li><p><strong>link</strong> (<a class="reference internal" href="link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>) – Link object of submission.</p></li>
-<li><p><strong>html</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – HTML source of the web page.</p></li>
-<li><p><strong>screenshot</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – <em>base64</em> encoded screenshot.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
-</dd>
-</dl>
-<p>If <a class="reference internal" href="#darc.submit.darc.submit.API_SELENIUM" title="darc.submit.darc.submit.API_SELENIUM"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_SELENIUM</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the data for submission
-will directly be save through <a class="reference internal" href="#darc.submit.save_submit" title="darc.submit.save_submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_submit()</span></code></a>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This information is optional, only provided if the content type from
-<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> is HTML, status code not between <code class="docutils literal notranslate"><span class="pre">400</span></code> and <code class="docutils literal notranslate"><span class="pre">600</span></code>, and
-HTML data not empty.</p>
-</div>
-<p>The data submitted should have following format:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
-    // metadata of URL
-    &quot;[metadata]&quot;: {
-        // original URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;
-        &quot;url&quot;: ...,
-        // proxy type - null / tor / i2p / zeronet / freenet
-        &quot;proxy&quot;: ...,
-        // hostname / netloc, c.f. ``urllib.parse.urlparse``
-        &quot;host&quot;: ...,
-        // base folder, relative path (to data root path ``PATH_DATA``) in containter - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;
-        &quot;base&quot;: ...,
-        // sha256 of URL as name for saved files (timestamp is in ISO format)
-        //   JSON log as this one - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.json
-        //   HTML from requests - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;_raw.html
-        //   HTML from selenium - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.html
-        //   generic data files - &lt;base&gt;/&lt;name&gt;_&lt;timestamp&gt;.dat
-        &quot;name&quot;: ...,
-        // originate URL - &lt;scheme&gt;://&lt;netloc&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;fragment&gt;
-        &quot;backref&quot;: ...
-    },
-    // requested timestamp in ISO format as in name of saved file
-    &quot;Timestamp&quot;: ...,
-    // original URL
-    &quot;URL&quot;: ...,
-    // rendered HTML document (if not exists, then ``null``)
-    &quot;Document&quot;: {
-        // path of the file, relative path (to data root path ``PATH_DATA``) in container
-        //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.html
-        &quot;path&quot;: ...,
-        // content of the file (**base64** encoded)
-        &quot;data&quot;: ...,
-    },
-    // web page screenshot (if not exists, then ``null``)
-    &quot;Screenshot&quot;: {
-        // path of the file, relative path (to data root path ``PATH_DATA``) in container
-        //   - &lt;proxy&gt;/&lt;scheme&gt;/&lt;host&gt;/&lt;name&gt;_&lt;timestamp&gt;.png
-        &quot;path&quot;: ...,
-        // content of the file (**base64** encoded)
-        &quot;data&quot;: ...,
-    }
-}
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#darc.submit.darc.submit.API_SELENIUM" title="darc.submit.darc.submit.API_SELENIUM"><code class="xref py py-data docutils literal notranslate"><span class="pre">darc.submit.API_SELENIUM</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.submit" title="darc.submit.submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.submit()</span></code></a></p></li>
-<li><p><a class="reference internal" href="#darc.submit.save_submit" title="darc.submit.save_submit"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.save_submit()</span></code></a></p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.get_html()</span></code></p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.submit.get_screenshot()</span></code></p></li>
-<li><p><a class="reference internal" href="crawl.html#darc.crawl.loader" title="darc.crawl.loader"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.crawl.loader()</span></code></a></p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="darc.submit.darc.submit.PATH_API">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">PATH_API</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{PATH_DB}/api/'</span></em><a class="headerlink" href="#darc.submit.darc.submit.PATH_API" title="Permalink to this definition">¶</a></dt>
+  <dl class="py data">
+<dt class="sig sig-object py" id="darc.submit.PATH_API">
+<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">PATH_API</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{PATH_DB}/api/'</span></em><a class="headerlink" href="#darc.submit.PATH_API" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the API submittsion records, i.e. <code class="docutils literal notranslate"><span class="pre">api</span></code> folder under the
 root of data storage.</p>
 <div class="admonition seealso">
@@ -519,8 +46,8 @@ root of data storage.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.submit.darc.submit.SAVE_DB">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">SAVE_DB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.SAVE_DB" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.submit.SAVE_DB">
+<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">SAVE_DB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.submit.SAVE_DB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save submitted data to database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
@@ -533,8 +60,8 @@ root of data storage.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.submit.darc.submit.API_RETRY">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_RETRY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.API_RETRY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="darc.submit.API_RETRY">
+<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_RETRY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#darc.submit.API_RETRY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retry times for API submission when failure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
@@ -547,9 +74,9 @@ root of data storage.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.submit.darc.submit.API_NEW_HOST">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_NEW_HOST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.API_NEW_HOST" title="Permalink to this definition">¶</a></dt>
-<dd><p>API URL for <a class="reference internal" href="#darc.submit.submit_new_host" title="darc.submit.submit_new_host"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a>.</p>
+<dt class="sig sig-object py" id="darc.submit.API_NEW_HOST">
+<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_NEW_HOST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.submit.API_NEW_HOST" title="Permalink to this definition">¶</a></dt>
+<dd><p>API URL for <code class="xref py py-func docutils literal notranslate"><span class="pre">submit_new_host()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
@@ -561,9 +88,9 @@ root of data storage.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.submit.darc.submit.API_REQUESTS">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_REQUESTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.API_REQUESTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>API URL for <a class="reference internal" href="#darc.submit.submit_requests" title="darc.submit.submit_requests"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_requests()</span></code></a>.</p>
+<dt class="sig sig-object py" id="darc.submit.API_REQUESTS">
+<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_REQUESTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.submit.API_REQUESTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>API URL for <code class="xref py py-func docutils literal notranslate"><span class="pre">submit_requests()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
@@ -575,9 +102,9 @@ root of data storage.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="darc.submit.darc.submit.API_SELENIUM">
-<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_SELENIUM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.submit.darc.submit.API_SELENIUM" title="Permalink to this definition">¶</a></dt>
-<dd><p>API URL for <a class="reference internal" href="#darc.submit.submit_selenium" title="darc.submit.submit_selenium"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_selenium()</span></code></a>.</p>
+<dt class="sig sig-object py" id="darc.submit.API_SELENIUM">
+<span class="sig-prename descclassname"><span class="pre">darc.submit.</span></span><span class="sig-name descname"><span class="pre">API_SELENIUM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#darc.submit.API_SELENIUM" title="Permalink to this definition">¶</a></dt>
+<dd><p>API URL for <code class="xref py py-func docutils literal notranslate"><span class="pre">submit_selenium()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
@@ -590,10 +117,10 @@ root of data storage.</p>
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If <a class="reference internal" href="#darc.submit.darc.submit.API_NEW_HOST" title="darc.submit.darc.submit.API_NEW_HOST"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_NEW_HOST</span></code></a>, <a class="reference internal" href="#darc.submit.darc.submit.API_REQUESTS" title="darc.submit.darc.submit.API_REQUESTS"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_REQUESTS</span></code></a>
-and <a class="reference internal" href="#darc.submit.darc.submit.API_SELENIUM" title="darc.submit.darc.submit.API_SELENIUM"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_SELENIUM</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the corresponding
+<p>If <a class="reference internal" href="#darc.submit.API_NEW_HOST" title="darc.submit.API_NEW_HOST"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_NEW_HOST</span></code></a>, <a class="reference internal" href="#darc.submit.API_REQUESTS" title="darc.submit.API_REQUESTS"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_REQUESTS</span></code></a>
+and <a class="reference internal" href="#darc.submit.API_SELENIUM" title="darc.submit.API_SELENIUM"><code class="xref py py-data docutils literal notranslate"><span class="pre">API_SELENIUM</span></code></a> is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the corresponding
 submit function will save the JSON data in the path
-specified by <a class="reference internal" href="#darc.submit.darc.submit.PATH_API" title="darc.submit.darc.submit.PATH_API"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_API</span></code></a>.</p>
+specified by <a class="reference internal" href="#darc.submit.PATH_API" title="darc.submit.PATH_API"><code class="xref py py-data docutils literal notranslate"><span class="pre">PATH_API</span></code></a>.</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -629,17 +156,6 @@ page for more information.</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../howto/index.html">How to …</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Technical Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="process.html">Main Processing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="process.html#darc.process._process"><code class="docutils literal notranslate"><span class="pre">_process()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="process.html#darc.process.process"><code class="docutils literal notranslate"><span class="pre">process()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="process.html#darc.process.process_crawler"><code class="docutils literal notranslate"><span class="pre">process_crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="process.html#darc.process.process_loader"><code class="docutils literal notranslate"><span class="pre">process_loader()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="process.html#darc.process.register"><code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="process.html#darc.process._HOOK_REGISTRY"><code class="docutils literal notranslate"><span class="pre">_HOOK_REGISTRY</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="process.html#darc.process._WORKER_POOL"><code class="docutils literal notranslate"><span class="pre">_WORKER_POOL</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="crawl.html">Web Crawlers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="crawl.html#darc.crawl.crawler"><code class="docutils literal notranslate"><span class="pre">crawler()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="crawl.html#darc.crawl.loader"><code class="docutils literal notranslate"><span class="pre">loader()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="link.html">URL Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="link.html#darc.link.Link"><code class="docutils literal notranslate"><span class="pre">Link</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="link.html#darc.link.parse_link"><code class="docutils literal notranslate"><span class="pre">parse_link()</span></code></a></li>
@@ -648,85 +164,20 @@ page for more information.</p>
 <li class="toctree-l2"><a class="reference internal" href="link.html#darc.link.urljoin"><code class="docutils literal notranslate"><span class="pre">urljoin()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="link.html#darc.link.urlparse"><code class="docutils literal notranslate"><span class="pre">urlparse()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="link.html#darc.link.urlsplit"><code class="docutils literal notranslate"><span class="pre">urlsplit()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html">Source Parsing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse._check"><code class="docutils literal notranslate"><span class="pre">_check()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse._check_ng"><code class="docutils literal notranslate"><span class="pre">_check_ng()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse.check_robots"><code class="docutils literal notranslate"><span class="pre">check_robots()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse.extract_links"><code class="docutils literal notranslate"><span class="pre">extract_links()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse.extract_links_from_text"><code class="docutils literal notranslate"><span class="pre">extract_links_from_text()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse.get_content_type"><code class="docutils literal notranslate"><span class="pre">get_content_type()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse.match_host"><code class="docutils literal notranslate"><span class="pre">match_host()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse.match_mime"><code class="docutils literal notranslate"><span class="pre">match_mime()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse.match_proxy"><code class="docutils literal notranslate"><span class="pre">match_proxy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parse.html#darc.parse.darc.parse.URL_PAT"><code class="docutils literal notranslate"><span class="pre">darc.parse.URL_PAT</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="save.html">Source Saving</a></li>
-<li class="toctree-l2"><a class="reference internal" href="save.html#darc.save.sanitise"><code class="docutils literal notranslate"><span class="pre">sanitise()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="save.html#darc.save.save_headers"><code class="docutils literal notranslate"><span class="pre">save_headers()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="save.html#darc.save.save_link"><code class="docutils literal notranslate"><span class="pre">save_link()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="save.html#darc.save.darc.save._SAVE_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.save._SAVE_LOCK</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html">Link Database</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._db_operation"><code class="docutils literal notranslate"><span class="pre">_db_operation()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._drop_hostname_db"><code class="docutils literal notranslate"><span class="pre">_drop_hostname_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._drop_hostname_redis"><code class="docutils literal notranslate"><span class="pre">_drop_hostname_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._drop_requests_db"><code class="docutils literal notranslate"><span class="pre">_drop_requests_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._drop_requests_redis"><code class="docutils literal notranslate"><span class="pre">_drop_requests_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._drop_selenium_db"><code class="docutils literal notranslate"><span class="pre">_drop_selenium_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._drop_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_drop_selenium_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._gen_arg_msg"><code class="docutils literal notranslate"><span class="pre">_gen_arg_msg()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._have_hostname_db"><code class="docutils literal notranslate"><span class="pre">_have_hostname_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._have_hostname_redis"><code class="docutils literal notranslate"><span class="pre">_have_hostname_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._load_requests_db"><code class="docutils literal notranslate"><span class="pre">_load_requests_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._load_requests_redis"><code class="docutils literal notranslate"><span class="pre">_load_requests_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._load_selenium_db"><code class="docutils literal notranslate"><span class="pre">_load_selenium_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._load_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_load_selenium_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._redis_command"><code class="docutils literal notranslate"><span class="pre">_redis_command()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._redis_get_lock"><code class="docutils literal notranslate"><span class="pre">_redis_get_lock()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._save_requests_db"><code class="docutils literal notranslate"><span class="pre">_save_requests_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._save_requests_redis"><code class="docutils literal notranslate"><span class="pre">_save_requests_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._save_selenium_db"><code class="docutils literal notranslate"><span class="pre">_save_selenium_db()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db._save_selenium_redis"><code class="docutils literal notranslate"><span class="pre">_save_selenium_redis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.drop_hostname"><code class="docutils literal notranslate"><span class="pre">drop_hostname()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.drop_requests"><code class="docutils literal notranslate"><span class="pre">drop_requests()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.drop_selenium"><code class="docutils literal notranslate"><span class="pre">drop_selenium()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.have_hostname"><code class="docutils literal notranslate"><span class="pre">have_hostname()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.load_requests"><code class="docutils literal notranslate"><span class="pre">load_requests()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.load_selenium"><code class="docutils literal notranslate"><span class="pre">load_selenium()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.save_requests"><code class="docutils literal notranslate"><span class="pre">save_requests()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.save_selenium"><code class="docutils literal notranslate"><span class="pre">save_selenium()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.darc.db.BULK_SIZE"><code class="docutils literal notranslate"><span class="pre">darc.db.BULK_SIZE</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.darc.db.LOCK_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">darc.db.LOCK_TIMEOUT</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.darc.db.MAX_POOL"><code class="docutils literal notranslate"><span class="pre">darc.db.MAX_POOL</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.darc.db.REDIS_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.db.REDIS_LOCK</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.darc.db.RETRY_INTERVAL"><code class="docutils literal notranslate"><span class="pre">darc.db.RETRY_INTERVAL</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Data Submission</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.get_hosts"><code class="docutils literal notranslate"><span class="pre">get_hosts()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.get_robots"><code class="docutils literal notranslate"><span class="pre">get_robots()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.get_sitemaps"><code class="docutils literal notranslate"><span class="pre">get_sitemaps()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.save_submit"><code class="docutils literal notranslate"><span class="pre">save_submit()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.submit"><code class="docutils literal notranslate"><span class="pre">submit()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.submit_new_host"><code class="docutils literal notranslate"><span class="pre">submit_new_host()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.submit_requests"><code class="docutils literal notranslate"><span class="pre">submit_requests()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.submit_selenium"><code class="docutils literal notranslate"><span class="pre">submit_selenium()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.darc.submit.PATH_API"><code class="docutils literal notranslate"><span class="pre">darc.submit.PATH_API</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.darc.submit.SAVE_DB"><code class="docutils literal notranslate"><span class="pre">darc.submit.SAVE_DB</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.darc.submit.API_RETRY"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_RETRY</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.darc.submit.API_NEW_HOST"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_NEW_HOST</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.darc.submit.API_REQUESTS"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_REQUESTS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#darc.submit.darc.submit.API_SELENIUM"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_SELENIUM</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="requests.html">Requests Wrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="requests.html#darc.requests.default_user_agent"><code class="docutils literal notranslate"><span class="pre">default_user_agent()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="requests.html#darc.requests.i2p_session"><code class="docutils literal notranslate"><span class="pre">i2p_session()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="requests.html#darc.requests.null_session"><code class="docutils literal notranslate"><span class="pre">null_session()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="requests.html#darc.requests.request_session"><code class="docutils literal notranslate"><span class="pre">request_session()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="requests.html#darc.requests.tor_session"><code class="docutils literal notranslate"><span class="pre">tor_session()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="selenium.html">Selenium Wrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="selenium.html#darc.selenium.get_capabilities"><code class="docutils literal notranslate"><span class="pre">get_capabilities()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="selenium.html#darc.selenium.get_options"><code class="docutils literal notranslate"><span class="pre">get_options()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="selenium.html#darc.selenium.i2p_driver"><code class="docutils literal notranslate"><span class="pre">i2p_driver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="selenium.html#darc.selenium.null_driver"><code class="docutils literal notranslate"><span class="pre">null_driver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="selenium.html#darc.selenium.request_driver"><code class="docutils literal notranslate"><span class="pre">request_driver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="selenium.html#darc.selenium.tor_driver"><code class="docutils literal notranslate"><span class="pre">tor_driver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="selenium.html#darc.selenium.darc.selenium.BINARY_LOCATION"><code class="docutils literal notranslate"><span class="pre">darc.selenium.BINARY_LOCATION</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="parse.html"><code class="docutils literal notranslate"><span class="pre">darc.parse.URL_PAT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html"><code class="docutils literal notranslate"><span class="pre">darc.save._SAVE_LOCK</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="db.html"><code class="docutils literal notranslate"><span class="pre">darc.db.BULK_SIZE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.LOCK_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">darc.db.LOCK_TIMEOUT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.MAX_POOL"><code class="docutils literal notranslate"><span class="pre">darc.db.MAX_POOL</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.REDIS_LOCK"><code class="docutils literal notranslate"><span class="pre">darc.db.REDIS_LOCK</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="db.html#darc.db.RETRY_INTERVAL"><code class="docutils literal notranslate"><span class="pre">darc.db.RETRY_INTERVAL</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">darc.submit.PATH_API</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#darc.submit.SAVE_DB"><code class="docutils literal notranslate"><span class="pre">darc.submit.SAVE_DB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#darc.submit.API_RETRY"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_RETRY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#darc.submit.API_NEW_HOST"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_NEW_HOST</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#darc.submit.API_REQUESTS"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_REQUESTS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#darc.submit.API_SELENIUM"><code class="docutils literal notranslate"><span class="pre">darc.submit.API_SELENIUM</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="selenium.html"><code class="docutils literal notranslate"><span class="pre">darc.selenium.BINARY_LOCATION</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="proxy/index.html">Proxy Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sites/index.html">Sites Customisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="const.html">Module Constants</a></li>
@@ -750,10 +201,6 @@ page for more information.</p>
 <li class="toctree-l2"><a class="reference internal" href="error.html#darc.error._BaseException"><code class="docutils literal notranslate"><span class="pre">_BaseException</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="error.html#darc.error._BaseWarning"><code class="docutils literal notranslate"><span class="pre">_BaseWarning</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="model/index.html">Data Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#darc.darc"><code class="docutils literal notranslate"><span class="pre">darc()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#darc.register_hooks"><code class="docutils literal notranslate"><span class="pre">register_hooks()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#darc.register_proxy"><code class="docutils literal notranslate"><span class="pre">register_proxy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#darc.register_sites"><code class="docutils literal notranslate"><span class="pre">register_sites()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a></li>
@@ -770,8 +217,8 @@ page for more information.</p>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="index.html">Technical Documentation</a><ul>
-      <li>Previous: <a href="db.html" title="previous chapter">Link Database</a></li>
-      <li>Next: <a href="requests.html" title="next chapter">Requests Wrapper</a></li>
+      <li>Previous: <a href="db.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="requests.html" title="next chapter">&lt;no title&gt;</a></li>
   </ul></li>
   </ul></li>
 </ul>
