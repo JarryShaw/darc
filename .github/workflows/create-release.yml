@@ -3,12 +3,14 @@ on:
     # Sequence of patterns matched against refs/tags
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  #release:
+  #  types: ['published']
 
 name: Create Release
 
 jobs:
-  build:
-    name: Create Release
+  version_check:
+    name: Check Version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -16,11 +18,111 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install and Setup
+        run: |
+          python -m pip install -U pip setuptools wheel
+
+      - name: Get Version
+        id: get_version
+        run: |
+          set -x
+
+          python -m pip install -e .
+
+          echo "DARC_VERSION=$(python -c 'import darc; print(darc.__version__)')" >> $GITHUB_OUTPUT
+          echo "DARC_PRERELEASE=$(python -c 'import darc, pkg_resources; print(str(pkg_resources.parse_version(darc.__version__).is_prerelease).lower())')" >> $GITHUB_OUTPUT
+          echo "DARC_CONDA_LABEL=$(python -c 'import darc, pkg_resources; print("dev" if pkg_resources.parse_version(darc.__version__).is_prerelease else "main")')" >> $GITHUB_OUTPUT
+
+    outputs:
+      DARC_VERSION: ${{ steps.get_version.outputs.DARC_VERSION }}
+      DARC_PRERELEASE: ${{ steps.get_version.outputs.DARC_PRERELEASE }}
+      DARC_CONDA_LABEL: ${{ steps.get_version.outputs.DARC_CONDA_LABEL }}
+
+  pypi_github:
+    name: PyPI & GitHub Release # with Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    needs: [ version_check ]
+    # strategy:
+    #   matrix:
+    #     python-version:
+    #       - "3.7"
+    #       - "3.8"
+    #       - "3.9"
+    #       - "3.10"
+    #       - "3.11"
+    #       - "pypy3.7"
+    #       - "pypy3.8"
+    #       - "pypy3.9"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11' # ${{ matrix.python-version }}
+
+      - name: Install and Setup
+        run: |
+          set -x
+
+          python -m pip install -U pip setuptools wheel
+          python -m pip install -U build
+
+      - name: Build Package (latest)
+        #if: ${{ matrix.python-version == '3.11' }}
+        run: |
+          python -m build
+
+      # - name: Build Package (others)
+      #   if: ${{ matrix.python-version != '3.11' }}
+      #   run: |
+      #     python -m build --wheel
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip-existing: true
+
+      - name: Publish package to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+
       - name: Changelog
         uses: Bullrich/generate-release-changelog@master
         id: changelog
         env:
           REPO: ${{ github.repository }}
+
+        # run: |
+        #   # NOTE: inspired from Bullrich/generate-release-changelog
+        #   # https://github.com/Bullrich/generate-release-changelog/blob/master/entrypoint.sh
+
+        #   tag=$(git tag --sort version:refname | tail -n 2 | head -n 1)
+        #   echo tag=$tag
+
+        #   if [ "$tag" ]; then
+        #     changelog=$(git log --oneline --no-decorate $tag..HEAD)
+        #   else
+        #     changelog=$(git log --oneline --no-decorate)
+        #   fi
+
+        #   echo $changelog
+
+        #   changelog="${changelog//'%'/'%25'}"
+        #   changelog="${changelog//$'\n'/'%0A' - }"
+        #   changelog=" - ${changelog//$'\r'/'%0D'}"
+
+        #   echo "DARC_CHANGELOG=$changelog" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
@@ -28,9 +130,52 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
+          # allowUpdates: true
+          artifacts: |
+            dist/*
+          # body: ${{ env.DARC_CHANGELOG }}
           body: |
             ${{ steps.changelog.outputs.changelog }}
-          makeLatest: true
-          name: DARC ${{ github.ref }}
-          tag: ${{ github.ref }}
+          # generateReleaseNotes: true
+          # makeLatest: true
+          name: python-darc v${{ needs.version_check.outputs.DARC_VERSION }}
+          prerelease: ${{ needs.version_check.outputs.DARC_PRERELEASE }}
+          tag: "v${{ needs.version_check.outputs.DARC_VERSION }}"
           token: "${{ secrets.GITHUB_TOKEN }}"
+
+  conda:
+    name: Conda deployment of package with Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    needs: [ version_check ]
+    strategy:
+      matrix:
+        python-version: [ "3.8", "3.9", "3.10", "3.11" ] # ignore 3.6/7 for now
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Conda environment creation and activation
+        uses: conda-incubator/setup-miniconda@v2
+        env:
+          DARC_VERSION: ${{ needs.version_check.outputs.DARC_VERSION }}
+        with:
+          python-version: ${{ matrix.python-version }}
+          environment-file: util/conda-build.yaml    # Path to the build conda environment
+          auto-update-conda: false
+          auto-activate-base: false
+          show-channel-urls: true
+
+      - name: Build and upload the conda packages
+        uses: uibcdf/action-build-and-upload-conda-packages@v1.2.0
+        env:
+          DARC_VERSION: ${{ needs.version_check.outputs.DARC_VERSION }}
+        with:
+          meta_yaml_dir: .
+          python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
+          platform_linux-64: true
+          platform_osx-64: true
+          platform_win-64: true
+          user: jarryshaw
+          label: ${{ needs.version_check.outputs.DARC_CONDA_LABEL }}
+          token: ${{ secrets.ANACONDA_TOKEN }} # Replace with the right name of your secret
