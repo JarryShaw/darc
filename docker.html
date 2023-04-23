@@ -83,7 +83,8 @@ By default, the username is <code class="docutils literal notranslate"><span cla
 
 <span class="k">COPY</span><span class="w"> </span>extra/retry.sh<span class="w"> </span>/usr/local/bin/retry
 <span class="k">COPY</span><span class="w"> </span>extra/install.py<span class="w"> </span>/usr/local/bin/pty-install
-<span class="k">COPY</span><span class="w"> </span>vendor/jdk-11.0.19_linux-x64_bin.tar.gz<span class="w"> </span>/var/cache/oracle-jdk11-installer-local/
+<span class="c">#COPY extra/rename-jdk.sh /usr/local/bin/rename-jdk</span>
+<span class="k">COPY</span><span class="w"> </span>vendor/jdk-11.0.18_linux-x64_bin.tar.gz<span class="w"> </span>/var/cache/oracle-jdk11-installer-local/
 
 <span class="k">RUN</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>-x<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>retry<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="se">\</span>
@@ -110,6 +111,7 @@ By default, the username is <code class="docutils literal notranslate"><span cla
 <span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ln<span class="w"> </span>-sf<span class="w"> </span>/usr/bin/python3.9<span class="w"> </span>/usr/local/bin/python3
 <span class="k">RUN</span><span class="w"> </span>retry<span class="w"> </span>pty-install<span class="w"> </span>--stdin<span class="w"> </span><span class="s1">&#39;6\n70&#39;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>--yes<span class="w"> </span>--no-install-recommends<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>tzdata<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span><span class="c1">#&amp;&amp; retry rename-jdk \</span>
 <span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>retry<span class="w"> </span>pty-install<span class="w"> </span>--stdin<span class="w"> </span><span class="s1">&#39;yes&#39;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>--yes<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>oracle-java11-installer-local
 <span class="k">RUN</span><span class="w"> </span>retry<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>--yes<span class="w"> </span>--no-install-recommends<span class="w"> </span><span class="se">\</span>
