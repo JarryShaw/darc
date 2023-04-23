@@ -21,7 +21,8 @@ ENV LANG="C.UTF-8" \
 
 COPY extra/retry.sh /usr/local/bin/retry
 COPY extra/install.py /usr/local/bin/pty-install
-COPY vendor/jdk-11.0.19_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
+#COPY extra/rename-jdk.sh /usr/local/bin/rename-jdk
+COPY vendor/jdk-11.0.18_linux-x64_bin.tar.gz /var/cache/oracle-jdk11-installer-local/
 
 RUN set -x \
  && retry apt-get update \
@@ -48,6 +49,7 @@ RUN retry apt-get update \
  && ln -sf /usr/bin/python3.9 /usr/local/bin/python3
 RUN retry pty-install --stdin '6\n70' apt-get install --yes --no-install-recommends \
         tzdata \
+ #&& retry rename-jdk \
  && retry pty-install --stdin 'yes' apt-get install --yes \
         oracle-java11-installer-local
 RUN retry apt-get install --yes --no-install-recommends \
