@@ -139,7 +139,7 @@
         "zscan",
         "zscore"
     ],
-    "restructuredtext.confPath": "${workspaceFolder}/docs/conf.py",
+    "restructuredtext.confPath": "${workspaceFolder}/docs/source/conf.py",
     "python.dataScience.jupyterServerURI": "local",
     "Lua.diagnostics.globals": [
         "redis",
@@ -148,5 +148,5 @@
     ],
     "Lua.runtime.version": "Lua 5.1",
     "python.pythonPath": ".venv/bin/python",
-    "esbonio.sphinx.confDir": "${workspaceFolder}/docs/conf.py"
+    "esbonio.sphinx.confDir": "${workspaceFolder}/docs/source"
 }

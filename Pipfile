@@ -1,14 +1,4 @@
 [[source]]
-name = "tuna"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-verify_ssl = true
-
-[[source]]
-name = "sjtu"
-url = "https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple"
-verify_ssl = true
-
-[[source]]
 name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
@@ -26,10 +16,11 @@ coverage = "*"
 codecov = "*"
 sphinx = "*"
 sphinx-autodoc-typehints = "*"
-#snooty-lextudio = "*"  # ignore VS Code reStrustured Text language server
+esbonio = "*"
 rstcheck = "*"
 Flask = "*"
 pydantic = {extras = ["dotenv", "email", "typing_extensions"], version = "*"}
+types-redis = "*"
 
 [packages]
 beautifulsoup4 = {extras = ["html5lib"],version = "*"}

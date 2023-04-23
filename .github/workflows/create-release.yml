@@ -12,15 +12,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Changelog
+        uses: Bullrich/generate-release-changelog@master
+        id: changelog
+        env:
+          REPO: ${{ github.repository }}
+
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: ncipollo/release-action@v1.12.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
-          release_name: DARC ${{ github.ref }}
-          body: ${{ join(github.event.commits.*.message, '\n') }}
-          draft: false
-          prerelease: false
+          body: |
+            ${{ steps.changelog.outputs.changelog }}
+          makeLatest: true
+          name: DARC ${{ github.ref }}
+          tag: ${{ github.ref }}
+          token: "${{ secrets.GITHUB_TOKEN }}"
