@@ -4,7 +4,7 @@
 # To regenerate from the project's Pipfile, run:
 
 # Python packages
-pip==23.1.1
+pip==23.1.2
 setuptools==67.7.2
 wheel==0.40.0
 
@@ -40,7 +40,7 @@ pysocks==1.7.1
 python-datauri==1.1.0
 redis[hiredis]==4.5.4
 requests-futures==1.0.0
-requests[socks]==2.28.2
+requests[socks]==2.29.0
 selenium==4.9.0
 six==1.16.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 sniffio==1.3.0; python_version >= '3.5'
@@ -50,6 +50,6 @@ stem==1.8.1
 trio-websocket==0.10.2; python_version >= '3.5'
 trio==0.22.0; python_version >= '3.6'
 typing-extensions==4.5.0
-urllib3[secure]==1.26.15; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
+urllib3[secure]==2.0.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
 webencodings==0.5.1
 wsproto==1.2.0; python_full_version >= '3.6.1'
