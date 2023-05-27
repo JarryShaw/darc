@@ -35,7 +35,7 @@
 <span id="sites-customisation"></span><h1>Sites Customisation<a class="headerlink" href="#module-darc.sites" title="Permalink to this heading">¶</a></h1>
 <p>As websites may have authentication requirements, etc., over
 its content, the <a class="reference internal" href="#module-darc.sites" title="darc.sites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.sites</span></code></a> module provides sites
-customisation hooks to both <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.30.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>
+customisation hooks to both <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.31.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>
 crawling processes.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -49,12 +49,12 @@ module through <code class="xref py py-func docutils literal notranslate"><span 
 inheriting <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSite</span></code> and overload corresponding
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">crawler()</span></code> and/or
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">loader()</span></code> methods.</p>
-<p>To customise behaviours over <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.30.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, you sites customisation
+<p>To customise behaviours over <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.31.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, you sites customisation
 class should have a <code class="xref py py-func docutils literal notranslate"><span class="pre">crawler()</span></code> method, e.g.
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultSite.crawler</span></code>.</p>
-<p>The function takes the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> object with proxy settings and
+<p>The function takes the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.31.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> object with proxy settings and
 a <a class="reference internal" href="../link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object representing the link to be
-crawled, then returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a> object containing the final
+crawled, then returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.31.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a> object containing the final
 data of the crawling process.</p>
 <p>To customise behaviours over <code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code>, you sites customisation
 class should have a <code class="xref py py-func docutils literal notranslate"><span class="pre">loader()</span></code> method, e.g.
