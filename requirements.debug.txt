@@ -4,9 +4,9 @@
 # To regenerate from the project's Pipfile, run:
 
 # Python packages
-pip==23.1.2
+pip==23.2.1
 setuptools==68.0.0
-wheel==0.40.0
+wheel==0.41.0
 
 # Python dependencies
 #
@@ -19,7 +19,7 @@ wheel==0.40.0
 async-generator==1.10; python_version >= '3.5'
 attrs==23.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 beautifulsoup4[html5lib]==4.12.2
-certifi==2023.5.7
+certifi==2023.7.22
 cffi==1.15.1
 chardet==5.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 cryptography==41.0.2
@@ -28,7 +28,7 @@ h11==0.14.0; python_version >= '3.6'
 hiredis==2.2.3
 html5lib==1.1
 idna==3.4; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
-mmh3==4.0.0
+mmh3==4.0.1
 outcome==1.2.0; python_version >= '3.6'
 peewee==3.16.2
 pottery==3.0.0
@@ -37,7 +37,7 @@ pycparser==2.21; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.
 pymysql[rsa]==1.1.0
 pyopenssl==23.2.0
 pysocks==1.7.1
-python-datauri==2.0.0
+python-datauri==2.1.0
 redis[hiredis]==4.6.0
 requests-futures==1.0.1
 requests[socks]==2.31.0
@@ -48,8 +48,8 @@ sortedcontainers==2.4.0
 soupsieve==2.4.1; python_version >= '3.0'
 stem==1.8.2
 trio-websocket==0.10.3; python_version >= '3.5'
-trio==0.22.1; python_version >= '3.6'
+trio==0.22.2; python_version >= '3.6'
 typing-extensions==4.7.1
-urllib3[secure]==2.0.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
+urllib3[secure]==2.0.4; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
 webencodings==0.5.1
 wsproto==1.2.0; python_full_version >= '3.6.1'
