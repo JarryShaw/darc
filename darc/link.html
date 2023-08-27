@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,9 +8,9 @@
     <title>URL Utilities &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
+    <script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="&lt;no title&gt;" href="parse.html" />
@@ -31,8 +31,8 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-darc.link"></span><section id="url-utilities">
-<h1>URL Utilities<a class="headerlink" href="#url-utilities" title="Permalink to this heading">¶</a></h1>
+  <section id="url-utilities">
+<span id="module-darc.link"></span><h1>URL Utilities<a class="headerlink" href="#url-utilities" title="Link to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> class is the key data structure
 of the <a class="reference internal" href="index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project, it contains all information
 required to identify a URL’s proxy type, hostname, path prefix
@@ -42,7 +42,7 @@ function to the <a class="reference external" href="https://docs.python.org/3/li
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="darc.link.Link">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">Link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_parse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_backref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#Link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.Link" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">Link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_parse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_backref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#Link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.Link" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Parsed link.</p>
 <dl class="field-list simple">
@@ -72,7 +72,7 @@ It is safely <em>hashable</em>, through <a class="reference external" href="http
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="darc.link.Link.__hash__">
-<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#Link.__hash__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.Link.__hash__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#Link.__hash__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.Link.__hash__" title="Link to this definition">¶</a></dt>
 <dd><p>Provide hash support to the <a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -83,7 +83,7 @@ It is safely <em>hashable</em>, through <a class="reference external" href="http
 
 <dl class="py method">
 <dt class="sig sig-object py" id="darc.link.Link.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_parse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_backref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#darc.link.Link.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_parse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_backref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#darc.link.Link.__init__" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -104,7 +104,7 @@ It is safely <em>hashable</em>, through <a class="reference external" href="http
 
 <dl class="py method">
 <dt class="sig sig-object py" id="darc.link.Link.asdict">
-<span class="sig-name descname"><span class="pre">asdict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#Link.asdict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.Link.asdict" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">asdict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#Link.asdict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.Link.asdict" title="Link to this definition">¶</a></dt>
 <dd><p>Convert to a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -115,44 +115,44 @@ It is safely <em>hashable</em>, through <a class="reference external" href="http
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.link.Link.base">
-<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#darc.link.Link.base" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#darc.link.Link.base" title="Link to this definition">¶</a></dt>
 <dd><p>base folder for saving files</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.link.Link.host">
-<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#darc.link.Link.host" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#darc.link.Link.host" title="Link to this definition">¶</a></dt>
 <dd><p>URL’s hostname</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.link.Link.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#darc.link.Link.name" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#darc.link.Link.name" title="Link to this definition">¶</a></dt>
 <dd><p>hashed link for saving files</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.link.Link.proxy">
-<span class="sig-name descname"><span class="pre">proxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#darc.link.Link.proxy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">proxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#darc.link.Link.proxy" title="Link to this definition">¶</a></dt>
 <dd><p>proxy type</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.link.Link.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#darc.link.Link.url" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#darc.link.Link.url" title="Link to this definition">¶</a></dt>
 <dd><p>original link</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.link.Link.url_backref">
-<span class="sig-name descname"><span class="pre">url_backref</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#darc.link.Link.url_backref" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">url_backref</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#darc.link.Link.url_backref" title="Link to this definition">¶</a></dt>
 <dd><p>optional <a class="reference internal" href="#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> instance
 from which current link was extracted</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.link.Link.url_parse">
-<span class="sig-name descname"><span class="pre">url_parse</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.ParseResult" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParseResult</span></code></a></em><a class="headerlink" href="#darc.link.Link.url_parse" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">url_parse</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.ParseResult" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParseResult</span></code></a></em><a class="headerlink" href="#darc.link.Link.url_parse" title="Link to this definition">¶</a></dt>
 <dd><p>parsed URL from <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlparse" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlparse()</span></code></a></p>
 </dd></dl>
 
@@ -160,7 +160,7 @@ from which current link was extracted</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="darc.link.parse_link">
-<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">parse_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#parse_link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.parse_link" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">parse_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#parse_link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.parse_link" title="Link to this definition">¶</a></dt>
 <dd><p>Parse link.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -254,7 +254,7 @@ the sha256 hash (c.f. <a class="reference external" href="https://docs.python.or
 
 <dl class="py function">
 <dt class="sig sig-object py" id="darc.link.quote">
-<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#quote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.quote" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#quote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.quote" title="Link to this definition">¶</a></dt>
 <dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.quote" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.quote()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -282,7 +282,7 @@ the original string.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="darc.link.unquote">
-<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">unquote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'replace'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#unquote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.unquote" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">unquote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'replace'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#unquote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.unquote" title="Link to this definition">¶</a></dt>
 <dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.unquote" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.unquote()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -309,7 +309,7 @@ the original string.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="darc.link.urljoin">
-<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">urljoin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_fragments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#urljoin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.urljoin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">urljoin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_fragments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#urljoin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.urljoin" title="Link to this definition">¶</a></dt>
 <dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urljoin" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urljoin()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -336,7 +336,7 @@ the original string.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="darc.link.urlparse">
-<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">urlparse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_fragments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#urlparse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.urlparse" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">urlparse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_fragments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#urlparse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.urlparse" title="Link to this definition">¶</a></dt>
 <dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlparse" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlparse()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -364,7 +364,7 @@ directly.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="darc.link.urlsplit">
-<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">urlsplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_fragments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#urlsplit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.urlsplit" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.link.</span></span><span class="sig-name descname"><span class="pre">urlsplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_fragments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darc/link.html#urlsplit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#darc.link.urlsplit" title="Link to this definition">¶</a></dt>
 <dd><p>Wrapper function for <a class="reference external" href="https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlsplit" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">urllib.parse.urlsplit()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

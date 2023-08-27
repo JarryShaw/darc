@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,9 +8,9 @@
     <title>How to implement a sites customisation? &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
+    <script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="How to implement a custom proxy middleware?" href="proxy.html" />
@@ -32,7 +32,7 @@
           <div class="body" role="main">
             
   <section id="how-to-implement-a-sites-customisation">
-<h1>How to implement a sites customisation?<a class="headerlink" href="#how-to-implement-a-sites-customisation" title="Permalink to this heading">¶</a></h1>
+<h1>How to implement a sites customisation?<a class="headerlink" href="#how-to-implement-a-sites-customisation" title="Link to this heading">¶</a></h1>
 <p>As had been discussed already in the <a class="reference external" href="https://darc.jarryshaw.me/en/latest/custom.html#sites-customisation">documentation</a>, the implementation
 of a sites customisation is dead simple: just inherits the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">darc.sites.BaseSite</span></code> class and overwrites
@@ -80,7 +80,7 @@ your list of hostnames at <code class="xref py py-func docutils literal notransl
 </pre></div>
 </div>
 <section id="crawler-hook">
-<h2>Crawler Hook<a class="headerlink" href="#crawler-hook" title="Permalink to this heading">¶</a></h2>
+<h2>Crawler Hook<a class="headerlink" href="#crawler-hook" title="Link to this heading">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">crawler</span></code> method is based on <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.31.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> objects
 and returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.31.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a> instance representing the
 <em>crawled</em> web page.</p>
@@ -123,7 +123,7 @@ provided with a session cookie and HTTP header, so that it may bypass
 potential authorisation checks and land on the target page.</p>
 </section>
 <section id="loader-hook">
-<h2>Loader Hook<a class="headerlink" href="#loader-hook" title="Permalink to this heading">¶</a></h2>
+<h2>Loader Hook<a class="headerlink" href="#loader-hook" title="Link to this heading">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">loader</span></code> method is based on <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.Chrome</span></code> objects
 and returns a the original web driver instance containing the <em>loaded</em> web
 page.</p>
@@ -180,7 +180,7 @@ perform user login, so that it may bypass potential authorisation checks
 and land on the target page.</p>
 </section>
 <section id="in-case-to-drop-the-link-from-task-queue">
-<h2>In case to drop the link from task queue…<a class="headerlink" href="#in-case-to-drop-the-link-from-task-queue" title="Permalink to this heading">¶</a></h2>
+<h2>In case to drop the link from task queue…<a class="headerlink" href="#in-case-to-drop-the-link-from-task-queue" title="Link to this heading">¶</a></h2>
 <p>In some scenarios, you may want to remove the target link from the task
 queue, then there’re basically two ways:</p>
 <ol class="arabic simple">
@@ -240,7 +240,7 @@ class as</p>
 </div>
 </section>
 <section id="then-what-should-i-do-to-include-my-sites-customisation">
-<h2>Then what should I do to include my sites customisation?<a class="headerlink" href="#then-what-should-i-do-to-include-my-sites-customisation" title="Permalink to this heading">¶</a></h2>
+<h2>Then what should I do to include my sites customisation?<a class="headerlink" href="#then-what-should-i-do-to-include-my-sites-customisation" title="Link to this heading">¶</a></h2>
 <p>Simple as well!</p>
 <p>Just <em>install</em> your codes to where you’re running <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>, e.g. the
 Docker container, remote server, etc.; then change the startup by injecting

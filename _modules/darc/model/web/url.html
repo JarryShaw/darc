@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>darc.model.web.url &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=4f649999" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=af2ce170"></script>
+    <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
    
@@ -69,7 +69,9 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;URLModel&#39;</span><span class="p">,</span> <span class="s1">&#39;URLThroughModel&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="URLModel"><a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.url.URLModel">[docs]</a><span class="k">class</span> <span class="nc">URLModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="URLModel">
+<a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.url.URLModel">[docs]</a>
+<span class="k">class</span> <span class="nc">URLModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for a requested URL.</span>
 
 <span class="sd">    Important:</span>
@@ -107,7 +109,9 @@
     <span class="c1">#: The hostname is active/inactive since this timestamp.</span>
     <span class="n">since</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">()</span>
 
-<div class="viewcode-block" id="URLModel.get_by_url"><a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.url.URLModel.get_by_url">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="URLModel.get_by_url">
+<a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.url.URLModel.get_by_url">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_by_url</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;URLModel&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Select by URL.</span>
 
@@ -119,6 +123,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">url</span> <span class="o">==</span> <span class="n">url</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">parents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;List[URLModel]&#39;</span><span class="p">:</span>
@@ -139,7 +144,10 @@
                 <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">URLModel</span><span class="o">.</span><span class="n">url</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="URLThroughModel"><a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.url.URLThroughModel">[docs]</a><span class="k">class</span> <span class="nc">URLThroughModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+
+<div class="viewcode-block" id="URLThroughModel">
+<a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.url.URLThroughModel">[docs]</a>
+<span class="k">class</span> <span class="nc">URLThroughModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for the map of URL extration chain.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Back reference to where the URL was identified.</span>
@@ -152,6 +160,7 @@
             <span class="c1"># Specify a unique multi-column index on from/to-user.</span>
             <span class="p">((</span><span class="s1">&#39;parent&#39;</span><span class="p">,</span> <span class="s1">&#39;child&#39;</span><span class="p">),</span> <span class="kc">True</span><span class="p">),</span>
         <span class="p">)</span></div>
+
 </pre></div>
 
           </div>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,9 +8,9 @@
     <title>Proxy Utilities &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=4f649999" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=af2ce170"></script>
+    <script src="../../_static/documentation_options.js?v=8d563738"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="&lt;no title&gt;" href="bitcoin.html" />
@@ -31,9 +31,9 @@
 
           <div class="body" role="main">
             
-  <section id="module-darc.proxy">
-<span id="proxy-utilities"></span><h1>Proxy Utilities<a class="headerlink" href="#module-darc.proxy" title="Permalink to this heading">¶</a></h1>
-<p>The <a class="reference internal" href="#module-darc.proxy" title="darc.proxy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy</span></code></a> module provides various proxy support
+  <section id="proxy-utilities">
+<h1>Proxy Utilities<a class="headerlink" href="#proxy-utilities" title="Link to this heading">¶</a></h1>
+<p id="module-darc.proxy">The <a class="reference internal" href="#module-darc.proxy" title="darc.proxy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy</span></code></a> module provides various proxy support
 to the <a class="reference internal" href="../index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a> project.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -105,7 +105,7 @@ objects, you can specify such information in the <a class="reference internal" h
 mapping dictionarty.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="darc.proxy.darc.proxy.LINK_MAP">
-<span class="sig-prename descclassname"><span class="pre">darc.proxy.</span></span><span class="sig-name descname"><span class="pre">LINK_MAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">types.FunctionType</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">types.FunctionType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.darc.proxy.LINK_MAP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">darc.proxy.</span></span><span class="sig-name descname"><span class="pre">LINK_MAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">types.FunctionType</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">types.FunctionType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.proxy.darc.proxy.LINK_MAP" title="Link to this definition">¶</a></dt>
 <dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">LINK_MAP</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span>
     <span class="k">lambda</span><span class="p">:</span> <span class="p">(</span><span class="n">darc</span><span class="o">.</span><span class="n">requests</span><span class="o">.</span><span class="n">null_session</span><span class="p">,</span> <span class="n">darc</span><span class="o">.</span><span class="n">selenium</span><span class="o">.</span><span class="n">null_driver</span><span class="p">),</span>
     <span class="p">{</span>

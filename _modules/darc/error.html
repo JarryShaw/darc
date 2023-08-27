@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>darc.error &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=4f649999" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=af2ce170"></script>
+    <script src="../../_static/documentation_options.js?v=8d563738"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -64,11 +64,16 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="_BaseException"><a class="viewcode-back" href="../../darc/error.html#darc.error._BaseException">[docs]</a><span class="k">class</span> <span class="nc">_BaseException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="_BaseException">
+<a class="viewcode-back" href="../../darc/error.html#darc.error._BaseException">[docs]</a>
+<span class="k">class</span> <span class="nc">_BaseException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base exception class for :mod:`darc` module.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="LinkNoReturn"><a class="viewcode-back" href="../../darc/error.html#darc.error.LinkNoReturn">[docs]</a><span class="k">class</span> <span class="nc">LinkNoReturn</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LinkNoReturn">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.LinkNoReturn">[docs]</a>
+<span class="k">class</span> <span class="nc">LinkNoReturn</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The link has no return value from the hooks.</span>
 
 <span class="sd">    Args:</span>
@@ -79,74 +84,126 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="LinkNoReturn.__init__"><a class="viewcode-back" href="../../darc/error.html#darc.error.LinkNoReturn.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[no-untyped-def]</span>
+<div class="viewcode-block" id="LinkNoReturn.__init__">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.LinkNoReturn.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[no-untyped-def]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="n">link</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">=</span> <span class="n">drop</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="UnsupportedLink"><a class="viewcode-back" href="../../darc/error.html#darc.error.UnsupportedLink">[docs]</a><span class="k">class</span> <span class="nc">UnsupportedLink</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+
+<div class="viewcode-block" id="UnsupportedLink">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.UnsupportedLink">[docs]</a>
+<span class="k">class</span> <span class="nc">UnsupportedLink</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The link is not supported.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="UnsupportedPlatform"><a class="viewcode-back" href="../../darc/error.html#darc.error.UnsupportedPlatform">[docs]</a><span class="k">class</span> <span class="nc">UnsupportedPlatform</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+
+<div class="viewcode-block" id="UnsupportedPlatform">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.UnsupportedPlatform">[docs]</a>
+<span class="k">class</span> <span class="nc">UnsupportedPlatform</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The platform is not supported.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="UnsupportedProxy"><a class="viewcode-back" href="../../darc/error.html#darc.error.UnsupportedProxy">[docs]</a><span class="k">class</span> <span class="nc">UnsupportedProxy</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+
+<div class="viewcode-block" id="UnsupportedProxy">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.UnsupportedProxy">[docs]</a>
+<span class="k">class</span> <span class="nc">UnsupportedProxy</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The proxy is not supported.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="WorkerBreak"><a class="viewcode-back" href="../../darc/error.html#darc.error.WorkerBreak">[docs]</a><span class="k">class</span> <span class="nc">WorkerBreak</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
+
+<div class="viewcode-block" id="WorkerBreak">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.WorkerBreak">[docs]</a>
+<span class="k">class</span> <span class="nc">WorkerBreak</span><span class="p">(</span><span class="n">_BaseException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Break from the worker loop.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="_BaseWarning"><a class="viewcode-back" href="../../darc/error.html#darc.error._BaseWarning">[docs]</a><span class="k">class</span> <span class="nc">_BaseWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="_BaseWarning">
+<a class="viewcode-back" href="../../darc/error.html#darc.error._BaseWarning">[docs]</a>
+<span class="k">class</span> <span class="nc">_BaseWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base warning for :mod:`darc` module.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="TorBootstrapFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.TorBootstrapFailed">[docs]</a><span class="k">class</span> <span class="nc">TorBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TorBootstrapFailed">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.TorBootstrapFailed">[docs]</a>
+<span class="k">class</span> <span class="nc">TorBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Tor bootstrap process failed.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="TorRenewFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.TorRenewFailed">[docs]</a><span class="k">class</span> <span class="nc">TorRenewFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TorRenewFailed">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.TorRenewFailed">[docs]</a>
+<span class="k">class</span> <span class="nc">TorRenewFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Tor renew request failed.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="I2PBootstrapFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.I2PBootstrapFailed">[docs]</a><span class="k">class</span> <span class="nc">I2PBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="I2PBootstrapFailed">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.I2PBootstrapFailed">[docs]</a>
+<span class="k">class</span> <span class="nc">I2PBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;I2P bootstrap process failed.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="ZeroNetBootstrapFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.ZeroNetBootstrapFailed">[docs]</a><span class="k">class</span> <span class="nc">ZeroNetBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ZeroNetBootstrapFailed">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.ZeroNetBootstrapFailed">[docs]</a>
+<span class="k">class</span> <span class="nc">ZeroNetBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;ZeroNet bootstrap process failed.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="FreenetBootstrapFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.FreenetBootstrapFailed">[docs]</a><span class="k">class</span> <span class="nc">FreenetBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreenetBootstrapFailed">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.FreenetBootstrapFailed">[docs]</a>
+<span class="k">class</span> <span class="nc">FreenetBootstrapFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Freenet bootstrap process failed.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="RedisCommandFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.RedisCommandFailed">[docs]</a><span class="k">class</span> <span class="nc">RedisCommandFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RedisCommandFailed">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.RedisCommandFailed">[docs]</a>
+<span class="k">class</span> <span class="nc">RedisCommandFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Redis command execution failed.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="DatabaseOperaionFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.DatabaseOperaionFailed">[docs]</a><span class="k">class</span> <span class="nc">DatabaseOperaionFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DatabaseOperaionFailed">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.DatabaseOperaionFailed">[docs]</a>
+<span class="k">class</span> <span class="nc">DatabaseOperaionFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Database operation execution failed.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="APIRequestFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.APIRequestFailed">[docs]</a><span class="k">class</span> <span class="nc">APIRequestFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="APIRequestFailed">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.APIRequestFailed">[docs]</a>
+<span class="k">class</span> <span class="nc">APIRequestFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;API submit failed.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="SiteNotFoundWarning"><a class="viewcode-back" href="../../darc/error.html#darc.error.SiteNotFoundWarning">[docs]</a><span class="k">class</span> <span class="nc">SiteNotFoundWarning</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SiteNotFoundWarning">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.SiteNotFoundWarning">[docs]</a>
+<span class="k">class</span> <span class="nc">SiteNotFoundWarning</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Site customisation not found.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="LockWarning"><a class="viewcode-back" href="../../darc/error.html#darc.error.LockWarning">[docs]</a><span class="k">class</span> <span class="nc">LockWarning</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LockWarning">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.LockWarning">[docs]</a>
+<span class="k">class</span> <span class="nc">LockWarning</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Failed to acquire Redis lock.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="HookExecutionFailed"><a class="viewcode-back" href="../../darc/error.html#darc.error.HookExecutionFailed">[docs]</a><span class="k">class</span> <span class="nc">HookExecutionFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HookExecutionFailed">
+<a class="viewcode-back" href="../../darc/error.html#darc.error.HookExecutionFailed">[docs]</a>
+<span class="k">class</span> <span class="nc">HookExecutionFailed</span><span class="p">(</span><span class="n">_BaseWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Failed to execute hook function.&quot;&quot;&quot;</span></div>
+
 </pre></div>
 
           </div>

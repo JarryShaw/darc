@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,9 +8,9 @@
     <title>How to implement a custom proxy middleware? &#8212; darc 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
+    <script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Technical Documentation" href="../darc/index.html" />
@@ -32,7 +32,7 @@
           <div class="body" role="main">
             
   <section id="how-to-implement-a-custom-proxy-middleware">
-<h1>How to implement a custom proxy middleware?<a class="headerlink" href="#how-to-implement-a-custom-proxy-middleware" title="Permalink to this heading">¶</a></h1>
+<h1>How to implement a custom proxy middleware?<a class="headerlink" href="#how-to-implement-a-custom-proxy-middleware" title="Link to this heading">¶</a></h1>
 <p>As had been discussed already in the <a class="reference external" href="https://darc.jarryshaw.me/en/latest/custom.html#custom-proxy">documentation</a>, the implementation
 of a custom proxy is merely two <em>factory</em> functions: one yields a
 <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.31.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> and/or
@@ -43,7 +43,7 @@ of a custom proxy is merely two <em>factory</em> functions: one yields a
 </pre></div>
 </div>
 <section id="session-factory">
-<h2>Session Factory<a class="headerlink" href="#session-factory" title="Permalink to this heading">¶</a></h2>
+<h2>Session Factory<a class="headerlink" href="#session-factory" title="Link to this heading">¶</a></h2>
 <p>The session factory returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.31.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> and/or
 <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.sessions.FuturesSession</span></code> instance with presets,
 e.g. proxies, user agent, etc.</p>
@@ -93,7 +93,7 @@ worker nodes, it will call the <code class="docutils literal notranslate"><span 
 session instance.</p>
 </section>
 <section id="driver-factory">
-<h2>Driver Factory<a class="headerlink" href="#driver-factory" title="Permalink to this heading">¶</a></h2>
+<h2>Driver Factory<a class="headerlink" href="#driver-factory" title="Link to this heading">¶</a></h2>
 <p>The driver factory returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.Chrome</span></code> instance with
 presets, e.g. proxies, options/switches, etc.</p>
 <p>Type annocation of the function can be described as</p>
@@ -139,7 +139,7 @@ worker nodes, it will call the <code class="docutils literal notranslate"><span 
 driver instance.</p>
 </section>
 <section id="what-should-i-do-to-register-the-proxy">
-<h2>What should I do to register the proxy?<a class="headerlink" href="#what-should-i-do-to-register-the-proxy" title="Permalink to this heading">¶</a></h2>
+<h2>What should I do to register the proxy?<a class="headerlink" href="#what-should-i-do-to-register-the-proxy" title="Link to this heading">¶</a></h2>
 <p>All proxies are managed in the <a class="reference internal" href="../darc/proxy/index.html#module-darc.proxy" title="darc.proxy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc.proxy</span></code></a> module and you can register
 your own proxy through <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.proxy.register()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># register proxy</span>
