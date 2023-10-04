@@ -68,7 +68,7 @@ successfully requested a URL with such hostname.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="darc.model.web.hostname.HostnameModel.alive">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alive</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.alive" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alive</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.alive" title="Link to this definition">¶</a></dt>
 <dd><p>If the hostname is still active.</p>
 <p>We consider the hostname as <em>inactive</em>, only if all
 subsidiary URLs are <em>inactive</em>.</p>
@@ -82,7 +82,7 @@ subsidiary URLs are <em>inactive</em>.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.hostname.HostnameModel.hostname">
-<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">HostnameModel.hostname&gt;</span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.hostname" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">HostnameModel.hostname&gt;</span></em><a class="headerlink" href="#darc.model.web.hostname.HostnameModel.hostname" title="Link to this definition">¶</a></dt>
 <dd><p>Hostname (c.f. <a class="reference internal" href="../link.html#darc.link.Link.host" title="darc.link.Link.host"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.host</span></code></a>). The maximum length of
 the host name and of the fully qualified domain name (FQDN) is 63 bytes per
 label and 255 characters per FQDN.</p>
@@ -177,7 +177,7 @@ successfully requested such URL and the status code is
 <dd><p>Select by URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – URL to select.</p>
+<dd class="field-odd"><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – URL to select.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#darc.model.web.url.URLModel" title="darc.model.web.url.URLModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">URLModel</span></code></a></p>
@@ -190,7 +190,7 @@ successfully requested such URL and the status code is
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel.alive">
-<span class="sig-name descname"><span class="pre">alive</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;BooleanField:</span> <span class="pre">URLModel.alive&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.alive" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">alive</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;BooleanField:</span> <span class="pre">URLModel.alive&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.alive" title="Link to this definition">¶</a></dt>
 <dd><p>If the hostname is still active.</p>
 </dd></dl>
 
@@ -201,7 +201,7 @@ successfully requested such URL and the status code is
 
 <dl class="py property">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel.childrent">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">childrent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#darc.model.web.url.URLModel" title="darc.model.web.url.URLModel"><span class="pre">URLModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.url.URLModel.childrent" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">childrent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#darc.model.web.url.URLModel" title="darc.model.web.url.URLModel"><span class="pre">URLModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#darc.model.web.url.URLModel.childrent" title="Link to this definition">¶</a></dt>
 <dd><p>Back reference to which URLs were identified from the URL.</p>
 </dd></dl>
 
@@ -213,7 +213,7 @@ successfully requested such URL and the status code is
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel.hash">
-<span class="sig-name descname"><span class="pre">hash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">URLModel.hash&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.hash" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">hash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">URLModel.hash&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.hash" title="Link to this definition">¶</a></dt>
 <dd><p>Sha256 hash value (c.f. <a class="reference internal" href="../link.html#darc.link.Link.name" title="darc.link.Link.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Link.name</span></code></a>).</p>
 </dd></dl>
 
@@ -272,7 +272,7 @@ successfully requested such URL and the status code is
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.url.URLModel.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">URLModel.url&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.url" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">URLModel.url&gt;</span></em><a class="headerlink" href="#darc.model.web.url.URLModel.url" title="Link to this definition">¶</a></dt>
 <dd><p>Original URL (c.f. <a class="reference internal" href="../link.html#darc.link.Link.url" title="darc.link.Link.url"><code class="xref py py-attr docutils literal notranslate"><span class="pre">link.url</span></code></a>).</p>
 </dd></dl>
 
@@ -342,8 +342,8 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.robots.RobotsModel.document">
-<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">RobotsModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.robots.RobotsModel.document" title="Link to this definition">¶</a></dt>
-<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>.</p>
+<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">RobotsModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.robots.RobotsModel.document" title="Link to this definition">¶</a></dt>
+<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -394,8 +394,8 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.sitemap.SitemapModel.document">
-<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">SitemapModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.sitemap.SitemapModel.document" title="Link to this definition">¶</a></dt>
-<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>.</p>
+<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">SitemapModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.sitemap.SitemapModel.document" title="Link to this definition">¶</a></dt>
+<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -446,8 +446,8 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.hosts.HostsModel.document">
-<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">HostsModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.hosts.HostsModel.document" title="Link to this definition">¶</a></dt>
-<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>.</p>
+<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">HostsModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.hosts.HostsModel.document" title="Link to this definition">¶</a></dt>
+<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -504,8 +504,8 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsHistoryModel.document">
-<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;BlobField:</span> <span class="pre">RequestsHistoryModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.document" title="Link to this definition">¶</a></dt>
-<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes</span></code></a>.</p>
+<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;BlobField:</span> <span class="pre">RequestsHistoryModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.document" title="Link to this definition">¶</a></dt>
+<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -515,13 +515,13 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsHistoryModel.index">
-<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;IntegerField:</span> <span class="pre">RequestsHistoryModel.index&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.index" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;IntegerField:</span> <span class="pre">RequestsHistoryModel.index&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.index" title="Link to this definition">¶</a></dt>
 <dd><p>History index number.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsHistoryModel.method">
-<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">RequestsHistoryModel.method&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.method" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">RequestsHistoryModel.method&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.method" title="Link to this definition">¶</a></dt>
 <dd><p>Request method (normally <code class="docutils literal notranslate"><span class="pre">GET</span></code>).</p>
 </dd></dl>
 
@@ -538,7 +538,7 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsHistoryModel.reason">
-<span class="sig-name descname"><span class="pre">reason</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">RequestsHistoryModel.reason&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.reason" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reason</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">RequestsHistoryModel.reason&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.reason" title="Link to this definition">¶</a></dt>
 <dd><p>Response reason string.</p>
 </dd></dl>
 
@@ -556,7 +556,7 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsHistoryModel.status_code">
-<span class="sig-name descname"><span class="pre">status_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;IntegerField:</span> <span class="pre">RequestsHistoryModel.status_code&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.status_code" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">status_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;IntegerField:</span> <span class="pre">RequestsHistoryModel.status_code&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.status_code" title="Link to this definition">¶</a></dt>
 <dd><p>Status code.</p>
 </dd></dl>
 
@@ -568,7 +568,7 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsHistoryModel.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">RequestsHistoryModel.url&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.url" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">RequestsHistoryModel.url&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsHistoryModel.url" title="Link to this definition">¶</a></dt>
 <dd><p>Request URL.</p>
 </dd></dl>
 
@@ -593,8 +593,8 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsModel.document">
-<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;BlobField:</span> <span class="pre">RequestsModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.document" title="Link to this definition">¶</a></dt>
-<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes</span></code></a>.</p>
+<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;BlobField:</span> <span class="pre">RequestsModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.document" title="Link to this definition">¶</a></dt>
+<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -611,25 +611,25 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsModel.is_html">
-<span class="sig-name descname"><span class="pre">is_html</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;BooleanField:</span> <span class="pre">RequestsModel.is_html&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.is_html" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">is_html</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;BooleanField:</span> <span class="pre">RequestsModel.is_html&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.is_html" title="Link to this definition">¶</a></dt>
 <dd><p>If document is HTML or miscellaneous data.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsModel.method">
-<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">RequestsModel.method&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.method" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">RequestsModel.method&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.method" title="Link to this definition">¶</a></dt>
 <dd><p>Request method (normally <code class="docutils literal notranslate"><span class="pre">GET</span></code>).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsModel.mime_type">
-<span class="sig-name descname"><span class="pre">mime_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">RequestsModel.mime_type&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.mime_type" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mime_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">RequestsModel.mime_type&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.mime_type" title="Link to this definition">¶</a></dt>
 <dd><p>Conetent type.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsModel.reason">
-<span class="sig-name descname"><span class="pre">reason</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">RequestsModel.reason&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.reason" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reason</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">RequestsModel.reason&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.reason" title="Link to this definition">¶</a></dt>
 <dd><p>Response reason string.</p>
 </dd></dl>
 
@@ -653,7 +653,7 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.requests.RequestsModel.status_code">
-<span class="sig-name descname"><span class="pre">status_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;IntegerField:</span> <span class="pre">RequestsModel.status_code&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.status_code" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">status_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;IntegerField:</span> <span class="pre">RequestsModel.status_code&gt;</span></em><a class="headerlink" href="#darc.model.web.requests.RequestsModel.status_code" title="Link to this definition">¶</a></dt>
 <dd><p>Status code.</p>
 </dd></dl>
 
@@ -700,8 +700,8 @@ information.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.selenium.SeleniumModel.document">
-<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">SeleniumModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.selenium.SeleniumModel.document" title="Link to this definition">¶</a></dt>
-<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>.</p>
+<span class="sig-name descname"><span class="pre">document</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TextField:</span> <span class="pre">SeleniumModel.document&gt;</span></em><a class="headerlink" href="#darc.model.web.selenium.SeleniumModel.document" title="Link to this definition">¶</a></dt>
+<dd><p>Document data as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -712,7 +712,7 @@ information.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="darc.model.web.selenium.SeleniumModel.screenshot">
 <span class="sig-name descname"><span class="pre">screenshot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional[bytes]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;BlobField:</span> <span class="pre">SeleniumModel.screenshot&gt;</span></em><a class="headerlink" href="#darc.model.web.selenium.SeleniumModel.screenshot" title="Link to this definition">¶</a></dt>
-<dd><p>Screenshot in PNG format as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes</span></code></a>.</p>
+<dd><p>Screenshot in PNG format as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
