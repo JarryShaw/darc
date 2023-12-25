@@ -14,7 +14,7 @@ wheel==0.42.0
 async-generator==1.10; python_version >= '3.5'
 attrs==23.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 beautifulsoup4[html5lib]==4.12.2
-certifi==2023.7.22
+certifi==2023.11.17
 cffi==1.16.0
 chardet==5.2.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 cryptography==41.0.6
