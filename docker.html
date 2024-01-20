@@ -396,12 +396,13 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># time to wait for selenium</span>
 <span class="w">      </span><span class="nt">SE_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
 <span class="w">      </span><span class="c1"># extract link pattern</span>
-<span class="w">      </span><span class="nt">LINK_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span>
-<span class="w">        </span><span class="s">&quot;.*?\\.onion&quot;,</span>
-<span class="w">        </span><span class="s">&quot;.*?\\.i2p&quot;,</span><span class="nv"> </span><span class="s">&quot;127\\.0\\.0\\.1:7657&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:7657&quot;,</span><span class="nv"> </span><span class="s">&quot;127\\.0\\.0\\.1:7658&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:7658&quot;,</span>
-<span class="w">        </span><span class="s">&quot;127\\.0\\.0\\.1:43110&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:43110&quot;,</span>
-<span class="w">        </span><span class="s">&quot;127\\.0\\.0\\.1:8888&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:8888&quot;</span>
-<span class="w">      </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">LINK_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">[</span>
+<span class="w">          </span><span class="no">&quot;.*?\\.onion&quot;,</span>
+<span class="w">          </span><span class="no">&quot;.*?\\.i2p&quot;, &quot;127\\.0\\.0\\.1:7657&quot;, &quot;localhost:7657&quot;, &quot;127\\.0\\.0\\.1:7658&quot;, &quot;localhost:7658&quot;,</span>
+<span class="w">          </span><span class="no">&quot;127\\.0\\.0\\.1:43110&quot;, &quot;localhost:43110&quot;,</span>
+<span class="w">          </span><span class="no">&quot;127\\.0\\.0\\.1:8888&quot;, &quot;localhost:8888&quot;</span>
+<span class="w">        </span><span class="no">]</span>
 <span class="w">      </span><span class="c1"># link black list</span>
 <span class="w">      </span><span class="nt">LINK_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?facebookcorewwwi\\.onion&quot;,</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?nytimes3xbfgragh\\.onion&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
 <span class="w">      </span><span class="c1"># link fallback flag</span>
@@ -523,12 +524,13 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># time to wait for selenium</span>
 <span class="w">      </span><span class="nt">SE_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
 <span class="w">      </span><span class="c1"># extract link pattern</span>
-<span class="w">      </span><span class="nt">LINK_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span>
-<span class="w">        </span><span class="s">&quot;.*?\\.onion&quot;,</span>
-<span class="w">        </span><span class="s">&quot;.*?\\.i2p&quot;,</span><span class="nv"> </span><span class="s">&quot;127\\.0\\.0\\.1:7657&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:7657&quot;,</span><span class="nv"> </span><span class="s">&quot;127\\.0\\.0\\.1:7658&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:7658&quot;,</span>
-<span class="w">        </span><span class="s">&quot;127\\.0\\.0\\.1:43110&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:43110&quot;,</span>
-<span class="w">        </span><span class="s">&quot;127\\.0\\.0\\.1:8888&quot;,</span><span class="nv"> </span><span class="s">&quot;localhost:8888&quot;</span>
-<span class="w">      </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">LINK_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">[</span>
+<span class="w">          </span><span class="no">&quot;.*?\\.onion&quot;,</span>
+<span class="w">          </span><span class="no">&quot;.*?\\.i2p&quot;, &quot;127\\.0\\.0\\.1:7657&quot;, &quot;localhost:7657&quot;, &quot;127\\.0\\.0\\.1:7658&quot;, &quot;localhost:7658&quot;,</span>
+<span class="w">          </span><span class="no">&quot;127\\.0\\.0\\.1:43110&quot;, &quot;localhost:43110&quot;,</span>
+<span class="w">          </span><span class="no">&quot;127\\.0\\.0\\.1:8888&quot;, &quot;localhost:8888&quot;</span>
+<span class="w">        </span><span class="no">]</span>
 <span class="w">      </span><span class="c1"># link black list</span>
 <span class="w">      </span><span class="nt">LINK_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?facebookcorewwwi\\.onion&quot;,</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?nytimes3xbfgragh\\.onion&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
 <span class="w">      </span><span class="c1"># link fallback flag</span>
