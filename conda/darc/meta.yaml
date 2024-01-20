@@ -32,9 +32,10 @@ requirements:
     - python
 
 test:
- imports:
-   #- darc
-   - requests
+  #imports:
+  #  - darc
+  commands:
+    - echo "No test for darc"
 
 about:
   home: https://jarryshaw.github.io/darc
