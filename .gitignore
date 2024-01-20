@@ -19,6 +19,7 @@ gitlab
 text
 
 docs/source/_build
+darc/_extern
 
 # vendor/*
 # !vendor/*.tar.gz

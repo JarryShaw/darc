@@ -139,12 +139,18 @@ attrs = dict(
 )
 
 try:
-    from setuptools import find_packages, setup
+    from setuptools import find_namespace_packages, setup
     from setuptools.command.build_py import build_py
 
-    attrs['packages'] = find_packages(
-        exclude=['tests', 'tests.*'],
-        include=['darc', 'darc.*'],
+    attrs['packages'] = find_namespace_packages(
+        exclude=[
+            'test*',
+            'docs*',
+            'sample*',
+        ],
+        include=[
+            'darc*',
+        ],
     )
 
     attrs.update(dict(
