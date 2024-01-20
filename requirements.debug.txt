@@ -4,9 +4,9 @@
 # To regenerate from the project's Pipfile, run:
 
 # Python packages
-pip==23.3.1
-setuptools==68.2.2
-wheel==0.41.3
+pip==23.3.2
+setuptools==69.0.3
+wheel==0.42.0
 
 # Python dependencies
 #
@@ -17,22 +17,22 @@ wheel==0.41.3
 --extra-index-url https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple
 --extra-index-url https://pypi.org/simple
 async-generator==1.10; python_version >= '3.5'
-attrs==23.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+attrs==23.2.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 beautifulsoup4[html5lib]==4.12.2
-certifi==2023.7.22
+certifi==2023.11.17
 cffi==1.16.0
 chardet==5.2.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-cryptography==41.0.6
+cryptography==41.0.7
 file-magic==0.4.1
 h11==0.14.0; python_version >= '3.6'
-hiredis==2.2.3
+hiredis==2.3.2
 html5lib==1.1
-idna==3.4; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
-mmh3==4.0.1
+idna==3.6; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+mmh3==4.1.0
 outcome==1.3.0.post0; python_version >= '3.6'
 peewee==3.17.0
 pottery==3.0.0
-psutil==5.9.6
+psutil==5.9.7
 pycparser==2.21; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 pymysql[rsa]==1.1.0
 pyopenssl==23.3.0
@@ -41,15 +41,15 @@ python-datauri==2.1.0
 redis[hiredis]==5.0.1
 requests-futures==1.0.1
 requests[socks]==2.31.0
-selenium==4.15.2
+selenium==4.16.0
 six==1.16.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 sniffio==1.3.0; python_version >= '3.5'
 sortedcontainers==2.4.0
 soupsieve==2.5; python_version >= '3.0'
 stem==1.8.2
 trio-websocket==0.11.1; python_version >= '3.5'
-trio==0.23.1; python_version >= '3.6'
-typing-extensions==4.8.0
+trio==0.24.0; python_version >= '3.6'
+typing-extensions==4.9.0
 urllib3[secure]==2.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
 webencodings==0.5.1
 wsproto==1.2.0; python_full_version >= '3.6.1'
