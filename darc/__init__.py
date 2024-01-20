@@ -35,10 +35,10 @@ and the fallback slowest single-threaded solutions when crawling.
 """
 
 from darc.process import process as darc
-from darc.process import register as register_hooks  # pylint: disable=unused-import
-from darc.proxy import register as register_proxy  # pylint: disable=unused-import
-from darc.signal import register as register_signal  # pylint: disable=unused-import
-from darc.sites import register as register_sites  # pylint: disable=unused-import
+from darc.process import register as register_hooks  # pylint: disable=unused-import  # noqa: F401
+from darc.proxy import register as register_proxy  # pylint: disable=unused-import  # noqa: F401
+from darc.signal import register as register_signal  # pylint: disable=unused-import  # noqa: F401
+from darc.sites import register as register_sites  # pylint: disable=unused-import  # noqa: F401
 
 __all__ = ['darc']
-__version__ = '1.0.0'
+__version__ = '1.0.1'

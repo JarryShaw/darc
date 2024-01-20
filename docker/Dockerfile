@@ -4,7 +4,7 @@ LABEL org.opencontainers.image.title="darc" \
       org.opencontainers.image.description="Darkweb Crawler Project" \
       org.opencontainers.image.url="https://darc.jarryshaw.me/" \
       org.opencontainers.image.source="https://github.com/JarryShaw/darc" \
-      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.version="1.0.1" \
       org.opencontainers.image.licenses='BSD 3-Clause "New" or "Revised" License'
 
 STOPSIGNAL SIGINT

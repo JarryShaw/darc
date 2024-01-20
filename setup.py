@@ -26,7 +26,7 @@ import subprocess  # nosec
 version_info = sys.version_info[:2]
 
 # version string
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 # setup attributes
 attrs = dict(
@@ -152,8 +152,8 @@ try:
         # zip_safe=True,
     ))
 except ImportError:
-    from distutils.core import setup
-    from distutils.command.build_py import build_py
+    from distutils.core import setup  # type: ignore[no-redef]
+    from distutils.command.build_py import build_py  # type: ignore[no-redef]
 
 
 class build(build_py):
@@ -175,4 +175,4 @@ class build(build_py):
 # set-up script for pip distribution
 setup(cmdclass={
     'build_py': build,
-}, **attrs)
+}, **attrs)  # type: ignore[arg-type]
