@@ -21,7 +21,7 @@ There are two types of *workers*:
 """
 
 import sys
-import subprocess  # nosec
+import subprocess
 
 version_info = sys.version_info[:2]
 
@@ -45,7 +45,9 @@ attrs = dict(
         'darc',
         'darc.proxy',
         'darc.sites',
-        'darc._extern',
+        'darc.model',
+        'darc.model.tasks',
+        'darc.model.web',
     ],
     # scripts
     # ext_modules
@@ -137,8 +139,13 @@ attrs = dict(
 )
 
 try:
-    from setuptools import setup
+    from setuptools import find_packages, setup
     from setuptools.command.build_py import build_py
+
+    attrs['packages'] = find_packages(
+        exclude=['tests', 'tests.*'],
+        include=['darc', 'darc.*'],
+    )
 
     attrs.update(dict(
         include_package_data=True,  # type: ignore
