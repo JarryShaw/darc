@@ -33,7 +33,8 @@ requirements:
 
 test:
  imports:
-   - DARC
+   #- darc
+   - requests
 
 about:
   home: https://jarryshaw.github.io/darc
