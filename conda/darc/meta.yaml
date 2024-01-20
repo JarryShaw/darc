@@ -1,0 +1,50 @@
+{% set name = "darc" %}
+{% set version = environ['DARC_VERSION'] %}
+{% set build_number = environ['DARC_BUILD'] %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  path: ../..
+  #git_url: https://github.com/JarryShaw/darc.git
+  #git_rev: "conda-{{ version }}+{{ build_number }}"
+  #git_depth: 1 # (Defaults to -1/not shallow)
+
+build:
+  number: {{ build_number }}
+  entry_points:
+    - darc = darc.__main__:main
+  #script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  build:
+    - git
+    - python
+    - pip
+    - setuptools>=61.0.0
+  host:
+    - python
+    - pip
+    - setuptools>=61.0.0
+  run:
+    - python
+
+test:
+ imports:
+   - DARC
+
+about:
+  home: https://jarryshaw.github.io/darc
+  license: BSD 3-Clause License
+  license_family: BSD
+  license_file:
+    - LICENSE
+  summary: "DARC: darkweb crawler project"
+  doc_url: https://jarryshaw.github.io/darc
+  dev_url: https://github.com/jarryshaw/darc
+
+extra:
+  recipe-maintainers:
+    - jarryshaw

@@ -33,6 +33,17 @@ and the fallback slowest single-threaded solutions when crawling.
    behaviour around the use of :mod:`selenium`.
 
 """
+###############################################################################
+# conda ``_extern`` module support
+
+import os
+import sys
+
+_extern = os.path.join(os.path.dirname(os.path.realpath(__file__)), '_extern')
+if os.path.exists(_extern):
+    sys.path.append(_extern)
+
+###############################################################################
 
 from darc.process import process as darc
 from darc.process import register as register_hooks  # pylint: disable=unused-import  # noqa: F401
