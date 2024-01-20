@@ -52,4 +52,4 @@ from darc.signal import register as register_signal  # pylint: disable=unused-im
 from darc.sites import register as register_sites  # pylint: disable=unused-import  # noqa: F401
 
 __all__ = ['darc']
-__version__ = '1.0.1'
+__version__ = '1.0.2'
