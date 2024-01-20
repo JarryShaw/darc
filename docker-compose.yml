@@ -104,12 +104,13 @@ services:
       # time to wait for selenium
       SE_WAIT: 5
       # extract link pattern
-      LINK_WHITE_LIST: '[
-        ".*?\\.onion",
-        ".*?\\.i2p", "127\\.0\\.0\\.1:7657", "localhost:7657", "127\\.0\\.0\\.1:7658", "localhost:7658",
-        "127\\.0\\.0\\.1:43110", "localhost:43110",
-        "127\\.0\\.0\\.1:8888", "localhost:8888"
-      ]'
+      LINK_WHITE_LIST: |
+        [
+          ".*?\\.onion",
+          ".*?\\.i2p", "127\\.0\\.0\\.1:7657", "localhost:7657", "127\\.0\\.0\\.1:7658", "localhost:7658",
+          "127\\.0\\.0\\.1:43110", "localhost:43110",
+          "127\\.0\\.0\\.1:8888", "localhost:8888"
+        ]
       # link black list
       LINK_BLACK_LIST: '[ "(.*\\.)?facebookcorewwwi\\.onion", "(.*\\.)?nytimes3xbfgragh\\.onion" ]'
       # link fallback flag
@@ -231,12 +232,13 @@ services:
       # time to wait for selenium
       SE_WAIT: 5
       # extract link pattern
-      LINK_WHITE_LIST: '[
-        ".*?\\.onion",
-        ".*?\\.i2p", "127\\.0\\.0\\.1:7657", "localhost:7657", "127\\.0\\.0\\.1:7658", "localhost:7658",
-        "127\\.0\\.0\\.1:43110", "localhost:43110",
-        "127\\.0\\.0\\.1:8888", "localhost:8888"
-      ]'
+      LINK_WHITE_LIST: |
+        [
+          ".*?\\.onion",
+          ".*?\\.i2p", "127\\.0\\.0\\.1:7657", "localhost:7657", "127\\.0\\.0\\.1:7658", "localhost:7658",
+          "127\\.0\\.0\\.1:43110", "localhost:43110",
+          "127\\.0\\.0\\.1:8888", "localhost:8888"
+        ]
       # link black list
       LINK_BLACK_LIST: '[ "(.*\\.)?facebookcorewwwi\\.onion", "(.*\\.)?nytimes3xbfgragh\\.onion" ]'
       # link fallback flag
