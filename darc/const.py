@@ -23,13 +23,13 @@ from darc.logging import VERBOSE as LOG_VERBOSE
 from darc.logging import logger
 
 if TYPE_CHECKING:
-    from datetime import timedelta
+    from datetime import timedelta  # noqa: F401
     from multiprocessing import Lock as ProcessLock
     from threading import Lock as ThreadLock
-    from typing import Optional, Union
+    from typing import Optional, Union  # noqa: F401
 
-    from peewee import Database
-    from redis import Redis
+    from peewee import Database  # noqa: F401
+    from redis import Redis  # noqa: F401
 
 # reboot mode?
 REBOOT = bool(int(os.getenv('DARC_REBOOT', '0')))
@@ -163,7 +163,7 @@ if _REDIS_URL is None:
     REDIS = None  # type: Optional[Redis]
     FLAG_DB = True
 else:
-    REDIS = redis.Redis.from_url(_REDIS_URL, decode_components=True)  # type: ignore[call-overload]
+    REDIS = redis.Redis.from_url(_REDIS_URL)
     FLAG_DB = False
 del _REDIS_URL
 
