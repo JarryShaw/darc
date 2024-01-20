@@ -44,7 +44,8 @@ attrs = dict(
     packages=[
         'darc',
         'darc.proxy',
-        'darc.sites'
+        'darc.sites',
+        'darc._extern',
     ],
     # scripts
     # ext_modules
