@@ -6,10 +6,11 @@ import argparse
 import contextlib
 import os
 import sys
+import time
 import traceback
 from typing import TYPE_CHECKING
 
-from darc.const import DB, DB_WEB, DEBUG, FLAG_DB, PATH_ID, PATH_LN
+from darc.const import DARC_WAIT, DB, DB_WEB, DEBUG, FLAG_DB, PATH_ID, PATH_LN
 from darc.db import _db_operation, _redis_command, save_requests
 from darc.error import DatabaseOperaionFailed
 from darc.link import parse_link
@@ -110,6 +111,9 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
             except Exception:
                 logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed,
                             line='DB.create_tables([HostnameQueueModel, ...]')
+
+                # wait for DB to start
+                time.sleep(DARC_WAIT)  # type: ignore[arg-type]
                 continue
             break
 
@@ -125,6 +129,9 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
             except Exception:
                 logger.pexc(LOG_WARNING, category=DatabaseOperaionFailed,
                             line='DB.create_tables([HostnameModel, ...]')
+
+                # wait for DB to start
+                time.sleep(DARC_WAIT)  # type: ignore[arg-type]
                 continue
             break
 
@@ -136,7 +143,7 @@ def main(argv: 'Optional[List[str]]' = None) -> int:
         _redis_command('delete', 'queue_selenium')
 
     link_list = []
-    for link in filter(None, map(lambda s: s.strip(), args.link)):  # type: ignore[name-defined,var-annotated]
+    for link in filter(None, map(lambda s: s.strip(), args.link)):  # type: ignore[var-annotated]
         logger.pline(LOG_DEBUG, link)
         link_list.append(link)
 
