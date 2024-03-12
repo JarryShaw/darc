@@ -35,10 +35,10 @@ pottery==3.0.0
 psutil==5.9.8
 pycparser==2.21; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 pymysql[rsa]==1.1.0
-pyopenssl==24.0.0
+pyopenssl==24.1.0
 pysocks==1.7.1
 python-datauri==2.1.0
-redis[hiredis]==5.0.2
+redis[hiredis]==5.0.3
 requests-futures==1.0.1
 requests[socks]==2.31.0
 selenium==4.18.1
