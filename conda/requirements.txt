@@ -10,4 +10,4 @@ requests == 2.31.0
 requests-futures == 1.0.1
 selenium == 4.19.0
 stem == 1.8.2
-typing-extensions == 4.10.0
+typing-extensions == 4.11.0
