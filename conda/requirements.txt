@@ -3,7 +3,7 @@ file-magic == 0.4.1
 peewee == 3.17.5
 pottery == 3.0.0
 psutil == 5.9.8
-pymysql == 1.1.0
+pymysql == 1.1.1
 python-datauri == 2.1.1
 redis == 4.6.0
 requests == 2.31.0
