@@ -82,15 +82,15 @@ your list of hostnames at <code class="xref py py-func docutils literal notransl
 </div>
 <section id="crawler-hook">
 <h2>Crawler Hook<a class="headerlink" href="#crawler-hook" title="Link to this heading">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">crawler</span></code> method is based on <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.31.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> objects
-and returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.31.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a> instance representing the
+<p>The <code class="docutils literal notranslate"><span class="pre">crawler</span></code> method is based on <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.32.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> objects
+and returns a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.32.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a> instance representing the
 <em>crawled</em> web page.</p>
 <p>Type annotations of the method can be described as</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">crawler</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">link</span><span class="p">:</span> <span class="n">darc</span><span class="o">.</span><span class="n">link</span><span class="o">.</span><span class="n">Link</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">session</span></code> is the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.31.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> instance with <strong>proxy</strong>
+<p>where <code class="docutils literal notranslate"><span class="pre">session</span></code> is the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Session" title="(in Requests v2.32.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Session</span></code></a> instance with <strong>proxy</strong>
 presets and <code class="docutils literal notranslate"><span class="pre">link</span></code> is the target link (parsed by
 <a class="reference internal" href="../darc/link.html#darc.link.parse_link" title="darc.link.parse_link"><code class="xref py py-func docutils literal notranslate"><span class="pre">darc.link.parse_link()</span></code></a> to provide more information than mere string).</p>
 <p>For example, let’s say you would like to inject a cookie named <code class="docutils literal notranslate"><span class="pre">SessionID</span></code>
@@ -188,7 +188,7 @@ queue, then there’re basically two ways:</p>
 <li><p>do like a wildling, remove it directly from the database</p></li>
 </ol>
 <p>As there’re three task queues used in <a class="reference internal" href="../darc/index.html#module-darc" title="darc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">darc</span></code></a>, each represents task
-queues for the <em>crawler</em> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.31.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database) and <em>loader</em>
+queues for the <em>crawler</em> (<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.32.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database) and <em>loader</em>
 (<code class="xref py py-mod docutils literal notranslate"><span class="pre">selenium</span></code> database) worker nodes and a track record for known
 hostnames (hostname database), you will need to call corresponding functions
 to remove the target link from the database desired.</p>
@@ -201,7 +201,7 @@ to remove the target link from the database desired.</p>
 <p>all take one positional argument <code class="docutils literal notranslate"><span class="pre">link</span></code>, i.e. the <a class="reference internal" href="../darc/link.html#darc.link.Link" title="darc.link.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">darc.link.Link</span></code></a>
 object to be removed.</p>
 <p>Say you would like to remove <code class="docutils literal notranslate"><span class="pre">https://www.mysite.com</span></code> from the
-<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.31.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database, then you may just run</p>
+<a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.32.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> database, then you may just run</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.db</span> <span class="kn">import</span> <span class="n">drop_requests</span>
 <span class="kn">from</span> <span class="nn">darc.link</span> <span class="kn">import</span> <span class="n">parse_link</span>
 
