@@ -191,7 +191,7 @@ jobs:
           python util/wheel_rename.py dist/*.whl
 
       - name: No Source Distribution for Python ${{ matrix.python-version }}
-        if: ${{ matrix.python-version != '3.11' }}
+        if: ${{ matrix.python-version != '3.12' }}
         run: |
           rm dist/*.tar.gz
 
