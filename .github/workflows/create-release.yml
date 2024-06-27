@@ -29,7 +29,7 @@ jobs:
       - name: Get Version
         id: get_version
         run: |
-          set -x
+          set -ex
 
           export DARC_USER="nobody"
           export TOR_PASS="null"
@@ -144,10 +144,12 @@ jobs:
     runs-on: ubuntu-latest
     ## Specifying a GitHub environment is optional, but strongly encouraged
     #environment: release
+    #permissions:
+    #  # IMPORTANT: this permission is mandatory for trusted publishing
+    #  id-token: write
     permissions:
-     # IMPORTANT: this permission is mandatory for trusted publishing
-     id-token: write
-     contents: write
+      contents: write
+      id-token: write
     needs: [ github, version_check ]
     if: ${{ startsWith(github.ref_name, 'v') || needs.version_check.outputs.DARC_TAG_EXISTS == 'false' }}
     strategy:
