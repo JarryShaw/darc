@@ -291,7 +291,7 @@ jobs:
           DARC_VERSION: ${{ needs.version_check.outputs.DARC_VERSION }}
           DARC_BUILD: "0"
         with:
-          meta_yaml_dir: conda/pydarc
+          meta_yaml_dir: conda/darc
           python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
           platform_osx-64: true
           user: jarryshaw
@@ -305,7 +305,7 @@ jobs:
           DARC_VERSION: ${{ needs.version_check.outputs.DARC_VERSION }}
           DARC_BUILD: "0"
         with:
-          meta_yaml_dir: conda/pydarc
+          meta_yaml_dir: conda/darc
           python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
           platform_linux-64: true
           user: jarryshaw
@@ -319,7 +319,7 @@ jobs:
           DARC_VERSION: ${{ needs.version_check.outputs.DARC_VERSION }}
           DARC_BUILD: "0"
         with:
-          meta_yaml_dir: conda/pydarc
+          meta_yaml_dir: conda/darc
           python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
           platform_win-64: true
           user: jarryshaw
