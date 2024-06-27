@@ -115,7 +115,7 @@ attrs = dict(
         'redis[hiredis]',
         'requests-futures',
         'requests[socks]',
-        'selenium',
+        'selenium<4',
         'stem',
         'typing_extensions',
         # version compatibility

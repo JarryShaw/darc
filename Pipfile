@@ -33,7 +33,7 @@ python-datauri = "*"
 redis = {extras = ['hiredis'],version = "*"}
 requests = {extras = ["socks"],version = "*"}
 requests-futures = "*"
-selenium = "*"
+selenium = "<4"
 stem = "*"
 typing-extensions = "*"
 
