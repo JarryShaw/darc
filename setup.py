@@ -167,7 +167,7 @@ try:
     ))
 except ImportError:
     from distutils.core import setup  # type: ignore[no-redef]
-    from distutils.command.build_py import build_py  # type: ignore[no-redef]
+    from distutils.command.build_py import build_py  # type: ignore[assignment]
 
 
 class build(build_py):
