@@ -8,6 +8,6 @@ python-datauri == 2.2.0
 redis==5.0.7
 requests == 2.32.3
 requests-futures == 1.0.1
-selenium == 3.141.0
+selenium==4.22.0
 stem == 1.8.2
 typing-extensions == 4.12.2
