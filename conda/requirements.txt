@@ -1,6 +1,6 @@
 beautifulsoup4 == 4.12.3
 file-magic == 0.4.1
-peewee == 3.17.5
+peewee == 3.17.6
 pottery == 3.0.0
 psutil == 6.0.0
 pymysql == 1.1.1
