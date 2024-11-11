@@ -5,7 +5,7 @@
 
 # Python packages
 pip==24.3.1
-setuptools==69.1.1
+setuptools==75.3.0
 wheel==0.42.0
 
 # Python dependencies
