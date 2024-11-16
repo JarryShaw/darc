@@ -1,13 +1,13 @@
 beautifulsoup4 == 4.12.3
 file-magic == 0.4.1
-peewee == 3.17.7
+peewee == 3.17.8
 pottery == 3.0.0
 psutil == 6.1.0
 pymysql == 1.1.1
 python-datauri == 2.2.0
 redis == 4.6.0
 requests == 2.32.3
-requests-futures == 1.0.1
+requests-futures == 1.0.2
 selenium == 3.141.0
 stem == 1.8.2
 typing-extensions == 4.12.2
