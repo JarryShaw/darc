@@ -4,7 +4,7 @@ peewee == 3.17.8
 pottery == 3.0.0
 psutil == 6.1.1
 pymysql == 1.1.1
-python-datauri == 3.0.1
+python-datauri == 3.0.2
 redis == 4.6.0
 requests == 2.32.3
 requests-futures == 1.0.2
