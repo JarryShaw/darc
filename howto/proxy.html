@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>How to implement a custom proxy middleware? &#8212; darc 1.0.3 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
     <script src="../_static/documentation_options.js?v=baaebd52"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
@@ -40,7 +40,7 @@ of a custom proxy is merely two <em>factory</em> functions: one yields a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.sessions.FuturesSession</span></code> instance, one yields a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.Chrome</span></code> instance; both with proxy presets.</p>
 <p>See below an example from the documentation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">darc.proxy</span> <span class="kn">import</span> <span class="n">register</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">darc.proxy</span><span class="w"> </span><span class="kn">import</span> <span class="n">register</span>
 </pre></div>
 </div>
 <section id="session-factory">
@@ -49,23 +49,23 @@ of a custom proxy is merely two <em>factory</em> functions: one yields a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">requests_futures.sessions.FuturesSession</span></code> instance with presets,
 e.g. proxies, user agent, etc.</p>
 <p>Type annocation of the function can be described as</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_session</span><span class="p">(</span><span class="n">futures</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">:</span> <span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span><span class="n">futures</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">:</span> <span class="o">...</span>
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">overload</span>
-<span class="k">def</span> <span class="nf">get_session</span><span class="p">(</span><span class="n">futures</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests_futures</span><span class="o">.</span><span class="n">sessions</span><span class="o">.</span><span class="n">FuturesSession</span><span class="p">:</span> <span class="o">...</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span><span class="n">futures</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests_futures</span><span class="o">.</span><span class="n">sessions</span><span class="o">.</span><span class="n">FuturesSession</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
 <p>For example, let’s say you’re implementing a Socks5 proxy for <cite>localhost:9293</cite>,
 with other presets same as the default factory function, c.f.
 <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.requests.null_session()</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">requests_futures.sessions</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests_futures.sessions</span>
 
-<span class="kn">from</span> <span class="nn">darc.const</span> <span class="kn">import</span> <span class="n">DARC_CPU</span>
-<span class="kn">from</span> <span class="nn">darc.requests</span> <span class="kn">import</span> <span class="n">default_user_agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">darc.const</span><span class="w"> </span><span class="kn">import</span> <span class="n">DARC_CPU</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">darc.requests</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_user_agent</span>
 
 
-<span class="k">def</span> <span class="nf">socks5_session</span><span class="p">(</span><span class="n">futures</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">socks5_session</span><span class="p">(</span><span class="n">futures</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Socks5 proxy session.</span>
 
 <span class="sd">    Args:</span>
@@ -98,19 +98,19 @@ session instance.</p>
 <p>The driver factory returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.Chrome</span></code> instance with
 presets, e.g. proxies, options/switches, etc.</p>
 <p>Type annocation of the function can be described as</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_driver</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">selenium</span><span class="o">.</span><span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">:</span> <span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_driver</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">selenium</span><span class="o">.</span><span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
 <p>For example, let’s say you’re implementing a Socks5 proxy for <cite>localhost:9293</cite>,
 with other presets same as the default factory function, c.f.
 <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.selenium.null_driver()</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">selenium.webdriver</span>
-<span class="kn">import</span> <span class="nn">selenium.webdriver.common.proxy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">selenium.webdriver</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">selenium.webdriver.common.proxy</span>
 
-<span class="kn">from</span> <span class="nn">darc.selenium</span> <span class="kn">import</span> <span class="n">BINARY_LOCATION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">darc.selenium</span><span class="w"> </span><span class="kn">import</span> <span class="n">BINARY_LOCATION</span>
 
 
-<span class="k">def</span> <span class="nf">socks5_driver</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">socks5_driver</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Socks5 proxy driver.</span>
 
 <span class="sd">    Returns:</span>

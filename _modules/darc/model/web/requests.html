@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>darc.model.web.requests &#8212; darc 1.0.3 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
     <script src="../../../../_static/documentation_options.js?v=baaebd52"></script>
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
@@ -45,19 +45,19 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="p">(</span><span class="n">BlobField</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">,</span> <span class="n">CharField</span><span class="p">,</span> <span class="n">DateTimeField</span><span class="p">,</span> <span class="n">ForeignKeyField</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">peewee</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">BlobField</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">,</span> <span class="n">CharField</span><span class="p">,</span> <span class="n">DateTimeField</span><span class="p">,</span> <span class="n">ForeignKeyField</span><span class="p">,</span>
                     <span class="n">IntegerField</span><span class="p">,</span> <span class="n">TextField</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">darc.model.abc</span> <span class="kn">import</span> <span class="n">BaseModelWeb</span> <span class="k">as</span> <span class="n">BaseModel</span>
-<span class="kn">from</span> <span class="nn">darc.model.utils</span> <span class="kn">import</span> <span class="n">JSONField</span>
-<span class="kn">from</span> <span class="nn">darc.model.web.url</span> <span class="kn">import</span> <span class="n">URLModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">darc.model.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModelWeb</span> <span class="k">as</span> <span class="n">BaseModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">darc.model.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">JSONField</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">darc.model.web.url</span><span class="w"> </span><span class="kn">import</span> <span class="n">URLModel</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
-    <span class="kn">from</span> <span class="nn">darc._compat</span> <span class="kn">import</span> <span class="n">datetime</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">darc._compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 
     <span class="n">Cookies</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
     <span class="n">Headers</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
@@ -67,7 +67,7 @@
 
 <div class="viewcode-block" id="RequestsModel">
 <a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.requests.RequestsModel">[docs]</a>
-<span class="k">class</span> <span class="nc">RequestsModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RequestsModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for documents from ``requests`` submission.&quot;&quot;&quot;</span>
 
     <span class="c1">#: List of redirect history, back reference from</span>
@@ -108,7 +108,7 @@
 
 <div class="viewcode-block" id="RequestsHistoryModel">
 <a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.requests.RequestsHistoryModel">[docs]</a>
-<span class="k">class</span> <span class="nc">RequestsHistoryModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RequestsHistoryModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for history records from ``requests`` submission.&quot;&quot;&quot;</span>
 
     <span class="c1">#: History index number.</span>
