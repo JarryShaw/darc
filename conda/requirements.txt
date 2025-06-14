@@ -6,7 +6,7 @@ psutil == 7.0.0
 pymysql == 1.1.1
 python-datauri == 3.0.2
 redis == 6.2.0
-requests == 2.32.3
+requests == 2.32.4
 requests-futures == 1.0.2
 selenium == 3.141.0
 stem == 1.8.2
