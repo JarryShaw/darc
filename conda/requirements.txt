@@ -1,8 +1,8 @@
 beautifulsoup4 == 4.14.2
 file-magic == 0.4.1
-peewee == 3.18.2
+peewee == 3.18.3
 pottery == 3.0.1
-psutil == 7.1.2
+psutil == 7.1.3
 pymysql == 1.1.2
 python-datauri == 3.0.2
 redis == 7.0.1
