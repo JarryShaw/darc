@@ -1,4 +1,4 @@
-beautifulsoup4 == 4.14.2
+beautifulsoup4 == 4.14.3
 file-magic == 0.4.1
 peewee == 3.18.3
 pottery == 3.0.1
