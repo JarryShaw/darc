@@ -5,7 +5,7 @@ pottery == 3.0.1
 psutil == 7.2.2
 pymysql == 1.1.2
 python-datauri == 3.0.2
-redis == 7.1.0
+redis == 7.1.1
 requests == 2.32.5
 requests-futures == 1.0.2
 selenium == 3.141.0
