@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darc.model.web.hostname &#8212; darc 1.0.3 documentation</title>
+    <title>darc.model.web.hostname &#8212; darc 1.0.4 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../../../_static/documentation_options.js?v=baaebd52"></script>
+    <script src="../../../../_static/documentation_options.js?v=71272d9f"></script>
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -31,7 +31,7 @@
             
   <h1>Source code for darc.model.web.hostname</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;Hostname Records</span>
+<span class="sd">"""Hostname Records</span>
 <span class="sd">----------------------</span>
 
 <span class="sd">The :mod:`darc.model.web.hostname` module defines the data model</span>
@@ -42,7 +42,7 @@
 <span class="sd">   Please refer to :func:`darc.submit.submit_new_host` for more</span>
 <span class="sd">   information.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
@@ -64,40 +64,40 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">darc.model.web.sitemap</span><span class="w"> </span><span class="kn">import</span> <span class="n">SitemapModel</span>  <span class="c1"># pylint: disable=unused-import</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">darc.model.web.url</span><span class="w"> </span><span class="kn">import</span> <span class="n">URLModel</span>  <span class="c1"># pylint: disable=unused-import</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">HostsModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;HostsModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.hosts.HostsModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
-        <span class="n">RobotsModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;RobotsModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.robots.RobotsModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
-        <span class="n">SitemapModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;SitemapModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.sitemap.SitemapModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
-        <span class="n">URLModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;URLModel&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;darc.model.web.url.URLModel&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
+        <span class="n">HostsModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'HostsModel'</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">'darc.model.web.hosts.HostsModel'</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
+        <span class="n">RobotsModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'RobotsModel'</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">'darc.model.web.robots.RobotsModel'</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
+        <span class="n">SitemapModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'SitemapModel'</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">'darc.model.web.sitemap.SitemapModel'</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
+        <span class="n">URLModel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'URLModel'</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">'darc.model.web.url.URLModel'</span><span class="p">)</span>  <span class="c1"># type: ignore[name-defined,unreachable,misc] # pylint: disable=line-too-long</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;HostnameModel&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'HostnameModel'</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="HostnameModel">
 <a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.hostname.HostnameModel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HostnameModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data model for a hostname record.</span>
+<span class="w">    </span><span class="sd">"""Data model for a hostname record.</span>
 
 <span class="sd">    Important:</span>
 <span class="sd">        The *alive* of a hostname is toggled if :func:`~darc.crawl.crawler`</span>
 <span class="sd">        successfully requested a URL with such hostname.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: ``hosts.txt`` for the hostname, back reference from</span>
     <span class="c1">#: :attr:`HostsModel.host &lt;darc.model.web.hosts.HostsModel.host&gt;`.</span>
-    <span class="n">hosts</span><span class="p">:</span> <span class="s1">&#39;List[HostsModel]&#39;</span>
+    <span class="n">hosts</span><span class="p">:</span> <span class="s1">'List[HostsModel]'</span>
 
     <span class="c1">#: ``robots.txt`` for the hostname, back reference from</span>
     <span class="c1">#: :attr:`RobotsModel.host &lt;darc.model.web.robots.RobotsModel.host&gt;`.</span>
-    <span class="n">robots</span><span class="p">:</span> <span class="s1">&#39;List[RobotsModel]&#39;</span>
+    <span class="n">robots</span><span class="p">:</span> <span class="s1">'List[RobotsModel]'</span>
 
     <span class="c1">#: ``sitemap.xml`` for the hostname, back reference from</span>
     <span class="c1">#: :attr:`SitemapModel.sitemaps &lt;darc.model.web.robots.SitemapModel.sitemaps&gt;`.</span>
-    <span class="n">sitemaps</span><span class="p">:</span> <span class="s1">&#39;List[SitemapModel]&#39;</span>
+    <span class="n">sitemaps</span><span class="p">:</span> <span class="s1">'List[SitemapModel]'</span>
 
     <span class="c1">#: URLs with the same hostname, back reference from</span>
     <span class="c1">#: :attr:`URLModel.hostname &lt;darc.model.web.url.URLModel.hostname&gt;`.</span>
-    <span class="n">urls</span><span class="p">:</span> <span class="s1">&#39;List[URLModel]&#39;</span>
+    <span class="n">urls</span><span class="p">:</span> <span class="s1">'List[URLModel]'</span>
 
     <span class="c1">#: Hostname (c.f. :attr:`link.host &lt;darc.link.Link.host&gt;`). The maximum length of</span>
     <span class="c1">#: the host name and of the fully qualified domain name (FQDN) is 63 bytes per</span>
@@ -107,28 +107,33 @@
     <span class="n">proxy</span><span class="p">:</span> <span class="n">Proxy</span> <span class="o">=</span> <span class="n">IntEnumField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">Proxy</span><span class="p">)</span>
 
     <span class="c1">#: Timestamp of first ``new_host`` submission.</span>
-    <span class="n">discovery</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">()</span>
+    <span class="n">discovery</span><span class="p">:</span> <span class="s1">'datetime'</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">()</span>
     <span class="c1">#: Timestamp of last related submission.</span>
-    <span class="n">last_seen</span><span class="p">:</span> <span class="s1">&#39;datetime&#39;</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">()</span>
+    <span class="n">last_seen</span><span class="p">:</span> <span class="s1">'datetime'</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">()</span>
 
+<div class="viewcode-block" id="HostnameModel.alive">
+<a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.hostname.HostnameModel.alive">[docs]</a>
     <span class="nd">@cached_property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">alive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the hostname is still active.</span>
+<span class="w">        </span><span class="sd">"""If the hostname is still active.</span>
 
 <span class="sd">        We consider the hostname as *inactive*, only if all</span>
 <span class="sd">        subsidiary URLs are *inactive*.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">url</span><span class="p">:</span> <span class="n">url</span><span class="o">.</span><span class="n">alive</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">urls</span><span class="p">))</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">url</span><span class="p">:</span> <span class="n">url</span><span class="o">.</span><span class="n">alive</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">urls</span><span class="p">))</span></div>
 
+
+<div class="viewcode-block" id="HostnameModel.since">
+<a class="viewcode-back" href="../../../../darc/model/web.html#darc.model.web.hostname.HostnameModel.since">[docs]</a>
     <span class="nd">@cached_property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">since</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;datetime&#39;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The hostname is active/inactive since such timestamp.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">since</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'datetime'</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The hostname is active/inactive since such timestamp.</span>
 
 <span class="sd">        We confider the timestamp by the earlies timestamp</span>
 <span class="sd">        of related subsidiary *active/inactive* URLs.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alive</span><span class="p">:</span>
             <span class="n">filtering</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">url</span><span class="p">:</span> <span class="n">url</span><span class="o">.</span><span class="n">alive</span>  <span class="c1"># type: Callable[[URLModel], bool]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -137,6 +142,7 @@
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="o">*</span><span class="nb">filter</span><span class="p">(</span>
             <span class="n">filtering</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">urls</span>
         <span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">url</span><span class="p">:</span> <span class="n">url</span><span class="o">.</span><span class="n">since</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 

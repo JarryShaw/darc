@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>How to implement a sites customisation? &#8212; darc 1.0.3 documentation</title>
+    <title>How to implement a sites customisation? &#8212; darc 1.0.4 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
-    <script src="../_static/documentation_options.js?v=baaebd52"></script>
+    <script src="../_static/documentation_options.js?v=71272d9f"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -51,11 +51,11 @@ associated with.</p>
 <p><strong>NB</strong>: Implementation details of the <code class="docutils literal notranslate"><span class="pre">crawler</span></code> and <code class="docutils literal notranslate"><span class="pre">loader</span></code>
 methods will be discussed in following sections.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MySite</span><span class="p">(</span><span class="n">BaseSite</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a site customisation class for demonstration purpose.</span>
-<span class="sd">    You may implement a module as well should you prefer.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""This is a site customisation class for demonstration purpose.</span>
+<span class="sd">    You may implement a module as well should you prefer."""</span>
 
     <span class="c1">#: List[str]: Hostnames the sites customisation is designed for.</span>
-    <span class="n">hostname</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mysite.com&#39;</span><span class="p">,</span> <span class="s1">&#39;www.mysite.com&#39;</span><span class="p">]</span>
+    <span class="n">hostname</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'mysite.com'</span><span class="p">,</span> <span class="s1">'www.mysite.com'</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span> <span class="o">...</span>
@@ -77,7 +77,7 @@ runtime (instead of adding them to the <code class="xref py py-attr docutils lit
 just leave out the <code class="xref py py-attr docutils literal notranslate"><span class="pre">hostname</span></code> attribute as <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> and specify
 your list of hostnames at <code class="xref py py-func docutils literal notranslate"><span class="pre">darc.sites.register()</span></code> function call.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># register sites explicitly</span>
-<span class="n">register</span><span class="p">(</span><span class="n">MySite</span><span class="p">,</span> <span class="s1">&#39;mysite.com&#39;</span><span class="p">,</span> <span class="s1">&#39;www.mysite.com&#39;</span><span class="p">)</span>
+<span class="n">register</span><span class="p">(</span><span class="n">MySite</span><span class="p">,</span> <span class="s1">'mysite.com'</span><span class="p">,</span> <span class="s1">'www.mysite.com'</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="crawler-hook">
@@ -98,7 +98,7 @@ and an <code class="docutils literal notranslate"><span class="pre">Authenticati
 the <code class="docutils literal notranslate"><span class="pre">crawler</span></code> method as below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Crawler hook for my site.</span>
+<span class="w">    </span><span class="sd">"""Crawler hook for my site.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timestamp (datetime.datetime): Timestamp of the worker node reference.</span>
@@ -108,12 +108,12 @@ the <code class="docutils literal notranslate"><span class="pre">crawler</span><
 <span class="sd">    Returns:</span>
 <span class="sd">        requests.Response: The final response object with crawled data.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># inject cookies</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;SessionID&#39;</span><span class="p">,</span> <span class="s1">&#39;fake-session-id-value&#39;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">'SessionID'</span><span class="p">,</span> <span class="s1">'fake-session-id-value'</span><span class="p">)</span>
 
     <span class="c1"># insert headers</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authentication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Basic fake-identity-credential&#39;</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Authentication'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Basic fake-identity-credential'</span>
 
     <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">response</span>
@@ -141,7 +141,7 @@ target page after successful attempt, then you may write the <code class="docuti
 method as below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">loader</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Loader hook for my site.</span>
+<span class="w">    </span><span class="sd">"""Loader hook for my site.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timestamp: Timestamp of the worker node reference.</span>
@@ -151,25 +151,25 @@ method as below.</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        selenium.webdriver.Chrome: The web driver object with loaded data.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># land on login page</span>
-    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://</span><span class="si">%s</span><span class="s1">/login&#39;</span> <span class="o">%</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'https://</span><span class="si">%s</span><span class="s1">/login'</span> <span class="o">%</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
 
     <span class="c1"># animate login attempt</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s1">&#39;login-form&#39;</span><span class="p">)</span>
-    <span class="n">form</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">)</span>
-    <span class="n">form</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;p@ssd&#39;</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s1">'login-form'</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s1">'username'</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">'admin'</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s1">'password'</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">'p@ssd'</span><span class="p">)</span>
     <span class="n">form</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
 
     <span class="c1"># check if the attempt succeeded</span>
-    <span class="k">if</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="s1">&#39;Please login!&#39;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;failed to login </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="s1">'Please login!'</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'failed to login </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
 
     <span class="c1"># go to the target page</span>
     <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
     <span class="c1"># wait for page to finish loading</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">darc.const</span><span class="w"> </span><span class="kn">import</span> <span class="n">SE_WAIT</span>  <span class="c1"># should&#39;ve been put with the top-level import statements</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">darc.const</span><span class="w"> </span><span class="kn">import</span> <span class="n">SE_WAIT</span>  <span class="c1"># should've been put with the top-level import statements</span>
     <span class="k">if</span> <span class="n">SE_WAIT</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SE_WAIT</span><span class="p">)</span>
 
@@ -205,7 +205,7 @@ object to be removed.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">darc.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">drop_requests</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">darc.link</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_link</span>
 
-<span class="n">link</span> <span class="o">=</span> <span class="n">parse_link</span><span class="p">(</span><span class="s1">&#39;https://www.mysite.com&#39;</span><span class="p">)</span>
+<span class="n">link</span> <span class="o">=</span> <span class="n">parse_link</span><span class="p">(</span><span class="s1">'https://www.mysite.com'</span><span class="p">)</span>
 <span class="n">drop_requests</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -226,14 +226,14 @@ class as</p>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">crawler</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="s1">&#39;www.mysite.com&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="s1">'www.mysite.com'</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">LinkNoReturn</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
 
         <span class="o">...</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">loader</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="s1">&#39;www.mysite.com&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="s1">'www.mysite.com'</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">LinkNoReturn</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
 
         <span class="o">...</span>
@@ -278,7 +278,7 @@ as below:</p>
 <span class="c1"># register sites</span>
 <span class="n">register</span><span class="p">(</span><span class="n">MySite</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
 </div>

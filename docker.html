@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Docker Integration &#8212; darc 1.0.3 documentation</title>
+    <title>Docker Integration &#8212; darc 1.0.4 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
-    <script src="_static/documentation_options.js?v=baaebd52"></script>
+    <script src="_static/documentation_options.js?v=71272d9f"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -62,24 +62,24 @@ By default, the username is <code class="docutils literal notranslate"><span cla
 <details>
   <summary>Content of <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code></summary><div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="w"> </span><span class="s">ubuntu:focal</span>
 
-<span class="k">LABEL</span><span class="w"> </span>org.opencontainers.image.title<span class="o">=</span><span class="s2">&quot;darc&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>org.opencontainers.image.description<span class="o">=</span><span class="s2">&quot;Darkweb Crawler Project&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>org.opencontainers.image.url<span class="o">=</span><span class="s2">&quot;https://darc.jarryshaw.me/&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>org.opencontainers.image.source<span class="o">=</span><span class="s2">&quot;https://github.com/JarryShaw/darc&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>org.opencontainers.image.version<span class="o">=</span><span class="s2">&quot;1.0.3&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>org.opencontainers.image.licenses<span class="o">=</span><span class="s1">&#39;BSD 3-Clause &quot;New&quot; or &quot;Revised&quot; License&#39;</span>
+<span class="k">LABEL</span><span class="w"> </span>org.opencontainers.image.title<span class="o">=</span><span class="s2">"darc"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>org.opencontainers.image.description<span class="o">=</span><span class="s2">"Darkweb Crawler Project"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>org.opencontainers.image.url<span class="o">=</span><span class="s2">"https://darc.jarryshaw.me/"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>org.opencontainers.image.source<span class="o">=</span><span class="s2">"https://github.com/JarryShaw/darc"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>org.opencontainers.image.version<span class="o">=</span><span class="s2">"1.0.3"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>org.opencontainers.image.licenses<span class="o">=</span><span class="s1">'BSD 3-Clause "New" or "Revised" License'</span>
 
 <span class="k">STOPSIGNAL</span><span class="w"> </span><span class="s">SIGINT</span>
 <span class="k">HEALTHCHECK</span><span class="w"> </span>--interval<span class="o">=</span>1h<span class="w"> </span>--timeout<span class="o">=</span>1m<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="k">CMD</span><span class="w"> </span>wget<span class="w"> </span>https://httpbin.org/get<span class="w"> </span>-O<span class="w"> </span>/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 
-<span class="k">ARG</span><span class="w"> </span><span class="nv">DARC_USER</span><span class="o">=</span><span class="s2">&quot;darc&quot;</span>
-<span class="k">ENV</span><span class="w"> </span><span class="nv">LANG</span><span class="o">=</span><span class="s2">&quot;C.UTF-8&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="nv">LC_ALL</span><span class="o">=</span><span class="s2">&quot;C.UTF-8&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="nv">PYTHONIOENCODING</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span><span class="s2">&quot;teletype&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="nv">DARC_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">DARC_USER</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="w">    </span>#<span class="w"> </span><span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span><span class="s2">&quot;noninteractive&quot;</span>
+<span class="k">ARG</span><span class="w"> </span><span class="nv">DARC_USER</span><span class="o">=</span><span class="s2">"darc"</span>
+<span class="k">ENV</span><span class="w"> </span><span class="nv">LANG</span><span class="o">=</span><span class="s2">"C.UTF-8"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">LC_ALL</span><span class="o">=</span><span class="s2">"C.UTF-8"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">PYTHONIOENCODING</span><span class="o">=</span><span class="s2">"UTF-8"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span><span class="s2">"teletype"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">DARC_USER</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">DARC_USER</span><span class="si">}</span><span class="s2">"</span>
+<span class="w">    </span>#<span class="w"> </span><span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span><span class="s2">"noninteractive"</span>
 
 <span class="k">COPY</span><span class="w"> </span>extra/retry.sh<span class="w"> </span>/usr/local/bin/retry
 <span class="k">COPY</span><span class="w"> </span>extra/install.py<span class="w"> </span>/usr/local/bin/pty-install
@@ -109,16 +109,16 @@ By default, the username is <code class="docutils literal notranslate"><span cla
 <span class="w">        </span>python3-setuptools<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>python3-wheel<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ln<span class="w"> </span>-sf<span class="w"> </span>/usr/bin/python3.9<span class="w"> </span>/usr/local/bin/python3
-<span class="k">RUN</span><span class="w"> </span>retry<span class="w"> </span>pty-install<span class="w"> </span>--stdin<span class="w"> </span><span class="s1">&#39;6\n70&#39;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>--yes<span class="w"> </span>--no-install-recommends<span class="w"> </span><span class="se">\</span>
+<span class="k">RUN</span><span class="w"> </span>retry<span class="w"> </span>pty-install<span class="w"> </span>--stdin<span class="w"> </span><span class="s1">'6\n70'</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>--yes<span class="w"> </span>--no-install-recommends<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>tzdata<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span><span class="c1">#&amp;&amp; retry rename-jdk \</span>
-<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>retry<span class="w"> </span>pty-install<span class="w"> </span>--stdin<span class="w"> </span><span class="s1">&#39;yes&#39;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>--yes<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>retry<span class="w"> </span>pty-install<span class="w"> </span>--stdin<span class="w"> </span><span class="s1">'yes'</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>--yes<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>oracle-java11-installer-local
 <span class="k">RUN</span><span class="w"> </span>retry<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>--yes<span class="w"> </span>--no-install-recommends<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>sudo<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>adduser<span class="w"> </span>--disabled-password<span class="w"> </span>--gecos<span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="si">${</span><span class="nv">DARC_USER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>adduser<span class="w"> </span>--disabled-password<span class="w"> </span>--gecos<span class="w"> </span><span class="s1">''</span><span class="w"> </span><span class="si">${</span><span class="nv">DARC_USER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>adduser<span class="w"> </span><span class="si">${</span><span class="nv">DARC_USER</span><span class="si">}</span><span class="w"> </span>sudo<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;%sudo ALL=(ALL) NOPASSWD:ALL&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/sudoers
+<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">'%sudo ALL=(ALL) NOPASSWD:ALL'</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/sudoers
 
 <span class="c">## Tor</span>
 <span class="k">RUN</span><span class="w"> </span>retry<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>--yes<span class="w"> </span>--no-install-recommends<span class="w"> </span>tor
@@ -141,7 +141,7 @@ By default, the username is <code class="docutils literal notranslate"><span cla
 <span class="k">COPY</span><span class="w"> </span>vendor/new_installer_offline.jar<span class="w"> </span>/tmp
 <span class="k">RUN</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>-x<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/tmp<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span><span class="w"> </span>pty-install<span class="w"> </span>--stdin<span class="w"> </span><span class="s1">&#39;/home/darc/freenet\n1&#39;</span><span class="w"> </span>java<span class="w"> </span>-jar<span class="w"> </span>new_installer_offline.jar<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span><span class="w"> </span>pty-install<span class="w"> </span>--stdin<span class="w"> </span><span class="s1">'/home/darc/freenet\n1'</span><span class="w"> </span>java<span class="w"> </span>-jar<span class="w"> </span>new_installer_offline.jar<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="se">\</span>
 <span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>mv<span class="w"> </span>/home/darc/freenet<span class="w"> </span>/usr/local/src/freenet
 <span class="k">USER</span><span class="w"> </span><span class="s">root</span>
 
@@ -156,7 +156,7 @@ By default, the username is <code class="docutils literal notranslate"><span cla
 <span class="w"> </span>#<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>install
 
 <span class="c"># # set up timezone</span>
-<span class="c"># RUN echo &#39;Asia/Shanghai&#39; &gt; /etc/timezone \</span>
+<span class="c"># RUN echo 'Asia/Shanghai' &gt; /etc/timezone \</span>
 <span class="c">#  &amp;&amp; rm -f /etc/localtime \</span>
 <span class="c">#  &amp;&amp; ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \</span>
 <span class="c">#  &amp;&amp; dpkg-reconfigure -f noninteractive tzdata</span>
@@ -199,9 +199,9 @@ By default, the username is <code class="docutils literal notranslate"><span cla
 <span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>autoclean<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>clean
 
-<span class="k">ENTRYPOINT</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;python3&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;darc&quot;</span><span class="w"> </span><span class="p">]</span>
-<span class="c">#ENTRYPOINT [ &quot;bash&quot;, &quot;/app/run.sh&quot; ]</span>
-<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;--help&quot;</span><span class="w"> </span><span class="p">]</span>
+<span class="k">ENTRYPOINT</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"python3"</span><span class="p">,</span><span class="w"> </span><span class="s2">"-m"</span><span class="p">,</span><span class="w"> </span><span class="s2">"darc"</span><span class="w"> </span><span class="p">]</span>
+<span class="c">#ENTRYPOINT [ "bash", "/app/run.sh" ]</span>
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"--help"</span><span class="w"> </span><span class="p">]</span>
 
 <span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
 <span class="k">COPY</span><span class="w"> </span>darc/<span class="w"> </span>/app/darc/
@@ -225,11 +225,11 @@ success</p></li>
 <summary>Content of <code class="docutils literal notranslate"><span class="pre">retry</span></code></summary><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
 
 <span class="k">while</span><span class="w"> </span>true<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">    </span>&gt;<span class="p">&amp;</span><span class="m">2</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;+ </span><span class="nv">$@</span><span class="s2">&quot;</span>
+<span class="w">    </span>&gt;<span class="p">&amp;</span><span class="m">2</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"+ </span><span class="nv">$@</span><span class="s2">"</span>
 <span class="w">    </span><span class="nv">$@</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
-<span class="w">    </span>&gt;<span class="p">&amp;</span><span class="m">2</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;exit: </span><span class="nv">$?</span><span class="s2">&quot;</span>
+<span class="w">    </span>&gt;<span class="p">&amp;</span><span class="m">2</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"exit: </span><span class="nv">$?</span><span class="s2">"</span>
 <span class="k">done</span>
-&gt;<span class="p">&amp;</span><span class="m">2</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;exit: 0&quot;</span>
+&gt;<span class="p">&amp;</span><span class="m">2</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"exit: 0"</span>
 </pre></div>
 </div>
 </details><ul class="simple">
@@ -240,7 +240,7 @@ set as <code class="docutils literal notranslate"><span class="pre">Teletype</sp
 <details>
 <summary>Content of <code class="docutils literal notranslate"><span class="pre">pty-install</span></code></summary><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="s2">&quot;&quot;&quot;Install packages requiring interactions.&quot;&quot;&quot;</span>
+<span class="s2">"""Install packages requiring interactions."""</span>
 
 import<span class="w"> </span>argparse
 import<span class="w"> </span>os
@@ -253,35 +253,35 @@ from<span class="w"> </span>typing<span class="w"> </span>import<span class="w">
 <span class="w">    </span>from<span class="w"> </span>argparse<span class="w"> </span>import<span class="w"> </span>ArgumentParser
 
 
-def<span class="w"> </span>get_parser<span class="o">()</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="s1">&#39;ArgumentParser&#39;</span>:
-<span class="w">    </span><span class="s2">&quot;&quot;&quot;Argument parser.&quot;&quot;&quot;</span>
-<span class="w">    </span><span class="nv">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>argparse.ArgumentParser<span class="o">(</span><span class="s1">&#39;install&#39;</span>,
-<span class="w">                                     </span><span class="nv">description</span><span class="o">=</span><span class="s1">&#39;pseudo-interactive package installer&#39;</span><span class="o">)</span>
+def<span class="w"> </span>get_parser<span class="o">()</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="s1">'ArgumentParser'</span>:
+<span class="w">    </span><span class="s2">"""Argument parser."""</span>
+<span class="w">    </span><span class="nv">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>argparse.ArgumentParser<span class="o">(</span><span class="s1">'install'</span>,
+<span class="w">                                     </span><span class="nv">description</span><span class="o">=</span><span class="s1">'pseudo-interactive package installer'</span><span class="o">)</span>
 
-<span class="w">    </span>parser.add_argument<span class="o">(</span><span class="s1">&#39;-i&#39;</span>,<span class="w"> </span><span class="s1">&#39;--stdin&#39;</span>,<span class="w"> </span><span class="nv">help</span><span class="o">=</span><span class="s1">&#39;content for input&#39;</span><span class="o">)</span>
-<span class="w">    </span>parser.add_argument<span class="o">(</span><span class="s1">&#39;command&#39;</span>,<span class="w"> </span><span class="nv">nargs</span><span class="o">=</span>argparse.REMAINDER,<span class="w"> </span><span class="nv">help</span><span class="o">=</span><span class="s1">&#39;command to execute&#39;</span><span class="o">)</span>
+<span class="w">    </span>parser.add_argument<span class="o">(</span><span class="s1">'-i'</span>,<span class="w"> </span><span class="s1">'--stdin'</span>,<span class="w"> </span><span class="nv">help</span><span class="o">=</span><span class="s1">'content for input'</span><span class="o">)</span>
+<span class="w">    </span>parser.add_argument<span class="o">(</span><span class="s1">'command'</span>,<span class="w"> </span><span class="nv">nargs</span><span class="o">=</span>argparse.REMAINDER,<span class="w"> </span><span class="nv">help</span><span class="o">=</span><span class="s1">'command to execute'</span><span class="o">)</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span>parser
 
 
 def<span class="w"> </span>main<span class="o">()</span><span class="w"> </span>-&gt;<span class="w"> </span>int:
-<span class="w">    </span><span class="s2">&quot;&quot;&quot;Entrypoint.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="s2">"""Entrypoint."""</span>
 <span class="w">    </span><span class="nv">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>get_parser<span class="o">()</span>
 <span class="w">    </span><span class="nv">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>parser.parse_args<span class="o">()</span>
-<span class="w">    </span><span class="nv">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>args.stdin.encode<span class="o">()</span>.decode<span class="o">(</span><span class="s1">&#39;unicode_escape&#39;</span><span class="o">)</span>
+<span class="w">    </span><span class="nv">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>args.stdin.encode<span class="o">()</span>.decode<span class="o">(</span><span class="s1">'unicode_escape'</span><span class="o">)</span>
 
-<span class="w">    </span><span class="nv">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tempfile.mktemp<span class="o">(</span><span class="nv">prefix</span><span class="o">=</span><span class="s1">&#39;install-&#39;</span><span class="o">)</span><span class="w">  </span><span class="c1"># nosec: B306</span>
-<span class="w">    </span>with<span class="w"> </span>open<span class="o">(</span>path,<span class="w"> </span><span class="s1">&#39;w&#39;</span><span class="o">)</span><span class="w"> </span>as<span class="w"> </span>file:
+<span class="w">    </span><span class="nv">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tempfile.mktemp<span class="o">(</span><span class="nv">prefix</span><span class="o">=</span><span class="s1">'install-'</span><span class="o">)</span><span class="w">  </span><span class="c1"># nosec: B306</span>
+<span class="w">    </span>with<span class="w"> </span>open<span class="o">(</span>path,<span class="w"> </span><span class="s1">'w'</span><span class="o">)</span><span class="w"> </span>as<span class="w"> </span>file:
 <span class="w">        </span>file.write<span class="o">(</span>text<span class="o">)</span>
 
-<span class="w">    </span>with<span class="w"> </span>open<span class="o">(</span>path,<span class="w"> </span><span class="s1">&#39;r&#39;</span><span class="o">)</span><span class="w"> </span>as<span class="w"> </span>file:
+<span class="w">    </span>with<span class="w"> </span>open<span class="o">(</span>path,<span class="w"> </span><span class="s1">'r'</span><span class="o">)</span><span class="w"> </span>as<span class="w"> </span>file:
 <span class="w">        </span><span class="nv">proc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>subprocess.run<span class="o">(</span>args.command,<span class="w"> </span><span class="nv">stdin</span><span class="o">=</span>file<span class="o">)</span><span class="w">  </span><span class="c1"># pylint: disable=subprocess-run-check # nosec: B603</span>
 
 <span class="w">    </span>os.remove<span class="o">(</span>path<span class="o">)</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span>proc.returncode
 
 
-<span class="k">if</span><span class="w"> </span><span class="nv">__name__</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;__main__&quot;</span>:
+<span class="k">if</span><span class="w"> </span><span class="nv">__name__</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"__main__"</span>:
 <span class="w">    </span>sys.exit<span class="o">(</span>main<span class="o">())</span>
 </pre></div>
 </div>
@@ -290,7 +290,7 @@ def<span class="w"> </span>main<span class="o">()</span><span class="w"> </span>
 image. Environment variables can be set as described in the
 <a class="reference external" href="index.html#configuration">configuration</a> section.</p>
 <details>
-  <summary>Content of <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3&#39;</span>
+  <summary>Content of <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">'3'</span>
 
 <span class="nt">services</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">crawler</span><span class="p">:</span>
@@ -299,16 +299,16 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
 <span class="w">      </span><span class="nt">args</span><span class="p">:</span>
 <span class="w">        </span><span class="c1"># non-root user</span>
-<span class="w">        </span><span class="nt">DARC_USER</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;darc&quot;</span>
+<span class="w">        </span><span class="nt">DARC_USER</span><span class="p">:</span><span class="w"> </span><span class="s">"darc"</span>
 <span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">crawler</span>
-<span class="w">    </span><span class="c1">#entrypoint: [ &quot;bash&quot;, &quot;/app/run.sh&quot; ]</span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">&quot;--type&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;crawler&quot;</span><span class="p p-Indicator">,</span>
-<span class="w">               </span><span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;/app/text/tor.txt&quot;</span><span class="p p-Indicator">,</span>
-<span class="w">               </span><span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;/app/text/tor2web.txt&quot;</span><span class="p p-Indicator">,</span>
-<span class="w">               </span><span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;/app/text/i2p.txt&quot;</span><span class="p p-Indicator">,</span>
-<span class="w">               </span><span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;/app/text/zeronet.txt&quot;</span><span class="p p-Indicator">,</span>
-<span class="w">               </span><span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;/app/text/freenet.txt&quot;</span><span class="p p-Indicator">,</span>
-<span class="w">               </span><span class="s">&quot;--file&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;/app/text/clinic.txt&quot;</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="c1">#entrypoint: [ "bash", "/app/run.sh" ]</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">"--type"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"crawler"</span><span class="p p-Indicator">,</span>
+<span class="w">               </span><span class="s">"--file"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"/app/text/tor.txt"</span><span class="p p-Indicator">,</span>
+<span class="w">               </span><span class="s">"--file"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"/app/text/tor2web.txt"</span><span class="p p-Indicator">,</span>
+<span class="w">               </span><span class="s">"--file"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"/app/text/i2p.txt"</span><span class="p p-Indicator">,</span>
+<span class="w">               </span><span class="s">"--file"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"/app/text/zeronet.txt"</span><span class="p p-Indicator">,</span>
+<span class="w">               </span><span class="s">"--file"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"/app/text/freenet.txt"</span><span class="p p-Indicator">,</span>
+<span class="w">               </span><span class="s">"--file"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"/app/text/clinic.txt"</span><span class="w"> </span><span class="p p-Indicator">]</span>
 <span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
 <span class="w">      </span><span class="c1">## [PYTHON] force the stdout and stderr streams to be unbuffered</span>
 <span class="w">      </span><span class="nt">PYTHONUNBUFFERED</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -341,13 +341,13 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># bulk size</span>
 <span class="w">      </span><span class="nt">DARC_BULK_SIZE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
 <span class="w">      </span><span class="c1"># data storage</span>
-<span class="w">      </span><span class="nt">PATH_DATA</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;data&quot;</span>
+<span class="w">      </span><span class="nt">PATH_DATA</span><span class="p">:</span><span class="w"> </span><span class="s">"data"</span>
 <span class="w">      </span><span class="c1"># save data submitssion</span>
 <span class="w">      </span><span class="nt">SAVE_DB</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">      </span><span class="c1"># Redis URL</span>
-<span class="w">      </span><span class="nt">REDIS_URL</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis&#39;</span>
+<span class="w">      </span><span class="nt">REDIS_URL</span><span class="p">:</span><span class="w"> </span><span class="s">'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'</span>
 <span class="w">      </span><span class="c1"># database URL</span>
-<span class="w">      </span><span class="c1">#DB_URL: &#39;mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db&#39;</span>
+<span class="w">      </span><span class="c1">#DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'</span>
 <span class="w">      </span><span class="c1"># max pool</span>
 <span class="w">      </span><span class="nt">DARC_MAX_POOL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">      </span><span class="c1"># Tor proxy &amp; control port</span>
@@ -356,13 +356,13 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># Tor management method</span>
 <span class="w">      </span><span class="nt">TOR_STEM</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">      </span><span class="c1"># Tor authentication</span>
-<span class="w">      </span><span class="nt">TOR_PASS</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F&quot;</span>
+<span class="w">      </span><span class="nt">TOR_PASS</span><span class="p">:</span><span class="w"> </span><span class="s">"16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F"</span>
 <span class="w">      </span><span class="c1"># Tor bootstrap retry</span>
 <span class="w">      </span><span class="nt">TOR_RETRY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">      </span><span class="c1"># Tor bootstrap wait</span>
 <span class="w">      </span><span class="nt">TOR_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 <span class="w">      </span><span class="c1"># Tor bootstrap config</span>
-<span class="w">      </span><span class="nt">TOR_CFG</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{}&quot;</span>
+<span class="w">      </span><span class="nt">TOR_CFG</span><span class="p">:</span><span class="w"> </span><span class="s">"{}"</span>
 <span class="w">      </span><span class="c1"># I2P port</span>
 <span class="w">      </span><span class="nt">I2P_PORT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4444</span>
 <span class="w">      </span><span class="c1"># I2P bootstrap retry</span>
@@ -370,27 +370,27 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># I2P bootstrap wait</span>
 <span class="w">      </span><span class="nt">I2P_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 <span class="w">      </span><span class="c1"># I2P bootstrap config</span>
-<span class="w">      </span><span class="nt">I2P_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">I2P_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">      </span><span class="c1"># ZeroNet port</span>
 <span class="w">      </span><span class="nt">ZERONET_PORT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">43110</span>
 <span class="w">      </span><span class="c1"># ZeroNet bootstrap retry</span>
 <span class="w">      </span><span class="nt">ZERONET_RETRY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">      </span><span class="c1"># ZeroNet project path</span>
-<span class="w">      </span><span class="nt">ZERONET_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/usr/local/src/zeronet&quot;</span>
+<span class="w">      </span><span class="nt">ZERONET_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">"/usr/local/src/zeronet"</span>
 <span class="w">      </span><span class="c1"># ZeroNet bootstrap wait</span>
 <span class="w">      </span><span class="nt">ZERONET_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 <span class="w">      </span><span class="c1"># ZeroNet bootstrap config</span>
-<span class="w">      </span><span class="nt">ZERONET_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">ZERONET_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">      </span><span class="c1"># Freenet port</span>
 <span class="w">      </span><span class="nt">FREENET_PORT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8888</span>
 <span class="w">      </span><span class="c1"># Freenet bootstrap retry</span>
 <span class="w">      </span><span class="nt">FREENET_RETRY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">      </span><span class="c1"># Freenet project path</span>
-<span class="w">      </span><span class="nt">FREENET_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/usr/local/src/freenet&quot;</span>
+<span class="w">      </span><span class="nt">FREENET_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">"/usr/local/src/freenet"</span>
 <span class="w">      </span><span class="c1"># Freenet bootstrap wait</span>
 <span class="w">      </span><span class="nt">FREENET_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 <span class="w">      </span><span class="c1"># Freenet bootstrap config</span>
-<span class="w">      </span><span class="nt">FREENET_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">FREENET_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">      </span><span class="c1"># time delta for caches in seconds</span>
 <span class="w">      </span><span class="nt">TIME_CACHE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2_592_000</span><span class="w">  </span><span class="c1"># 30 days</span>
 <span class="w">      </span><span class="c1"># time to wait for selenium</span>
@@ -398,34 +398,34 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># extract link pattern</span>
 <span class="w">      </span><span class="nt">LINK_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">        </span><span class="no">[</span>
-<span class="w">          </span><span class="no">&quot;.*?\\.onion&quot;,</span>
-<span class="w">          </span><span class="no">&quot;.*?\\.i2p&quot;, &quot;127\\.0\\.0\\.1:7657&quot;, &quot;localhost:7657&quot;, &quot;127\\.0\\.0\\.1:7658&quot;, &quot;localhost:7658&quot;,</span>
-<span class="w">          </span><span class="no">&quot;127\\.0\\.0\\.1:43110&quot;, &quot;localhost:43110&quot;,</span>
-<span class="w">          </span><span class="no">&quot;127\\.0\\.0\\.1:8888&quot;, &quot;localhost:8888&quot;</span>
+<span class="w">          </span><span class="no">".*?\\.onion",</span>
+<span class="w">          </span><span class="no">".*?\\.i2p", "127\\.0\\.0\\.1:7657", "localhost:7657", "127\\.0\\.0\\.1:7658", "localhost:7658",</span>
+<span class="w">          </span><span class="no">"127\\.0\\.0\\.1:43110", "localhost:43110",</span>
+<span class="w">          </span><span class="no">"127\\.0\\.0\\.1:8888", "localhost:8888"</span>
 <span class="w">        </span><span class="no">]</span>
 <span class="w">      </span><span class="c1"># link black list</span>
-<span class="w">      </span><span class="nt">LINK_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?facebookcorewwwi\\.onion&quot;,</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?nytimes3xbfgragh\\.onion&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">LINK_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"(.*\\.)?facebookcorewwwi\\.onion",</span><span class="nv"> </span><span class="s">"(.*\\.)?nytimes3xbfgragh\\.onion"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># link fallback flag</span>
 <span class="w">      </span><span class="nt">LINK_FALLBACK</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">      </span><span class="c1"># content type white list</span>
-<span class="w">      </span><span class="nt">MIME_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;text/html&quot;,</span><span class="nv"> </span><span class="s">&quot;application/xhtml+xml&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">MIME_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"text/html",</span><span class="nv"> </span><span class="s">"application/xhtml+xml"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># content type black list</span>
-<span class="w">      </span><span class="nt">MIME_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;text/css&quot;,</span><span class="nv"> </span><span class="s">&quot;application/javascript&quot;,</span><span class="nv"> </span><span class="s">&quot;text/json&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">MIME_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"text/css",</span><span class="nv"> </span><span class="s">"application/javascript",</span><span class="nv"> </span><span class="s">"text/json"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># content type fallback flag</span>
 <span class="w">      </span><span class="nt">MIME_FALLBACK</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">      </span><span class="c1"># proxy type white list</span>
-<span class="w">      </span><span class="nt">PROXY_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;tor&quot;,</span><span class="nv"> </span><span class="s">&quot;i2p&quot;,</span><span class="nv"> </span><span class="s">&quot;freenet&quot;,</span><span class="nv"> </span><span class="s">&quot;zeronet&quot;,</span><span class="nv"> </span><span class="s">&quot;tor2web&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">PROXY_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"tor",</span><span class="nv"> </span><span class="s">"i2p",</span><span class="nv"> </span><span class="s">"freenet",</span><span class="nv"> </span><span class="s">"zeronet",</span><span class="nv"> </span><span class="s">"tor2web"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># proxy type black list</span>
-<span class="w">      </span><span class="nt">PROXY_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;null&quot;,</span><span class="nv"> </span><span class="s">&quot;data&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">PROXY_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"null",</span><span class="nv"> </span><span class="s">"data"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># proxy type fallback flag</span>
 <span class="w">      </span><span class="nt">PROXY_FALLBACK</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">      </span><span class="c1"># API retry times</span>
 <span class="w">      </span><span class="nt">API_RETRY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">      </span><span class="c1"># API URLs</span>
-<span class="w">      </span><span class="c1">#API_NEW_HOST: &#39;https://example.com/api/new_host&#39;</span>
-<span class="w">      </span><span class="c1">#API_REQUESTS: &#39;https://example.com/api/requests&#39;</span>
-<span class="w">      </span><span class="c1">#API_SELENIUM: &#39;https://example.com/api/selenium&#39;</span>
-<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;always&quot;</span>
+<span class="w">      </span><span class="c1">#API_NEW_HOST: 'https://example.com/api/new_host'</span>
+<span class="w">      </span><span class="c1">#API_REQUESTS: 'https://example.com/api/requests'</span>
+<span class="w">      </span><span class="c1">#API_SELENIUM: 'https://example.com/api/selenium'</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="s">"always"</span>
 <span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;networks</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">darc</span>
 <span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;volumes</span>
@@ -437,8 +437,8 @@ image. Environment variables can be set as described in the
 <span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jsnbzh/darc:latest</span>
 <span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="nv">*build</span>
 <span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loader</span>
-<span class="w">    </span><span class="c1">#entrypoint: [ &quot;bash&quot;, &quot;/app/run.sh&quot; ]</span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">&quot;--type&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;loader&quot;</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="c1">#entrypoint: [ "bash", "/app/run.sh" ]</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">"--type"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"loader"</span><span class="w"> </span><span class="p p-Indicator">]</span>
 <span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
 <span class="w">      </span><span class="c1">## [PYTHON] force the stdout and stderr streams to be unbuffered</span>
 <span class="w">      </span><span class="nt">PYTHONUNBUFFERED</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -469,11 +469,11 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># time lapse</span>
 <span class="w">      </span><span class="nt">DARC_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
 <span class="w">      </span><span class="c1"># data storage</span>
-<span class="w">      </span><span class="nt">PATH_DATA</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;data&quot;</span>
+<span class="w">      </span><span class="nt">PATH_DATA</span><span class="p">:</span><span class="w"> </span><span class="s">"data"</span>
 <span class="w">      </span><span class="c1"># Redis URL</span>
-<span class="w">      </span><span class="nt">REDIS_URL</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis&#39;</span>
+<span class="w">      </span><span class="nt">REDIS_URL</span><span class="p">:</span><span class="w"> </span><span class="s">'redis://:UCf7y123aHgaYeGnvLRasALjFfDVHGCz6KiR5Z0WC0DL4ExvSGw5SkcOxBywc0qtZBHVrSVx2QMGewXNP6qVow@redis'</span>
 <span class="w">      </span><span class="c1"># database URL</span>
-<span class="w">      </span><span class="c1">#DB_URL: &#39;mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db&#39;</span>
+<span class="w">      </span><span class="c1">#DB_URL: 'mysql://root:b8y9dpz3MJSQtwnZIW77ydASBOYfzA7HJfugv77wLrWQzrjCx5m3spoaiqRi4kU52syYy2jxJZR3U2kwPkEVTA@db'</span>
 <span class="w">      </span><span class="c1"># max pool</span>
 <span class="w">      </span><span class="nt">DARC_MAX_POOL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">      </span><span class="c1"># save data submitssion</span>
@@ -484,13 +484,13 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># Tor management method</span>
 <span class="w">      </span><span class="nt">TOR_STEM</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">      </span><span class="c1"># Tor authentication</span>
-<span class="w">      </span><span class="nt">TOR_PASS</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F&quot;</span>
+<span class="w">      </span><span class="nt">TOR_PASS</span><span class="p">:</span><span class="w"> </span><span class="s">"16:B9D36206B5374B3F609045F9609EE670F17047D88FF713EFB9157EA39F"</span>
 <span class="w">      </span><span class="c1"># Tor bootstrap retry</span>
 <span class="w">      </span><span class="nt">TOR_RETRY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">      </span><span class="c1"># Tor bootstrap wait</span>
 <span class="w">      </span><span class="nt">TOR_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 <span class="w">      </span><span class="c1"># Tor bootstrap config</span>
-<span class="w">      </span><span class="nt">TOR_CFG</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{}&quot;</span>
+<span class="w">      </span><span class="nt">TOR_CFG</span><span class="p">:</span><span class="w"> </span><span class="s">"{}"</span>
 <span class="w">      </span><span class="c1"># I2P port</span>
 <span class="w">      </span><span class="nt">I2P_PORT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4444</span>
 <span class="w">      </span><span class="c1"># I2P bootstrap retry</span>
@@ -498,27 +498,27 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># I2P bootstrap wait</span>
 <span class="w">      </span><span class="nt">I2P_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 <span class="w">      </span><span class="c1"># I2P bootstrap config</span>
-<span class="w">      </span><span class="nt">I2P_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">I2P_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">      </span><span class="c1"># ZeroNet port</span>
 <span class="w">      </span><span class="nt">ZERONET_PORT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">43110</span>
 <span class="w">      </span><span class="c1"># ZeroNet bootstrap retry</span>
 <span class="w">      </span><span class="nt">ZERONET_RETRY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">      </span><span class="c1"># ZeroNet project path</span>
-<span class="w">      </span><span class="nt">ZERONET_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/usr/local/src/zeronet&quot;</span>
+<span class="w">      </span><span class="nt">ZERONET_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">"/usr/local/src/zeronet"</span>
 <span class="w">      </span><span class="c1"># ZeroNet bootstrap wait</span>
 <span class="w">      </span><span class="nt">ZERONET_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 <span class="w">      </span><span class="c1"># ZeroNet bootstrap config</span>
-<span class="w">      </span><span class="nt">ZERONET_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">ZERONET_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">      </span><span class="c1"># Freenet port</span>
 <span class="w">      </span><span class="nt">FREENET_PORT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8888</span>
 <span class="w">      </span><span class="c1"># Freenet bootstrap retry</span>
 <span class="w">      </span><span class="nt">FREENET_RETRY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">      </span><span class="c1"># Freenet project path</span>
-<span class="w">      </span><span class="nt">FREENET_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/usr/local/src/freenet&quot;</span>
+<span class="w">      </span><span class="nt">FREENET_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">"/usr/local/src/freenet"</span>
 <span class="w">      </span><span class="c1"># Freenet bootstrap wait</span>
 <span class="w">      </span><span class="nt">FREENET_WAIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 <span class="w">      </span><span class="c1"># Freenet bootstrap config</span>
-<span class="w">      </span><span class="nt">FREENET_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">FREENET_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">      </span><span class="c1"># time delta for caches in seconds</span>
 <span class="w">      </span><span class="nt">TIME_CACHE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2_592_000</span><span class="w">  </span><span class="c1"># 30 days</span>
 <span class="w">      </span><span class="c1"># time to wait for selenium</span>
@@ -526,34 +526,34 @@ image. Environment variables can be set as described in the
 <span class="w">      </span><span class="c1"># extract link pattern</span>
 <span class="w">      </span><span class="nt">LINK_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">        </span><span class="no">[</span>
-<span class="w">          </span><span class="no">&quot;.*?\\.onion&quot;,</span>
-<span class="w">          </span><span class="no">&quot;.*?\\.i2p&quot;, &quot;127\\.0\\.0\\.1:7657&quot;, &quot;localhost:7657&quot;, &quot;127\\.0\\.0\\.1:7658&quot;, &quot;localhost:7658&quot;,</span>
-<span class="w">          </span><span class="no">&quot;127\\.0\\.0\\.1:43110&quot;, &quot;localhost:43110&quot;,</span>
-<span class="w">          </span><span class="no">&quot;127\\.0\\.0\\.1:8888&quot;, &quot;localhost:8888&quot;</span>
+<span class="w">          </span><span class="no">".*?\\.onion",</span>
+<span class="w">          </span><span class="no">".*?\\.i2p", "127\\.0\\.0\\.1:7657", "localhost:7657", "127\\.0\\.0\\.1:7658", "localhost:7658",</span>
+<span class="w">          </span><span class="no">"127\\.0\\.0\\.1:43110", "localhost:43110",</span>
+<span class="w">          </span><span class="no">"127\\.0\\.0\\.1:8888", "localhost:8888"</span>
 <span class="w">        </span><span class="no">]</span>
 <span class="w">      </span><span class="c1"># link black list</span>
-<span class="w">      </span><span class="nt">LINK_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?facebookcorewwwi\\.onion&quot;,</span><span class="nv"> </span><span class="s">&quot;(.*\\.)?nytimes3xbfgragh\\.onion&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">LINK_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"(.*\\.)?facebookcorewwwi\\.onion",</span><span class="nv"> </span><span class="s">"(.*\\.)?nytimes3xbfgragh\\.onion"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># link fallback flag</span>
 <span class="w">      </span><span class="nt">LINK_FALLBACK</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">      </span><span class="c1"># content type white list</span>
-<span class="w">      </span><span class="nt">MIME_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;text/html&quot;,</span><span class="nv"> </span><span class="s">&quot;application/xhtml+xml&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">MIME_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"text/html",</span><span class="nv"> </span><span class="s">"application/xhtml+xml"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># content type black list</span>
-<span class="w">      </span><span class="nt">MIME_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;text/css&quot;,</span><span class="nv"> </span><span class="s">&quot;application/javascript&quot;,</span><span class="nv"> </span><span class="s">&quot;text/json&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">MIME_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"text/css",</span><span class="nv"> </span><span class="s">"application/javascript",</span><span class="nv"> </span><span class="s">"text/json"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># content type fallback flag</span>
 <span class="w">      </span><span class="nt">MIME_FALLBACK</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">      </span><span class="c1"># proxy type white list</span>
-<span class="w">      </span><span class="nt">PROXY_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;tor&quot;,</span><span class="nv"> </span><span class="s">&quot;i2p&quot;,</span><span class="nv"> </span><span class="s">&quot;freenet&quot;,</span><span class="nv"> </span><span class="s">&quot;zeronet&quot;,</span><span class="nv"> </span><span class="s">&quot;tor2web&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">PROXY_WHITE_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"tor",</span><span class="nv"> </span><span class="s">"i2p",</span><span class="nv"> </span><span class="s">"freenet",</span><span class="nv"> </span><span class="s">"zeronet",</span><span class="nv"> </span><span class="s">"tor2web"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># proxy type black list</span>
-<span class="w">      </span><span class="nt">PROXY_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[</span><span class="nv"> </span><span class="s">&quot;null&quot;,</span><span class="nv"> </span><span class="s">&quot;data&quot;</span><span class="nv"> </span><span class="s">]&#39;</span>
+<span class="w">      </span><span class="nt">PROXY_BLACK_LIST</span><span class="p">:</span><span class="w"> </span><span class="s">'[</span><span class="nv"> </span><span class="s">"null",</span><span class="nv"> </span><span class="s">"data"</span><span class="nv"> </span><span class="s">]'</span>
 <span class="w">      </span><span class="c1"># proxy type fallback flag</span>
 <span class="w">      </span><span class="nt">PROXY_FALLBACK</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">      </span><span class="c1"># API retry times</span>
 <span class="w">      </span><span class="nt">API_RETRY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">      </span><span class="c1"># API URLs</span>
-<span class="w">      </span><span class="c1">#API_NEW_HOST: &#39;https://example.com/api/new_host&#39;</span>
-<span class="w">      </span><span class="c1">#API_REQUESTS: &#39;https://example.com/api/requests&#39;</span>
-<span class="w">      </span><span class="c1">#API_SELENIUM: &#39;https://example.com/api/selenium&#39;</span>
-<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;always&quot;</span>
+<span class="w">      </span><span class="c1">#API_NEW_HOST: 'https://example.com/api/new_host'</span>
+<span class="w">      </span><span class="c1">#API_REQUESTS: 'https://example.com/api/requests'</span>
+<span class="w">      </span><span class="c1">#API_SELENIUM: 'https://example.com/api/selenium'</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="s">"always"</span>
 <span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w"> </span><span class="nv">*networks</span>
 <span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w"> </span><span class="nv">*volumes</span>
 
@@ -582,16 +582,16 @@ especially for reboot mode.</p>
 <span class="nv">WAIT</span><span class="o">=</span><span class="si">${</span><span class="nv">DARC_WAIT</span><span class="p">=10</span><span class="si">}</span>
 
 <span class="c1"># signal handlers</span>
-<span class="nb">trap</span><span class="w"> </span><span class="s1">&#39;[ -f ${PATH_DATA}/darc.pid ] &amp;&amp; kill -2 $(cat ${PATH_DATA}/darc.pid)&#39;</span><span class="w"> </span>SIGINT<span class="w"> </span>SIGTERM<span class="w"> </span>SIGKILL
+<span class="nb">trap</span><span class="w"> </span><span class="s1">'[ -f ${PATH_DATA}/darc.pid ] &amp;&amp; kill -2 $(cat ${PATH_DATA}/darc.pid)'</span><span class="w"> </span>SIGINT<span class="w"> </span>SIGTERM<span class="w"> </span>SIGKILL
 
 <span class="c1"># initialise</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;+ Starting application...&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"+ Starting application..."</span>
 python3<span class="w"> </span>-m<span class="w"> </span>darc<span class="w"> </span><span class="nv">$@</span>
 sleep<span class="w"> </span><span class="si">${</span><span class="nv">WAIT</span><span class="si">}</span>
 
 <span class="c1"># mainloop</span>
 <span class="k">while</span><span class="w"> </span>true<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;+ Restarting application...&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"+ Restarting application..."</span>
 <span class="w">    </span>python3<span class="w"> </span>-m<span class="w"> </span>darc
 <span class="w">    </span>sleep<span class="w"> </span><span class="si">${</span><span class="nv">WAIT</span><span class="si">}</span>
 <span class="k">done</span>
