@@ -12,19 +12,21 @@ jobs:
   version_check:
     name: Check Version
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v7
         with:
-          python-version: '3.12'
+          python-version: '3.14'
 
       - name: Install and Setup
         run: |
-          python -m pip install -U pip setuptools wheel
+          python -m pip install -U pip setuptools wheel packaging
 
       - name: Get Version
         id: get_version
@@ -37,10 +39,10 @@ jobs:
           python -m pip install -e .
 
           echo "DARC_VERSION=$(python -c 'import darc; print(darc.__version__)')" >> $GITHUB_OUTPUT
-          echo "DARC_PRERELEASE=$(python -c 'import darc, pkg_resources; print(str(pkg_resources.parse_version(darc.__version__).is_prerelease).lower())')" >> $GITHUB_OUTPUT
-          echo "DARC_CONDA_LABEL=$(python -c 'import darc, pkg_resources; print("dev" if pkg_resources.parse_version(darc.__version__).is_prerelease else "main")')" >> $GITHUB_OUTPUT
+          echo "DARC_PRERELEASE=$(python -c 'from packaging.version import Version; import darc; print(str(Version(darc.__version__).is_prerelease).lower())')" >> $GITHUB_OUTPUT
+          echo "DARC_CONDA_LABEL=$(python -c 'from packaging.version import Version; import darc; print("dev" if Version(darc.__version__).is_prerelease else "main")')" >> $GITHUB_OUTPUT
 
-      - uses: mukunku/tag-exists-action@v1.2.0
+      - uses: mukunku/tag-exists-action@v1.7.0
         id: check_tag
         with:
           tag: "v${{ steps.get_version.outputs.DARC_VERSION }}"
@@ -54,11 +56,13 @@ jobs:
   github:
     name: GitHub Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: [ version_check ]
     if: ${{ startsWith(github.ref_name, 'v') || needs.version_check.outputs.DARC_TAG_EXISTS == 'false' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # ref: v${{ needs.version_check.outputs.DARC_VERSION }}
           fetch-depth: 0
@@ -71,7 +75,7 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
@@ -91,11 +95,13 @@ jobs:
   tag:
     name: Conda Tag
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: [ version_check ]
     if: ${{ startsWith(github.ref_name, 'v') || needs.version_check.outputs.DARC_TAG_EXISTS == 'false' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.DARC }}
           # ref: v${{ needs.version_check.outputs.DARC_VERSION }}
@@ -155,22 +161,15 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.8"
-          - "3.9"
-          - "3.10"
-          - "3.11"
-          - "3.12"
-          - "pypy3.8"
-          - "pypy3.9"
-          - "pypy3.10"
+          - "3.14"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: v${{ needs.version_check.outputs.DARC_VERSION }}
           fetch-depth: 0
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -191,7 +190,7 @@ jobs:
           python util/wheel_rename.py dist/*.whl
 
       - name: No Source Distribution for Python ${{ matrix.python-version }}
-        if: ${{ matrix.python-version != '3.12' }}
+        if: ${{ matrix.python-version != '3.14' }}
         run: |
           rm dist/*.tar.gz
 
@@ -209,7 +208,7 @@ jobs:
           skip-existing: true
 
       - name: Upload package to GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3.0.2
         with:
           # allowUpdates: true
           files: |
@@ -229,18 +228,14 @@ jobs:
           - ubuntu-latest
           # - windows-latest  # skip for now
         python-version:
-          - "3.8"
-          - "3.9"
-          - "3.10"
-          - "3.11"
-          - "3.12"
+          - "3.14"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: conda-${{ needs.version_check.outputs.DARC_VERSION }}+0
           fetch-depth: 0
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -275,65 +270,58 @@ jobs:
           python -m pip download -r conda/requirements.txt -d conda/wheels
 
       - name: Conda environment creation and activation
-        uses: conda-incubator/setup-miniconda@v3
-        env:
-          DARC_VERSION: ${{ needs.version_check.outputs.DARC_VERSION }}
-          DARC_BUILD: "0"
+        uses: conda-incubator/setup-miniconda@v4.0.1
         with:
           python-version: ${{ matrix.python-version }}
-          environment-file: conda/conda-build.yaml    # Path to the build conda environment
+          activate-environment: base
           auto-update-conda: false
-          auto-activate-base: false
+          auto-activate: true
+          channels: conda-forge,defaults
+          conda-remove-defaults: false
           show-channel-urls: true
 
-      - name: Build and upload the conda packages (macOS)
-        uses: uibcdf/action-build-and-upload-conda-packages@v1.2.0
-        if: ${{ matrix.os == 'macos-latest' }}
-        env:
-          DARC_VERSION: ${{ needs.version_check.outputs.DARC_VERSION }}
-          DARC_BUILD: "0"
-        with:
-          meta_yaml_dir: conda/darc
-          python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
-          platform_osx-64: true
-          user: jarryshaw
-          label: ${{ needs.version_check.outputs.DARC_CONDA_LABEL }}
-          token: ${{ secrets.ANACONDA_TOKEN }} # Replace with the right name of your secret
+      - name: Install conda build tools
+        run: |
+          conda install -n base --override-channels -c conda-forge -y conda-build
+          conda build --version
 
-      - name: Build and upload the conda packages (Ubuntu)
-        uses: uibcdf/action-build-and-upload-conda-packages@v1.2.0
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Build conda packages
+        id: conda_build
+        shell: bash -el {0}
         env:
           DARC_VERSION: ${{ needs.version_check.outputs.DARC_VERSION }}
           DARC_BUILD: "0"
-        with:
-          meta_yaml_dir: conda/darc
-          python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
-          platform_linux-64: true
-          user: jarryshaw
-          label: ${{ needs.version_check.outputs.DARC_CONDA_LABEL }}
-          token: ${{ secrets.ANACONDA_TOKEN }} # Replace with the right name of your secret
+        working-directory: conda/darc
+        run: |
+          set -euo pipefail
 
-      - name: Build and upload the conda packages (Windows)
-        uses: uibcdf/action-build-and-upload-conda-packages@v1.2.0
-        if: ${{ matrix.os == 'windows-latest' }}
-        env:
-          DARC_VERSION: ${{ needs.version_check.outputs.DARC_VERSION }}
-          DARC_BUILD: "0"
+          out_dir="$(mktemp -d -t compilation-XXXXXXXXXX)"
+          echo "out_dir=$out_dir" >> "$GITHUB_OUTPUT"
+          conda build . --package-format .tar.bz2 --no-anaconda-upload --output-folder "$out_dir" --python "${{ matrix.python-version }}"
+          package_paths="$(find "$out_dir" -type f \( -name '*.tar.bz2' -o -name '*.conda' \) -print | sort)"
+          if [ -z "$package_paths" ]; then
+            echo "::error::No conda package was built"
+            exit 1
+          fi
+          printf '%s\n' "$package_paths"
+          {
+            echo 'packages<<EOF'
+            printf '%s\n' "$package_paths"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload conda packages to Anaconda
+        uses: anaconda/actions/upload-package@v0.3.1
         with:
-          meta_yaml_dir: conda/darc
-          python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
-          platform_win-64: true
-          user: jarryshaw
-          label: ${{ needs.version_check.outputs.DARC_CONDA_LABEL }}
-          token: ${{ secrets.ANACONDA_TOKEN }} # Replace with the right name of your secret
+          token: ${{ secrets.ANACONDA_TOKEN }}
+          channel: jarryshaw
+          packages: ${{ steps.conda_build.outputs.packages }}
+          labels: ${{ needs.version_check.outputs.DARC_CONDA_LABEL }}
 
       - name: Upload package to GitHub Release
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3.0.2
         with:
-          # allowUpdates: true
-          files: |
-            /tmp/compilation-*/**/*.tar.bz2
+          files: ${{ steps.conda_build.outputs.packages }}
           tag_name: "v${{ needs.version_check.outputs.DARC_VERSION }}"
           token: "${{ secrets.GITHUB_TOKEN }}"
