@@ -26,7 +26,7 @@ import subprocess
 version_info = sys.version_info[:2]
 
 # version string
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 # setup attributes
 attrs = dict(
@@ -58,9 +58,11 @@ attrs = dict(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Software Development',
         'Topic :: Utilities',
@@ -103,7 +105,6 @@ attrs = dict(
     # password
     # fullname
     # long_description_content_type
-    # python_requires
     # zip_safe,
     install_requires=[
         'beautifulsoup4[html5lib]',
@@ -162,7 +163,7 @@ try:
         # password
         # fullname
         long_description_content_type='text/x-rst',
-        python_requires='>=3.6',
+        python_requires='>=3.10',
         # zip_safe=True,
     ))
 except ImportError:

@@ -12,12 +12,16 @@ on:
     branches:
       - '**'
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Prepare
         id: prep
@@ -44,38 +48,37 @@ jobs:
           elif [ "${{ github.event_name }}" = "push" ]; then
             TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
           fi
-          echo ::set-output name=version::${VERSION}
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=debug_tags::$(echo $TAGS | sed 's/darc/darc-debug/g')
-          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          {
+            echo "version=${VERSION}"
+            echo "tags=${TAGS}"
+            echo "debug_tags=$(echo "$TAGS" | sed 's/darc/darc-debug/g')"
+            echo "created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v4.2.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v4.3.0
 
       # - name: Login to DockerHub
       #   if: github.event_name != 'pull_request'
-      #   uses: docker/login-action@v1
+      #   uses: docker/login-action@v4.6.0
       #   with:
       #     username: ${{ secrets.DOCKERHUB_USERNAME }}
       #     password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        if: >-
+          github.event_name == 'schedule' ||
+          (github.event_name == 'push' &&
+          (github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
+          startsWith(github.ref, 'refs/tags/')))
+        uses: docker/login-action@v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.CR_PAT }} # ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clean cache
         id: docker_prune
@@ -84,12 +87,16 @@ jobs:
 
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v7.3.0
         with:
           context: .
           file: ./docker/Dockerfile
           platforms: linux/amd64
-          push: ${{ github.event_name != 'pull_request' }}
+          push: >-
+            ${{ github.event_name == 'schedule' ||
+            (github.event_name == 'push' &&
+            (github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
+            startsWith(github.ref, 'refs/tags/'))) }}
           tags: ${{ steps.prep.outputs.tags }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
@@ -106,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Prepare
         id: prep
@@ -133,38 +140,37 @@ jobs:
           elif [ "${{ github.event_name }}" = "push" ]; then
             TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
           fi
-          echo ::set-output name=version::${VERSION}
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=debug_tags::$(echo $TAGS | sed 's/darc/darc-debug/g')
-          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          {
+            echo "version=${VERSION}"
+            echo "tags=${TAGS}"
+            echo "debug_tags=$(echo "$TAGS" | sed 's/darc/darc-debug/g')"
+            echo "created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v4.2.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v4.3.0
 
       # - name: Login to DockerHub
       #   if: github.event_name != 'pull_request'
-      #   uses: docker/login-action@v1
+      #   uses: docker/login-action@v4.6.0
       #   with:
       #     username: ${{ secrets.DOCKERHUB_USERNAME }}
       #     password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        if: >-
+          github.event_name == 'schedule' ||
+          (github.event_name == 'push' &&
+          (github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
+          startsWith(github.ref, 'refs/tags/')))
+        uses: docker/login-action@v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.CR_PAT }} # ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clean cache
         id: docker_prune
@@ -173,12 +179,16 @@ jobs:
 
       - name: Build and push
         id: docker_build_debug
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v7.3.0
         with:
           context: .
           file: ./docker/debug.dockerfile
           platforms: linux/amd64
-          push: ${{ github.event_name != 'pull_request' }}
+          push: >-
+            ${{ github.event_name == 'schedule' ||
+            (github.event_name == 'push' &&
+            (github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
+            startsWith(github.ref, 'refs/tags/'))) }}
           tags: ${{ steps.prep.outputs.debug_tags }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}

@@ -5,6 +5,9 @@ verify_ssl = true
 
 [dev-packages]
 python-darc = {editable = true,path = ".",extras = ["mysql"]}
+build = "*"
+setuptools = "*"
+wheel = "*"
 autopep8 = "*"
 bandit = "*"
 mypy = "*"
@@ -38,7 +41,7 @@ stem = "*"
 typing-extensions = "*"
 
 [requires]
-python_version = "3"
+python_version = "3.14"
 
 [pipenv]
 allow_prereleases = true
