@@ -26,7 +26,7 @@ import subprocess
 version_info = sys.version_info[:2]
 
 # version string
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 
 # setup attributes
 attrs = dict(
